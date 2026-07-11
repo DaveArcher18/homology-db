@@ -37,6 +37,11 @@ If `WORKSTATE.md` says `Status: BLOCKED`, a recurring wakeup exits without
 project mutation. Only new user input or the named external-state change resumes
 the goal; that resumed run starts a fresh blocked audit.
 
+If `WORKSTATE.md` contains `INTERACTIVE_ONLY` under `## Control mode`, every
+standalone or scheduled invocation exits without project mutation regardless of
+ticket or lease state. Only the user-controlled interactive chat may advance
+work until the user explicitly changes that mode.
+
 ## Concurrency
 
 - Treat the `Active run lease` in `WORKSTATE.md` as authoritative. A scheduled

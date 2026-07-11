@@ -1,6 +1,7 @@
 Type: grilling
-Status: needs-info
-Blocked on: user decision for grill question 1
+Status: claimed
+Claimed by: /root (interactive chat)
+Claimed at: 2026-07-11T13:13:33Z
 Blocked by: 01, 02, 04
 
 # Define structured homology-pattern semantics
@@ -29,3 +30,7 @@ Question 1 asked at 2026-07-11T12:19:37Z:
 
 - 2026-07-11T12:49:09Z: Marked `needs-info` after three consecutive runs
   awaiting Question 1. Resume only when the user supplies this decision.
+- 2026-07-11T13:13:33Z: Reassigned from the standalone scheduler to this
+  interactive chat at the user's direction. The previous `needs-info` marker is
+  retained as history here; this ticket is now claimed by the chat and advances
+  only on explicit interactive direction.

@@ -1,6 +1,6 @@
 # Work state
 
-Status: BLOCKED
+Status: ACTIVE
 
 ## Objective
 
@@ -10,10 +10,16 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 
 `.scratch/homology-db-v0-0-1/map.md`
 
+## Control mode
+
+`INTERACTIVE_ONLY` — this chat is the sole control plane. The standalone
+`resume-homology-db-hard-push` automation is paused and must not be re-enabled
+without an explicit user request here.
+
 ## Current ticket
 
-Ticket 05 — `Define structured homology-pattern semantics` (needs a user
-decision after three consecutive waiting runs).
+Ticket 05 — `Define structured homology-pattern semantics` (reclaimed by
+`/root (interactive chat)` at 2026-07-11T13:13:33Z).
 
 ## Last checkpoint
 
@@ -42,14 +48,15 @@ decision after three consecutive waiting runs).
 - Ticket 05 is claimed. Its fixed inputs are G6's strict three-valued evidence
   rule and the honest-constellation fixture; question 1 records the first
   consequential distinction between explicit `unknown` and unresolved data.
+- At the user's direction, the recurring automation was paused and ticket 05
+  was reclaimed from its standalone worker. Progress is now controlled
+  exclusively from this chat.
 
 ## Exact next action
 
-Await the user's answer to ticket-05 grill question 1: whether `unknown` is
-narrow (only a selected explicit `unknown` assertion, recommended) or broad
-(also absent/not-computed/incomplete/unresolved/conflicting outcomes). After
-the answer, set Status back to ACTIVE, reclaim Ticket 05 with a fresh run lease,
-and ask only the next dependent grill question. Do not enact semantics yet.
+Await an explicit instruction in this chat. On `continue`, resume ticket 05 at
+its recorded question about narrow explicit `unknown` versus unresolved data;
+infer reversible syntax choices and surface only consequential semantics.
 
 ## Verification state
 
@@ -70,5 +77,7 @@ database, ingested corpus, public API, or release test suite exists yet.
 - While `Status: BLOCKED`, recurring wakeups exit without mutation. This user
   response resumed the goal and started a fresh blocked audit.
 - Ticket 05 reached three consecutive runs awaiting Question 1 on
-  2026-07-11T12:49:09Z. It is blocked on a user-owned semantic decision; no
-  design has been enacted.
+  2026-07-11T12:49:09Z. The user then reclaimed control through this chat; no
+  semantic choice was inferred.
+- The recurring automation is paused. Do not create, resume, or re-enable a
+  standalone worker unless the user explicitly requests it here.
