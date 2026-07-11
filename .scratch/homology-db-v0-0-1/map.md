@@ -27,6 +27,7 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 - [Survey scalable finite-model corpora](issues/03-survey-finite-model-corpora.md) — Pin Stellar v6 for bulk triangulations, treat polyDB as an overlapping structured view, use simpcomp/Sage/HAP for named generators and validation, and leave the regular-CW counting boundary explicit for ticket 04.
 - [Set the first-release model boundary](issues/04-set-model-boundary.md) — Count only finite abstract-simplicial and witness-certified regular-CW Models, reconstruct CW topology through the Cell-closure-poset order complex, require a paired nonsimplicial slice, and keep unsupported attaching-map and generalized formats as attributed Source artifacts.
 - [Define structured homology-pattern semantics](issues/05-define-pattern-semantics.md) — Evaluate one-tier conjunctive patterns with evidence trits, keep explicit unknown distinct from unresolved data, return unresolved candidates separately, and require structured slot-level explanations and completeness evidence.
+- [Define assertion selection and correction semantics](issues/06-define-assertion-selection.md) — Fold explicitly admitted assertions and append-only lifecycle events into strict claim classes, declared conflicts, deterministic Current projections, and evidence-bearing Model-to-space promotions without source-priority winners.
 
 ## Not yet specified
 

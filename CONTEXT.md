@@ -64,6 +64,30 @@ _Avoid_: Duplicate, same model, automatic merge
 A sourced or reproducibly computed claim about a subject’s homology for an explicit coefficient system, convention, and degree.
 _Avoid_: Homology value, fact
 
+**Claim fingerprint**:
+A versioned canonical identity for an assertion’s complete slot, Knowledge state, semantic payload, and completeness scope. Provenance and editorial metadata do not change it.
+_Avoid_: Value hash, evidence score
+
+**Admission decision**:
+An evidence-bearing editorial decision that makes an immutable assertion eligible for a Current projection under a named policy. Retaining an assertion in history does not admit it.
+_Avoid_: Approved flag, row visibility
+
+**Active assertion**:
+An admitted assertion that has not been superseded or retracted in the Snapshot. Activity is independent of Knowledge state; invalid dependencies on an Active derived assertion invalidate the Snapshot rather than silently deactivating it.
+_Avoid_: Current fact, valid row
+
+**Retired assertion**:
+An admitted assertion removed from Current eligibility by append-only supersession or retraction while remaining addressable in history. Retirement never automatically revives a predecessor.
+_Avoid_: Deleted assertion, invalid fact
+
+**Supporting assertion**:
+An Active assertion with the selected assertion’s Claim fingerprint, exposed as independent corroboration rather than silently merged.
+_Avoid_: Duplicate evidence, secondary value
+
+**Promotion assertion**:
+A new Conceptual-space assertion derived from a Model assertion through an active reviewed model relation and a versioned invariant-preservation rule. It is never implicit query-time inheritance.
+_Avoid_: Copied result, model fallback
+
 **Knowledge state**:
 The mathematical status of an atomic assertion, distinguishing exact, bounded, conjectural, unknown, not computed, and not applicable. A current projection may additionally expose a derived conflicting outcome that references the incompatible assertions.
 _Avoid_: Null state, missing value
@@ -85,19 +109,19 @@ The reproducibility record connecting exact inputs, algorithms, software version
 _Avoid_: Job, calculation
 
 **Current projection**:
-A rebuildable query view that selects a published assertion or exposes unresolved selection/conflict for each homology slot while retaining assertion history. Absence is a lookup outcome, not a stored assertion.
+A rebuildable Snapshot view that selects one representative of an admitted active Claim-fingerprint class or exposes unresolved selection/conflict for each Homology slot while retaining assertion history. Absence is a lookup outcome, not a stored assertion.
 _Avoid_: Truth table, current facts
 
 **Editorial event**:
-An append-only record explaining a correction, supersession, retraction, or conflict-resolution action with actor, time, reason, and affected assertion IDs.
+An append-only lifecycle authority recording admission, correction, supersession, retraction, or conflict action with actor, reason, evidence, and exact affected assertion IDs.
 _Avoid_: In-place edit, validity overwrite
 
 **Conflict set**:
-An explicit group of incompatible retained assertions for one homology slot. An open conflict set prevents the current projection from selecting a mathematical value.
+An explicit event-derived group of active incompatible assertions for one Homology slot. While open it prevents selection; its declaration and history remain addressable after resolution.
 _Avoid_: Conflicting value, source-priority winner
 
 **Unresolved selection**:
-A current-projection outcome in which multiple active assertions share a homology slot but no versioned selection or conflict decision applies. It is not an atomic knowledge state and carries no selected value.
+A Current-projection outcome in which multiple active Claim-fingerprint classes share a Homology slot without an open Conflict set. It is not an atomic Knowledge state and carries no selected value.
 _Avoid_: Implicit tie-break, inferred conflict
 
 **Completeness region**:

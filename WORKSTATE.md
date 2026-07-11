@@ -18,7 +18,13 @@ without an explicit user request here.
 
 ## Current ticket
 
-None — ticket 05 is resolved; the next frontier ticket is 06.
+None — ticket 06 is resolved but its verified boundary is not yet committed.
+Frontier ticket 07 remains unclaimed.
+
+## Active run lease
+
+None — the interactive run yielded at 2026-07-11T14:50:18Z after the git-index
+approval service reported quota exhaustion.
 
 ## Last checkpoint
 
@@ -53,12 +59,35 @@ None — ticket 05 is resolved; the next frontier ticket is 06.
 - Ticket 05 fixes a one-tier conjunctive query contract with evidence trits,
   narrow explicit `unknown`, hard conflict fences, separately returned
   unresolved candidates, and complete structured explanations.
+- Ticket 06 is claimed by the interactive chat to define the deterministic
+  Current projection over immutable Homology assertions and editorial events.
+- Ticket 06 now has a draft normative Current-projection contract and ADR.
+  Three independent audits agree on explicit admission, strict claim classes,
+  append-only lifecycle authority, declared conflict, and explicit promotion;
+  their final defect reviews are in progress.
+- Ticket 06 is resolved. Its corrected contract separates admission from
+  Knowledge state, projects strict claim classes without implicit winners,
+  defines atomic append-only lifecycle events and subset-maximal declared
+  conflicts, and requires explicit dependency-checked promotion assertions.
+- Ticket 06 passed all contract checks and three independent closure reviews.
+  Staging the scoped commit was rejected because the approval service reported
+  its usage limit exhausted until 18:26; no workaround was attempted.
 
 ## Exact next action
 
-Await an explicit instruction in this chat. On `continue`, claim ticket 06,
-`Define current-assertion selection`, and make its policy compatible with the
-tagged Current projection consumed by the pattern contract.
+After explicit user approval or approval-service capacity returns, stage the six
+ticket 06 paths listed below, run `git diff --cached --check`, commit them as
+`docs: define current assertion projection`, then claim ticket 07 and choose the
+exact `0.0.1` corpus manifest against the observable count and coverage gates.
+
+Ticket 06 commit paths:
+
+- `.scratch/homology-db-v0-0-1/issues/06-define-assertion-selection.md`
+- `.scratch/homology-db-v0-0-1/map.md`
+- `CONTEXT.md`
+- `WORKSTATE.md`
+- `docs/adr/0003-project-current-from-admitted-claim-classes.md`
+- `docs/contracts/current-projection-v1.md`
 
 ## Verification state
 
@@ -71,6 +100,9 @@ reviewed for mathematical, domain, and G2/G10 compatibility. No executable
 database, ingested corpus, public API, or release test suite exists yet. Ticket
 05 is specified in the v1 pattern contract and ADR 0002 and was independently
 reviewed for formal, LLM-envelope, and indexed-query semantics.
+Ticket 06 is specified in the v1 Current-projection contract and ADR 0003. Its
+state-machine, editorial-history, and promotion/snapshot reviews all report no
+remaining defect after two correction passes.
 
 ## Recovery notes
 
@@ -85,3 +117,6 @@ reviewed for formal, LLM-envelope, and indexed-query semantics.
   semantic choice was inferred.
 - The recurring automation is paused. Do not create, resume, or re-enable a
   standalone worker unless the user explicitly requests it here.
+- 2026-07-11T14:50:18Z: ticket 06 is fully verified but uncommitted. The sole
+  blocker is the git-index escalation approval service quota; retry only after
+  explicit user approval or the reported 18:26 capacity reset.
