@@ -12,7 +12,7 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 
 ## Current ticket
 
-None — map charting is complete; no ticket may be resolved in the charting session.
+None — ticket 01 is resolved; Wayfinder permits no second ticket in this session.
 
 ## Last checkpoint
 
@@ -20,14 +20,15 @@ None — map charting is complete; no ticket may be resolved in the charting ses
 - `1fb1430` committed the Wayfinder map and eleven decision tickets from three independent breadth-first audits.
 - The initial frontier is observable contract, honest constellation, and finite-model corpus survey.
 - The active `resume-homology-db-hard-push` Codex automation retries every 15 minutes.
+- Ticket 01 resolved the hard observable release contract in `docs/research/v0.0.1-observable-contract.md`.
 
 ## Exact next action
 
-On the next run, claim and resolve the first frontier ticket by number.
+On the next run, claim ticket 02, `Prototype the smallest honest constellation`, and follow the `prototype` skill.
 
 ## Verification state
 
-Planning/setup/map files only. No executable database, corpus, API, or tests exist yet.
+The release contract is documented and reviewed. No executable database, corpus, API, or tests exist yet.
 
 ## Recovery notes
 
