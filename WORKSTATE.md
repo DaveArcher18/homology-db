@@ -26,10 +26,7 @@ Ticket 08 — `Prototype the owned cellular-homology boundary`, claimed by
 
 ## Active run lease
 
-- Run ID: `interactive-ticket08-20260711T172642Z`
-- Owner: `/root (interactive chat)`
-- Heartbeat: 2026-07-11T17:26:42Z
-- Fresh through: 2026-07-11T17:51:42Z
+None — yielded at clean checkpoint `2779475` after the local test-drive audit.
 
 ## Last checkpoint
 
@@ -89,12 +86,21 @@ Ticket 08 — `Prototype the owned cellular-homology boundary`, claimed by
   family, format, torsion, validation, and QA counts from the machine manifest.
 - Ticket 08 is claimed. Its public prototype seams are the four versioned QA
   tools, with one disposable local SQLite Snapshot and shared human/agent JSON.
+- The throwaway computation experiment is preserved as `25b5e07` on
+  `codex/prototype-owned-homology`. Its validated interface is folded into the
+  main-branch `homology_db` local preview: 60 common manifolds, eleven public-seam
+  tests, a concise demo, typed safety outcomes, and evidence expansion.
+- `docs/TEST_DRIVE.md` is the user handoff and `docs/NEXT_STEPS.md` is the
+  Wayfinder execution route. The preview remains explicitly distinct from
+  qualified `0.0.1` release evidence.
+- The durable local preview and handoff were committed as `2779475`.
 
 ## Exact next action
 
-Build the one-command owned-homology logic prototype around the four public QA
-tool seams, exercise it against worked manifold examples, then fold the usable
-interface into a local test-drive and next-steps handoff.
+On resumption, continue ticket 08 from `2779475`: introduce a general-chain
+fixture with adjacent nonzero boundaries and benchmark a pinned SageMath 10.9
+adapter against direct FLINT alternatives while retaining Smith transforms,
+representatives, induced maps, deterministic run records, and oracle evidence.
 
 ## Verification state
 
@@ -110,6 +116,11 @@ reviewed for formal, LLM-envelope, and indexed-query semantics.
 Ticket 06 is specified in the v1 Current-projection contract and ADR 0003. Its
 state-machine, editorial-history, and promotion/snapshot reviews all report no
 remaining defect after two correction passes.
+Ticket 07 is specified by the machine corpus manifest and its deriving
+verifier. The local preview builds a deterministic 60-subject SQLite Snapshot
+and passes eleven human/agent public-seam tests; it is not the 1,159-Model release.
+`ruff`, Python compilation, the manifest verifier, the concise demo, SQLite
+integrity, and `git diff --check` all pass at checkpoint `2779475`.
 
 ## Recovery notes
 
