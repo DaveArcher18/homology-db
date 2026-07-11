@@ -100,6 +100,14 @@ _Avoid_: Conflicting value, source-priority winner
 A current-projection outcome in which multiple active assertions share a homology slot but no versioned selection or conflict decision applies. It is not an atomic knowledge state and carries no selected value.
 _Avoid_: Implicit tie-break, inferred conflict
 
+**Completeness region**:
+An evidence-bearing claim that exact coverage or vanishing holds over a specified family of Homology slots in one Snapshot. Missing rows never enlarge it.
+_Avoid_: Last computed degree, implied zero tail
+
+**Candidate-bound slot selector**:
+A Homology-slot template whose subject is the query candidate and whose remaining axes are explicit; evaluation instantiates it to one concrete Homology slot per candidate.
+_Avoid_: Partial slot, query defaults
+
 **Mathematical map declaration**:
 A stable map identity with explicit domain, codomain, basedness, evidence, and a capability statement describing whether computational map data is actually present.
 _Avoid_: Arrow label, implicit relationship
@@ -109,8 +117,28 @@ An evidence-bearing n-ary claim binding mathematical subjects or maps in named r
 _Avoid_: Unbound pairwise tags, diagram inferred from names
 
 **Homology pattern**:
-A structured set of required, forbidden, exact, or unknown homology constraints over specified degrees and coefficient systems.
+A versioned conjunction of Pattern clauses and require-only Exact signature macros over one corpus tier and Snapshot.
 _Avoid_: Similarity prompt, embedding query
+
+**Pattern clause**:
+A typed predicate on one Candidate-bound slot selector with `require` or `forbid` polarity and a stable caller-visible identity.
+_Avoid_: Filter string, fuzzy condition
+
+**Exact signature macro**:
+A require-only query node enumerating one exact integral group per degree in a contiguous range and an explicit policy for all outside degrees.
+_Avoid_: Partial signature, omitted-zero shorthand
+
+**Evidence trit**:
+The result of evaluating a mathematical predicate from selected evidence: proven true, proven false, or unresolved with a reason and references.
+_Avoid_: Boolean match, nullable truth
+
+**Pattern outcome**:
+The conjunctive classification of one candidate as a proven match, proven nonmatch, or Unresolved candidate.
+_Avoid_: Relevance score, likely match
+
+**Unresolved candidate**:
+A candidate with no violated Pattern clause and at least one unresolved clause, returned separately from proven matches when requested.
+_Avoid_: Partial match, possible example
 
 **Example query**:
 A structured request for conceptual spaces or models satisfying a homology pattern and optional corpus constraints.

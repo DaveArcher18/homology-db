@@ -18,8 +18,7 @@ without an explicit user request here.
 
 ## Current ticket
 
-Ticket 05 — `Define structured homology-pattern semantics` (reclaimed by
-`/root (interactive chat)` at 2026-07-11T13:13:33Z).
+None — ticket 05 is resolved; the next frontier ticket is 06.
 
 ## Last checkpoint
 
@@ -51,12 +50,15 @@ Ticket 05 — `Define structured homology-pattern semantics` (reclaimed by
 - At the user's direction, the recurring automation was paused and ticket 05
   was reclaimed from its standalone worker. Progress is now controlled
   exclusively from this chat.
+- Ticket 05 fixes a one-tier conjunctive query contract with evidence trits,
+  narrow explicit `unknown`, hard conflict fences, separately returned
+  unresolved candidates, and complete structured explanations.
 
 ## Exact next action
 
-Await an explicit instruction in this chat. On `continue`, resume ticket 05 at
-its recorded question about narrow explicit `unknown` versus unresolved data;
-infer reversible syntax choices and surface only consequential semantics.
+Await an explicit instruction in this chat. On `continue`, claim ticket 06,
+`Define current-assertion selection`, and make its policy compatible with the
+tagged Current projection consumed by the pattern contract.
 
 ## Verification state
 
@@ -66,7 +68,9 @@ survey was independently split across Sage, HAP, and simpcomp/other sources,
 integrated, source-reviewed, and passes `git diff --check`.
 Ticket 04 is recorded in ADR 0001 and the glossary, and was independently
 reviewed for mathematical, domain, and G2/G10 compatibility. No executable
-database, ingested corpus, public API, or release test suite exists yet.
+database, ingested corpus, public API, or release test suite exists yet. Ticket
+05 is specified in the v1 pattern contract and ADR 0002 and was independently
+reviewed for formal, LLM-envelope, and indexed-query semantics.
 
 ## Recovery notes
 

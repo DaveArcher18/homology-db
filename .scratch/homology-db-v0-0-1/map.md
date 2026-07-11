@@ -26,6 +26,7 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 - [Prototype the smallest honest constellation](issues/02-prototype-honest-constellation.md) — The executable fixture forces layered space/model/artifact identity, fully qualified homology slots, explicit correction and conflict records, three-valued query evidence, and an identity-only map plus atomic fibration-context seam.
 - [Survey scalable finite-model corpora](issues/03-survey-finite-model-corpora.md) — Pin Stellar v6 for bulk triangulations, treat polyDB as an overlapping structured view, use simpcomp/Sage/HAP for named generators and validation, and leave the regular-CW counting boundary explicit for ticket 04.
 - [Set the first-release model boundary](issues/04-set-model-boundary.md) — Count only finite abstract-simplicial and witness-certified regular-CW Models, reconstruct CW topology through the Cell-closure-poset order complex, require a paired nonsimplicial slice, and keep unsupported attaching-map and generalized formats as attributed Source artifacts.
+- [Define structured homology-pattern semantics](issues/05-define-pattern-semantics.md) — Evaluate one-tier conjunctive patterns with evidence trits, keep explicit unknown distinct from unresolved data, return unresolved candidates separately, and require structured slot-level explanations and completeness evidence.
 
 ## Not yet specified
 
