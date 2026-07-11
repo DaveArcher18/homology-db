@@ -1,0 +1,4 @@
+# Preserve the pinned upstream snapshot byte-for-byte, including its formatting.
+# Its Markdown setext headings contain seven `=` characters, which Git otherwise
+# mistakes for conflict markers during `diff --check`.
+docs/upstream/lmfdb/** -whitespace conflict-marker-size=99
