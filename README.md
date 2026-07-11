@@ -1,6 +1,30 @@
 # Homology DB
 
-Homology DB is a planning-stage project for a searchable, citable, provenance-rich atlas of algebraic-topological objects and computations, inspired by the LMFDB.
+Homology DB is a searchable, citable, provenance-rich atlas of algebraic-topological objects and computations, inspired by the LMFDB. It is under active construction; a local preview is available now.
+
+## Try it now
+
+No installation or network access is required beyond Python 3.10 or newer:
+
+```bash
+python3 -m homology_db demo
+```
+
+The command builds a disposable SQLite snapshot of 60 common manifolds and
+walks through the Klein bottle, `RP^4` over `F_2`, a 5-primary example search,
+and the evidence record behind an answer. It finishes in under a second on the
+development machine.
+
+For a guided Codex session, say:
+
+> Read `docs/TEST_DRIVE.md`, run the Homology DB test drive, and guide me
+> through three questions of my choice. Show the evidence behind each answer.
+
+The four public tools also accept stable JSON for agent use. See
+[the local test-drive guide](docs/TEST_DRIVE.md) for copy-paste examples,
+limitations, and the automated checks. This preview is not the qualified
+`0.0.1` release; its purpose is to make the interface and mathematics tangible
+while the full source-qualified corpus is built.
 
 Its two confirmed downstream consumers are future spectral-sequence computation engines and LLM tools that retrieve useful examples from partial homological descriptions. The purpose is to reduce routine lookup and reconstruction work so algebraic topologists can spend more time on mathematical judgment and discovery.
 
@@ -16,7 +40,9 @@ The current recommendation is to begin with a deliberately narrow vertical slice
 - reproducible computation records with sources, software versions, and reliability states;
 - an object page, browse/search experience, downloads, and a versioned JSON API.
 
-This is not yet an application scaffold. The first milestone is agreement on the mathematical identity model and the pilot corpus.
+The identity model and pilot corpus selection contract are now fixed. The
+current implementation frontier is owned chain computation, followed by
+measured persistence/query design and the release pipeline.
 
 ## Start here
 
@@ -31,6 +57,8 @@ This is not yet an application scaffold. The first milestone is agreement on the
 9. [Candidate data sources](docs/research/data-source-landscape.md)
 10. [Spectral-sequence prior art](docs/research/spectral-sequence-prior-art.md)
 11. [Pinned LMFDB documentation](docs/upstream/lmfdb/UPSTREAM.md)
+12. [Local test drive](docs/TEST_DRIVE.md)
+13. [Next steps](docs/NEXT_STEPS.md)
 
 ## Working position
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""THROWAWAY PROTOTYPE: owned chains, SQLite snapshot, and four QA tools.
+"""Local Homology DB preview: owned chains, SQLite, and four QA tools.
 
-This answers ticket "Prototype the owned cellular-homology boundary". It is a
-logic prototype, not release code or release evidence. Its scratch database is
-rebuilt deterministically and may be deleted at any time.
+This is a durable test drive of the validated prototype interface. It is not a
+qualified 0.0.1 release and its computed rows are not release-ledger evidence.
+The local database is rebuilt deterministically and may be deleted at any time.
 """
 
 from __future__ import annotations
@@ -15,16 +15,15 @@ import json
 import math
 import re
 import sqlite3
-import sys
 from fractions import Fraction
 from pathlib import Path
 from typing import Any, Iterable
 
 
-DEFAULT_DB = Path("/tmp/homology-db-PROTOTYPE.sqlite")
+DEFAULT_DB = Path("/tmp/homology-db-preview.sqlite3")
 COEFFICIENTS = {"Z": None, "F2": 2, "F3": 3, "F5": 5, "F7": 7}
-ALGORITHM_ID = "owned-separated-boundary-smith-minors/0-prototype"
-SCHEMA_VERSION = "homology-db.prototype/1"
+ALGORITHM_ID = "owned-smith-minors-and-modular-rank/0-preview"
+SCHEMA_VERSION = "homology-db.preview/1"
 
 
 def canonical_json(value: Any) -> str:
@@ -64,6 +63,33 @@ def rational_rank(matrix: list[list[int]]) -> int:
                 continue
             scale = work[row][col]
             work[row] = [a - scale * b for a, b in zip(work[row], work[pivot_row])]
+        pivot_row += 1
+        if pivot_row == rows:
+            break
+    return pivot_row
+
+
+def modular_rank(matrix: list[list[int]], prime: int) -> int:
+    if not matrix or not matrix[0]:
+        return 0
+    work = [[value % prime for value in row] for row in matrix]
+    rows, cols = len(work), len(work[0])
+    pivot_row = 0
+    for col in range(cols):
+        pivot = next((row for row in range(pivot_row, rows) if work[row][col]), None)
+        if pivot is None:
+            continue
+        work[pivot_row], work[pivot] = work[pivot], work[pivot_row]
+        inverse = pow(work[pivot_row][col], -1, prime)
+        work[pivot_row] = [(value * inverse) % prime for value in work[pivot_row]]
+        for row in range(rows):
+            if row == pivot_row or not work[row][col]:
+                continue
+            scale = work[row][col]
+            work[row] = [
+                (left - scale * right) % prime
+                for left, right in zip(work[row], work[pivot_row])
+            ]
         pivot_row += 1
         if pivot_row == rows:
             break
@@ -196,15 +222,15 @@ def compute_integral_homology(chain: dict[str, Any], declared_dimension: int) ->
     return results
 
 
-def field_homology(integral: list[dict[str, Any]], prime: int) -> list[dict[str, Any]]:
-    by_degree = {item["degree"]: item for item in integral}
+def compute_field_homology(chain: dict[str, Any], declared_dimension: int, prime: int) -> list[dict[str, Any]]:
+    ranks = {int(key): value for key, value in chain["ranks"].items()}
+    boundaries = {int(key): value for key, value in chain["boundaries"].items()}
     output = []
-    for degree in range(len(integral)):
-        current = by_degree[degree]
-        previous = by_degree.get(degree - 1, {"torsion_orders": []})
-        dimension = current["free_rank"]
-        dimension += sum(order % prime == 0 for order in current["torsion_orders"])
-        dimension += sum(order % prime == 0 for order in previous["torsion_orders"])
+    for degree in range(declared_dimension + 1):
+        chain_rank = ranks.get(degree, 0)
+        down = dense_matrix(boundaries.get(degree, zero_boundary(ranks.get(degree - 1, 0), chain_rank)))
+        up = dense_matrix(boundaries.get(degree + 1, zero_boundary(chain_rank, ranks.get(degree + 1, 0))))
+        dimension = chain_rank - modular_rank(down, prime) - modular_rank(up, prime)
         output.append({"degree": degree, "dimension": dimension})
     return output
 
@@ -301,7 +327,7 @@ def build_database(path: Path) -> str:
     connection.executescript(SCHEMA)
     specs = manifold_specs()
     snapshot_payload = [{"space": spec["key"], "chain": digest(spec["chain"])} for spec in specs]
-    snapshot_id = f"prototype-{digest(snapshot_payload)[:16]}"
+    snapshot_id = f"preview-{digest(snapshot_payload)[:16]}"
     connection.execute("INSERT INTO snapshot VALUES (?, ?, ?)", (snapshot_id, SCHEMA_VERSION, len(specs)))
     for spec in specs:
         chain_hash = digest(spec["chain"])
@@ -311,7 +337,7 @@ def build_database(path: Path) -> str:
             connection.execute("INSERT OR IGNORE INTO alias VALUES (?, ?, ?)",
                                (normalize_name(alias), spec["key"], alias))
         integral = compute_integral_homology(spec["chain"], spec["dimension"])
-        evidence_id = f"prototype:evidence:{spec['key']}"
+        evidence_id = f"preview:evidence:{spec['key']}"
         representative_states = {item["representatives"]["state"] for item in integral}
         connection.execute("INSERT INTO evidence VALUES (?, ?, ?, ?, ?, ?, ?)",
                            (evidence_id, spec["key"], ALGORITHM_ID, chain_hash,
@@ -321,7 +347,9 @@ def build_database(path: Path) -> str:
         coefficient_rows: dict[str, list[dict[str, Any]]] = {"Z": integral}
         for coefficient, prime in COEFFICIENTS.items():
             if prime is not None:
-                coefficient_rows[coefficient] = field_homology(integral, prime)
+                coefficient_rows[coefficient] = compute_field_homology(
+                    spec["chain"], spec["dimension"], prime
+                )
         for coefficient, rows in coefficient_rows.items():
             for reduced in (False, True):
                 for row in rows:
@@ -330,7 +358,7 @@ def build_database(path: Path) -> str:
                     torsion = row.get("torsion_orders", []) if coefficient == "Z" else []
                     if reduced and degree == 0:
                         free_rank = max(0, free_rank - 1)
-                    assertion_id = f"prototype:assertion:{spec['key']}:{coefficient}:{'r' if reduced else 'u'}:{degree}"
+                    assertion_id = f"preview:assertion:{spec['key']}:{coefficient}:{'r' if reduced else 'u'}:{degree}"
                     connection.execute(
                         "INSERT INTO homology VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'exact', 'complete_group', ?)",
                         (assertion_id, snapshot_id, spec["key"], coefficient, int(reduced), degree,
@@ -349,11 +377,28 @@ def build_database(path: Path) -> str:
     return snapshot_id
 
 
+class PreviewDatabase:
+    """One-operation builder for the disposable, immutable preview Snapshot."""
+
+    @staticmethod
+    def build(path: Path = DEFAULT_DB) -> str:
+        return build_database(path)
+
+
 class Tools:
     def __init__(self, path: Path):
         self.connection = sqlite3.connect(path)
         self.connection.row_factory = sqlite3.Row
         self.snapshot_id = self.connection.execute("SELECT snapshot_id FROM snapshot").fetchone()[0]
+
+    def corpus_summary(self) -> dict[str, Any]:
+        subject_count = self.connection.execute("SELECT corpus_count FROM snapshot").fetchone()[0]
+        return {
+            "snapshot_id": self.snapshot_id,
+            "subject_count": subject_count,
+            "supported_tools": ["resolve_subject", "read_homology", "query_examples", "expand_evidence"],
+            "release_status": "local_preview_not_release_evidence",
+        }
 
     def resolve_subject(self, query: str) -> dict[str, Any]:
         normalized = normalize_name(query)
@@ -372,17 +417,15 @@ class Tools:
                 "outcome": "resolved" if len(rows) == 1 else "ambiguous",
                 "candidates": [dict(row) for row in rows]}
 
-    def _space_id(self, subject: str) -> str:
-        result = self.resolve_subject(subject)
-        if result["outcome"] != "resolved":
-            raise ValueError(canonical_json(result))
-        return result["candidates"][0]["space_id"]
-
     def read_homology(self, subject: str, coefficient: str = "Z", reduced: bool = False) -> dict[str, Any]:
         if coefficient not in COEFFICIENTS:
             return {"tool": "read_homology", "snapshot_id": self.snapshot_id,
                     "outcome": "unsupported_coefficient", "supported": list(COEFFICIENTS)}
-        space_id = self._space_id(subject)
+        resolution = self.resolve_subject(subject)
+        if resolution["outcome"] != "resolved":
+            return {"tool": "read_homology", "snapshot_id": self.snapshot_id,
+                    "outcome": "subject_not_resolved", "resolution": resolution}
+        space_id = resolution["candidates"][0]["space_id"]
         space = dict(self.connection.execute("SELECT * FROM space WHERE space_id = ?", (space_id,)).fetchone())
         rows = self.connection.execute(
             "SELECT assertion_id, degree, free_rank, torsion_json, knowledge_state, value_scope, evidence_id FROM homology WHERE snapshot_id = ? AND space_id = ? AND coefficient = ? AND reduced = ? ORDER BY degree",
@@ -419,17 +462,21 @@ class Tools:
         parameters: list[Any] = [self.snapshot_id, coefficient, int(pattern.get("reduced", False))]
         joins = ""
         if "family" in pattern:
-            clauses.append("s.family = ?"); parameters.append(pattern["family"])
+            clauses.append("s.family = ?")
+            parameters.append(pattern["family"])
         if "degree" in pattern:
-            clauses.append("h.degree = ?"); parameters.append(int(pattern["degree"]))
+            clauses.append("h.degree = ?")
+            parameters.append(int(pattern["degree"]))
         if "free_rank_at_least" in pattern:
-            clauses.append("h.free_rank >= ?"); parameters.append(int(pattern["free_rank_at_least"]))
+            clauses.append("h.free_rank >= ?")
+            parameters.append(int(pattern["free_rank_at_least"]))
         if "torsion_prime" in pattern:
             if coefficient != "Z":
                 return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
                         "outcome": "invalid_pattern", "reason": "torsion filters require coefficient Z"}
             joins += " JOIN primary_summand p ON p.assertion_id = h.assertion_id"
-            clauses.append("p.prime = ?"); parameters.append(int(pattern["torsion_prime"]))
+            clauses.append("p.prime = ?")
+            parameters.append(int(pattern["torsion_prime"]))
         if "contains_torsion_order" in pattern:
             if coefficient != "Z":
                 return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
@@ -467,8 +514,14 @@ class Tools:
                 "missing_evidence_ids": sorted(set(evidence_ids) - found)}
 
     def call(self, request: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(request, dict):
+            return {"outcome": "invalid_request", "snapshot_id": self.snapshot_id,
+                    "reason": "tool request must be a JSON object"}
         tool = request.get("tool")
         arguments = request.get("arguments", {})
+        if not isinstance(arguments, dict):
+            return {"tool": tool, "outcome": "invalid_request", "snapshot_id": self.snapshot_id,
+                    "reason": "arguments must be a JSON object"}
         dispatch = {
             "resolve_subject": self.resolve_subject,
             "read_homology": self.read_homology,
@@ -491,24 +544,38 @@ def print_json(value: Any) -> None:
 def demo(path: Path) -> None:
     snapshot_id = build_database(path)
     tools = Tools(path)
-    print(f"Homology DB prototype ready: 60 subjects, snapshot {snapshot_id}")
+    print(f"Homology DB local preview ready: 60 subjects, snapshot {snapshot_id}")
     print(f"Scratch database: {path} (safe to delete; rebuilt on every run)\n")
-    examples = [
-        {"tool": "resolve_subject", "arguments": {"query": "Klein bottle"}},
-        {"tool": "read_homology", "arguments": {"subject": "Klein bottle", "coefficient": "Z"}},
-        {"tool": "read_homology", "arguments": {"subject": "RP^4", "coefficient": "F2"}},
-        {"tool": "query_examples", "arguments": {"pattern": {"degree": 1, "torsion_prime": 5, "limit": 8}}},
-    ]
-    for request in examples:
-        print(f"> {canonical_json(request)}")
-        print_json(tools.call(request))
-        print()
-    print("Try your own structured request:")
-    print(f"  python3 {Path(__file__)} tool '{canonical_json(examples[1])}'")
+    klein = tools.read_homology("Klein bottle", coefficient="Z")
+    klein_groups = "; ".join(
+        f"H_{group['degree']} = {group['value']['display']}" for group in klein["groups"]
+    )
+    rp4 = tools.read_homology("RP^4", coefficient="F2")
+    rp4_degrees = ", ".join(str(group["degree"]) for group in rp4["groups"] if group["value"]["dimension"])
+    search = tools.query_examples({"degree": 1, "torsion_prime": 5, "limit": 8})
+    labels = ", ".join(match["label"] for match in search["matches"])
+    evidence_id = klein["groups"][1]["evidence_id"]
+    evidence = tools.expand_evidence([evidence_id])["evidence"][0]
+
+    print("Quick mathematical tour")
+    print(f"  Klein bottle: {klein_groups}")
+    print(f"  RP^4 over F2: one generator in degrees {rp4_degrees}")
+    print(f"  Proven H_1 examples with 5-primary torsion: {labels}")
+    print(f"  Evidence algorithm: {evidence['algorithm_id']}")
+    print("  Capability: group structure exact; some representative bases and nonidentity maps not computed")
+    print("  All returned groups name assertion and evidence IDs from this one snapshot.\n")
+
+    request = {"tool": "read_homology", "arguments": {"subject": "Klein bottle", "coefficient": "Z"}}
+    print("Agent interface")
+    print("  The same four tools return stable JSON: resolve_subject, read_homology,")
+    print("  query_examples, and expand_evidence.")
+    print("  Try:")
+    print(f"  python3 -m homology_db tool '{canonical_json(request)}'")
+    print("\nThis is a local preview, not the qualified 0.0.1 release.")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="THROWAWAY owned-homology logic prototype")
+    parser = argparse.ArgumentParser(description="Local Homology DB test drive")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB, help="disposable SQLite path")
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("demo", help="rebuild the 60-subject snapshot and show four calls")
@@ -519,7 +586,7 @@ def main() -> int:
         demo(args.db)
         return 0
     if not args.db.exists():
-        build_database(args.db)
+        PreviewDatabase.build(args.db)
     try:
         request = json.loads(args.request)
     except json.JSONDecodeError as error:

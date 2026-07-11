@@ -18,6 +18,7 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 - Maintain scoped commits, `CHANGELOG.md`, and a dated `TESTLOG.md` referenced by the changelog.
 - UI and CW-complex rendering are explicitly deferred from this destination.
 - The bounded QA agent is a release-acceptance harness over four public tools, not the general research agent or natural-language product layer in the long-term vision.
+- The current runnable checkpoint and ordered execution handoff are documented in [Local test drive](../../docs/TEST_DRIVE.md) and [Next steps](../../docs/NEXT_STEPS.md).
 
 ## Decisions so far
 
@@ -33,7 +34,7 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 
 ## Not yet specified
 
-- Implementation tickets and package boundaries after the contracts and corpus are visible.
+- Production package boundaries after the owned-computation and persistence prototypes are measured; the current `homology_db` package is a deliberately narrow local preview.
 - Exact runtime language and native-kernel boundaries after the reference slice is measured.
 - Canonicalization and duplicate-detection algorithms after real cross-source duplicates are observed.
 - Bulk export encoding and snapshot-diff representation after the query and persistence prototypes.
