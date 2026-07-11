@@ -35,6 +35,12 @@ Recurring wakeups cannot bypass a hard quota. Their purpose is to retry after ca
 
 ## Concurrency
 
+- Treat the `Active run lease` in `WORKSTATE.md` as authoritative. A scheduled
+  run exits without mutation while the lease is fresh, even when the lease and
+  ticket are owned by the same agent name. A stale lease may be replaced so a
+  dead run cannot block recovery.
+- Refresh the lease heartbeat at meaningful checkpoints during a long run and
+  remove the lease when yielding at a committed boundary.
 - Do not work a ticket claimed by another live run.
 - Parallel agents receive bounded subtasks and do not edit the same files unless explicitly coordinated.
 - Agents report evidence to the primary run; the primary run integrates and commits.

@@ -23,6 +23,7 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 <!-- One context pointer per resolved ticket. The answer lives in the ticket. -->
 
 - [Pin the v0.0.1 observable contract](issues/01-pin-observable-contract.md) — Release requires eleven evidence-backed gates, including 100 curated spaces, 1,000 reconstructible models, torsion-pattern semantics, owned computation, measured queries, and a reproducible tagged snapshot.
+- [Prototype the smallest honest constellation](issues/02-prototype-honest-constellation.md) — The executable fixture forces layered space/model/artifact identity, fully qualified homology slots, explicit correction and conflict records, three-valued query evidence, and an identity-only map plus atomic fibration-context seam.
 
 ## Not yet specified
 

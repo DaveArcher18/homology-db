@@ -12,7 +12,7 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 
 ## Current ticket
 
-None — ticket 01 is resolved; Wayfinder permits no second ticket in this session.
+None — ticket 02 is resolved; the next frontier ticket is 03.
 
 ## Last checkpoint
 
@@ -21,14 +21,25 @@ None — ticket 01 is resolved; Wayfinder permits no second ticket in this sessi
 - The initial frontier is observable contract, honest constellation, and finite-model corpus survey.
 - The active `resume-homology-db-hard-push` Codex automation retries every 15 minutes.
 - Ticket 01 resolved the hard observable release contract in `docs/research/v0.0.1-observable-contract.md`.
+- Ticket 02's branch-only executable constellation passes 22 semantic checks
+  across identity, artifacts, conventions, correction, conflict, absence,
+  current projection, and three-valued torsion-query behavior.
+- Prototype commit `0ebf896` is the retained primary source on
+  `prototype/honest-constellation`; main retains the validated decision, not
+  the throwaway terminal implementation.
+- An overlapping scheduled wakeup was reconciled; the resume protocol now
+  requires a fresh run lease to suppress same-agent concurrent mutation.
 
 ## Exact next action
 
-On the next run, claim ticket 02, `Prototype the smallest honest constellation`, and follow the `prototype` skill.
+Claim ticket 03, `Survey finite-model corpora`, and follow the `research` skill before selecting a corpus or physical model format.
 
 ## Verification state
 
-The release contract is documented and reviewed. No executable database, corpus, API, or tests exist yet.
+The release contract is documented and reviewed. Ticket 02's deterministic
+script exits successfully with 22/22 observations; Python compilation and
+`git diff --check` pass. It remains a throwaway design artifact, with no
+executable database, corpus, public API, or release test suite yet.
 
 ## Recovery notes
 
