@@ -21,15 +21,15 @@ without an explicit user request here.
 
 ## Current ticket
 
-Ticket 07 — `Choose the v0.0.1 corpus manifest`, claimed by
-`/root (interactive chat)` at 2026-07-11T16:40:22Z.
+Ticket 08 — `Prototype the owned cellular-homology boundary`, claimed by
+`/root (interactive chat)` at 2026-07-11T17:26:42Z.
 
 ## Active run lease
 
-- Run ID: `interactive-ticket07-20260711T164022Z`
+- Run ID: `interactive-ticket08-20260711T172642Z`
 - Owner: `/root (interactive chat)`
-- Heartbeat: 2026-07-11T17:13:57Z
-- Fresh through: 2026-07-11T17:38:57Z
+- Heartbeat: 2026-07-11T17:26:42Z
+- Fresh through: 2026-07-11T17:51:42Z
 
 ## Last checkpoint
 
@@ -85,12 +85,16 @@ Ticket 07 — `Choose the v0.0.1 corpus manifest`, claimed by
   1,159 qualified Model ledger, explicit G3 margins, 66 validation Models, and
   a 60-manifold/100-prompt QA cohort. Source-lock and final gate reviews are in
   progress; these remain targets, not achieved release counts.
+- Ticket 07 is resolved and committed as `5725154`; its verifier derives all
+  family, format, torsion, validation, and QA counts from the machine manifest.
+- Ticket 08 is claimed. Its public prototype seams are the four versioned QA
+  tools, with one disposable local SQLite Snapshot and shared human/agent JSON.
 
 ## Exact next action
 
-Integrate the source-lock and two final manifest reviews, resolve ticket 07,
-add the newly visible QA acceptance ticket/scope amendment, verify and commit,
-then immediately claim the owned-computation prototype.
+Build the one-command owned-homology logic prototype around the four public QA
+tool seams, exercise it against worked manifold examples, then fold the usable
+interface into a local test-drive and next-steps handoff.
 
 ## Verification state
 
