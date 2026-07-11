@@ -16,6 +16,8 @@ The system should eventually make known spectral sequences queryable by both peo
 
 Stages 4 and 5 are long-term research goals. They are not promises of near-term automated theorem proving.
 
+The first Homology DB release nevertheless includes a deliberately narrow precursor: a bounded QA acceptance client that uses model-native calls to four public database tools over a frozen prompt suite. Passing that test demonstrates that the database can support grounded common-manifold answers; it does not implement the general stage-4 research interface.
+
 ## What “one system” means
 
 One system does not mean one schema table or one program that implements every algorithm. It means:
@@ -54,7 +56,7 @@ Even while implementing only Homology DB, the foundation must:
 
 ## Current implementation scope
 
-Current work is strictly the database foundation:
+Current work is the database foundation plus a bounded acceptance proof of its QA usability:
 
 - the homology query contract;
 - canonical encodings;
@@ -62,13 +64,14 @@ Current work is strictly the database foundation:
 - a small adversarial corpus;
 - provenance and snapshots;
 - machine-readable APIs and exports;
-- computation adapters only as data producers.
+- computation adapters only as data producers; and
+- a tool-constrained QA client over `resolve_subject`, `read_homology`, `query_examples`, and `expand_evidence`, evaluated on a frozen common-manifold suite.
 
 Specifically excluded for now:
 
 - spectral-sequence page/differential schemas;
 - Serre or Adams computation algorithms;
-- an LLM agent or vector-search layer;
+- a general-purpose LLM research/product agent, bespoke prompt-to-query parser, embeddings, or vector-search layer;
 - constraint propagation or automated differential inference;
 - a polished research notebook or operating-system UI.
 

@@ -5,7 +5,7 @@ Status: active
 
 ## Destination
 
-Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstructible finite CW/simplicial models, answers exact and partial torsion-pattern example queries efficiently, and returns structured provenance-bearing results suitable for an LLM tool to consume.
+Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstructible finite CW/simplicial models, answers exact and partial torsion-pattern example queries efficiently, returns structured provenance-bearing results suitable for an LLM tool to consume, and proves through a bounded tool-constrained QA agent that basic homology questions about a fixed 60-common-manifold cohort can be answered from one snapshot with assertion-level grounding.
 
 ## Notes
 
@@ -17,17 +17,19 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 - Make reversible choices from fixtures and measured workloads rather than freezing the architecture early.
 - Maintain scoped commits, `CHANGELOG.md`, and a dated `TESTLOG.md` referenced by the changelog.
 - UI and CW-complex rendering are explicitly deferred from this destination.
+- The bounded QA agent is a release-acceptance harness over four public tools, not the general research agent or natural-language product layer in the long-term vision.
 
 ## Decisions so far
 
 <!-- One context pointer per resolved ticket. The answer lives in the ticket. -->
 
-- [Pin the v0.0.1 observable contract](issues/01-pin-observable-contract.md) — Release requires eleven evidence-backed gates, including 100 curated spaces, 1,000 reconstructible models, torsion-pattern semantics, owned computation, measured queries, and a reproducible tagged snapshot.
+- [Pin the v0.0.1 observable contract](issues/01-pin-observable-contract.md) — Release requires twelve evidence-backed gates, including 100 curated spaces, 1,000 reconstructible models, torsion-pattern semantics, owned computation, measured queries, a reproducible tagged snapshot, and bounded common-manifold QA.
 - [Prototype the smallest honest constellation](issues/02-prototype-honest-constellation.md) — The executable fixture forces layered space/model/artifact identity, fully qualified homology slots, explicit correction and conflict records, three-valued query evidence, and an identity-only map plus atomic fibration-context seam.
 - [Survey scalable finite-model corpora](issues/03-survey-finite-model-corpora.md) — Pin Stellar v6 for bulk triangulations, treat polyDB as an overlapping structured view, use simpcomp/Sage/HAP for named generators and validation, and leave the regular-CW counting boundary explicit for ticket 04.
 - [Set the first-release model boundary](issues/04-set-model-boundary.md) — Count only finite abstract-simplicial and witness-certified regular-CW Models, reconstruct CW topology through the Cell-closure-poset order complex, require a paired nonsimplicial slice, and keep unsupported attaching-map and generalized formats as attributed Source artifacts.
 - [Define structured homology-pattern semantics](issues/05-define-pattern-semantics.md) — Evaluate one-tier conjunctive patterns with evidence trits, keep explicit unknown distinct from unresolved data, return unresolved candidates separately, and require structured slot-level explanations and completeness evidence.
 - [Define assertion selection and correction semantics](issues/06-define-assertion-selection.md) — Fold explicitly admitted assertions and append-only lifecycle events into strict claim classes, declared conflicts, deterministic Current projections, and evidence-bearing Model-to-space promotions without source-priority winners.
+- [Choose the v0.0.1 corpus manifest](issues/07-choose-corpus-manifest.md) — Fix 174 curated spaces, a 1,159-Model qualified target, derived torsion margins, exact source locks, a 66-Model independent-validation cohort, and a 60-manifold QA cohort without claiming that planned rows are released evidence.
 
 ## Not yet specified
 
@@ -41,7 +43,7 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 ## Out of scope
 
 - Web UI and CW-complex rendering.
-- Natural-language parsing, embeddings, vector search, or an LLM agent.
+- A general-purpose LLM research/product agent, bespoke natural-language parser or prompt-to-query compiler, embeddings, vector search, and opaque semantic similarity. The bounded tool-constrained QA acceptance agent is in scope.
 - Serre or Adams schemas, computation engines, querying, or forcing.
 - Cohomology rings, generalized theories, and homotopy groups.
 - User submissions and untrusted computation.

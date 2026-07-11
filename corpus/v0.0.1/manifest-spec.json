@@ -1,0 +1,424 @@
+{
+  "schema_version": "homology-db.corpus-manifest-spec/1",
+  "release_version": "0.0.1",
+  "status": "selection_contract_not_release_evidence",
+  "counting_policy": {
+    "unit": "presentation_isomorphism_class",
+    "one_counted_bucket_per_model": true,
+    "lossless_reencoding_adds_count": false,
+    "relabeling_adds_count": false,
+    "source_overlap_adds_count": false,
+    "subdivision_bulk_fill_forbidden": true,
+    "qualification_required_before_counting": true
+  },
+  "public_id_assignment": {
+    "namespace": "HDB-S",
+    "width": 6,
+    "start": 1,
+    "order": "family_order_then_parameter_order_as_listed",
+    "immutable_after_expansion": true
+  },
+  "curated_space_plan": {
+    "expected_count": 174,
+    "expected_common_manifold_count": 128,
+    "family_rollups": [
+      {
+        "id": "exceptional_spaces",
+        "count": 2,
+        "instances": ["empty_space", "point"],
+        "qa_common_manifold_count": 1,
+        "primary_model_recipe": "owned_exceptional_simplicial/1",
+        "empty_space_semantics": {
+          "model_dimension": -1,
+          "convention_id": "augmented_singular_v1",
+          "explicit_unreduced_h0_zero_coefficients": ["Z", "F2", "F3", "F5", "F7"],
+          "explicit_reduced_h0_zero_coefficients": ["Z", "F2", "F3", "F5", "F7"],
+          "reduced_h_minus_1": "coefficient_module"
+        }
+      },
+      {
+        "id": "spheres",
+        "count": 13,
+        "parameter": {"dimension": {"range_inclusive": [0, 12]}},
+        "qa_common_manifold_count": 13,
+        "primary_model_recipe": "owned_simplex_boundary/1"
+      },
+      {
+        "id": "closed_orientable_surfaces",
+        "count": 12,
+        "parameter": {"genus": {"range_inclusive": [2, 13]}},
+        "qa_common_manifold_count": 12,
+        "primary_model_recipe": "owned_surface_triangulation/1"
+      },
+      {
+        "id": "closed_nonorientable_surfaces",
+        "count": 12,
+        "parameter": {"genus": {"range_inclusive": [2, 13]}},
+        "qa_common_manifold_count": 12,
+        "primary_model_recipe": "owned_surface_triangulation/1"
+      },
+      {
+        "id": "tori",
+        "count": 4,
+        "parameter": {"dimension": {"values": [2, 3, 4, 5]}},
+        "qa_common_manifold_count": 4,
+        "primary_model_recipe": "owned_ordered_simplicial_product/1"
+      },
+      {
+        "id": "real_projective_spaces",
+        "count": 4,
+        "parameter": {"dimension": {"values": [2, 4, 5, 6]}},
+        "qa_common_manifold_count": 4,
+        "primary_model_recipe": "sage-10.9-neutral-export/real_projective_space"
+      },
+      {
+        "id": "complex_projective_spaces",
+        "count": 1,
+        "parameter": {"complex_dimension": {"values": [2]}},
+        "qa_common_manifold_count": 1,
+        "primary_model_recipe": "sage-10.9-neutral-export/complex_projective_plane"
+      },
+      {
+        "id": "lens_spaces_3d",
+        "count": 13,
+        "parameter": {
+          "p_q_pairs": {
+            "values": [[3, 1], [4, 1], [5, 1], [5, 2], [6, 1], [7, 1], [7, 2], [8, 1], [8, 3], [9, 1], [9, 2], [10, 1], [10, 3]]
+          }
+        },
+        "qa_common_manifold_count": 13,
+        "primary_model_recipe": "simpcomp-aff7cf2-neutral-export/named_lens_space"
+      },
+      {
+        "id": "sphere_products",
+        "count": 15,
+        "parameter": {
+          "dimension_pairs": {
+            "values": [[1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [3, 3], [3, 4], [3, 5], [4, 4], [4, 5]]
+          }
+        },
+        "qa_common_manifold_count": 15,
+        "primary_model_recipe": "owned_ordered_simplicial_product/1"
+      },
+      {
+        "id": "disks",
+        "count": 8,
+        "parameter": {"dimension": {"range_inclusive": [1, 8]}},
+        "qa_common_manifold_count": 8,
+        "primary_model_recipe": "owned_full_simplex/1"
+      },
+      {
+        "id": "sphere_disk_products",
+        "count": 21,
+        "parameter": {
+          "dimension_pairs": {
+            "values": [[1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [2, 2], [2, 3], [2, 4], [2, 5], [3, 2], [3, 3], [3, 4], [4, 2], [4, 3], [5, 2]]
+          }
+        },
+        "qa_common_manifold_count": 21,
+        "primary_model_recipe": "owned_ordered_simplicial_product/1"
+      },
+      {
+        "id": "surface_circle_products",
+        "count": 16,
+        "parameter": {
+          "surface_kinds": ["orientable", "nonorientable"],
+          "genus": {"range_inclusive": [2, 9]}
+        },
+        "qa_common_manifold_count": 16,
+        "primary_model_recipe": "owned_ordered_simplicial_product/1"
+      },
+      {
+        "id": "sphere_torus_products",
+        "count": 8,
+        "parameter": {
+          "sphere_dimension": {"range_inclusive": [2, 9]},
+          "torus_dimension": 2
+        },
+        "qa_common_manifold_count": 8,
+        "primary_model_recipe": "owned_ordered_simplicial_product/1"
+      },
+      {
+        "id": "moore_spaces",
+        "count": 25,
+        "parameter": {
+          "cartesian_m_n": {
+            "m_values": [2, 3, 4, 5, 7, 9, 25, 49],
+            "n_values": [1, 2, 3]
+          },
+          "excluded_values": [[2, 1]],
+          "additional_values": [[8, 4], [27, 4]]
+        },
+        "qa_common_manifold_count": 0,
+        "primary_model_recipe": "owned_moore_suspension/1"
+      },
+      {
+        "id": "mixed_moore_bouquets",
+        "count": 20,
+        "parameter": {"free_circle_rank": {"range_inclusive": [1, 20]}},
+        "definition": {
+          "free_s1_copies_from_parameter": "free_circle_rank",
+          "summands": [[2, 2], [3, 3], [5, 4], [7, 5]],
+          "extra_multiplicity": {"for_free_circle_rank": [1, 2, 3, 4, 5], "summand": [2, 2], "extra_copies": 1}
+        },
+        "qa_common_manifold_count": 0,
+        "primary_model_recipe": "owned_wedge_of_suspended_moore_models/1"
+      }
+    ]
+  },
+  "model_plan": {
+    "expected_counted_total": 1159,
+    "expected_finite_simplicial": 659,
+    "expected_finite_regular_cw": 500,
+    "bulk_stellar": {
+      "source_lock": "stellar-v6-zenodo-17495553",
+      "dimensions": [2, 3],
+      "sort": ["raw_record_sha256", "source_record_ordinal"],
+      "per_dimension": {
+        "finite_simplicial": {"reserve_rank_interval": [0, 499], "qualifying_quota": 240},
+        "finite_regular_cw": {"reserve_rank_interval": [500, 999], "qualifying_quota": 240}
+      },
+      "finite_regular_cw_transform": "owned_complete_simplex_face_poset/1",
+      "finite_regular_cw_witness": "simplicial_complex_face_poset_preserves_regularity/1",
+      "candidate_failure_policy": "scan_within_fixed_reserve_or_fail_release",
+      "dedupe": "dimension_colored_incidence_graph_presentation_isomorphism/1",
+      "counted_simplicial": 480,
+      "counted_regular_cw_simplicial_face_poset": 480
+    },
+    "curated_primary_models": {
+      "count": 174,
+      "bucket": "finite_simplicial",
+      "one_per_curated_space": true
+    },
+    "multipresentation_models": {
+      "additional_count": 25,
+      "same_format_simplicial_count": 5,
+      "cross_format_genuinely_nonsimplicial_count": 20,
+      "same_format_spaces": ["sphere:1", "sphere:2", "sphere:3", "sphere:4", "sphere:5"],
+      "cross_format_spaces": [
+        "disk:2", "disk:3", "disk:4", "disk:5", "disk:6", "disk:7", "disk:8",
+        "torus:2", "torus:3", "torus:4", "torus:5",
+        "sphere_disk:1:1", "sphere_disk:2:1", "sphere_disk:3:1", "sphere_disk:4:1", "sphere_disk:5:1", "sphere_disk:6:1",
+        "sphere_disk:1:2", "sphere_disk:1:3", "sphere_disk:1:4"
+      ],
+      "regular_cw_recipe": "owned_strict_product_or_cube_cell_poset/1",
+      "same_format_recipe": "owned_cross_polytope_boundary/1"
+    },
+    "counting_exclusions": [
+      "failed_decode",
+      "failed_round_trip",
+      "failed_regularity_witness",
+      "failed_d_squared_zero",
+      "failed_owned_integral_homology",
+      "presentation_isomorphic_to_counted_model",
+      "lossless_reencoding_of_counted_model",
+      "duplicate_derivation_root_outside_multipresentation_cohort"
+    ]
+  },
+  "predicted_torsion_acceptance": {
+    "status": "must_be_recomputed_from_selected_exact_release_assertions",
+    "distinct_space_degree_pairs_floor": 138,
+    "distinct_spaces_floor": 74,
+    "p_primary_pair_floors": {"2": 52, "3": 31, "5": 30, "7": 28},
+    "prime_power_spaces_floor": 19,
+    "primary_multiplicity_spaces_floor": 5,
+    "positive_degree_other_than_one_pairs_floor": 102,
+    "controlled_sources": ["moore_spaces", "mixed_moore_bouquets"],
+    "natural_sources": ["closed_nonorientable_surfaces", "real_projective_spaces", "lens_spaces_3d"]
+  },
+  "mathematical_grid_plan": {
+    "theory_id": "ordinary_homology",
+    "coefficient_system_ids": ["Z", "F2", "F3", "F5", "F7"],
+    "convention_id": "augmented_singular_v1",
+    "unreduced_degree_rule": "every_integer_from_0_through_declared_model_dimension_inclusive",
+    "required_projection_outcome": "selected",
+    "required_knowledge_state": "exact",
+    "required_value_scope": "complete_group",
+    "explicit_reduced_h0_for_every_curated_space": true,
+    "upper_ray_vanishing_starts_at": "declared_model_dimension_plus_1",
+    "full_reduced_grid_space_keys": [
+      "empty_space", "point",
+      "sphere:0", "sphere:1", "sphere:2", "sphere:3", "sphere:4", "sphere:5", "sphere:6", "sphere:7", "sphere:8", "sphere:9", "sphere:10", "sphere:11", "sphere:12",
+      "orientable_surface:2", "orientable_surface:3", "orientable_surface:4", "orientable_surface:5", "orientable_surface:6",
+      "nonorientable_surface:2", "nonorientable_surface:3", "nonorientable_surface:4", "nonorientable_surface:5", "nonorientable_surface:6"
+    ],
+    "full_reduced_grid_space_count": 25,
+    "expected_minus_selected_must_be_empty": true,
+    "field_groups_computed_from_owned_chains": true,
+    "read_time_uct_forbidden": true
+  },
+  "multipresentation_cohort": {
+    "space_count": 25,
+    "cross_format_space_count": 20,
+    "genuinely_nonsimplicial_cross_format_space_count": 20
+  },
+  "independent_validation_cohort": {
+    "expected_model_count": 66,
+    "selection_components": [
+      {"kind": "all_models_of_multipresentation_cohort", "space_count": 25, "models_per_space": 2, "model_count": 50},
+      {"kind": "primary_models", "space_keys": ["empty_space", "sphere:0"], "model_count": 2},
+      {"kind": "primary_models", "space_keys": ["moore:4:1", "moore:9:2", "moore:25:3", "moore:49:1"], "model_count": 4},
+      {"kind": "primary_models", "space_keys": ["mixed_moore_bouquet:1", "mixed_moore_bouquet:6", "lens:5:1", "nonorientable_surface:2"], "model_count": 4},
+      {"kind": "first_qualified_bulk_model", "strata": [[2, "finite_simplicial"], [2, "finite_regular_cw"], [3, "finite_simplicial"], [3, "finite_regular_cw"]], "model_count": 4},
+      {"kind": "primary_models", "space_keys": ["complex_projective_space:2", "real_projective_space:4"], "model_count": 2}
+    ],
+    "must_cover": ["both_format_classes", "p2", "p3", "p5", "p7", "prime_power", "multiplicity", "degree_gt_1", "empty", "disconnected", "each_source_lineage"],
+    "oracle_assignment_policy": {
+      "owned_generated_model": ["pinned_external_snf", "pinpointed_literature_when_available"],
+      "stellar_or_simpcomp_source": ["owned_pipeline", "pinned_sage_or_hap"],
+      "sage_source": ["owned_pipeline", "hap_or_pinpointed_literature"],
+      "hap_source": ["owned_pipeline", "sage_or_pinpointed_literature"]
+    },
+    "generator_and_oracle_must_be_independent": true,
+    "release_ledger_must_name_exact_model_and_result_refs": true
+  },
+  "adversarial_plan": {
+    "outside_mandatory_grid": true,
+    "fixture_subject_pattern": "fixture:model:adversarial:{01..10}",
+    "cases": {
+      "unknown": {"count": 10, "assertion_id_pattern": "fixture:assertion:unknown:{01..10}", "slot_degree_rule": "100_plus_index", "coefficient_system_id": "Z", "convention_id": "augmented_singular_v1", "knowledge_state": "unknown", "projection_outcome": "selected"},
+      "not_computed": {"count": 10, "assertion_id_pattern": "fixture:assertion:not-computed:{01..10}", "slot_degree_rule": "200_plus_index", "coefficient_system_id": "Z", "convention_id": "augmented_singular_v1", "knowledge_state": "not_computed", "projection_outcome": "selected"},
+      "not_applicable": {"count": 3, "assertion_id_pattern": "fixture:assertion:not-applicable:{01..03}", "subject_key": "empty_space", "slot_degrees": [0, 1, 2], "coefficient_system_id": "Z", "convention_id": "reduced_nonempty_only_v1", "reduced": true, "knowledge_state": "not_applicable", "applicability_rule_id": "reduced_homology_nonempty_subject_required/1", "projection_outcome": "selected"},
+      "bounded_or_conjectural": {"count": 5, "assertion_id_pattern": "fixture:assertion:bound-or-conjecture:{01..05}", "slot_degree_rule": "300_plus_index", "typed_payload_required": true, "projection_outcome": "selected"},
+      "correction": {"count": 5, "event_id_pattern": "fixture:event:correction:{01..05}", "predecessor_assertion_id_pattern": "fixture:assertion:correction-old:{01..05}", "successor_assertion_id_pattern": "fixture:assertion:correction-new:{01..05}", "from_snapshot": "fixture-snapshot-a", "to_snapshot": "fixture-snapshot-b", "predecessor_bytes_immutable": true},
+      "conflict": {"count": 3, "conflict_set_id_pattern": "fixture:conflict:{01..03}", "member_assertions_per_set": 2, "registered_exact_inequality_rule": true, "maximal_open_set": true, "projection_outcome": "conflicting"}
+    },
+    "generated_ids_must_be_unique": true,
+    "generated_slots_must_have_zero_intersection_with_g4": true,
+    "mandatory_fixture_models": ["empty_space", "sphere:0", "point"]
+  },
+  "qa_cohort": {
+    "cohort_id": "common-manifold-qa-v1",
+    "curated_common_manifolds_available": 128,
+    "pinned_acceptance_space_count": 60,
+    "family_rollup_count": 9,
+    "selection": [
+      "sphere dimensions 1 through 8",
+      "orientable surface genera 2 through 9",
+      "nonorientable surface genera 2 through 9",
+      "tori dimensions 2 through 5",
+      "real projective dimensions 2, 4, 5, 6",
+      "the first 12 lens-space pairs in manifest order",
+      "the first 8 sphere-product pairs in manifest order",
+      "disk dimensions 1 through 4",
+      "orientable surface-circle products of genera 2 through 5"
+    ],
+    "expected_prompt_count": 100,
+    "prompt_categories": {
+      "integral_lookup": 60,
+      "coefficient_or_reduced": 8,
+      "structured_example_query": 12,
+      "comparison_or_provenance": 8,
+      "hallucination_or_unknown_safety": 12
+    }
+  },
+  "source_locks": [
+    {
+      "id": "stellar-v6-zenodo-17495553",
+      "owner": "Bastian Rieck and Frank H. Lutz",
+      "url": "https://zenodo.org/records/17495553",
+      "doi": "10.5281/zenodo.17495553",
+      "version": "6",
+      "source_role": "frozen_bulk_input",
+      "files": [
+        {"path": "2_manifolds_10_all.txt", "role": "models", "bytes": 9577222, "advertised_md5": "199ac551cb69dd7e0337d50f90ac7840", "sha256": "8951c8d1037e9ce1447d3d1968f3b542a0c514c6e0e550434ca6ef5a31b55001", "record_count": 42426},
+        {"path": "2_manifolds_10_all_hom.txt", "role": "attributed_homology_sidecar", "bytes": 1539294, "advertised_md5": "600b6e8520ff9a0647bfc6733331c146", "sha256": "f9e21962f8c044e00167f12bf7a381af54100539597a9654a476ec07b2a4499f", "record_count": 42426},
+        {"path": "2_manifolds_10_all_type.txt", "role": "attributed_type_sidecar", "bytes": 1435978, "advertised_md5": "936700971d657b33530e3d331be0588d", "sha256": "9d8586b255e0e7207e02fde46c49cb8c3cab3d696efba7ef8aab396b601a01d2", "record_count": 42426},
+        {"path": "3_manifolds_10_all.txt", "role": "models", "bytes": 89634471, "advertised_md5": "a4ea3a512a7f3f315ecf78b725c2a3f0", "sha256": "c3e8a261ba425dc66aca9971a5a71ef2da2175d40802cdd9b86a6c2677972d93", "record_count": 249015},
+        {"path": "3_manifolds_10_all_hom.txt", "role": "attributed_homology_sidecar", "bytes": 8608110, "advertised_md5": "585cc3070af32694aebcb75566d24da2", "sha256": "185ee603fa45ea28cd4082c635f807ba87b279eb719c5a10d3ba184b4213d6f3", "record_count": 249015},
+        {"path": "3_manifolds_10_all_type.txt", "role": "attributed_type_sidecar", "bytes": 6372543, "advertised_md5": "3d1e02479ebe77cda008bd4e7e6070ae", "sha256": "7512ee5128d144007f9e3e07d950ee0f286070b48faccae2f6642f01b4a99c79", "record_count": 249015}
+      ],
+      "id_sequence_sha256": {"2": "15c4366b0fcd2c4469bc379aea500047f9b79da84dc0c3237bb81ba48b8ecd9f", "3": "ca703ef99c942ba1da1fc5664b78a0494d78905cfa1372a1780b5ec2916031ba"},
+      "release_lock_requires_retrieval_timestamp": true,
+      "license_facts_status": "record_facts_without_policy_decision"
+    },
+    {
+      "id": "simpcomp-aff7cf2",
+      "owner": "simpcomp-team",
+      "url": "https://github.com/simpcomp-team/simpcomp",
+      "git_commit": "aff7cf2bcef0828fb4d02296cf276b777705274b",
+      "source_role": "named_binary_source_artifacts",
+      "source_format": "gap_io_pickle_scb",
+      "neutral_exports_required": true,
+      "artifacts": [
+        {"space_key": "lens:3:1", "path": "complexes/manifolds/3Manifolds/L_3_1.scb", "sha256": "f4eebd0e0eba1015263f4944c164b5d3f01247526fe74e8336e56ed7b2f66c3d"},
+        {"space_key": "lens:4:1", "path": "complexes/manifolds/3Manifolds/L_4_1.scb", "sha256": "7d02ebc5b867b6e62fb87053a26ebd47755cc679aca46b84cbcd08b5f9ea1dcc"},
+        {"space_key": "lens:5:1", "path": "complexes/manifolds/3Manifolds/L_5_1.scb", "sha256": "403bfd5cfc2ca3d8c46b8adea7b4153d36f74ffae8e8139aa89a9ce1c092d479"},
+        {"space_key": "lens:5:2", "path": "complexes/manifolds/3Manifolds/L_5_2.scb", "sha256": "30fbb6262785b8da808db597fddd12fb13bb8f3b4ba20e4ee573d681b85446e6"},
+        {"space_key": "lens:6:1", "path": "complexes/manifolds/3Manifolds/L_6_1.scb", "sha256": "b9cde43608c77b6fa3b755e4c970bc75d32916e63841375837ee308a3bd4e1a9"},
+        {"space_key": "lens:7:1", "path": "complexes/manifolds/3Manifolds/L_7_1.scb", "sha256": "216ca1068a04259d8bde76858fd7d1b87af1cab89248c3337a82b2807249e7fb"},
+        {"space_key": "lens:7:2", "path": "complexes/manifolds/3Manifolds/L_7_2.scb", "sha256": "954387c39c10f38be2192679659570829214fc9d1d6841a775869d661914c27f"},
+        {"space_key": "lens:8:1", "path": "complexes/manifolds/3Manifolds/L_8_1.scb", "sha256": "01bbabb40ba8854ae5008e2676ba774e879bbb70ec5e4579b100023b1daee44a"},
+        {"space_key": "lens:8:3", "path": "complexes/manifolds/3Manifolds/L_8_3.scb", "sha256": "c29bd3ef27300ffbe111b1111dff3887d6bbc5b5e9910ec3e8b91390c657051a"},
+        {"space_key": "lens:9:1", "path": "complexes/manifolds/3Manifolds/L_9_1.scb", "sha256": "e35737799a2f2761262f8cbff49112e04401a6154555e3f7c63c4242d681e10b"},
+        {"space_key": "lens:9:2", "path": "complexes/manifolds/3Manifolds/L_9_2.scb", "sha256": "ecd3fcaf1e7c2b0f9aacabce5ad814aa28ddcad5ca3033dc92bb17c520a7713d"},
+        {"space_key": "lens:10:1", "path": "complexes/manifolds/3Manifolds/L_10_1.scb", "sha256": "d4c630817e3c228a5cc877907211b79329ec2912781347e1ab5a8f04fd7b25fb"},
+        {"space_key": "lens:10:3", "path": "complexes/manifolds/3Manifolds/L_10_3.scb", "sha256": "a6f97f8501618f9dc5553b3a316e76f3f15b89281f25a5c7327af70ba6b0ff45"}
+      ],
+      "license_facts_status": "record_facts_without_policy_decision"
+    },
+    {
+      "id": "sage-10.9",
+      "owner": "The Sage Developers",
+      "url": "https://github.com/sagemath/sage",
+      "git_commit": "686dc1a8d420c2e0aabadd4f602d9a0aa4690c50",
+      "source_role": "pinned_deterministic_generator",
+      "neutral_exports_required": true,
+      "license_facts_status": "record_facts_without_policy_decision"
+    },
+    {
+      "id": "hap-1.76",
+      "owner": "GAP HAP package contributors",
+      "url": "https://github.com/gap-packages/hap/releases/tag/v1.76",
+      "git_commit": "6677964ab9ca90ecfff0cc920bcb0be1e0ae130f",
+      "source_role": "independent_source_and_validation_oracle",
+      "neutral_exports_required": true,
+      "license_facts_status": "record_facts_without_policy_decision"
+    }
+  ],
+  "release_ledger_required_fields": {
+    "source": [
+      "source_lock_id", "owner", "url", "immutable_pin", "retrieved_at",
+      "upstream_path_or_record_id", "advertised_checksum", "raw_sha256",
+      "byte_count", "attribution", "license_facts", "upstream_correction_notes"
+    ],
+    "model_artifact": [
+      "model_id", "artifact_id", "counted_bucket", "representation_version",
+      "schema_version", "decoder_version", "importer_version", "normalizer_version",
+      "raw_sha256", "neutral_sha256", "source_locator", "derivation_root_id",
+      "dimension", "ordered_cells", "regularity_witness_id", "distinctness_evidence_id",
+      "qualification_state", "rejection_reason_code"
+    ],
+    "computation": [
+      "run_id", "model_id", "input_sha256", "chain_sha256", "output_sha256",
+      "log_sha256", "ordered_basis_manifest", "boundary_matrix_hashes", "algorithm_id",
+      "implementation_version", "library_versions", "parameters", "environment_lock",
+      "exit_status", "deterministic_rerun_digest"
+    ],
+    "homology_assertion": [
+      "assertion_id", "subject_id", "theory_id", "coefficient_system_id",
+      "degree", "reduced", "convention_id", "knowledge_state", "typed_payload",
+      "value_scope", "completeness_id", "derivation_id", "evidence_refs",
+      "admission_event_id", "current_projection_outcome"
+    ],
+    "model_of": [
+      "model_of_assertion_id", "model_id", "space_id", "equivalence_kind",
+      "review_event_id", "admission_event_id", "preservation_rule_id", "evidence_refs"
+    ],
+    "snapshot": [
+      "snapshot_id", "membership_digest", "event_log_digest", "projection_digest",
+      "manifest_digest", "export_digest"
+    ]
+  },
+  "declared_omissions": [
+    "unverified_or_unavailable_source_rows",
+    "polydb_current_as_independent_counted_source",
+    "regina_generalized_triangulations",
+    "finite_simplicial_sets_and_delta_complexes",
+    "nonregular_cw_attaching_map_presentations",
+    "relabeling_or_mass_subdivision_count_inflation",
+    "implicit_model_to_space_promotion",
+    "upstream_homology_as_canonical_truth",
+    "licensing_decision"
+  ]
+}

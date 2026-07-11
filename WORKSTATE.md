@@ -4,7 +4,10 @@ Status: ACTIVE
 
 ## Objective
 
-Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, efficient torsion-pattern queries, and structured evidence-bearing results suitable for LLM lookup. UI and CW rendering are deferred.
+Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models,
+efficient torsion-pattern queries, and structured evidence-bearing results. A
+QA-connected agent must demonstrably answer basic Homology questions about many
+common manifolds. UI and CW rendering are deferred.
 
 ## Active map
 
@@ -18,13 +21,15 @@ without an explicit user request here.
 
 ## Current ticket
 
-None — ticket 06 is resolved but its verified boundary is not yet committed.
-Frontier ticket 07 remains unclaimed.
+Ticket 07 — `Choose the v0.0.1 corpus manifest`, claimed by
+`/root (interactive chat)` at 2026-07-11T16:40:22Z.
 
 ## Active run lease
 
-None — the interactive run yielded at 2026-07-11T14:50:18Z after the git-index
-approval service reported quota exhaustion.
+- Run ID: `interactive-ticket07-20260711T164022Z`
+- Owner: `/root (interactive chat)`
+- Heartbeat: 2026-07-11T17:13:57Z
+- Fresh through: 2026-07-11T17:38:57Z
 
 ## Last checkpoint
 
@@ -72,22 +77,20 @@ approval service reported quota exhaustion.
 - Ticket 06 passed all contract checks and three independent closure reviews.
   Staging the scoped commit was rejected because the approval service reported
   its usage limit exhausted until 18:26; no workaround was attempted.
+- The user explicitly resumed and authorized continuous progress through a
+  working database connected to QA. Ticket 06 was committed as `fda475b`, and
+  ticket 07 is claimed to pin the exact release corpus.
+- Ticket 07 now has a machine-readable selection contract, verifier, and
+  explanatory contract: 174 curated spaces (128 common manifolds), a planned
+  1,159 qualified Model ledger, explicit G3 margins, 66 validation Models, and
+  a 60-manifold/100-prompt QA cohort. Source-lock and final gate reviews are in
+  progress; these remain targets, not achieved release counts.
 
 ## Exact next action
 
-After explicit user approval or approval-service capacity returns, stage the six
-ticket 06 paths listed below, run `git diff --cached --check`, commit them as
-`docs: define current assertion projection`, then claim ticket 07 and choose the
-exact `0.0.1` corpus manifest against the observable count and coverage gates.
-
-Ticket 06 commit paths:
-
-- `.scratch/homology-db-v0-0-1/issues/06-define-assertion-selection.md`
-- `.scratch/homology-db-v0-0-1/map.md`
-- `CONTEXT.md`
-- `WORKSTATE.md`
-- `docs/adr/0003-project-current-from-admitted-claim-classes.md`
-- `docs/contracts/current-projection-v1.md`
+Integrate the source-lock and two final manifest reviews, resolve ticket 07,
+add the newly visible QA acceptance ticket/scope amendment, verify and commit,
+then immediately claim the owned-computation prototype.
 
 ## Verification state
 

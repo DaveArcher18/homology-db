@@ -20,3 +20,9 @@ The hard observable contract is recorded in [`docs/research/v0.0.1-observable-co
 Unknown, absent, not-computed, bounded, and conflicting data never prove zero or a forbidden torsion condition. Synthetic scale data never count toward the mathematical corpus. PostgreSQL, Sage, Rust, and web frameworks remain implementation candidates rather than observable requirements.
 
 The contract was derived from the active objective and repository source documents, reviewed independently for mathematical and systems risks, and its non-sensitive reference-host assumptions were verified locally.
+
+## Comments
+
+### 2026-07-11 scope amendment
+
+By explicit project direction, the release contract now includes a twelfth gate: a bounded tool-constrained QA agent must answer the frozen 100-prompt common-manifold suite through the public API with 100/100 semantic correctness, zero unsupported claims, and assertion-level grounding in one snapshot. This appends to, rather than rewrites, the original eleven-gate answer. It removes only the blanket exclusion of every LLM agent; a general research/product agent, bespoke natural-language parser, embeddings, vector search, and opaque semantic retrieval remain outside `0.0.1`.
