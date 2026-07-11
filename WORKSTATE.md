@@ -1,6 +1,6 @@
 # Work state
 
-Status: ACTIVE
+Status: BLOCKED
 
 ## Objective
 
@@ -12,8 +12,8 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 
 ## Current ticket
 
-Ticket 05 — `Define structured homology-pattern semantics` (claimed by `/root`
-as `goal-20260711T121848Z` at 2026-07-11T12:18:48Z).
+Ticket 05 — `Define structured homology-pattern semantics` (needs a user
+decision after three consecutive waiting runs).
 
 ## Last checkpoint
 
@@ -45,8 +45,11 @@ as `goal-20260711T121848Z` at 2026-07-11T12:18:48Z).
 
 ## Exact next action
 
-Await the user's answer to ticket-05 grill question 1. Do not enact the
-pattern semantics; ask only the next dependent decision after that answer.
+Await the user's answer to ticket-05 grill question 1: whether `unknown` is
+narrow (only a selected explicit `unknown` assertion, recommended) or broad
+(also absent/not-computed/incomplete/unresolved/conflicting outcomes). After
+the answer, set Status back to ACTIVE, reclaim Ticket 05 with a fresh run lease,
+and ask only the next dependent grill question. Do not enact semantics yet.
 
 ## Verification state
 
@@ -66,3 +69,6 @@ database, ingested corpus, public API, or release test suite exists yet.
 - The recurring automation cannot bypass a hard quota; it retries after capacity returns.
 - While `Status: BLOCKED`, recurring wakeups exit without mutation. This user
   response resumed the goal and started a fresh blocked audit.
+- Ticket 05 reached three consecutive runs awaiting Question 1 on
+  2026-07-11T12:49:09Z. It is blocked on a user-owned semantic decision; no
+  design has been enacted.

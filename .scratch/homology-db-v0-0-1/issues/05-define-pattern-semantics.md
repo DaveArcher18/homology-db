@@ -1,7 +1,6 @@
 Type: grilling
-Status: claimed
-Claimed by: /root (goal-20260711T121848Z)
-Claimed at: 2026-07-11T12:18:48Z
+Status: needs-info
+Blocked on: user decision for grill question 1
 Blocked by: 01, 02, 04
 
 # Define structured homology-pattern semantics
@@ -25,3 +24,8 @@ Question 1 asked at 2026-07-11T12:19:37Z:
 > candidates that cannot prove another required/forbidden/exact constraint; it
 > is not an `unknown` match. This preserves the G6 three-valued evidence rule and
 > lets an LLM distinguish “explicitly unknown” from “we have no answer.”
+
+## Comments
+
+- 2026-07-11T12:49:09Z: Marked `needs-info` after three consecutive runs
+  awaiting Question 1. Resume only when the user supplies this decision.
