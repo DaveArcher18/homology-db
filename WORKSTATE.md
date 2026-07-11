@@ -12,7 +12,8 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 
 ## Current ticket
 
-None — ticket 03 is resolved; the next frontier ticket is 04.
+Ticket 04 — `Set the first-release model boundary` (claimed by `/root` at
+2026-07-11T11:54:48Z).
 
 ## Last checkpoint
 
@@ -32,12 +33,15 @@ None — ticket 03 is resolved; the next frontier ticket is 04.
 - Ticket 03 pins Stellar v6 as the leading bulk-source candidate, treats
   polyDB as the overlapping live view, and assigns simpcomp, Sage, HAP, and
   Regina distinct named-corpus, generator, adapter, or oracle roles.
+- Ticket 04's mathematical and encoding facts were audited independently. The
+  first genuinely open grill question is now recorded in the ticket.
 
 ## Exact next action
 
-Claim ticket 04, `Set the first-release model boundary`, and use the `grilling`
-skill to decide which reconstructible simplicial, regular-CW, delta, cubical,
-and simplicial-set representations count as Models versus derived artifacts.
+Await the user's answer to ticket-04 grill question 1: whether `0.0.1` supports
+only finite regular CW Models or must prototype a finite nonregular attaching-map
+language. Ask only the next dependent question after that answer; do not enact
+a schema before shared understanding.
 
 ## Verification state
 
@@ -46,6 +50,8 @@ script exits successfully with 22/22 observations. Ticket 03's primary-source
 survey was independently split across Sage, HAP, and simpcomp/other sources,
 integrated, source-reviewed, and passes `git diff --check`. There is still no
 executable database, ingested corpus, public API, or release test suite.
+Ticket 04 has a source-backed representation audit and dependency-ordered
+interview tree, but no model-boundary decision has been enacted.
 
 ## Recovery notes
 
