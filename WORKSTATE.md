@@ -12,8 +12,15 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 
 ## Current ticket
 
-Ticket 04 — `Set the first-release model boundary` (claimed by `/root` at
-2026-07-11T11:54:48Z).
+Ticket 05 — `Define structured homology-pattern semantics` (claimed by `/root`
+as `goal-20260711T121848Z` at 2026-07-11T12:18:48Z).
+
+## Active run lease
+
+- Run ID: `goal-20260711T121848Z`
+- Owner: `/root`
+- Heartbeat: 2026-07-11T12:18:48Z
+- Fresh through: 2026-07-11T12:43:48Z
 
 ## Last checkpoint
 
@@ -33,25 +40,28 @@ Ticket 04 — `Set the first-release model boundary` (claimed by `/root` at
 - Ticket 03 pins Stellar v6 as the leading bulk-source candidate, treats
   polyDB as the overlapping live view, and assigns simpcomp, Sage, HAP, and
   Regina distinct named-corpus, generator, adapter, or oracle roles.
-- Ticket 04's mathematical and encoding facts were audited independently. The
-  first genuinely open grill question is now recorded in the ticket.
+- Three consecutive goal turns reached the same user-owned decision without a
+  response; the user resumed at 2026-07-11T12:10:17Z and approved regular
+  finite CW Models plus a reviewed handpicked special slice.
+- Ticket 04 admits only finite abstract-simplicial and witness-certified
+  regular-CW Models, with order-complex chains as the guaranteed CW computation
+  route and at least 10 paired genuinely nonsimplicial examples in the manifest.
 
 ## Exact next action
 
-Await the user's answer to ticket-04 grill question 1: whether `0.0.1` supports
-only finite regular CW Models or must prototype a finite nonregular attaching-map
-language. Ask only the next dependent question after that answer; do not enact
-a schema before shared understanding.
+Use the G6 truth table and honest-constellation fixture as fixed inputs. Begin
+the ticket-05 grilling workflow with the first genuinely consequential semantic
+choice; infer only reversible syntax choices after shared understanding.
 
 ## Verification state
 
 The release contract is documented and reviewed. Ticket 02's deterministic
 script exits successfully with 22/22 observations. Ticket 03's primary-source
 survey was independently split across Sage, HAP, and simpcomp/other sources,
-integrated, source-reviewed, and passes `git diff --check`. There is still no
-executable database, ingested corpus, public API, or release test suite.
-Ticket 04 has a source-backed representation audit and dependency-ordered
-interview tree, but no model-boundary decision has been enacted.
+integrated, source-reviewed, and passes `git diff --check`.
+Ticket 04 is recorded in ADR 0001 and the glossary, and was independently
+reviewed for mathematical, domain, and G2/G10 compatibility. No executable
+database, ingested corpus, public API, or release test suite exists yet.
 
 ## Recovery notes
 
@@ -59,3 +69,5 @@ interview tree, but no model-boundary decision has been enacted.
 - Existing planning documents are inputs, not proof that implementation requirements are met.
 - The standalone repository is clean at the checkpoint commits above.
 - The recurring automation cannot bypass a hard quota; it retries after capacity returns.
+- While `Status: BLOCKED`, recurring wakeups exit without mutation. This user
+  response resumed the goal and started a fresh blocked audit.

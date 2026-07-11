@@ -25,6 +25,7 @@ Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstruc
 - [Pin the v0.0.1 observable contract](issues/01-pin-observable-contract.md) — Release requires eleven evidence-backed gates, including 100 curated spaces, 1,000 reconstructible models, torsion-pattern semantics, owned computation, measured queries, and a reproducible tagged snapshot.
 - [Prototype the smallest honest constellation](issues/02-prototype-honest-constellation.md) — The executable fixture forces layered space/model/artifact identity, fully qualified homology slots, explicit correction and conflict records, three-valued query evidence, and an identity-only map plus atomic fibration-context seam.
 - [Survey scalable finite-model corpora](issues/03-survey-finite-model-corpora.md) — Pin Stellar v6 for bulk triangulations, treat polyDB as an overlapping structured view, use simpcomp/Sage/HAP for named generators and validation, and leave the regular-CW counting boundary explicit for ticket 04.
+- [Set the first-release model boundary](issues/04-set-model-boundary.md) — Count only finite abstract-simplicial and witness-certified regular-CW Models, reconstruct CW topology through the Cell-closure-poset order complex, require a paired nonsimplicial slice, and keep unsupported attaching-map and generalized formats as attributed Source artifacts.
 
 ## Not yet specified
 

@@ -13,8 +13,32 @@ A concrete finite presentation of a space, such as a finite simplicial complex o
 _Avoid_: Space representation, raw space
 
 **Model artifact**:
-An immutable, versioned encoding of a model with original and normalized content hashes, format, source, and importer provenance. More than one artifact may encode or report the same model without being silently merged.
+An immutable, versioned encoding of exactly one Model. Multiple artifacts belong to the same Model only through recorded identity evidence; byte-distinct artifacts are never silently merged.
 _Avoid_: Model file, engine object
+
+**Source artifact**:
+Immutable upstream content retained exactly as received, which may encode zero, one, or many Models. Decoding creates Model artifacts with provenance; the Source artifact never itself counts as a Model.
+_Avoid_: Raw model, canonical input
+
+**Derived artifact**:
+An immutable computation output made from a Model, such as a based chain complex, boundary matrices, or rendering. It is never reclassified; an admitted topological output instead creates a new Model and Model artifact with a derivation relation.
+_Avoid_: Derived model, equivalent copy
+
+**Finite simplicial Model**:
+A Model whose finite abstract simplicial presentation determines its geometric realization. Distinct subdivisions remain distinct Models, and a `subdivision_of` assertion records rather than collapses their relation.
+_Avoid_: Triangulated space when only a presentation is meant
+
+**Cell-closure poset**:
+The cells of a finite cell presentation ordered by inclusion of their closures, excluding any artificial bottom element used by a combinatorial encoding.
+_Avoid_: Incidence matrix, face adjacency
+
+**Finite regular-CW Model**:
+A Model whose topology is carried by the Cell-closure poset of a finite regular CW complex. Its order complex is the agreed reconstruction and is homeomorphic to the represented realization.
+_Avoid_: Incidence complex, arbitrary CW data
+
+**Regularity witness**:
+Corrigible evidence that a Cell-closure poset is realizable by a finite regular CW complex, supplied by an owned preserving construction or a checked certificate rather than incidence signs or `d^2 = 0`.
+_Avoid_: Regular flag, trusted label
 
 **Family instance assertion**:
 An evidence-bearing claim that a conceptual space is the instance of a parameterized mathematical family at specified parameter values.
@@ -31,6 +55,10 @@ _Avoid_: Raw database, junk drawer
 **Model assertion**:
 A sourced claim that a model presents a particular conceptual space at an explicitly stated equivalence level.
 _Avoid_: Model link, deduplication
+
+**Model relation assertion**:
+An evidence-bearing claim between Models with a named relation kind, such as directed subdivision or an equivalence claim at the presentation-isomorphism, PL-homeomorphism, homeomorphism, or homotopy-equivalence level. It never collapses Model identities.
+_Avoid_: Duplicate, same model, automatic merge
 
 **Homology assertion**:
 A sourced or reproducibly computed claim about a subject’s homology for an explicit coefficient system, convention, and degree.

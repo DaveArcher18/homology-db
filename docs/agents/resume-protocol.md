@@ -33,6 +33,10 @@ When usage or a process ends unexpectedly, the next scheduled run:
 
 Recurring wakeups cannot bypass a hard quota. Their purpose is to retry after capacity returns.
 
+If `WORKSTATE.md` says `Status: BLOCKED`, a recurring wakeup exits without
+project mutation. Only new user input or the named external-state change resumes
+the goal; that resumed run starts a fresh blocked audit.
+
 ## Concurrency
 
 - Treat the `Active run lease` in `WORKSTATE.md` as authoritative. A scheduled
