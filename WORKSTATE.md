@@ -12,7 +12,7 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 
 ## Current ticket
 
-None — ticket 02 is resolved; the next frontier ticket is 03.
+None — ticket 03 is resolved; the next frontier ticket is 04.
 
 ## Last checkpoint
 
@@ -29,17 +29,23 @@ None — ticket 02 is resolved; the next frontier ticket is 03.
   the throwaway terminal implementation.
 - An overlapping scheduled wakeup was reconciled; the resume protocol now
   requires a fresh run lease to suppress same-agent concurrent mutation.
+- Ticket 03 pins Stellar v6 as the leading bulk-source candidate, treats
+  polyDB as the overlapping live view, and assigns simpcomp, Sage, HAP, and
+  Regina distinct named-corpus, generator, adapter, or oracle roles.
 
 ## Exact next action
 
-Claim ticket 03, `Survey finite-model corpora`, and follow the `research` skill before selecting a corpus or physical model format.
+Claim ticket 04, `Set the first-release model boundary`, and use the `grilling`
+skill to decide which reconstructible simplicial, regular-CW, delta, cubical,
+and simplicial-set representations count as Models versus derived artifacts.
 
 ## Verification state
 
 The release contract is documented and reviewed. Ticket 02's deterministic
-script exits successfully with 22/22 observations; Python compilation and
-`git diff --check` pass. It remains a throwaway design artifact, with no
-executable database, corpus, public API, or release test suite yet.
+script exits successfully with 22/22 observations. Ticket 03's primary-source
+survey was independently split across Sage, HAP, and simpcomp/other sources,
+integrated, source-reviewed, and passes `git diff --check`. There is still no
+executable database, ingested corpus, public API, or release test suite.
 
 ## Recovery notes
 
