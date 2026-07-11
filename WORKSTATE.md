@@ -16,14 +16,14 @@ None — map charting is complete; no ticket may be resolved in the charting ses
 
 ## Last checkpoint
 
-- Initialized a standalone Git repository.
-- Configured local Markdown issue tracking, triage vocabulary, domain docs, and continuity rules.
-- Charted the Wayfinder map and eleven decision tickets from three independent breadth-first audits.
-- Identified the initial frontier: observable contract, honest constellation, and finite-model corpus survey.
+- `cfe6333` established the standalone repository, project/domain docs, and recovery conventions.
+- `1fb1430` committed the Wayfinder map and eleven decision tickets from three independent breadth-first audits.
+- The initial frontier is observable contract, honest constellation, and finite-model corpus survey.
+- The active `resume-homology-db-hard-push` Codex automation retries every 15 minutes.
 
 ## Exact next action
 
-Commit the project baseline and Wayfinder map as separate scoped commits. On the next run, claim and resolve the first frontier ticket by number.
+On the next run, claim and resolve the first frontier ticket by number.
 
 ## Verification state
 
@@ -33,4 +33,5 @@ Planning/setup/map files only. No executable database, corpus, API, or tests exi
 
 - Preserve unrelated parent-workspace changes; this directory is now its own repository.
 - Existing planning documents are inputs, not proof that implementation requirements are met.
-- The first standalone baseline commit is staged but not yet committed; map files should be committed separately.
+- The standalone repository is clean at the checkpoint commits above.
+- The recurring automation cannot bypass a hard quota; it retries after capacity returns.
