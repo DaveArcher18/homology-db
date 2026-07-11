@@ -15,13 +15,6 @@ Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models, ef
 Ticket 05 — `Define structured homology-pattern semantics` (claimed by `/root`
 as `goal-20260711T121848Z` at 2026-07-11T12:18:48Z).
 
-## Active run lease
-
-- Run ID: `goal-20260711T121848Z`
-- Owner: `/root`
-- Heartbeat: 2026-07-11T12:18:48Z
-- Fresh through: 2026-07-11T12:43:48Z
-
 ## Last checkpoint
 
 - `cfe6333` established the standalone repository, project/domain docs, and recovery conventions.
@@ -46,12 +39,14 @@ as `goal-20260711T121848Z` at 2026-07-11T12:18:48Z).
 - Ticket 04 admits only finite abstract-simplicial and witness-certified
   regular-CW Models, with order-complex chains as the guaranteed CW computation
   route and at least 10 paired genuinely nonsimplicial examples in the manifest.
+- Ticket 05 is claimed. Its fixed inputs are G6's strict three-valued evidence
+  rule and the honest-constellation fixture; question 1 records the first
+  consequential distinction between explicit `unknown` and unresolved data.
 
 ## Exact next action
 
-Use the G6 truth table and honest-constellation fixture as fixed inputs. Begin
-the ticket-05 grilling workflow with the first genuinely consequential semantic
-choice; infer only reversible syntax choices after shared understanding.
+Await the user's answer to ticket-05 grill question 1. Do not enact the
+pattern semantics; ask only the next dependent decision after that answer.
 
 ## Verification state
 
