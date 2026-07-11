@@ -1,0 +1,42 @@
+Type: wayfinder:map
+Status: active
+
+# Homology DB v0.0.1
+
+## Destination
+
+Deliver and verify a versioned `0.0.1` Homology DB that contains many reconstructible finite CW/simplicial models, answers exact and partial torsion-pattern example queries efficiently, and returns structured provenance-bearing results suitable for an LLM tool to consume.
+
+## Notes
+
+- This map explicitly carries execution through the verified release; it does not stop at a specification.
+- Read `AGENTS.md`, `CONTEXT.md`, `WORKSTATE.md`, and `docs/agents/resume-protocol.md` at each session start.
+- Use `research`, `prototype`, `grilling`, `domain-modeling`, `codebase-design`, `tdd`, and `code-review` as ticket type and phase require.
+- Keep an append-only assertion history, explicit knowledge states, immutable source artifacts, and deterministic snapshots.
+- Prefer owned high-level mathematical capabilities; existing systems are attributed references and differential-test oracles.
+- Make reversible choices from fixtures and measured workloads rather than freezing the architecture early.
+- Maintain scoped commits, `CHANGELOG.md`, and a dated `TESTLOG.md` referenced by the changelog.
+- UI and CW-complex rendering are explicitly deferred from this destination.
+
+## Decisions so far
+
+<!-- One context pointer per resolved ticket. The answer lives in the ticket. -->
+
+## Not yet specified
+
+- Implementation tickets and package boundaries after the contracts and corpus are visible.
+- Exact runtime language and native-kernel boundaries after the reference slice is measured.
+- Canonicalization and duplicate-detection algorithms after real cross-source duplicates are observed.
+- Bulk export encoding and snapshot-diff representation after the query and persistence prototypes.
+- Deployment, object storage, backups, and operational scale after a local release works.
+- Corpus refresh and upstream-change reconciliation after the first immutable corpus manifest.
+
+## Out of scope
+
+- Web UI and CW-complex rendering.
+- Natural-language parsing, embeddings, vector search, or an LLM agent.
+- Serre or Adams schemas, computation engines, querying, or forcing.
+- Cohomology rings, generalized theories, and homotopy groups.
+- User submissions and untrusted computation.
+- Licensing posture.
+- Official LMFDB integration.
