@@ -633,3 +633,19 @@ supersedes_or_corrects: review-2026-07-12-008 storyboard, email, and recording s
 The revised plan intentionally omits schema, migration, knowl, implication-
 graph, family-boundary, and adversarial-review tours. Those topics made the
 orientation obscure the two interactions being tested.
+
+## Communication artifact `review-2026-07-12-010`: no-terminal Codex workspace
+
+```text
+review_id: review-2026-07-12-010
+record_kind: external-review-communication-artifact
+recorded_at: 2026-07-12 (Africa/Johannesburg; exact time retained in Git history)
+decision_owner: project owner
+artifact: LOOM_START_HERE.md
+purpose: let the presenter prepare and run the four-minute Loom entirely through Codex without personally invoking Python or terminal commands
+preflight: one read-only Codex prompt runs 41 tests, builds /tmp/homology-db-loom.sqlite3 once, verifies the 60-subject Snapshot, and returns a compact READY FOR LOOM card
+spoken_script: 264-word introduction describing current and absent capabilities
+on_camera_prompts: coefficient-qualified RP^4/F2 lookup; Snapshot-bounded 5-primary H_1 example search
+fallback: one compression prompt preserves grounding and coverage while shortening an unexpectedly long Codex answer
+supersedes_or_corrects: implements review-2026-07-12-009; does not change the mathematical-review gate
+```

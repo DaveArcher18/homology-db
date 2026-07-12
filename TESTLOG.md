@@ -282,3 +282,29 @@ Snapshot. No Homotopy capability was invoked or implied by the commands.
 | Markdown local links and fences | 7 changed files; all 35 local links resolve; fences balanced |
 | `git diff --check` | passed |
 | final two-axis review | standards and specification passes found no hard issue after removing the on-camera demo duplication and aligning the lookup prompt with its displayed command |
+
+## 2026-07-12 — no-terminal Loom workspace
+
+Scope: give the presenter a single Codex workspace file so Codex, rather than
+the presenter, runs every Python and Git preflight command.
+
+- `LOOM_START_HERE.md` contains a read-only preparation prompt that builds the
+  disposable database once and returns only a compact readiness card.
+- The spoken introduction is 264 words, followed by the already replayed
+  `RP^4/F2` and 5-primary-torsion prompts in the same Codex task and Snapshot.
+- A compression prompt preserves values, grounding IDs, and coverage if an
+  on-camera Codex answer is too long.
+
+Prior command replays remain the mathematical input fixtures. Final workspace
+verification:
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 41/41 tests passed |
+| `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
+| `python3 -m compileall -q homology_db tests scripts` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived the 1,159 planned Models and all frozen manifest counts |
+| introduction timing proxy | exactly 264 words between the script and first-use-case headings |
+| Markdown links and fences | 7 changed files; all 31 local links resolve; fences balanced |
+| `git diff --check` | passed |
+| final two-axis review | standards and specification passes found no hard issue; the preflight now explicitly replaces only a stale disposable Loom database before its single build |

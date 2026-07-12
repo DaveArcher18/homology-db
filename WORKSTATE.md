@@ -158,15 +158,19 @@ the first test-driven production-schema slices and coordinating audits.
   a coefficient-qualified lookup, and one minute on a Snapshot-bounded example
   search. Homotopy-pattern retrieval is stated as future work. Sharing it now
   is an informal development preview, not the held mathematical review.
+- `LOOM_START_HERE.md` is the presenter workspace: Codex performs all Python
+  preparation read-only, returns a compact readiness card, and then accepts two
+  paste-ready on-camera prompts. The spoken introduction is 264 words, so the
+  presenter does not need to operate a terminal or improvise the scope.
 
 ## Exact next action
 
 Continue ticket 03 with typed map/public-field integrity, exact-value
 normalization, the append-only editorial reducer, and an explicit policy for
-terminal computation-run records. Rehearse the four-minute Loom against one
-preview Snapshot and keep any pre-gate sharing explicitly informal. Preserve
-the frozen cohort and do not claim named-atlas mathematical coverage that has
-not yet been sourced and materialized.
+terminal computation-run records. For the Loom, open `LOOM_START_HERE.md` in
+Codex and use its preflight prompt before recording. Keep any pre-gate sharing
+explicitly informal. Preserve the frozen cohort and do not claim named-atlas
+mathematical coverage that has not yet been sourced and materialized.
 
 ## Verification state
 

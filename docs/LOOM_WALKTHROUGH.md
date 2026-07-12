@@ -6,6 +6,10 @@ Audience: Gabriel Ong and Dan Isaksen
 
 Target length: 4 minutes
 
+Recording operator workspace: [`LOOM_START_HERE.md`](../LOOM_START_HERE.md).
+It contains the no-terminal Codex preparation prompt, the exact two-minute
+spoken script, and both paste-ready on-camera prompts.
+
 ## What the video should accomplish
 
 Keep this deliberately small. The video should establish only three things:

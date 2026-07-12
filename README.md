@@ -74,6 +74,7 @@ measured persistence/query design and the release pipeline.
 19. [Topology-agent question benchmark](docs/research/topology-agent-question-benchmark.md)
 20. [Atlas schema prototype contract](docs/contracts/atlas-schema-prototype-v1.md)
 21. [Four-minute development-preview Loom plan](docs/LOOM_WALKTHROUGH.md)
+22. [Open-this-first Loom recording workspace](LOOM_START_HERE.md)
 
 ## Working position
 

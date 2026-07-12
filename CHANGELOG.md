@@ -35,5 +35,7 @@
 - Simplified the Loom to four minutes: two minutes of honest current scope,
   followed by one coefficient-qualified lookup and one Snapshot-bounded
   Homology-pattern example search; Homotopy search remains explicitly later.
+- Added a no-terminal Loom workspace with one Codex preparation prompt, the
+  exact two-minute spoken introduction, and two paste-ready on-camera prompts.
 
 Verification is recorded in [TESTLOG.md](TESTLOG.md).
