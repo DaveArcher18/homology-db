@@ -24,5 +24,9 @@ with zero unsupported mathematical claims on one Snapshot?
 - The pack covers reduced and supported-field coefficients, torsion patterns,
   family identities, correction/conflict history, Model promotion, reviewed
   implication edges, and `not_computed` representatives or induced maps.
+- A novice-facing pass can expand every displayed technical/search term into a
+  short context-independent definition, while an expert-facing pass can ignore
+  the definitions without losing mathematical data. QA rejects any response
+  that presents definition prose as evidence for a Homology assertion.
 - Every cited subject is evidence-expanded and every group claim is grounded
   in the one immutable Snapshot used by the run.

@@ -21,5 +21,8 @@ critical defect, so the onboarding can be updated and reviewers invited?
 - Migration, schema-integrity, corpus-count, source-pin, grounding,
   performance, unit, and adversarial-agent checks pass with no unsupported
   mathematical claim or open critical defect.
+- The naming audit proves permanent public labels, documented label syntax,
+  alias/identity separation, and stable definition references across a
+  deterministic rebuild.
 - Only after this audit passes may onboarding invite Gabriel Ong or Dan
   Isaksen; the hosted form remains a separate later decision.

@@ -24,6 +24,11 @@ with no critical mathematical-safety, schema, or provenance defect.
   representative cross-model slice also has qualified Models and owned
   computations.
 - Keep the four public operations and prohibit query-time formula invention.
+- Carry stable, versioned, context-independent mathematical definition records
+  inspired by LMFDB knowls. Public responses must reference and expand these
+  definitions without confusing exposition with assertion evidence.
+- Use persistent, mathematically meaningful public labels while preserving
+  aliases and identity assertions instead of merging Conceptual spaces.
 - The supplied remote is `https://github.com/DaveArcher18/homology-db.git`.
   Fetch before push and never overwrite conflicting remote history.
 - Use `domain-modeling`, `codebase-design`, `prototype`, `tdd`, `research`,
@@ -35,6 +40,11 @@ with no critical mathematical-safety, schema, or provenance defect.
 ## Decisions so far
 
 <!-- One context pointer per resolved ticket. The answer lives in the ticket. -->
+
+- [Supersede the external-review gate](issues/01-supersede-external-review-gate.md)
+  — Keep `local-preview-60` as a frozen regression fixture, place external
+  review on hold until `named-atlas-review-v1` passes, and carry Gabriel Ong's
+  knowl/naming feedback into schema, operation, QA, and audit acceptance.
 
 ## Not yet specified
 
@@ -48,11 +58,16 @@ with no critical mathematical-safety, schema, or provenance defect.
   are exercised in clean environments.
 - The exact prompt count and category allocation for the named-atlas QA pack
   after the final subject/coverage manifest is materialized.
+- Which mathematical object portraits or graph views are useful enough to
+  justify a later visual-design ticket. The data model should enable them, but
+  no decorative graphic is a review-candidate gate.
 
 ## Out of scope
 
 - External mathematical review before this map's gate passes.
-- Public hosting, Web UI, and CW/simplicial rendering.
+- Public hosting, Web UI (including inline knowl dropdown rendering), and
+  CW/simplicial rendering. The review candidate still includes the definition
+  records and four-operation access needed by a later UI.
 - Grassmannians, flag or other homogeneous spaces, general `BG`, `K(A,n)`,
   Thom spaces, spectra, stable stems, and spectral-sequence data.
 - Query-time natural-language inference, embeddings, semantic similarity, or

@@ -47,8 +47,11 @@ A `human-concern` instead records the reviewer, commit and Snapshot seen,
 claim under review, verdict, trigger, follow-up, and correction link. A
 `source-audit` records the reviewer/runtime, commit, exact source coordinates,
 audit conclusion, human-review state, follow-up, and correction link. A
-`decision` records its owner, inputs, chosen policy and gates. These entry
-types do not invent database fields that do not apply to them.
+`product-feedback` record preserves the reviewer, exact message times when
+known, source, suggestions, disposition, and follow-up without pretending it
+is a mathematical verdict. A `decision` records its owner, inputs, chosen
+policy and gates. These entry types do not invent database fields that do not
+apply to them.
 
 For each substantive mathematical claim or proposed implication edge, a human
 reviewer records exactly one of:
@@ -521,3 +524,67 @@ entry. Those decisions require a separate design discussion. Until then:
   future structured successor; do not mutate prior entries.
 - Gate hosting on recorded external review and resolution of every critical
   safety or provenance defect.
+
+## Decision `decision-2026-07-12-002`: postpone external review
+
+```text
+record_kind: decision
+recorded_at: 2026-07-12 (Africa/Johannesburg; exact time not retained)
+decision_owner: project owner
+repository_commit: 9676d6f (named-atlas execution map)
+decision: do not invite Gabriel Ong, Dan Isaksen, or another external mathematical reviewer until named-atlas-review-v1 passes
+inputs: review-2026-07-12-001 through review-2026-07-12-005; CP^2 corpus-representativeness concern; production-schema concern
+review_gate: grounded RP^0..12 and CP^0..12, named corpus, production-like schema, qualified cross-model slice, definition seam, and adversarial QA with no critical mathematical-safety, schema, or provenance defect
+cohort_policy: preserve local-preview-60 unchanged as a regression fixture; it is not the proposed reviewer experience
+supersedes_or_corrects: decision-2026-07-12-001 timing and cohort recommendation only
+```
+
+This entry preserves the earlier decision rather than rewriting it. Informal
+product feedback may still be recorded while the gate is closed; it is not a
+database review or an invitation to endorse the current Snapshot.
+
+## Feedback `review-2026-07-12-006`: Gabriel Ong on LMFDB and knowls
+
+```text
+review_id: review-2026-07-12-006
+record_kind: product-feedback
+recorded_at: 2026-07-12T13:32:02+02:00, 2026-07-12T13:42:59+02:00, and 2026-07-12T14:00:30+02:00
+reviewer: Gabriel Ong
+reviewer_role: human product adviser; not a database reviewer in this entry
+repository_commit: 9676d6f
+snapshot_id: not-applicable
+source: private messages quoted by the project owner; ICERM video https://icerm.brown.edu/video_archive/4709
+feedback: study the LMFDB talk's lessons about setting up a mathematical database, naming, useful graphical representations, and ease of use; prioritize LMFDB knowls as expandable definitions; graphics may come later
+verdict: not-applicable (product feedback, not a claim-level mathematical review)
+disposition: accepted as named-atlas schema/API/QA input; inline browser rendering and mathematical graphics remain later UI work
+follow_up: docs/research/icerm-lmfdb-knowl-review.md; production-schema, public-operation, QA, and final-audit tickets in named-atlas-review-v1
+supersedes_or_corrects: none
+```
+
+The term is **knowl** (plural **knowls**). The recording's caption track
+misrecognizes it as “nulls”; the presenter-authored slides and official LMFDB
+documentation confirm the spelling.
+
+## Review `review-2026-07-12-007`: ICERM/LMFDB source audit
+
+```text
+review_id: review-2026-07-12-007
+record_kind: source-audit
+recorded_at: 2026-07-12T14:24:16+02:00
+reviewer: Codex primary-source research pass
+reviewer_role: agent
+agent_runtime: Codex background research agent plus primary-agent transcript/PDF verification; exact model identifier not retained
+repository_commit: 9676d6f (base before this documentation change)
+snapshot_id: not-applicable
+reviewed_content_hashes: ICERM slide PDF sha256 81a84879ec99e2b7749abda21b4f25fc90bf0abc3f3f7065b095b5f54304133d; research report sha256 2dcab6bda3d23e342df28fb49d3132de504144d8a159638c981196da2afae249
+source_pins: ICERM schedule/recording/slides for David Roe, Building mathematical databases, 2026-06-24; official LMFDB repository cbcdaee01f1a698eb44a011b8f4290e294a5a7a1
+audit_conclusion: knowls are stable reusable inline exposition with revision/review history; meaningful persistent labels, scoped completeness, source/reliability disclosure, stored searchable computations, and mathematically encoded graphics are relevant design precedents
+project_disposition: require versioned Snapshot-selected definition records and knowledge references in the existing four operation envelopes; never treat definition prose as assertion evidence; defer inline dropdowns and graphics to the later UI tier
+human_review_state: pending-human-review
+follow_up: named-atlas-review-v1 tickets 03, 08, 09, and 10
+supersedes_or_corrects: none
+```
+
+The complete source-role analysis, recording timestamps, implementation
+inspection, and project-specific recommendations are in
+[ICERM/LMFDB lessons for Homology DB](research/icerm-lmfdb-knowl-review.md).

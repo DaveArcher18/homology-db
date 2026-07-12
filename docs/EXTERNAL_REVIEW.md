@@ -1,5 +1,13 @@
 # External review: Homology DB local preview
 
+> **Status: on hold. Do not run or circulate this as the proposed external
+> review.** The 60-subject preview is retained unchanged as a regression
+> fixture. Gabriel Ong, Dan Isaksen, and other mathematical reviewers should
+> be invited only after the separately named `named-atlas-review-v1` candidate
+> passes its production-schema, named-space, provenance, and adversarial QA
+> gates. The procedure below is preserved so that the earlier review decision
+> remains auditable; it is not the current onboarding path.
+
 This guide is for Gabriel Ong and Dan Isaksen, and for another expert
 topologist asked to repeat the same review. It assumes comfort with Homology
 and stable homotopy theory, but no familiarity with AI coding agents.
@@ -97,11 +105,13 @@ and computed through the repository's owned general-chain boundary. Inserting
 the familiar value of its Homology without that path would break the project's
 provenance rules.
 
-Consequently, the correct preview behavior for a `CP^2` lookup is a typed
-unresolved/not-found result with no invented groups, assertion IDs, or evidence
-IDs. This is an intentionally retained safety test and also the first
-post-review corpus-polish blocker before public hosting. It is not a claim that
-the Homology of `CP^2` is unknown in mathematics.
+Consequently, the correct frozen-preview behavior for a `CP^2` lookup is a
+typed unresolved/not-found result with no invented groups, assertion IDs, or
+evidence IDs. This remains a regression safety test, but it is also evidence
+that this cohort is not the external reviewer experience. The named-atlas gate
+requires grounded materialized `CP^n` instances through `n = 12`, including an
+independently checked `CP^2`; it is not a claim that the Homology of `CP^2` is
+unknown in mathematics.
 
 ## Fixed smoke test
 

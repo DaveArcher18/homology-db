@@ -21,13 +21,12 @@ without an explicit user request here.
 
 ## Current ticket
 
-None — the named-atlas map is charted; the first frontier ticket is
-`Supersede the external-review gate`.
+None — `Supersede the external-review gate` is resolved; the next frontier is
+`Publish the current history to the supplied remote`.
 
 ## Active run lease
 
-None — this user-controlled interactive task is the only permitted mutation
-path under `INTERACTIVE_ONLY`.
+None — this checkpoint is ready for verification and commit.
 
 ## Last checkpoint
 
@@ -118,13 +117,19 @@ path under `INTERACTIVE_ONLY`.
   `.scratch/named-atlas-review-v1/`, with primary-source family theorems,
   materialized `RP^0..12` and `CP^0..12`, representative hybrid Model
   evidence, finite-simplicial-set investigation, and a new QA gate.
+- The external-review hold is now visible in README and the retained onboarding
+  guide and append-only in `docs/REVIEW_PROCESS.md`; no prior run, decision, or
+  verdict was rewritten, and `local-preview-60` remains unchanged.
+- Gabriel Ong's LMFDB feedback is source-audited in
+  `docs/research/icerm-lmfdb-knowl-review.md`. Versioned reviewed definition
+  records and persistent labels are named-atlas data/API/QA requirements;
+  inline knowl rendering and mathematical graphics remain later UI work.
 
 ## Exact next action
 
-Claim and resolve `Supersede the external-review gate`: append the new decision
-to `docs/REVIEW_PROCESS.md`, put a visible hold in the onboarding and README,
-and preserve the earlier decision as history. Only then configure, fetch, and
-push the supplied GitHub remote without force.
+Claim `Publish the current history to the supplied remote`. Configure `origin`
+as `https://github.com/DaveArcher18/homology-db.git`, fetch first, reconcile any
+existing history without force, and push `main` only if the histories are safe.
 
 ## Verification state
 
@@ -148,9 +153,12 @@ integrity, and `git diff --check` all pass at checkpoint `2779475`.
 The database-connected review used one Snapshot and preserved typed failures.
 The external-review documents distinguish that preview evidence from planned
 corpus Models and from the future cited-implication review graph.
-The new named-atlas execution map is charted but no ticket has yet been
+The named-atlas execution map is charted and its external-review-gate ticket is
 resolved. The existing executable database remains only `local-preview-60`;
-none of the new schema, corpus, Model-kind, or QA gates is claimed complete.
+none of the new schema, corpus, Model-kind, definition, or QA gates is claimed
+complete. The review-hold documentation and ICERM/LMFDB research passed the
+scoped verification recorded in `TESTLOG.md`; the frozen preview rebuilt with
+the unchanged Snapshot ID `preview-5ea7db464f937061`.
 
 ## Recovery notes
 

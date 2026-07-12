@@ -76,3 +76,24 @@ claim that the production schema, named corpus, or reviewer gate exists.
 The first graph-audit invocation had a shell quoting syntax error and did not
 execute repository code. The simplified rerun passed and produced the result
 recorded above.
+
+## 2026-07-12 — review hold and ICERM/LMFDB feedback
+
+Scope: documentation, research, and execution-map acceptance criteria. The
+frozen `local-preview-60` implementation and database contents were not
+changed.
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 12/12 tests passed |
+| `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
+| `python3 -m compileall -q homology_db tests scripts` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
+| `python3 -m homology_db --db /tmp/homology-db-knowl-review.sqlite3 demo` | rebuilt unchanged Snapshot `preview-5ea7db464f937061` with 60 subjects |
+| modified Markdown local-link check | 15 files checked; 34 local links resolve; code fences balanced |
+| Wayfinder blocker/frontier audit | review hold resolved; publication, schema, and finite-simplicial-set admission are the open frontier |
+| `git diff --check` | passed |
+
+The first frontier-audit invocation over-escaped its digit-matching expression
+and failed inside the checker. The corrected read-only audit printed the actual
+ticket states and passed; no repository code failed.

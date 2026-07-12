@@ -20,10 +20,12 @@ For a guided Codex session, say:
 > Read `docs/TEST_DRIVE.md`, run the Homology DB test drive, and guide me
 > through three questions of my choice. Show the evidence behind each answer.
 
-For an external mathematical review, use the
-[reviewer handoff](docs/EXTERNAL_REVIEW.md). It assumes substantial topology
-experience but no familiarity with coding agents, and supplies copy-paste
-prompts, adversarial checks, and a structured feedback form.
+External mathematical review is currently **on hold**. Do not send the
+60-subject preview to Gabriel Ong, Dan Isaksen, or another reviewer as the
+proposed atlas. The [retained reviewer handoff](docs/EXTERNAL_REVIEW.md)
+documents the frozen regression fixture, but it will not become active again
+until `named-atlas-review-v1` passes its schema, named-corpus, provenance, and
+adversarial QA gates.
 
 The four public tools also accept stable JSON for agent use. See
 [the local test-drive guide](docs/TEST_DRIVE.md) for copy-paste examples,
@@ -65,9 +67,10 @@ measured persistence/query design and the release pipeline.
 12. [Local test drive](docs/TEST_DRIVE.md)
 13. [Next steps](docs/NEXT_STEPS.md)
 14. [Prepared database-connected review run](docs/REVIEW_AGENT_RUN.md)
-15. [External reviewer handoff](docs/EXTERNAL_REVIEW.md)
+15. [External reviewer handoff — on hold](docs/EXTERNAL_REVIEW.md)
 16. [Append-only review process](docs/REVIEW_PROCESS.md)
 17. [Common-example source review](docs/research/common-examples-review.md)
+18. [ICERM/LMFDB knowl and usability review](docs/research/icerm-lmfdb-knowl-review.md)
 
 ## Working position
 

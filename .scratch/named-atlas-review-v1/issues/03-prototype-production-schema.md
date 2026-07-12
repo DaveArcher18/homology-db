@@ -22,6 +22,14 @@ at the planned 1,159-Model scale?
 - Structured references and pinpoints are distinct from computation runs;
   each run records immutable inputs, outputs, algorithms, environments, and
   logs with resolvable content hashes.
+- Versioned definition records have stable hierarchical identifiers, precise
+  titles, short context-independent bodies, editorial/review history, and
+  optional citation dependencies. They remain distinct from evidence records
+  and cannot ground a Homology assertion merely by defining its terminology.
+- The executable design includes separate knowledge-entry identity, immutable
+  revision, revision-specific review, typed link, and Snapshot-selection
+  records. A Snapshot selects one exact reviewed revision; renames add aliases
+  or redirects, and corrections append revisions rather than rewriting text.
 - Homology and Completeness assertions are immutable and normalize integer
   groups, supported-field dimensions, and indexed primary summands without
   using missing rows as zero.
@@ -31,6 +39,6 @@ at the planned 1,159-Model scale?
 - An executable adversarial constellation covers multiple Models per space,
   citation-only assertions, family specialization, identities without merging,
   correction and conflict history, Model promotion, and reviewed implication
-  edges.
+  edges, plus a corrected definition whose prior version remains addressable.
 - Deterministic rebuild and integrity tests exercise the logical schema at the
   planned 1,159-Model workload before any physical-database decision.
