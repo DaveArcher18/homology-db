@@ -17,3 +17,13 @@ The local `/usr/local/bin/sage` launcher failed because its referenced
 library. Production Sage 10.9 versus FLINT adapter benchmarking remains part of
 the owned-computation ticket; this environment failure is not treated as a
 platform decision.
+
+## 2026-07-12 — database-connected review task
+
+Pinned Codex task `Review Homology DB answers`
+(`019f55a2-6b0b-7711-86cf-e716981cb01e`) completed the twelve-question review
+pack read-only. It reported 12/12 preflight tests, used only Snapshot
+`preview-5ea7db464f937061`, grounded group claims with returned assertion and
+evidence IDs, expanded subject evidence, and retained typed outcomes for the
+unsupported rational-coefficient and unresolved `CP^2` questions. Human
+mathematical and UX approval is intentionally pending in that task.

@@ -98,14 +98,17 @@ None — yielded at clean checkpoint `2779475` after the local test-drive audit.
   and field lookups, reduced conventions, example search, comparison safety,
   provenance caveats, unsupported coefficients, and a missing subject. Its
   dedicated Codex task is the next handoff action.
+- The pinned Codex task `Review Homology DB answers`
+  (`019f55a2-6b0b-7711-86cf-e716981cb01e`) completed all twelve questions
+  read-only against Snapshot `preview-5ea7db464f937061`. Its final response is
+  the human review artifact; approval remains deliberately unmarked.
 
 ## Exact next action
 
-Create and run the dedicated review-only Codex task from
-`docs/REVIEW_AGENT_RUN.md`, pin it for the user, audit its final response for
-all twelve questions and one-snapshot grounding, then record the task ID. After
-that review handoff, continue ticket 08 with the general-chain/Sage-versus-FLINT
-computation boundary described in `docs/NEXT_STEPS.md`.
+Await the user's review of pinned task `Review Homology DB answers`. After that
+review, continue ticket 08 with the general-chain/Sage-versus-FLINT computation
+boundary described in `docs/NEXT_STEPS.md`; do not treat the review demonstration
+as the frozen 100-prompt release gate.
 
 ## Verification state
 
