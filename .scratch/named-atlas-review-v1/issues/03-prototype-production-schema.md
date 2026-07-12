@@ -45,12 +45,31 @@ at the planned 1,159-Model scale?
 
 ## Checkpoint: 2026-07-12 testing tranche
 
-The first three executable SQLite migrations now separate the catalog,
-provenance, assertion/editorial, and Snapshot/Current layers. Seven atlas-
+The first four executable SQLite migrations now separate the catalog,
+provenance, assertion/editorial, and Snapshot/Current layers. Twenty atlas-
 schema tests cover domain-table separation, reviewed knowledge selection,
 definition/evidence separation, append-only base records, nonexact-value
 fences, grounded Snapshot closure for Current, and a deterministic
-1,159-Model/1,159-artifact workload under reversed insertion order.
+1,159-Model/1,159-artifact workload under reversed insertion order. The fourth
+migration extends append-only guards, rejects dangling assertion subjects,
+uses an append-only conflict ledger, and preserves separate Model identity when
+artifacts have identical bytes.
+Applied migration hashes are append-only and regression-tested against
+in-place rewrite. A real v3 database upgrades to v4 without changing the first
+three migration hashes. Byte-identical Derived artifacts also retain their
+distinct Model provenance.
+Because v3 stores only final conflict membership, v4 rejects a populated legacy
+conflict for explicit editorial migration instead of fabricating causal event
+timing; that refusal and preservation of the v3 rows are regression-tested.
+Computation inputs now require a typed, hash-matching artifact, and knowl links
+require an existing target of an implemented target kind.
+Derived artifacts require a Model. Snapshot records require a recognized,
+hash-matching target, and a Snapshot may be populated only while in its draft
+state; its single finalization seals every member and projection table against
+later inserts.
+Migration SQL and its ledger row are one transaction; a deliberately invalid
+v3 Derived artifact proves a failed v4 upgrade restores the complete v3 schema
+and data rather than leaving an unledgered partial migration.
 
 This is deliberately a partial checkpoint, not an answer to the ticket. The
 remaining integrity and adversarial-constellation work is itemized in

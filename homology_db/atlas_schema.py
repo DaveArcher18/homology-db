@@ -13,7 +13,7 @@ import sqlite3
 from pathlib import Path
 
 
-SCHEMA_VERSION = "homology-db.atlas-schema/3"
+SCHEMA_VERSION = "homology-db.atlas-schema/4"
 MIGRATION_DIRECTORY = Path(__file__).with_name("migrations")
 
 
@@ -51,12 +51,24 @@ class AtlasSchema:
                         if existing[0] != migration_hash:
                             raise ValueError("migration 1 hash changed")
                         continue
-                connection.executescript(sql)
-                connection.execute(
-                    "INSERT INTO schema_migration(version, name, sha256) VALUES (?, ?, ?)",
-                    (version, migration_path.name, migration_hash),
-                )
-                connection.commit()
+                rebuild_pragmas = version >= 4
+                if rebuild_pragmas:
+                    connection.execute("PRAGMA foreign_keys = OFF")
+                    connection.execute("PRAGMA legacy_alter_table = ON")
+                try:
+                    connection.executescript(f"BEGIN IMMEDIATE;\n{sql}")
+                    connection.execute(
+                        "INSERT INTO schema_migration(version, name, sha256) VALUES (?, ?, ?)",
+                        (version, migration_path.name, migration_hash),
+                    )
+                    connection.commit()
+                except Exception:
+                    connection.rollback()
+                    raise
+                finally:
+                    if rebuild_pragmas:
+                        connection.execute("PRAGMA legacy_alter_table = OFF")
+                        connection.execute("PRAGMA foreign_keys = ON")
             applied = connection.execute("SELECT MAX(version) FROM schema_migration").fetchone()[0]
         return f"homology-db.atlas-schema/{applied}"
 
