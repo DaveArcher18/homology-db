@@ -60,6 +60,58 @@ class LocalPreviewTests(unittest.TestCase):
         )
         self.assertEqual(answer["unresolved_candidates"], [])
 
+    def test_limited_example_query_discloses_total_truncation_and_evidence(self) -> None:
+        answer = self.tools.query_examples({"degree": 1, "torsion_prime": 5, "limit": 1})
+        self.assertEqual(answer["outcome"], "proven_matches")
+        self.assertEqual(answer["total_matches"], 3)
+        self.assertTrue(answer["truncated"])
+        self.assertEqual(len(answer["matches"]), 1)
+        self.assertTrue(answer["matches"][0]["evidence_id"])
+
+    def test_empty_example_query_is_explicitly_snapshot_bounded(self) -> None:
+        answer = self.tools.query_examples({"degree": 1, "torsion_prime": 11})
+        self.assertEqual(answer["outcome"], "proven_matches")
+        self.assertEqual(answer["matches"], [])
+        self.assertEqual(answer["total_matches"], 0)
+        self.assertEqual(answer["coverage"]["scope"], "selected_snapshot_assertions")
+        self.assertEqual(answer["coverage"]["subject_count"], 60)
+        self.assertFalse(answer["coverage"]["globally_exhaustive"])
+
+    def test_example_query_rejects_invalid_domains_instead_of_proving_emptiness(self) -> None:
+        invalid_patterns = [
+            {"reduced": 1},
+            {"degree": True},
+            {"degree": -1},
+            {"torsion_prime": 1},
+            {"torsion_prime": 4},
+            {"limit": 0},
+            {"limit": -1},
+            {"limit": True},
+        ]
+        for pattern in invalid_patterns:
+            with self.subTest(pattern=pattern):
+                answer = self.tools.query_examples(pattern)
+                self.assertEqual(answer["outcome"], "invalid_pattern")
+                self.assertNotIn("matches", answer)
+
+    def test_example_query_rejects_wrong_typed_predicates(self) -> None:
+        invalid_patterns = [
+            {"family": 2},
+            {"family": ""},
+            {"coefficient": 2},
+            {"contains_torsion_order": "5"},
+            {"contains_torsion_order": 1},
+            {"contains_torsion_order": True},
+            {"free_rank_at_least": "1"},
+            {"free_rank_at_least": -1},
+            {"free_rank_at_least": True},
+        ]
+        for pattern in invalid_patterns:
+            with self.subTest(pattern=pattern):
+                answer = self.tools.query_examples(pattern)
+                self.assertEqual(answer["outcome"], "invalid_pattern")
+                self.assertNotIn("matches", answer)
+
     def test_evidence_expansion_discloses_missing_capabilities(self) -> None:
         homology = self.tools.read_homology("Klein bottle")
         evidence_id = homology["groups"][1]["evidence_id"]
@@ -76,6 +128,15 @@ class LocalPreviewTests(unittest.TestCase):
         self.assertEqual(answer["outcome"], "unsupported_coefficient")
         self.assertNotIn("groups", answer)
 
+    def test_reduced_requires_a_boolean_instead_of_selecting_empty_groups(self) -> None:
+        answer = self.tools.call({
+            "tool": "read_homology",
+            "arguments": {"subject": "S^2", "coefficient": "Z", "reduced": 2},
+        })
+        self.assertEqual(answer["outcome"], "invalid_request")
+        self.assertIn("reduced", answer["reason"])
+        self.assertNotIn("groups", answer)
+
     def test_unknown_subject_preserves_the_resolver_outcome(self) -> None:
         answer = self.tools.call({
             "tool": "read_homology",
@@ -90,6 +151,30 @@ class LocalPreviewTests(unittest.TestCase):
         self.assertEqual(answer["outcome"], "invalid_request")
         self.assertIn("JSON object", answer["reason"])
 
+    def test_tool_name_errors_are_typed_and_snapshot_bound(self) -> None:
+        unknown = self.tools.call({"tool": "invent_homotopy", "arguments": {}})
+        self.assertEqual(unknown["outcome"], "unknown_tool")
+        self.assertEqual(unknown["snapshot_id"], self.snapshot_id)
+        for request in ({"arguments": {}}, {"tool": 42, "arguments": {}}):
+            with self.subTest(request=request):
+                answer = self.tools.call(request)
+                self.assertEqual(answer["outcome"], "invalid_request")
+                self.assertEqual(answer["snapshot_id"], self.snapshot_id)
+
+    def test_public_argument_types_return_snapshot_bound_errors(self) -> None:
+        requests = [
+            {"tool": "resolve_subject", "arguments": {"query": 42}},
+            {"tool": "read_homology", "arguments": {"subject": ["S^2"]}},
+            {"tool": "query_examples", "arguments": {"pattern": "degree one"}},
+            {"tool": "expand_evidence", "arguments": {"evidence_ids": {"id": "x"}}},
+        ]
+        for request in requests:
+            with self.subTest(request=request):
+                answer = self.tools.call(request)
+                self.assertEqual(answer["outcome"], "invalid_request")
+                self.assertEqual(answer["snapshot_id"], self.snapshot_id)
+                self.assertIn("reason", answer)
+
     def test_cli_executes_the_same_json_tool_interface(self) -> None:
         request = {"tool": "read_homology", "arguments": {"subject": "S^2", "coefficient": "Z"}}
         completed = subprocess.run(
@@ -103,6 +188,20 @@ class LocalPreviewTests(unittest.TestCase):
         answer = json.loads(completed.stdout)
         self.assertEqual(answer["outcome"], "selected")
         self.assertEqual(answer["groups"][2]["value"]["display"], "Z")
+
+    def test_invalid_cli_json_is_bound_to_the_built_snapshot(self) -> None:
+        completed = subprocess.run(
+            [sys.executable, "-m", "homology_db", "--db", str(self.database_path),
+             "tool", "{"],
+            cwd=ROOT,
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(completed.returncode, 2)
+        answer = json.loads(completed.stdout)
+        self.assertEqual(answer["outcome"], "invalid_json")
+        self.assertEqual(answer["snapshot_id"], self.snapshot_id)
 
     def test_demo_is_a_concise_human_mathematical_tour(self) -> None:
         completed = subprocess.run(

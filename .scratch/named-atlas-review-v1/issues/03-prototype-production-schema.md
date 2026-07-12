@@ -1,7 +1,7 @@
 Type: prototype
-Status: open
-Claimed by:
-Claimed at:
+Status: claimed
+Claimed by: /root (interactive chat)
+Claimed at: 2026-07-12T12:49:29Z
 Blocked by: 01
 
 # Prototype the production assertion and provenance schema
@@ -42,3 +42,19 @@ at the planned 1,159-Model scale?
   edges, plus a corrected definition whose prior version remains addressable.
 - Deterministic rebuild and integrity tests exercise the logical schema at the
   planned 1,159-Model workload before any physical-database decision.
+
+## Checkpoint: 2026-07-12 testing tranche
+
+The first three executable SQLite migrations now separate the catalog,
+provenance, assertion/editorial, and Snapshot/Current layers. Seven atlas-
+schema tests cover domain-table separation, reviewed knowledge selection,
+definition/evidence separation, append-only base records, nonexact-value
+fences, grounded Snapshot closure for Current, and a deterministic
+1,159-Model/1,159-artifact workload under reversed insertion order.
+
+This is deliberately a partial checkpoint, not an answer to the ticket. The
+remaining integrity and adversarial-constellation work is itemized in
+[`docs/contracts/atlas-schema-prototype-v1.md`](../../../docs/contracts/atlas-schema-prototype-v1.md).
+In particular, the editorial reducer, conflict maximality, normalized group
+audits, family specialization, Model promotion, complete transitive closure,
+and canonical full-Snapshot/Current rebuild are not yet proven.

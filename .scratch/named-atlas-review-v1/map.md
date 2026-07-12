@@ -45,6 +45,9 @@ with no critical mathematical-safety, schema, or provenance defect.
   — Keep `local-preview-60` as a frozen regression fixture, place external
   review on hold until `named-atlas-review-v1` passes, and carry Gabriel Ong's
   knowl/naming feedback into schema, operation, QA, and audit acceptance.
+- [Publish the current history](issues/02-publish-current-history.md) — Fetch
+  the empty supplied GitHub repository, push `main` without force, and track
+  `origin/main` at the held-review checkpoint.
 
 ## Not yet specified
 

@@ -71,6 +71,8 @@ measured persistence/query design and the release pipeline.
 16. [Append-only review process](docs/REVIEW_PROCESS.md)
 17. [Common-example source review](docs/research/common-examples-review.md)
 18. [ICERM/LMFDB knowl and usability review](docs/research/icerm-lmfdb-knowl-review.md)
+19. [Topology-agent question benchmark](docs/research/topology-agent-question-benchmark.md)
+20. [Atlas schema prototype contract](docs/contracts/atlas-schema-prototype-v1.md)
 
 ## Working position
 

@@ -21,12 +21,13 @@ without an explicit user request here.
 
 ## Current ticket
 
-None — `Supersede the external-review gate` is resolved; the next frontier is
-`Publish the current history to the supplied remote`.
+`Prototype the production assertion and provenance schema`, claimed by
+`/root (interactive chat)` at 2026-07-12T12:49:29Z.
 
 ## Active run lease
 
-None — this checkpoint is ready for verification and commit.
+`/root (interactive chat)` — active from 2026-07-12T12:49:29Z while building
+the first test-driven production-schema slices and coordinating audits.
 
 ## Last checkpoint
 
@@ -124,12 +125,25 @@ None — this checkpoint is ready for verification and commit.
   `docs/research/icerm-lmfdb-knowl-review.md`. Versioned reviewed definition
   records and persistent labels are named-atlas data/API/QA requirements;
   inline knowl rendering and mathematical graphics remain later UI work.
+- `origin` now points to `DaveArcher18/homology-db`; the previously empty
+  remote accepted `main` without force at commit `6c4e99c`, and local `main`
+  tracks `origin/main`.
+- Online research produced a 68-question topology-agent benchmark. An initial
+  89-case adversarial run exposed preview safety defects; red-green fixes and a
+  72-case rerun eliminated the crashes, apparent-empty invalid queries,
+  ungrounded query matches, unmarked truncation, and unbound parsed errors.
+- Ticket 03 now has three executable migrations and seven schema tests,
+  including a deterministic 1,159-Model workload. Independent audit correctly
+  classifies it as a partial skeleton; unsafe bare-assertion Current selection
+  was closed, while the remaining reducer/integrity work stays explicit.
 
 ## Exact next action
 
-Claim `Publish the current history to the supplied remote`. Configure `origin`
-as `https://github.com/DaveArcher18/homology-db.git`, fetch first, reconcile any
-existing history without force, and push `main` only if the histories are safe.
+Finish the scoped verification and two-axis review, commit and push this
+testing/schema checkpoint, then continue ticket 03 with the exact-value
+normalization and append-only editorial reducer fixtures. Preserve the frozen
+cohort and do not claim named-atlas mathematical coverage that has not yet been
+sourced and materialized.
 
 ## Verification state
 

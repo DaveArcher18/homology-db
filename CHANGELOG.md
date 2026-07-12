@@ -20,5 +20,9 @@
   Roe's ICERM talk; the named-atlas gate now includes versioned, reviewed
   knowl-like definitions and persistent labels while deferring graphics and
   inline browser rendering.
+- Added a 68-question source-backed topology-agent benchmark, hardened the
+  frozen preview's public error/search envelopes after an 89-case adversarial
+  audit, and introduced the first migration-driven production-schema prototype
+  with deterministic 1,159-Model workload checks.
 
 Verification is recorded in [TESTLOG.md](TESTLOG.md).

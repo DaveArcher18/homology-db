@@ -249,6 +249,12 @@ def prime_parts(order: int) -> Iterable[tuple[int, int]]:
         yield order, 1
 
 
+def is_prime(value: int) -> bool:
+    if value < 2:
+        return False
+    return all(value % divisor for divisor in range(2, math.isqrt(value) + 1))
+
+
 def manifold_specs() -> list[dict[str, Any]]:
     specs: list[dict[str, Any]] = []
 
@@ -401,6 +407,9 @@ class Tools:
         }
 
     def resolve_subject(self, query: str) -> dict[str, Any]:
+        if not isinstance(query, str) or not query.strip():
+            return {"tool": "resolve_subject", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_request", "reason": "query must be a nonempty string"}
         normalized = normalize_name(query)
         rows = self.connection.execute(
             "SELECT DISTINCT s.space_id, s.label, s.family FROM alias a JOIN space s USING(space_id) WHERE a.normalized_alias = ? ORDER BY s.space_id",
@@ -418,6 +427,15 @@ class Tools:
                 "candidates": [dict(row) for row in rows]}
 
     def read_homology(self, subject: str, coefficient: str = "Z", reduced: bool = False) -> dict[str, Any]:
+        if not isinstance(subject, str) or not subject.strip():
+            return {"tool": "read_homology", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_request", "reason": "subject must be a nonempty string"}
+        if not isinstance(coefficient, str):
+            return {"tool": "read_homology", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_request", "reason": "coefficient must be a string"}
+        if not isinstance(reduced, bool):
+            return {"tool": "read_homology", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_request", "reason": "reduced must be a boolean"}
         if coefficient not in COEFFICIENTS:
             return {"tool": "read_homology", "snapshot_id": self.snapshot_id,
                     "outcome": "unsupported_coefficient", "supported": list(COEFFICIENTS)}
@@ -448,12 +466,61 @@ class Tools:
                 "groups": groups, "upper_vanishing_starts_at": space["dimension"] + 1}
 
     def query_examples(self, pattern: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(pattern, dict):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_request", "reason": "pattern must be a JSON object"}
         allowed = {"family", "coefficient", "reduced", "degree", "torsion_prime",
                    "contains_torsion_order", "free_rank_at_least", "limit"}
         unknown = set(pattern) - allowed
         if unknown:
             return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
                     "outcome": "invalid_pattern", "unknown_fields": sorted(unknown)}
+        if "family" in pattern and (
+            not isinstance(pattern["family"], str) or not pattern["family"]
+        ):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "family must be a nonempty string"}
+        if "coefficient" in pattern and not isinstance(pattern["coefficient"], str):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "coefficient must be a string"}
+        if "reduced" in pattern and not isinstance(pattern["reduced"], bool):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "reduced must be a boolean"}
+        if "degree" in pattern and (
+            not isinstance(pattern["degree"], int)
+            or isinstance(pattern["degree"], bool)
+            or pattern["degree"] < 0
+        ):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "degree must be a nonnegative integer"}
+        if "torsion_prime" in pattern and (
+            not isinstance(pattern["torsion_prime"], int)
+            or isinstance(pattern["torsion_prime"], bool)
+            or not is_prime(pattern["torsion_prime"])
+        ):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "torsion_prime must be a prime integer"}
+        if "limit" in pattern and (
+            not isinstance(pattern["limit"], int)
+            or isinstance(pattern["limit"], bool)
+            or not 1 <= pattern["limit"] <= 100
+        ):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "limit must be an integer from 1 through 100"}
+        if "contains_torsion_order" in pattern and (
+            not isinstance(pattern["contains_torsion_order"], int)
+            or isinstance(pattern["contains_torsion_order"], bool)
+            or pattern["contains_torsion_order"] <= 1
+        ):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "contains_torsion_order must be an integer greater than 1"}
+        if "free_rank_at_least" in pattern and (
+            not isinstance(pattern["free_rank_at_least"], int)
+            or isinstance(pattern["free_rank_at_least"], bool)
+            or pattern["free_rank_at_least"] < 0
+        ):
+            return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_pattern", "reason": "free_rank_at_least must be a nonnegative integer"}
         coefficient = pattern.get("coefficient", "Z")
         if coefficient not in COEFFICIENTS:
             return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
@@ -483,25 +550,47 @@ class Tools:
                         "outcome": "invalid_pattern", "reason": "torsion filters require coefficient Z"}
             clauses.append("EXISTS (SELECT 1 FROM json_each(h.torsion_json) WHERE value = ?)")
             parameters.append(int(pattern["contains_torsion_order"]))
+        selected_columns = (
+            "s.space_id, s.label, s.family, h.degree, h.free_rank, "
+            "h.torsion_json, h.assertion_id, h.evidence_id"
+        )
+        from_where = (
+            " FROM homology h JOIN space s USING(space_id)" + joins
+            + " WHERE " + " AND ".join(clauses)
+        )
+        total_matches = self.connection.execute(
+            "SELECT COUNT(*) FROM (SELECT DISTINCT " + selected_columns
+            + from_where + ") AS candidates",
+            parameters,
+        ).fetchone()[0]
+        limit = pattern.get("limit", 20)
         rows = self.connection.execute(
-            "SELECT DISTINCT s.space_id, s.label, s.family, h.degree, h.free_rank, h.torsion_json, h.assertion_id "
-            "FROM homology h JOIN space s USING(space_id)" + joins + " WHERE " + " AND ".join(clauses) +
-            " ORDER BY s.family, s.label, h.degree LIMIT ?",
-            (*parameters, min(100, int(pattern.get("limit", 20)))),
+            "SELECT DISTINCT " + selected_columns + from_where
+            + " ORDER BY s.family, s.label, h.degree LIMIT ?",
+            (*parameters, limit),
         ).fetchall()
         matches = []
         for row in rows:
             torsion = json.loads(row["torsion_json"])
             matches.append({**dict(row), "torsion_orders": torsion})
             matches[-1].pop("torsion_json")
+        subject_count = self.connection.execute(
+            "SELECT corpus_count FROM snapshot WHERE snapshot_id = ?", (self.snapshot_id,)
+        ).fetchone()[0]
         return {"tool": "query_examples", "snapshot_id": self.snapshot_id,
                 "outcome": "proven_matches", "pattern": pattern, "matches": matches,
+                "total_matches": total_matches, "truncated": len(matches) < total_matches,
+                "coverage": {"scope": "selected_snapshot_assertions",
+                             "subject_count": subject_count, "globally_exhaustive": False},
                 "unresolved_candidates": []}
 
     def expand_evidence(self, evidence_ids: list[str]) -> dict[str, Any]:
-        if not evidence_ids:
+        if not isinstance(evidence_ids, list) or not evidence_ids:
             return {"tool": "expand_evidence", "snapshot_id": self.snapshot_id,
-                    "outcome": "invalid_request", "reason": "evidence_ids must be nonempty"}
+                    "outcome": "invalid_request", "reason": "evidence_ids must be a nonempty array"}
+        if any(not isinstance(evidence_id, str) or not evidence_id for evidence_id in evidence_ids):
+            return {"tool": "expand_evidence", "snapshot_id": self.snapshot_id,
+                    "outcome": "invalid_request", "reason": "every evidence_id must be a nonempty string"}
         placeholders = ",".join("?" for _ in evidence_ids)
         rows = self.connection.execute(
             f"SELECT evidence_id, space_id, algorithm_id, chain_sha256, representatives_state, induced_maps_state FROM evidence WHERE evidence_id IN ({placeholders}) ORDER BY evidence_id",
@@ -528,8 +617,15 @@ class Tools:
             "query_examples": self.query_examples,
             "expand_evidence": self.expand_evidence,
         }
+        if tool is None:
+            return {"outcome": "invalid_request", "snapshot_id": self.snapshot_id,
+                    "reason": "tool is required"}
+        if not isinstance(tool, str):
+            return {"outcome": "invalid_request", "snapshot_id": self.snapshot_id,
+                    "reason": "tool must be a string"}
         if tool not in dispatch:
-            return {"outcome": "unknown_tool", "supported_tools": sorted(dispatch)}
+            return {"tool": tool, "outcome": "unknown_tool", "snapshot_id": self.snapshot_id,
+                    "supported_tools": sorted(dispatch)}
         try:
             return dispatch[tool](**arguments)
         except (TypeError, ValueError) as error:
@@ -587,10 +683,13 @@ def main() -> int:
         return 0
     if not args.db.exists():
         PreviewDatabase.build(args.db)
+    with sqlite3.connect(args.db) as connection:
+        snapshot_id = connection.execute("SELECT snapshot_id FROM snapshot").fetchone()[0]
     try:
         request = json.loads(args.request)
     except json.JSONDecodeError as error:
-        print_json({"outcome": "invalid_json", "reason": str(error)})
+        print_json({"outcome": "invalid_json", "snapshot_id": snapshot_id,
+                    "reason": str(error)})
         return 2
     print_json(Tools(args.db).call(request))
     return 0

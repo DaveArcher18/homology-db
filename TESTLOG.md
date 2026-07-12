@@ -97,3 +97,81 @@ changed.
 The first frontier-audit invocation over-escaped its digit-matching expression
 and failed inside the checker. The corrected read-only audit printed the actual
 ticket states and passed; no repository code failed.
+
+## 2026-07-12 — question-driven adversarial and schema testing
+
+Scope: online question research, adversarial testing through the four public
+operations, preview safety hardening without changing the 60-subject cohort,
+and the first separate production-schema migrations.
+
+### Research and adversarial breadth
+
+- A primary-source research agent produced 68 ordered prospective questions
+  across named families, coefficients and reduced conventions, constructions,
+  comparison safety, provenance/editorial history, and typed unsupported
+  boundaries. Public Q&A is used only as question-pattern evidence; Hatcher,
+  May, official Sage documentation, and repository contracts are the proposed
+  assertion-evidence sources.
+- A read-only adversarial agent ran 89 initial CLI/envelope cases against one
+  disposable Snapshot. It found four crashes, unsafe acceptance of non-boolean
+  `reduced`, invalid/truncated searches that could resemble mathematical
+  emptiness, unbound error envelopes, string/dictionary iteration bugs, and
+  missing query evidence IDs.
+- After the red-green fixes, the agent ran 72 focused cases with zero crashes
+  and confirmed every original safety defect fixed. A manual follow-up verified
+  that integral-valued JSON floats for degree, torsion prime, and limit are also
+  rejected as `invalid_pattern`; the agent's contrary three-case note was stale
+  relative to the final files.
+
+### Red-green public-seam slices
+
+Each preview change was first observed failing through `Tools.call`,
+`query_examples`, or the CLI JSON envelope, then made green:
+
+1. non-boolean `reduced` cannot select empty groups;
+2. malformed public argument types return Snapshot-bound errors, not crashes;
+3. invalid degrees, primes, limits, and reduced predicates cannot prove an
+   empty result;
+4. wrong-typed family/coefficient/torsion/free-rank predicates are rejected;
+5. bounded result sets expose total count and truncation;
+6. query matches include evidence IDs;
+7. empty searches disclose Snapshot-bounded, non-global coverage;
+8. unknown/missing/nonstring tool names have typed Snapshot-bound envelopes;
+9. invalid CLI JSON is bound to the already-built Snapshot; and
+10. the original supported mathematical lookups remain unchanged.
+
+### Atlas-schema slices
+
+- Three hashed SQLite migrations separate Conceptual spaces, names/families,
+  Models and three artifact kinds, structured references, runs, immutable
+  assertions, normalized group representations, evidence/dependencies,
+  editorial history, conflicts, knowledge revisions, Snapshots, and Current.
+- Integrity tests reject mismatched/unreviewed Snapshot knowls, knowledge prose
+  used as assertion evidence, in-place base assertion/knowledge rewrites,
+  values on nonexact assertions, and Current selection without a same-slot
+  Homology subtype, exact value when exact, typed evidence, accepted review,
+  admission event, and hash-matching Snapshot closure.
+- Forward and reverse insertion of 1,159 synthetic Models and 1,159 Model
+  artifacts produce byte-identical canonical logical exports.
+- An independent schema audit found this remains a skeleton rather than a safe
+  complete production projection. The unresolved reducer, normalization,
+  conflict, promotion, completeness, immutability, and closure requirements are
+  retained in `docs/contracts/atlas-schema-prototype-v1.md`; ticket 03 remains
+  claimed rather than falsely resolved.
+
+### Verification
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 27/27 tests passed |
+| `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
+| `python3 -m compileall -q homology_db tests scripts` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
+| frozen preview demo and Snapshot check | rebuilt 60 subjects with unchanged Snapshot `preview-5ea7db464f937061` |
+| SQLite `PRAGMA integrity_check` and `foreign_key_check` for atlas workload | `ok`; no foreign-key violations; 1,159 Models and 1,159 artifacts; canonical SHA-256 `2fe3f2cbb1eebe62ca32be9380f910ce6514fe951e6f2e2987983401b91df0c6` |
+| Markdown links, benchmark IDs, and `git diff --check` | 17 files and 35 local links checked; code fences balanced; 68 unique benchmark IDs; diff check passed |
+| independent two-axis code review | pending final run |
+
+The first benchmark-ID command over-escaped its table-row regular expression
+and matched empty alternatives throughout the document. The corrected literal
+row matcher found exactly 68 unique IDs; no benchmark content failed.
