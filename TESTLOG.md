@@ -55,3 +55,24 @@ once, retained Snapshot `preview-5ea7db464f937061` through both phases, and is
 recorded with its exact ordered payloads in `docs/REVIEW_PROCESS.md`.
 Remote research links were opened during the primary-source survey; they are
 reference inputs, not database evidence for preview answers.
+
+## 2026-07-12 — named-atlas execution-map checkpoint
+
+Scope: planning and continuity only. This checkpoint adds the active
+`named-atlas-review-v1` Wayfinder map and its blocking tickets; it does not
+claim that the production schema, named corpus, or reviewer gate exists.
+
+| Check | Result |
+| --- | --- |
+| Wayfinder ticket graph audit | ten tickets are numbered uniquely; every blocker exists; the first frontier is `Supersede the external-review gate`; publication and external review remain blocked |
+| `python3 -m unittest discover -s tests -v` | 12/12 tests passed |
+| `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
+| `python3 -m compileall -q homology_db tests scripts` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
+| `python3 -m homology_db --db /tmp/homology-db-named-atlas-map.sqlite3 demo` | rebuilt the frozen 60-subject Snapshot `preview-5ea7db464f937061` and completed the tour |
+| `git diff --check` | passed |
+| two-axis standards/spec review | initial map-specificity findings corrected; final re-audits reported no remaining defect |
+
+The first graph-audit invocation had a shell quoting syntax error and did not
+execute repository code. The simplified rerun passed and produced the result
+recorded above.

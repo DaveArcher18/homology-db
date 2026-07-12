@@ -13,5 +13,8 @@
   agent prompts, adversarial checks, and structured feedback.
 - Added an append-only review-process record and a source-backed priority
   survey for the next named mathematical examples.
+- Charted the blocking execution map for `named-atlas-review-v1`, which freezes
+  the 60-subject preview as a regression fixture and postpones external review
+  until the named-atlas schema, corpus, provenance, and QA gates pass.
 
 Verification is recorded in [TESTLOG.md](TESTLOG.md).

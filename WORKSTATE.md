@@ -4,14 +4,14 @@ Status: ACTIVE
 
 ## Objective
 
-Deliver a verified `0.0.1` Homology DB with many finite CW/simplicial models,
-efficient torsion-pattern queries, and structured evidence-bearing results. A
-QA-connected agent must demonstrably answer basic Homology questions about many
-common manifolds. UI and CW rendering are deferred.
+Deliver a verified `named-atlas-review-v1` Homology DB over a production-like
+assertion/provenance schema, with cited `RP^n` and `CP^n` family coverage,
+grounded instances through `n = 12`, representative qualified Models, and
+a tool-constrained QA gate that passes before any external review.
 
 ## Active map
 
-`.scratch/homology-db-v0-0-1/map.md`
+`.scratch/named-atlas-review-v1/map.md`
 
 ## Control mode
 
@@ -21,8 +21,8 @@ without an explicit user request here.
 
 ## Current ticket
 
-Ticket 08 — `Prototype the owned cellular-homology boundary`, claimed by
-`/root (interactive chat)` at 2026-07-11T17:26:42Z.
+None — the named-atlas map is charted; the first frontier ticket is
+`Supersede the external-review gate`.
 
 ## Active run lease
 
@@ -110,14 +110,21 @@ path under `INTERACTIVE_ONLY`.
 - The external-review handoff now targets Gabriel Ong and Dan Isaksen before
   any hosting decision. Review history is append-only, and `CP^2` is the first
   post-review polish blocker rather than an ungrounded preview fact.
+- `1fd137b` added the external reviewer handoff and append-only review process.
+- The user then superseded the intended timing: no Gabriel Ong or Dan Isaksen
+  review may begin until a separate named atlas and production-like schema pass
+  their full gate. `local-preview-60` remains a frozen regression fixture.
+- The execution route is now charted under
+  `.scratch/named-atlas-review-v1/`, with primary-source family theorems,
+  materialized `RP^0..12` and `CP^0..12`, representative hybrid Model
+  evidence, finite-simplicial-set investigation, and a new QA gate.
 
 ## Exact next action
 
-Share `docs/EXTERNAL_REVIEW.md` with Gabriel Ong and Dan Isaksen and append
-their verdicts to `docs/REVIEW_PROCESS.md`. Before any public hosting, continue
-ticket 08 through the general-chain/Sage-versus-FLINT boundary and qualify the
-pinned `CP^2` triangulation; do not alter the frozen 60-subject cohort or treat
-the review demonstration as the frozen 100-prompt release gate.
+Claim and resolve `Supersede the external-review gate`: append the new decision
+to `docs/REVIEW_PROCESS.md`, put a visible hold in the onboarding and README,
+and preserve the earlier decision as history. Only then configure, fetch, and
+push the supplied GitHub remote without force.
 
 ## Verification state
 
@@ -141,6 +148,9 @@ integrity, and `git diff --check` all pass at checkpoint `2779475`.
 The database-connected review used one Snapshot and preserved typed failures.
 The external-review documents distinguish that preview evidence from planned
 corpus Models and from the future cited-implication review graph.
+The new named-atlas execution map is charted but no ticket has yet been
+resolved. The existing executable database remains only `local-preview-60`;
+none of the new schema, corpus, Model-kind, or QA gates is claimed complete.
 
 ## Recovery notes
 
