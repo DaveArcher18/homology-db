@@ -1,0 +1,67 @@
+{
+  "schema_version": "homology-db.review-questions/1",
+  "cohort": "local-preview-60",
+  "snapshot_policy": "one_snapshot_only",
+  "questions": [
+    {
+      "id": "R01",
+      "category": "integral_lookup",
+      "question": "What is the integral homology of the Klein bottle?"
+    },
+    {
+      "id": "R02",
+      "category": "coefficient_comparison",
+      "question": "Compute the integral and F2 homology of RP^4 and explain the difference using only returned groups."
+    },
+    {
+      "id": "R03",
+      "category": "reduced_coefficients",
+      "question": "What is the reduced F5 homology of L(5,2)?"
+    },
+    {
+      "id": "R04",
+      "category": "integral_lookup",
+      "question": "Give every integral homology group of the 4-torus T^4."
+    },
+    {
+      "id": "R05",
+      "category": "integral_lookup",
+      "question": "Give the integral homology of Sigma_3 x S^1."
+    },
+    {
+      "id": "R06",
+      "category": "integral_lookup",
+      "question": "Give the integral homology of S^2 x S^4."
+    },
+    {
+      "id": "R07",
+      "category": "provenance_caveat",
+      "question": "Give the integral homology of D^4 and explain exactly what kind of chain model supports the preview answer."
+    },
+    {
+      "id": "R08",
+      "category": "example_query",
+      "question": "Find all preview examples proven to have 5-primary torsion in H_1."
+    },
+    {
+      "id": "R09",
+      "category": "comparison_safety",
+      "question": "Compare the integral homology of L(5,1) and L(5,2). State what the equal homology does not prove."
+    },
+    {
+      "id": "R10",
+      "category": "reduced_lookup",
+      "question": "Give the reduced integral homology of S^3."
+    },
+    {
+      "id": "R11",
+      "category": "unsupported_input",
+      "question": "What is the rational homology of S^2 according to this preview?"
+    },
+    {
+      "id": "R12",
+      "category": "missing_subject",
+      "question": "What is the integral homology of CP^2 according to this preview?"
+    }
+  ]
+}

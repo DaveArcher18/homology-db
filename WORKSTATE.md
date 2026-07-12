@@ -94,13 +94,18 @@ None — yielded at clean checkpoint `2779475` after the local test-drive audit.
   Wayfinder execution route. The preview remains explicitly distinct from
   qualified `0.0.1` release evidence.
 - The durable local preview and handoff were committed as `2779475`.
+- A frozen twelve-question database-connected review pack now covers integral
+  and field lookups, reduced conventions, example search, comparison safety,
+  provenance caveats, unsupported coefficients, and a missing subject. Its
+  dedicated Codex task is the next handoff action.
 
 ## Exact next action
 
-On resumption, continue ticket 08 from `2779475`: introduce a general-chain
-fixture with adjacent nonzero boundaries and benchmark a pinned SageMath 10.9
-adapter against direct FLINT alternatives while retaining Smith transforms,
-representatives, induced maps, deterministic run records, and oracle evidence.
+Create and run the dedicated review-only Codex task from
+`docs/REVIEW_AGENT_RUN.md`, pin it for the user, audit its final response for
+all twelve questions and one-snapshot grounding, then record the task ID. After
+that review handoff, continue ticket 08 with the general-chain/Sage-versus-FLINT
+computation boundary described in `docs/NEXT_STEPS.md`.
 
 ## Verification state
 

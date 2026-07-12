@@ -59,6 +59,7 @@ measured persistence/query design and the release pipeline.
 11. [Pinned LMFDB documentation](docs/upstream/lmfdb/UPSTREAM.md)
 12. [Local test drive](docs/TEST_DRIVE.md)
 13. [Next steps](docs/NEXT_STEPS.md)
+14. [Prepared database-connected review run](docs/REVIEW_AGENT_RUN.md)
 
 ## Working position
 
