@@ -132,18 +132,41 @@ the first test-driven production-schema slices and coordinating audits.
   89-case adversarial run exposed preview safety defects; red-green fixes and a
   72-case rerun eliminated the crashes, apparent-empty invalid queries,
   ungrounded query matches, unmarked truncation, and unbound parsed errors.
-- Ticket 03 now has three executable migrations and seven schema tests,
+- Ticket 03 now has four executable migrations and twenty schema tests,
   including a deterministic 1,159-Model workload. Independent audit correctly
-  classifies it as a partial skeleton; unsafe bare-assertion Current selection
-  was closed, while the remaining reducer/integrity work stays explicit.
+  classifies it as a partial skeleton; unsafe bare-assertion Current selection,
+  mutable conflict authority, mutable claim components, dangling assertion
+  subjects, dangling computation inputs/knowl links, mutable migration hashes,
+  and cross-Model artifact merging were closed. A committed v3 database now
+  upgrades to v4 without rewriting prior migrations. The remaining map/field
+  references, populated-legacy-conflict editorial migration, reducer,
+  normalization, and closure work stays explicit.
+- Final standards review additionally closed late mutation of finalized
+  Snapshots, arbitrary/dangling Snapshot records, and Model-free Derived
+  artifacts. Snapshot construction now has an explicit draft-to-sealed
+  transition and rejects all later membership/projection inserts.
+- Migration application is atomic with its ledger insert. A failed v4 data
+  qualification now rolls back every DDL change and preserves the v3 database.
+- `33e91c2` commits the final atlas integrity/adversarial checkpoint as a
+  coherent scope. Final specification and standards re-audits report no hard
+  checkpoint violation after the Snapshot, provenance, migration, and commit-
+  scope corrections.
+- The final 72-case preview adversarial replay is machine-readable under
+  `qa/audits/` and runs through the real CLI in the regular unit suite.
+- The eventual Gabriel Ong/Dan Isaksen handoff now has a recorded 7--9 minute
+  Loom storyboard, clean-clone terminal script, reviewer prompt, email draft,
+  recording checklist, and append-only metadata template in
+  `docs/LOOM_WALKTHROUGH.md`. An internal preview rehearsal is allowed, but the
+  external cut remains blocked by `named-atlas-review-v1`.
 
 ## Exact next action
 
-Finish the scoped verification and two-axis review, commit and push this
-testing/schema checkpoint, then continue ticket 03 with the exact-value
-normalization and append-only editorial reducer fixtures. Preserve the frozen
-cohort and do not claim named-atlas mathematical coverage that has not yet been
-sourced and materialized.
+Continue ticket 03 with typed map/public-field integrity, exact-value
+normalization, the append-only editorial reducer, and an explicit policy for
+terminal computation-run records. Rehearse the Loom internally only when useful
+for pacing; do not record or send its external cut until the named-atlas gate
+passes. Preserve the frozen cohort and do not claim named-atlas mathematical
+coverage that has not yet been sourced and materialized.
 
 ## Verification state
 

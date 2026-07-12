@@ -24,5 +24,13 @@
   frozen preview's public error/search envelopes after an 89-case adversarial
   audit, and introduced the first migration-driven production-schema prototype
   with deterministic 1,159-Model workload checks.
+- Added a machine-replayable 72-case CLI audit to the unit suite and tightened
+  prototype integrity around immutable claim components, grounded Current
+  selection, append-only conflicts, assertion subjects, and distinct Models
+  that share byte-identical Model or Derived artifacts. Added an executable
+  v3-to-v4 upgrade and immutable migration-ledger checks.
+- Added a timed reviewer Loom storyboard, recording gate, terminal checklist,
+  reviewer prompt, email draft, and append-only recording metadata template for
+  the eventual Gabriel Ong and Dan Isaksen handoff.
 
 Verification is recorded in [TESTLOG.md](TESTLOG.md).

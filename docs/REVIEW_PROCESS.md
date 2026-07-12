@@ -588,3 +588,29 @@ supersedes_or_corrects: none
 The complete source-role analysis, recording timestamps, implementation
 inspection, and project-specific recommendations are in
 [ICERM/LMFDB lessons for Homology DB](research/icerm-lmfdb-knowl-review.md).
+
+## Communication plan `review-2026-07-12-008`: reviewer Loom walkthrough
+
+```text
+review_id: review-2026-07-12-008
+record_kind: external-review-communication-plan
+recorded_at: 2026-07-12 (Africa/Johannesburg; exact time retained in Git history)
+reviewer: project owner and Codex planning pass
+reviewer_role: communication planning; not mathematical review
+repository_commit: 33e91c2 (atlas checkpoint before this communication-plan commit)
+snapshot_id: not-applicable
+artifact: docs/LOOM_WALKTHROUGH.md
+audience: Gabriel Ong and Dan Isaksen
+plan: rehearse internally against local-preview-60; record and send the external cut only after named-atlas-review-v1 passes
+video_thesis: AI navigates four read-only operations over an immutable human-reviewable graph of cited claims and implications
+required_demonstrations: grounded CP^2; CP^12/CP^13 materialization boundary; equal-Homology comparison safety; Snapshot-bounded torsion search; typed unsupported/not_computed outcome; reviewed definition distinct from assertion evidence
+email_assets: Loom URL, public repository URL, pinned commit, copy-paste read-only reviewer prompt, role-specific requests, and explicit request for reject/needs-evidence verdicts
+send_gate: append-only decision superseding decision-2026-07-12-002 after all named-atlas critical gates pass
+current_disposition: planned, not recorded, not sent
+supersedes_or_corrects: none
+```
+
+The detailed [reviewer Loom walkthrough plan](LOOM_WALKTHROUGH.md) includes a
+timed storyboard, internal-rehearsal substitutions, final recording checklist,
+email draft, reviewer prompt, and the metadata block to append after recording.
+Preparing the communication does not reopen the external-review gate.

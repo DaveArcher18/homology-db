@@ -142,7 +142,7 @@ Each preview change was first observed failing through `Tools.call`,
 
 ### Atlas-schema slices
 
-- Three hashed SQLite migrations separate Conceptual spaces, names/families,
+- Four hashed SQLite migrations separate Conceptual spaces, names/families,
   Models and three artifact kinds, structured references, runs, immutable
   assertions, normalized group representations, evidence/dependencies,
   editorial history, conflicts, knowledge revisions, Snapshots, and Current.
@@ -151,6 +151,20 @@ Each preview change was first observed failing through `Tools.call`,
   values on nonexact assertions, and Current selection without a same-slot
   Homology subtype, exact value when exact, typed evidence, accepted review,
   admission event, and hash-matching Snapshot closure.
+- The post-audit correction pass also rejects mutation of claim components,
+  reviews, events, and projection records; replaces mutable conflict authority
+  with an append-only ledger; rejects dangling assertion subjects; and permits
+  distinct Models to retain byte-identical Model artifacts without merging.
+  Typed, hash-matching artifact inputs and existing-target knowl links are also
+  enforced.
+- A review-discovered migration-history defect was corrected by restoring
+  migrations 1--3 byte-for-byte and moving table replacements into migration
+  4. The suite builds a v3 database, upgrades it to v4, and verifies that all
+  three prior hashes are unchanged. The migration ledger itself is append-only;
+  byte-identical Derived artifacts retain separate Model provenance.
+- A populated-v3 fixture proves v4 refuses legacy conflicts for explicit
+  editorial migration and leaves their rows intact. The migration does not
+  fabricate declaration times for later members or erase removed members.
 - Forward and reverse insertion of 1,159 synthetic Models and 1,159 Model
   artifacts produce byte-identical canonical logical exports.
 - An independent schema audit found this remains a skeleton rather than a safe
@@ -163,15 +177,78 @@ Each preview change was first observed failing through `Tools.call`,
 
 | Check | Result |
 | --- | --- |
-| `python3 -m unittest discover -s tests -v` | 27/27 tests passed |
+| `python3 -m unittest discover -s tests -v` | 37/37 tests passed, including an exact 72-case CLI replay from the checked-in audit artifact |
 | `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
 | `python3 -m compileall -q homology_db tests scripts` | passed |
 | `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
 | frozen preview demo and Snapshot check | rebuilt 60 subjects with unchanged Snapshot `preview-5ea7db464f937061` |
 | SQLite `PRAGMA integrity_check` and `foreign_key_check` for atlas workload | `ok`; no foreign-key violations; 1,159 Models and 1,159 artifacts; canonical SHA-256 `2fe3f2cbb1eebe62ca32be9380f910ce6514fe951e6f2e2987983401b91df0c6` |
-| Markdown links, benchmark IDs, and `git diff --check` | 17 files and 35 local links checked; code fences balanced; 68 unique benchmark IDs; diff check passed |
-| independent two-axis code review | pending final run |
+| Markdown links, benchmark IDs, and `git diff --check` | 9 changed Markdown files and 32 local links checked; code fences balanced; 68 unique benchmark IDs; diff check passed |
+| independent two-axis code review | initial migration, provenance, conflict-history, immutability, and referential-integrity findings corrected; final specification and standards re-audits found no hard checkpoint violation |
 
 The first benchmark-ID command over-escaped its table-row regular expression
 and matched empty alternatives throughout the document. The corrected literal
 row matcher found exactly 68 unique IDs; no benchmark content failed.
+The first combined final Markdown-check one-liner had a Python syntax error and
+did not execute its checks. The corrected invocation produced the 9-file,
+32-link, 68-ID passing result recorded above.
+
+The machine-readable final adversarial cases are retained in
+[`qa/audits/preview-adversarial-2026-07-12.json`](qa/audits/preview-adversarial-2026-07-12.json).
+The replay builds the database once, exercises only the public CLI boundary
+and the four supported operations, checks all 72 unique cases, verifies the
+recorded implementation hashes, and requires every response—even invalid JSON
+and unknown-tool envelopes—to name Snapshot `preview-5ea7db464f937061`.
+
+Packaging status: the final staging request at 15:32 SAST was rejected because
+the Git approval service reported its usage quota exhausted until 16:20. No
+workaround was attempted; the verified changes remain intact and unstaged for
+the next authorized run.
+
+## 2026-07-12 — reviewer Loom planning and packaging retry
+
+Scope: record a durable video/email handoff plan without reopening the external
+review gate, then package the complete verified testing and schema checkpoint.
+
+- `docs/LOOM_WALKTHROUGH.md` contains a timed 7--9 minute storyboard, separate
+  internal-rehearsal and external-review cuts, clean-clone recording setup,
+  final named-atlas demonstrations, reviewer prompt, role-specific email draft,
+  recording checklist, and append-only run metadata template.
+- `docs/REVIEW_PROCESS.md` records the communication plan as
+  `review-2026-07-12-008`. It is explicitly not a mathematical review and does
+  not supersede the held-review decision.
+- README and the retained external-review guide link the plan while preserving
+  the `named-atlas-review-v1` send gate.
+
+The prior implementation result was not silently reused. This packaging retry
+reran the complete gate:
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 41/41 tests passed, including the 72-case CLI audit, Snapshot sealing, target/hash validation, and atomic migration rollback |
+| `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
+| `python3 -m compileall -q homology_db tests scripts` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
+| frozen preview demo | rebuilt 60 subjects at unchanged Snapshot `preview-5ea7db464f937061` |
+| 1,159-Model atlas workload | SQLite integrity `ok`; no foreign-key violations; canonical SHA-256 `2fe3f2cbb1eebe62ca32be9380f910ce6514fe951e6f2e2987983401b91df0c6` |
+| Markdown plan/link/fence audit | 12 changed Markdown files; all 43 local links resolve; fences balanced; 68 unique benchmark IDs |
+| adversarial audit JSON and `git diff --check` | valid and passed |
+| final two-axis review against `origin/main` | specification and standards re-audits found no hard checkpoint violation after corrections |
+
+The first final standards review found that finalized Snapshot rows could still
+receive late members/projections, Snapshot records admitted arbitrary dangling
+kinds, and Derived artifacts could lack Models. Three new red-green schema
+tests now require a Model-bound Derived artifact, a recognized hash-matching
+Snapshot member, and a one-way draft-to-sealed Snapshot transition that rejects
+late member and projection inserts. The complete suite therefore contains 40
+tests. A fourth red-green test then exposed non-atomic migration DDL: a legacy
+Model-free Derived artifact could fail v4 after earlier table replacements had
+committed. Migration SQL and its ledger row now share one transaction, and the
+failure fixture proves the entire v3 schema and row survive. The complete suite
+therefore contains 41 tests; the final verification table above records the
+correction review result.
+
+The initially mixed correction/Loom commit was removed before publication.
+Atlas integrity and adversarial testing are committed coherently as `33e91c2`;
+the Loom, email, review-process, and continuity documentation are packaged as a
+separate documentation commit.
