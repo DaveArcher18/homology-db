@@ -26,7 +26,8 @@ Ticket 08 — `Prototype the owned cellular-homology boundary`, claimed by
 
 ## Active run lease
 
-None — yielded at clean checkpoint `2779475` after the local test-drive audit.
+None — this user-controlled interactive task is the only permitted mutation
+path under `INTERACTIVE_ONLY`.
 
 ## Last checkpoint
 
@@ -102,13 +103,21 @@ None — yielded at clean checkpoint `2779475` after the local test-drive audit.
   (`019f55a2-6b0b-7711-86cf-e716981cb01e`) completed all twelve questions
   read-only against Snapshot `preview-5ea7db464f937061`. Its final response is
   the human review artifact; approval remains deliberately unmarked.
+- Human review identified the unresolved `CP^2` case as a corpus-
+  representativeness concern. A primary-source audit confirmed that `CP^2` is
+  already planned with a pinned finite Sage Model but is not part of the
+  deliberately hand-built 60-subject preview.
+- The external-review handoff now targets Gabriel Ong and Dan Isaksen before
+  any hosting decision. Review history is append-only, and `CP^2` is the first
+  post-review polish blocker rather than an ungrounded preview fact.
 
 ## Exact next action
 
-Await the user's review of pinned task `Review Homology DB answers`. After that
-review, continue ticket 08 with the general-chain/Sage-versus-FLINT computation
-boundary described in `docs/NEXT_STEPS.md`; do not treat the review demonstration
-as the frozen 100-prompt release gate.
+Share `docs/EXTERNAL_REVIEW.md` with Gabriel Ong and Dan Isaksen and append
+their verdicts to `docs/REVIEW_PROCESS.md`. Before any public hosting, continue
+ticket 08 through the general-chain/Sage-versus-FLINT boundary and qualify the
+pinned `CP^2` triangulation; do not alter the frozen 60-subject cohort or treat
+the review demonstration as the frozen 100-prompt release gate.
 
 ## Verification state
 
@@ -129,6 +138,9 @@ verifier. The local preview builds a deterministic 60-subject SQLite Snapshot
 and passes eleven human/agent public-seam tests; it is not the 1,159-Model release.
 `ruff`, Python compilation, the manifest verifier, the concise demo, SQLite
 integrity, and `git diff --check` all pass at checkpoint `2779475`.
+The database-connected review used one Snapshot and preserved typed failures.
+The external-review documents distinguish that preview evidence from planned
+corpus Models and from the future cited-implication review graph.
 
 ## Recovery notes
 

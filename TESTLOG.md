@@ -27,3 +27,31 @@ pack read-only. It reported 12/12 preflight tests, used only Snapshot
 evidence IDs, expanded subject evidence, and retained typed outcomes for the
 unsupported rational-coefficient and unresolved `CP^2` questions. Human
 mathematical and UX approval is intentionally pending in that task.
+
+## 2026-07-12 — external reviewer handoff
+
+Scope: documentation-only handoff, source-backed example prioritization, and
+append-only review logging. The frozen `local-preview-60` database behavior and
+question manifest were not changed.
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 12/12 tests passed |
+| `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
+| `python3 -m compileall -q homology_db tests scripts` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
+| `python3 -m homology_db --db /tmp/homology-db-doc-verification.sqlite3 demo` | rebuilt the 60-subject Snapshot `preview-5ea7db464f937061` and completed the tour |
+| starting reviewer prompt | manually replayed R01--R12 and three free-form questions against `/tmp/homology-db-external-review.sqlite3`; all 46 responses used one Snapshot and preserved grounding/typed gaps |
+| adversarial reviewer prompt | manually replayed all six cases against `/tmp/homology-db-adversarial-review.sqlite3`; typed `CP^2` and rational-coefficient failures, comparison safety, reduced `F5`, 5-primary search, and capability states all remained explicit on one Snapshot |
+| Markdown local-link and code-fence check | every referenced local target exists; all checked fenced blocks are balanced |
+| two-axis standards/spec review | initial reproducibility findings corrected; final re-audits reported no remaining hard defect |
+| `git diff --check` | passed after the final review corrections |
+
+The adversarial replay used only `resolve_subject`, `read_homology`,
+`query_examples`, and `expand_evidence`. Its before/after status showed the
+same intended documentation changes and no additional repository mutation.
+The starting-prompt replay used the same four operations, built its database
+once, retained Snapshot `preview-5ea7db464f937061` through both phases, and is
+recorded with its exact ordered payloads in `docs/REVIEW_PROCESS.md`.
+Remote research links were opened during the primary-source survey; they are
+reference inputs, not database evidence for preview answers.

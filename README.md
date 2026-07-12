@@ -20,6 +20,11 @@ For a guided Codex session, say:
 > Read `docs/TEST_DRIVE.md`, run the Homology DB test drive, and guide me
 > through three questions of my choice. Show the evidence behind each answer.
 
+For an external mathematical review, use the
+[reviewer handoff](docs/EXTERNAL_REVIEW.md). It assumes substantial topology
+experience but no familiarity with coding agents, and supplies copy-paste
+prompts, adversarial checks, and a structured feedback form.
+
 The four public tools also accept stable JSON for agent use. See
 [the local test-drive guide](docs/TEST_DRIVE.md) for copy-paste examples,
 limitations, and the automated checks. This preview is not the qualified
@@ -60,6 +65,9 @@ measured persistence/query design and the release pipeline.
 12. [Local test drive](docs/TEST_DRIVE.md)
 13. [Next steps](docs/NEXT_STEPS.md)
 14. [Prepared database-connected review run](docs/REVIEW_AGENT_RUN.md)
+15. [External reviewer handoff](docs/EXTERNAL_REVIEW.md)
+16. [Append-only review process](docs/REVIEW_PROCESS.md)
+17. [Common-example source review](docs/research/common-examples-review.md)
 
 ## Working position
 
