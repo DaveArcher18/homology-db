@@ -614,3 +614,22 @@ The detailed [reviewer Loom walkthrough plan](LOOM_WALKTHROUGH.md) includes a
 timed storyboard, internal-rehearsal substitutions, final recording checklist,
 email draft, reviewer prompt, and the metadata block to append after recording.
 Preparing the communication does not reopen the external-review gate.
+
+## Correction `review-2026-07-12-009`: simplify the Loom to four minutes
+
+```text
+review_id: review-2026-07-12-009
+record_kind: external-review-communication-plan-correction
+recorded_at: 2026-07-12 (Africa/Johannesburg; exact time retained in Git history)
+decision_owner: project owner
+artifact: docs/LOOM_WALKTHROUGH.md
+decision: replace the 7--9 minute multi-demonstration storyboard with a four-minute development preview
+timing: 0:00--2:00 current capabilities and explicit absences; 2:00--3:00 one named-space/coefficient lookup; 3:00--4:00 one Snapshot-bounded Homology-pattern example search
+deferred_extension: example retrieval by Homotopy data, and later combined Homology/Homotopy/spectral-sequence patterns
+sharing_semantics: before named-atlas-review-v1 passes, the Loom may orient informal product testing but is not the external mathematical review or corpus-approval request
+supersedes_or_corrects: review-2026-07-12-008 storyboard, email, and recording scope only; decision-2026-07-12-002 review gate remains in force
+```
+
+The revised plan intentionally omits schema, migration, knowl, implication-
+graph, family-boundary, and adversarial-review tours. Those topics made the
+orientation obscure the two interactions being tested.

@@ -153,20 +153,20 @@ the first test-driven production-schema slices and coordinating audits.
   scope corrections.
 - The final 72-case preview adversarial replay is machine-readable under
   `qa/audits/` and runs through the real CLI in the regular unit suite.
-- The eventual Gabriel Ong/Dan Isaksen handoff now has a recorded 7--9 minute
-  Loom storyboard, clean-clone terminal script, reviewer prompt, email draft,
-  recording checklist, and append-only metadata template in
-  `docs/LOOM_WALKTHROUGH.md`. An internal preview rehearsal is allowed, but the
-  external cut remains blocked by `named-atlas-review-v1`.
+- The Gabriel Ong/Dan Isaksen orientation is now a deliberately simple
+  four-minute Loom: two minutes on what does and does not exist, one minute on
+  a coefficient-qualified lookup, and one minute on a Snapshot-bounded example
+  search. Homotopy-pattern retrieval is stated as future work. Sharing it now
+  is an informal development preview, not the held mathematical review.
 
 ## Exact next action
 
 Continue ticket 03 with typed map/public-field integrity, exact-value
 normalization, the append-only editorial reducer, and an explicit policy for
-terminal computation-run records. Rehearse the Loom internally only when useful
-for pacing; do not record or send its external cut until the named-atlas gate
-passes. Preserve the frozen cohort and do not claim named-atlas mathematical
-coverage that has not yet been sourced and materialized.
+terminal computation-run records. Rehearse the four-minute Loom against one
+preview Snapshot and keep any pre-gate sharing explicitly informal. Preserve
+the frozen cohort and do not claim named-atlas mathematical coverage that has
+not yet been sourced and materialized.
 
 ## Verification state
 

@@ -32,5 +32,8 @@
 - Added a timed reviewer Loom storyboard, recording gate, terminal checklist,
   reviewer prompt, email draft, and append-only recording metadata template for
   the eventual Gabriel Ong and Dan Isaksen handoff.
+- Simplified the Loom to four minutes: two minutes of honest current scope,
+  followed by one coefficient-qualified lookup and one Snapshot-bounded
+  Homology-pattern example search; Homotopy search remains explicitly later.
 
 Verification is recorded in [TESTLOG.md](TESTLOG.md).

@@ -9,8 +9,9 @@
 > remains auditable; it is not the current onboarding path.
 
 The planned short video orientation and email are recorded in the
-[reviewer Loom walkthrough plan](LOOM_WALKTHROUGH.md). Its external cut is
-subject to the same gate and must not be used to bypass this hold.
+[four-minute Loom plan](LOOM_WALKTHROUGH.md). If shared before this gate, it is
+an informal development preview of the two current interactions—not the
+external mathematical review and not a request for corpus approval.
 
 This guide is for Gabriel Ong and Dan Isaksen, and for another expert
 topologist asked to repeat the same review. It assumes comfort with Homology

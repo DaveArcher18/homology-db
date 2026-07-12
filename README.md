@@ -73,7 +73,7 @@ measured persistence/query design and the release pipeline.
 18. [ICERM/LMFDB knowl and usability review](docs/research/icerm-lmfdb-knowl-review.md)
 19. [Topology-agent question benchmark](docs/research/topology-agent-question-benchmark.md)
 20. [Atlas schema prototype contract](docs/contracts/atlas-schema-prototype-v1.md)
-21. [Reviewer Loom walkthrough plan — recording gated](docs/LOOM_WALKTHROUGH.md)
+21. [Four-minute development-preview Loom plan](docs/LOOM_WALKTHROUGH.md)
 
 ## Working position
 

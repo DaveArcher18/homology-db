@@ -252,3 +252,33 @@ The initially mixed correction/Loom commit was removed before publication.
 Atlas integrity and adversarial testing are committed coherently as `33e91c2`;
 the Loom, email, review-process, and continuity documentation are packaged as a
 separate documentation commit.
+
+## 2026-07-12 — four-minute Loom simplification
+
+Scope: documentation-only correction of the recorded Loom plan. The revised
+video has exactly two minutes of current-scope explanation and two one-minute
+use cases: `H_*(RP^4;F2)` and a Snapshot-bounded search for 5-primary torsion
+in degree one. Homotopy-pattern retrieval is explicitly deferred.
+
+The append-only review log retains the prior plan as `review-2026-07-12-008`
+and records the correction as `review-2026-07-12-009`. Pre-gate sharing is
+labelled informal product testing rather than external mathematical review.
+
+| Rehearsal check | Result |
+| --- | --- |
+| preview build | 60 subjects at Snapshot `preview-5ea7db464f937061` |
+| `read_homology` for `RP^4` over `F2` | selected one-dimensional groups in degrees 0 through 4; every group returned assertion and evidence IDs |
+| `query_examples` for 5-primary torsion in degree 1 | exactly `L(10,1)`, `L(5,1)`, and `L(5,2)`; coverage says 60 selected-Snapshot subjects and `globally_exhaustive: false` |
+
+Both use cases reused `/tmp/homology-db-four-minute-loom.sqlite3` and the same
+Snapshot. No Homotopy capability was invoked or implied by the commands.
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 41/41 tests passed |
+| `ruff check homology_db tests scripts/verify_manifest_spec.py` | all checks passed |
+| `python3 -m compileall -q homology_db tests scripts` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
+| Markdown local links and fences | 7 changed files; all 35 local links resolve; fences balanced |
+| `git diff --check` | passed |
+| final two-axis review | standards and specification passes found no hard issue after removing the on-camera demo duplication and aligning the lookup prompt with its displayed command |
