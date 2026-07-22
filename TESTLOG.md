@@ -428,5 +428,23 @@ an incorrect bibliography entry, a misleading weighted-lens tag, unpinned
 Poincare artifact identity, missing relationships/reliability filtering,
 collapsed review details, absent-data defaults, false empty Smith metadata,
 stale publication state, and mutable workflow action tags. No hard finding
-remains. Live deployment and browser/byte-parity verification are intentionally
-recorded only after the Pages workflow succeeds.
+remains.
+
+### Live deployment verification
+
+- Release commit `e1d9a4b01fb5d48874977dc62948fa95fe417bbe` was pushed to
+  `main` with no remote divergence.
+- GitHub Pages workflow
+  [29960163529](https://github.com/DaveArcher18/homology-db/actions/runs/29960163529)
+  completed successfully in 13 seconds. Its Node-runtime deprecation
+  annotation was non-blocking; every checkout, preparation, upload, and deploy
+  step passed.
+- <https://davearcher18.github.io/homology-db/> returned HTTP 200 with
+  `text/html; charset=utf-8`, a 4,097,121-byte body, and SHA-256
+  `f1d3742018f40e74c6dd2378e331623728aa5a0be3b5d05d3dd077890954c36c`.
+  `cmp` confirmed byte identity with `dist/atlas.html`.
+- The live browser rendered Snapshot `chromatic-16e4f2be46edd93a`; exact
+  `M(Z/9,2)` search, its `F3` Tor row, RP^4 Review relationships/evidence and
+  prefilled feedback form, all four narrow-screen filters, and the mobile
+  index drawer passed. The browser was restored to its desktop viewport and
+  left on the clean public atlas URL for user testing.

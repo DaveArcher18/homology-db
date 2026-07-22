@@ -1,6 +1,6 @@
 # Work state
 
-Status: ACTIVE
+Status: COMPLETE
 
 ## Objective
 
@@ -24,19 +24,18 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Build and deploy chromatic-gateway-42`, claimed by `/root (interactive chat)`
-on 2026-07-22.
+`Build and deploy chromatic-gateway-42`, completed by `/root (interactive
+chat)` on 2026-07-22.
 
 ## Active run lease
 
-`/root (interactive chat)` — active while completing the exporter/frontend,
-release verification, main-branch push, Pages deployment, and live smoke test.
+Released. No active mutation lease remains.
 
 ## Last checkpoint
 
-- Commits `caeedc4`, `5a7e867`, `41025c8`, `e9c8b9e`, and `4544ae3` implement and independently
-  review the 42-space vertical slice: 32 finite CW complexes and 10 infinite
-  finite-type CW complexes in 17 families.
+- Commits `caeedc4` through `e1d9a4b` implement, independently review, test,
+  and publish the 42-space vertical slice: 32 finite CW complexes and 10
+  infinite finite-type CW complexes in 17 families.
 - Twenty-one spaces carry exact integral torsion at primes 2, 3, 5, and 7,
   including `Z/4`, `Z/8`, and `Z/9`; field rows include the UCT Tor term.
 - Every space has a qualified Model, at least one HTTPS source with a pinpoint,
@@ -61,7 +60,10 @@ release verification, main-branch push, Pages deployment, and live smoke test.
   JSON/YAML parsing, manifest verification, and diff checks pass. Independent
   mathematical, specification, standards, and release-security reviews have
   no remaining hard finding.
-- The artifact has not yet been pushed or claimed live at this checkpoint.
+- GitHub Pages run `29960163529` deployed `e1d9a4b` successfully. The public
+  response is HTTP 200, 4,097,121 bytes, and byte-identical to
+  `dist/atlas.html` at SHA-256 `f1d37420…54c36c`. Desktop and 390-by-844 live
+  browser smoke tests passed at <https://davearcher18.github.io/homology-db/>.
 
 - `cfe6333` established the standalone repository, project/domain docs, and recovery conventions.
 - `1fb1430` committed the Wayfinder map and eleven decision tickets from three independent breadth-first audits.
@@ -202,10 +204,9 @@ release verification, main-branch push, Pages deployment, and live smoke test.
 
 ## Exact next action
 
-Commit the measured artifact and release notes, push `main`, wait for the
-GitHub Pages workflow, smoke-test search/relationships/evidence/feedback in a
-real browser, and compare the downloaded live artifact byte-for-byte with
-`dist/atlas.html` before reporting the deployed URL.
+No implementation action remains. Collect structured feedback from the live
+space, family, and request forms before expanding the corpus or adding richer
+submission workflows.
 
 ## Verification state
 
@@ -240,9 +241,9 @@ while retaining the frozen preview and schema replays; the complete suite
 passes 63 tests. The release candidate is a 4,097,121-byte self-contained
 HTML file with 42 spaces and zero unresolved relationship/evidence references.
 Browser-facing language preserves
-`development_corpus_not_externally_reviewed`. Deployment of this new artifact is
-the only remaining task; the existing Pages URL still serves the prior build
-until the pending `main` push succeeds.
+`development_corpus_not_externally_reviewed`. GitHub Pages run `29960163529`
+deployed release commit `e1d9a4b`; the live download matches the committed
+artifact byte-for-byte and the live browser smoke test passed.
 
 ## Recovery notes
 
