@@ -1,0 +1,52 @@
+name: Request a space
+description: Ask for a CW complex or family to be added to the Homology Atlas.
+title: "[Space request] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Requests are most useful when they identify a concrete CW model, a mathematical reason to include it, and a source for the claimed computation. It is fine to propose a family with parameters.
+
+  - type: input
+    id: space
+    attributes:
+      label: Requested space or family
+      placeholder: Name, standard notation, and parameters
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Why would this be useful?
+      description: Tell us how the space is commonly used, especially in topology or chromatic homotopy theory.
+    validations:
+      required: true
+
+  - type: textarea
+    id: model
+    attributes:
+      label: Suggested CW model
+      description: Describe cells, attaching maps, a quotient, filtration, triangulation, or another reproducible construction.
+      placeholder: Include parameter ranges and whether the model is finite or finite type.
+
+  - type: textarea
+    id: expected_homology
+    attributes:
+      label: Expected homology or computation
+      description: State coefficient rings, degrees, torsion, and any finite computation bound you know.
+
+  - type: input
+    id: source
+    attributes:
+      label: Supporting source
+      description: Link to a paper, book, author page, software source, or reproducible computation if available.
+      placeholder: https://…
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This request is for a CW complex, or includes a reasonable CW model or filtration.
+          required: true

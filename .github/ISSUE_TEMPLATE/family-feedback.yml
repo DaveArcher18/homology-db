@@ -1,0 +1,61 @@
+name: Family feedback
+description: Suggest corrections, stronger coverage, or better parameterizations for a family of spaces.
+title: "[Family feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for feedback that applies to a whole atlas family. Links from the atlas put the family ID and snapshot ID in the issue title.
+
+  - type: input
+    id: family
+    attributes:
+      label: Family name or stable ID
+      description: Keep the prefilled family and snapshot identifiers in the issue title. You may also paste the family URL.
+      placeholder: e.g. moore_space
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feedback_kind
+    attributes:
+      label: What kind of feedback is this?
+      options:
+        - Family-level mathematical correction
+        - Missing or unhelpful parameter values
+        - Better model or computation method
+        - Citation or provenance improvement
+        - Naming or classification issue
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: observation
+    attributes:
+      label: What should be corrected or improved?
+      description: Explain which members or formulas are affected and what should change.
+      placeholder: Include parameter ranges, exceptions, coefficient rings, and degree bounds when relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_change
+    attributes:
+      label: Proposed family model or computation
+      description: Share a formula, model, computation sketch, or recommended set of examples.
+
+  - type: input
+    id: source
+    attributes:
+      label: Supporting source
+      description: Link to a paper, book, author page, software source, or reproducible computation if available.
+      placeholder: https://…
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission check
+      options:
+        - label: I preserved the prefilled family and snapshot identifiers in the title, or supplied them above.
+          required: true

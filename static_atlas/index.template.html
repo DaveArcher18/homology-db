@@ -14,15 +14,15 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="title-block">
-        <p class="eyebrow">Homology DB · development reference</p>
+        <p class="eyebrow" id="atlas-eyebrow">Homology DB · atlas snapshot</p>
         <h1>Homology Atlas</h1>
-        <p class="dek">A browsable development snapshot of spaces and their ordinary homology.</p>
+        <p class="dek" id="snapshot-dek">A browsable snapshot of CW spaces, their ordinary homology, concrete models, and mathematical provenance.</p>
       </div>
       <dl class="snapshot-facts" aria-label="Snapshot summary">
         <div><dt>Spaces</dt><dd id="conceptual-space-count">—</dd></div>
         <div><dt>Snapshot</dt><dd id="snapshot-name">—</dd></div>
         <div><dt>Generated</dt><dd><time id="generated-at">—</time></dd></div>
-        <div><dt>Status</dt><dd>Local preview</dd></div>
+        <div><dt>Status</dt><dd id="release-status">—</dd></div>
       </dl>
     </div>
   </header>
@@ -34,7 +34,7 @@
         <span class="search-wrap">
           <span class="search-mark" aria-hidden="true">⌕</span>
           <input id="atlas-search" type="search" autocomplete="off"
-            placeholder="Names, aliases, notation…" aria-describedby="search-help result-status">
+            placeholder="Names, tags, torsion, models…" aria-describedby="search-help result-status">
           <kbd aria-hidden="true">/</kbd>
         </span>
       </label>
@@ -67,13 +67,14 @@
 
       <div class="toolbar-actions">
         <a id="browse-control" class="text-button" href="#atlas-document">Browse</a>
+        <a id="request-space" class="text-button request-button" href="https://github.com/DaveArcher18/homology-db/issues/new?template=space-request.yml" target="_blank" rel="noopener noreferrer">Request a space ↗</a>
         <button id="review-toggle" class="text-button" type="button" aria-pressed="false">Review details</button>
         <button id="about-toggle" class="text-button" type="button" aria-expanded="false">About</button>
         <button id="index-toggle" class="text-button mobile-only" type="button" aria-expanded="false" aria-controls="atlas-index">Index</button>
         <button id="clear-filters" class="text-button quiet" type="button">Reset</button>
       </div>
     </div>
-    <p id="search-help" class="visually-hidden">Press slash to focus search. Use J and K to move through visible entries.</p>
+    <p id="search-help" class="visually-hidden">Search names, aliases, tags, models, computations, and citations. Press slash to focus search. Use J and K to move through visible entries.</p>
   </section>
 
   <div class="page-shell">
@@ -101,7 +102,7 @@
   </div>
 
   <footer class="site-footer">
-    <p>Homology DB development snapshot. Unknown, missing, and not-computed states are never treated as zero.</p>
+    <p>Unknown, missing, and not-computed states are never treated as zero. Corrections, stronger computations, and requests for more spaces are welcome.</p>
   </footer>
 
   <script id="atlas-data" type="application/json">__ATLAS_JSON__</script>

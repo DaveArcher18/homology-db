@@ -4,14 +4,17 @@ Status: ACTIVE
 
 ## Objective
 
-Deliver a verified `named-atlas-review-v1` Homology DB over a production-like
-assertion/provenance schema, with cited `RP^n` and `CP^n` family coverage,
-grounded instances through `n = 12`, representative qualified Models, and
-a tool-constrained QA gate that passes before any external review.
+Deliver, deploy, and test a focused 42-space Chromatic Homology Atlas with
+parameterized torsion, concrete CW or simplicial Models, computation sketches,
+citations, honest bounded coverage for infinite finite-type spaces, and visible
+per-space/per-family feedback plus request-a-space forms. Preserve the audited
+60-space preview as a historical regression fixture.
 
 ## Active map
 
-`.scratch/named-atlas-review-v1/map.md`
+The historical release map remains at `.scratch/named-atlas-review-v1/map.md`.
+The current vertical slice is implemented by `corpus/chromatic-v1/`,
+`homology_db/chromatic.py`, and the `homology-db.static-atlas/2` exporter.
 
 ## Control mode
 
@@ -21,15 +24,31 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Prototype the production assertion and provenance schema`, claimed by
-`/root (interactive chat)` at 2026-07-12T12:49:29Z.
+`Build and deploy chromatic-gateway-42`, claimed by `/root (interactive chat)`
+on 2026-07-22.
 
 ## Active run lease
 
-`/root (interactive chat)` — active from 2026-07-12T12:49:29Z while building
-the first test-driven production-schema slices and coordinating audits.
+`/root (interactive chat)` — active while completing the exporter/frontend,
+release verification, main-branch push, Pages deployment, and live smoke test.
 
 ## Last checkpoint
+
+- The current uncommitted vertical slice materializes 42 named spaces in 17
+  families: 32 finite CW complexes and 10 infinite finite-type CW complexes.
+- Twenty-one spaces carry exact integral torsion at primes 2, 3, 5, and 7,
+  including `Z/4`, `Z/8`, and `Z/9`; field rows include the UCT Tor term.
+- Every space has a qualified Model, at least one HTTPS source with a pinpoint,
+  and a computation sketch. The Poincare sphere uses a checked-in pinned
+  16-vertex/90-facet triangulation rather than the sparse chain of `S^3`.
+- Infinite finite-type rows are complete only through degree 24 and carry no
+  upper-vanishing claim. Identity guards retain `CP^2` versus `S^2 v S^4`, the
+  Poincare sphere versus `S^3`, and distinct weighted 5-primary lens spaces.
+- The current product is routed through `python3 -m homology_db chromatic ...`;
+  the unprefixed 60-space preview remains replayable without modifying its
+  cryptographically pinned builder or tests.
+- Static frontend/exporter and feedback Issue Forms are in progress. No new
+  deployment or main-branch push is claimed at this checkpoint.
 
 - `cfe6333` established the standalone repository, project/domain docs, and recovery conventions.
 - `1fb1430` committed the Wayfinder map and eleven decision tickets from three independent breadth-first audits.
@@ -170,12 +189,11 @@ the first test-driven production-schema slices and coordinating audits.
 
 ## Exact next action
 
-Continue ticket 03 with typed map/public-field integrity, exact-value
-normalization, the append-only editorial reducer, and an explicit policy for
-terminal computation-run records. For the Loom, open `LOOM_START_HERE.md` in
-Codex and use its preflight prompt before recording. Keep any pre-gate sharing
-explicitly informal. Preserve the frozen cohort and do not claim named-atlas
-mathematical coverage that has not yet been sourced and materialized.
+Finish and inspect the static read model and feedback UI, regenerate the
+checked-in one-file artifact, run focused and full verification plus the
+required two-axis code review, clean generated caches, commit coherent scopes,
+push `main`, wait for GitHub Pages, and compare the live artifact byte-for-byte
+with `dist/atlas.html` before reporting the deployed URL.
 
 ## Verification state
 

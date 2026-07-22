@@ -283,6 +283,11 @@ select {
   color: var(--muted);
 }
 
+.request-button {
+  border-color: var(--accent);
+  color: #034c65;
+}
+
 .mobile-only {
   display: none;
 }
@@ -423,20 +428,49 @@ select {
 .section-heading {
   display: flex;
   align-items: baseline;
+  justify-content: space-between;
   gap: 1rem;
   margin: 0 0 0.25rem;
   border-bottom: 2px solid var(--ink);
   padding: 1.5rem 0 0.65rem;
+}
+
+.section-heading h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0;
   font-family: var(--serif);
   font-size: clamp(1.55rem, 2.5vw, 2.1rem);
   font-weight: 500;
 }
 
-.section-heading span {
+.section-heading h2 span {
   color: var(--muted);
   font-family: var(--sans);
   font-size: 0.73rem;
   font-variant-numeric: tabular-nums;
+}
+
+.family-feedback-link {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 0.76rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.family-feedback-link:hover {
+  text-decoration: underline;
+}
+
+.family-summary {
+  max-width: 70rem;
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 0.95rem;
 }
 
 .atlas-section:first-child .section-heading {
@@ -478,6 +512,8 @@ select {
 
 .permalink-actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 0.45rem;
   align-items: center;
 }
@@ -497,6 +533,18 @@ select {
   text-underline-offset: 0.18em;
 }
 
+.feedback-link {
+  border-left: 1px solid var(--rule);
+  padding: 0.25rem 0 0.25rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.feedback-link:hover {
+  text-decoration: underline;
+}
+
 .entry-meta {
   display: flex;
   flex-wrap: wrap;
@@ -510,6 +558,45 @@ select {
   margin-right: 1.2rem;
   color: var(--rule-strong);
   content: "·";
+}
+
+.entry-introduction {
+  max-width: 68rem;
+  margin: -0.8rem 0 1.75rem;
+}
+
+.space-summary {
+  margin-bottom: 0.58rem;
+  color: #354248;
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+
+.space-relevance {
+  margin-bottom: 0.75rem;
+  color: #536168;
+  font-size: 0.82rem;
+}
+
+.space-relevance strong {
+  color: var(--ink);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.34rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag {
+  border: 1px solid var(--rule);
+  padding: 0.14rem 0.45rem;
+  color: #536168;
+  font-size: 0.66rem;
+  letter-spacing: 0.025em;
 }
 
 .homology-heading {
@@ -530,6 +617,21 @@ select {
 .homology-convention {
   color: var(--muted);
   font-size: 0.74rem;
+}
+
+.coverage-note {
+  margin: 0 0 0.55rem;
+  border-left: 3px solid var(--accent);
+  padding: 0.42rem 0.65rem;
+  background: var(--accent-soft);
+  color: #35535e;
+  font-size: 0.72rem;
+}
+
+.coverage-note.coverage-bounded {
+  border-left-color: var(--warning);
+  background: var(--warning-soft);
+  color: #70460f;
 }
 
 .homology-table {
@@ -650,6 +752,81 @@ select {
 .record-list dd {
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+.record-card + .record-card {
+  margin-top: 1.15rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+
+.record-title {
+  margin: 0 0 0.55rem;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.record-card .record-list {
+  margin-bottom: 0.55rem;
+}
+
+.computation-sketch {
+  margin-top: 0.9rem;
+  border-left: 3px solid var(--rule-strong);
+  padding: 0.15rem 0 0.15rem 0.85rem;
+}
+
+.computation-sketch h5,
+.citation-heading {
+  margin: 0 0 0.3rem;
+  color: var(--ink);
+  font-size: 0.71rem;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.computation-sketch p {
+  margin-bottom: 0.35rem;
+}
+
+.computation-sketch .sketch-note {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.citation-heading {
+  margin-top: 0.9rem;
+}
+
+.citation-list,
+.relation-list {
+  display: grid;
+  gap: 0.48rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.citation-item {
+  padding-left: 0.1rem;
+}
+
+.citation-item a {
+  overflow-wrap: anywhere;
+}
+
+.citation-context {
+  display: block;
+  margin-top: 0.1rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.citation-fallback {
+  margin: 0.85rem 0 0;
+  color: var(--muted);
 }
 
 .raw-actions {
@@ -823,7 +1000,21 @@ body.review-mode .review-warning {
   }
 
   .permalink-actions {
+    justify-content: flex-start;
     margin-bottom: 0.6rem;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+  }
+
+  .section-heading h2 {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .section-heading .section-count {
+    display: none;
   }
 
   .entry-meta span {
@@ -855,6 +1046,10 @@ body.review-mode .review-warning {
   .record-list dt {
     margin-top: 0.55rem;
   }
+
+  .family-feedback-link {
+    padding-top: 0.2rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -881,6 +1076,7 @@ body.review-mode .review-warning {
   .toolbar,
   .atlas-index,
   .permalink-actions,
+  .family-feedback-link,
   .raw-actions,
   .site-footer,
   .review-only,

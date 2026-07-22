@@ -8,7 +8,7 @@ import unittest
 from contextlib import closing
 from pathlib import Path
 
-from homology_db.preview import PreviewDatabase
+from homology_db.chromatic import ChromaticDatabase
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -19,9 +19,9 @@ class StaticAtlasTest(unittest.TestCase):
     def test_exporter_generates_complete_self_contained_atlas(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
-            database_path = directory / "preview.sqlite3"
+            database_path = directory / "chromatic.sqlite3"
             output_path = directory / "atlas.html"
-            snapshot_id = PreviewDatabase.build(database_path)
+            snapshot_id = ChromaticDatabase.build(database_path)
 
             completed = subprocess.run(
                 [
@@ -47,12 +47,35 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertIsNotNone(embedded)
             atlas = json.loads(embedded.group(1))
             self.assertEqual(atlas["snapshot"]["snapshot_id"], snapshot_id)
-            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 60)
-            self.assertEqual(len(atlas["conceptual_spaces"]), 60)
-            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 60)
-            self.assertIn("Klein bottle", next(
+            self.assertEqual(atlas["snapshot"]["schema_version"], "homology-db.static-atlas/2")
+            self.assertEqual(
+                atlas["snapshot"]["source_revision_inputs"],
+                [
+                    "corpus/chromatic-v1/manifest.json",
+                    "corpus/chromatic-v1/poincare-sphere-facets.json",
+                    "homology_db/__init__.py",
+                    "homology_db/chromatic.py",
+                    "homology_db/preview.py",
+                    "scripts/export_static_atlas.py",
+                    "static_atlas/atlas.css",
+                    "static_atlas/atlas.js",
+                    "static_atlas/index.template.html",
+                ],
+            )
+            self.assertRegex(
+                atlas["snapshot"]["source_inputs_sha256"], r"^[0-9a-f]{64}$"
+            )
+            self.assertIn(atlas["snapshot"]["source_tree_state"], {"clean", "dirty"})
+            self.assertEqual(
+                atlas["snapshot"]["source_inputs_dirty"],
+                atlas["snapshot"]["source_tree_state"] == "dirty",
+            )
+            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 42)
+            self.assertEqual(len(atlas["conceptual_spaces"]), 42)
+            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 42)
+            self.assertIn("nonorientable surface genus 2", next(
                 item["aliases"] for item in atlas["conceptual_spaces"]
-                if item["id"] == "nonorientable_surface:2"
+                if item["id"] == "klein_bottle"
             ))
             projective_aliases = next(
                 item["aliases"]
@@ -69,12 +92,81 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertEqual(homology_row["theory"], "ordinary_homology")
             self.assertIsNone(homology_row["homology_convention"])
             self.assertEqual(
-                homology_row["convention_state"], "not_recorded_in_preview_schema"
+                homology_row["convention_state"], "not_recorded_in_database_schema"
             )
             self.assertNotIn("reliability", homology_row)
-            self.assertIsNone(projective_space["evidence"][0]["reliability"])
-            self.assertEqual(projective_space["computations"], [])
+            self.assertEqual(
+                projective_space["evidence"][0]["reliability"],
+                "exact_owned_computation_with_cited_family_cross_check",
+            )
+            self.assertEqual(len(projective_space["computations"]), 1)
+            self.assertTrue(projective_space["models"])
             self.assertEqual(projective_space["data_quality"]["state"], "valid")
+
+            complex_projective_plane = next(
+                item
+                for item in atlas["conceptual_spaces"]
+                if item["id"] == "complex_projective_space:2"
+            )
+            self.assertEqual(
+                complex_projective_plane["parameters"],
+                {"division_algebra": "complex"},
+            )
+            self.assertIn("hopf_invariant_one", complex_projective_plane["taxonomy"]["tags"])
+            self.assertIn("projective planes", complex_projective_plane["summary"])
+            self.assertIn("attaching maps", complex_projective_plane["chromatic_relevance"])
+            self.assertEqual(
+                complex_projective_plane["models"][0]["attaching_map"],
+                "Attach e^4 to S^2 by the Hopf map eta.",
+            )
+            self.assertTrue(complex_projective_plane["evidence"][0]["citations"])
+            self.assertTrue(all(
+                citation["url"].startswith("https://")
+                for evidence in complex_projective_plane["evidence"]
+                for citation in evidence["citations"]
+            ))
+
+            cyclic_classifying_space = next(
+                item
+                for item in atlas["conceptual_spaces"]
+                if item["id"] == "classifying_space:cyclic:3"
+            )
+            self.assertIsNone(next(
+                property_["value"]
+                for property_ in cyclic_classifying_space["properties"]
+                if property_["key"] == "dimension"
+            ))
+            self.assertTrue(cyclic_classifying_space["infinite_finite_type"])
+            self.assertEqual(
+                cyclic_classifying_space["homology_coverage"]["kind"],
+                "bounded_through_degree",
+            )
+            self.assertEqual(
+                cyclic_classifying_space["homology_coverage"]["computed_through_degree"],
+                24,
+            )
+            self.assertIsNone(
+                cyclic_classifying_space["homology_coverage"]["upper_vanishing_starts_at"]
+            )
+
+            poincare_sphere = next(
+                item
+                for item in atlas["conceptual_spaces"]
+                if item["id"] == "poincare_homology_sphere:3"
+            )
+            self.assertEqual(poincare_sphere["computations"], [])
+            self.assertEqual(
+                poincare_sphere["models"][0]["artifact_path"],
+                "corpus/chromatic-v1/poincare-sphere-facets.json",
+            )
+            self.assertRegex(
+                poincare_sphere["models"][0]["artifact_sha256"],
+                r"^[0-9a-f]{64}$",
+            )
+            self.assertEqual(
+                poincare_sphere["evidence"][0]["kind"],
+                "official_model_and_cited_computation",
+            )
             self.assertNotIn("<script src=", html)
             self.assertNotRegex(html, r'<link[^>]+rel=["\']stylesheet["\']')
             self.assertNotRegex(html, r"url\(\s*[\"']?https?://")
@@ -82,9 +174,9 @@ class StaticAtlasTest(unittest.TestCase):
     def test_generated_atlas_exposes_the_browse_and_review_controls(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
-            database_path = directory / "preview.sqlite3"
+            database_path = directory / "chromatic.sqlite3"
             output_path = directory / "atlas.html"
-            PreviewDatabase.build(database_path)
+            ChromaticDatabase.build(database_path)
             completed = subprocess.run(
                 [
                     sys.executable,
@@ -125,10 +217,10 @@ class StaticAtlasTest(unittest.TestCase):
     def test_export_is_deterministic_for_one_database_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
-            database_path = directory / "preview.sqlite3"
+            database_path = directory / "chromatic.sqlite3"
             first_output = directory / "first.html"
             second_output = directory / "second.html"
-            PreviewDatabase.build(database_path)
+            ChromaticDatabase.build(database_path)
 
             for output_path in (first_output, second_output):
                 completed = subprocess.run(
@@ -197,9 +289,9 @@ class StaticAtlasTest(unittest.TestCase):
     def test_nonexact_homology_state_is_not_exported_as_zero(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
-            database_path = directory / "preview.sqlite3"
+            database_path = directory / "chromatic.sqlite3"
             output_path = directory / "atlas.html"
-            PreviewDatabase.build(database_path)
+            ChromaticDatabase.build(database_path)
             with closing(sqlite3.connect(database_path)) as connection:
                 connection.execute(
                     """
@@ -245,17 +337,17 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertEqual(row["group"]["plain"], "not computed")
             self.assertNotEqual(row["group"]["plain"], "0")
 
-    def test_export_fails_when_homology_evidence_is_unresolved(self) -> None:
+    def test_export_fails_when_homology_evidence_integrity_is_broken(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
-            database_path = directory / "preview.sqlite3"
+            database_path = directory / "chromatic.sqlite3"
             output_path = directory / "atlas.html"
-            PreviewDatabase.build(database_path)
+            ChromaticDatabase.build(database_path)
             with closing(sqlite3.connect(database_path)) as connection:
                 connection.execute("PRAGMA foreign_keys = OFF")
                 connection.execute(
                     "DELETE FROM evidence WHERE evidence_id = ?",
-                    ("preview:evidence:sphere:1",),
+                    ("chromatic:evidence:sphere:1",),
                 )
                 connection.commit()
 
@@ -273,15 +365,75 @@ class StaticAtlasTest(unittest.TestCase):
                 text=True,
             )
             self.assertNotEqual(completed.returncode, 0)
-            self.assertIn("unresolved evidence", completed.stderr)
+            self.assertIn("foreign-key failure", completed.stderr)
+            self.assertFalse(output_path.exists())
+
+    def test_export_fails_when_model_and_evidence_inputs_disagree(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            database_path = directory / "chromatic.sqlite3"
+            output_path = directory / "atlas.html"
+            ChromaticDatabase.build(database_path)
+            with closing(sqlite3.connect(database_path)) as connection:
+                connection.execute(
+                    "UPDATE model SET chain_sha256 = ? WHERE space_id = 'sphere:1'",
+                    ("0" * 64,),
+                )
+                connection.commit()
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--database",
+                    str(database_path),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("Model/Evidence input mismatch", completed.stderr)
+            self.assertFalse(output_path.exists())
+
+    def test_export_rejects_non_https_citation_urls(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            database_path = directory / "chromatic.sqlite3"
+            output_path = directory / "atlas.html"
+            ChromaticDatabase.build(database_path)
+            with closing(sqlite3.connect(database_path)) as connection:
+                connection.execute(
+                    "UPDATE reference SET url = 'http://example.test/source' "
+                    "WHERE reference_id = 'hatcher-at'"
+                )
+                connection.commit()
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--database",
+                    str(database_path),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("non-HTTPS source URL", completed.stderr)
             self.assertFalse(output_path.exists())
 
     def test_export_fails_with_a_precise_malformed_record_error(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
-            database_path = directory / "preview.sqlite3"
+            database_path = directory / "chromatic.sqlite3"
             output_path = directory / "atlas.html"
-            PreviewDatabase.build(database_path)
+            ChromaticDatabase.build(database_path)
             with closing(sqlite3.connect(database_path)) as connection:
                 connection.execute(
                     "UPDATE space SET label = '' WHERE space_id = 'sphere:1'"

@@ -1,0 +1,62 @@
+name: Space feedback or correction
+description: Report a mathematical issue, suggest a stronger model, or share a better computation for one atlas space.
+title: "[Space feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve the Homology Atlas. Links from an atlas entry put the space ID and snapshot ID in the issue title so the report stays tied to the exact record you reviewed.
+
+  - type: dropdown
+    id: feedback_kind
+    attributes:
+      label: What kind of feedback is this?
+      options:
+        - Mathematical correction
+        - Better computation or proof sketch
+        - Better CW model or attaching data
+        - Citation or provenance improvement
+        - Presentation or usability issue
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: space
+    attributes:
+      label: Space name or stable ID
+      description: Keep the prefilled space and snapshot identifiers in the issue title. You may also paste the atlas permalink here.
+      placeholder: e.g. moore-z-9-n-2 or an atlas permalink
+    validations:
+      required: true
+
+  - type: textarea
+    id: observation
+    attributes:
+      label: What should be corrected or improved?
+      description: Tell us what the atlas says now and what you believe it should say instead.
+      placeholder: Include degrees, coefficient rings, attaching maps, parameters, or conventions when relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: computation
+    attributes:
+      label: Computation or supporting argument
+      description: A sketch is welcome. Please distinguish a proposed calculation from a computation you have actually run.
+      placeholder: Describe the method, inputs, output range, and any checks.
+
+  - type: input
+    id: source
+    attributes:
+      label: Supporting source
+      description: Link to a paper, book, author page, software source, or reproducible computation if available.
+      placeholder: https://…
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission check
+      options:
+        - label: I preserved the prefilled space and snapshot identifiers in the title, or supplied them above.
+          required: true
