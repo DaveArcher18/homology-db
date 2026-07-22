@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Homology Atlas</title>
+  <meta name="description" content="A browsable development snapshot of spaces and their ordinary homology">
+  <style>/*__ATLAS_CSS__*/</style>
+</head>
+<body>
+  <a class="skip-link" href="#object-list">Skip to atlas entries</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="title-block">
+        <p class="eyebrow">Homology DB · development reference</p>
+        <h1>Homology Atlas</h1>
+        <p class="dek">A browsable development snapshot of spaces and their ordinary homology.</p>
+      </div>
+      <dl class="snapshot-facts" aria-label="Snapshot summary">
+        <div><dt>Spaces</dt><dd id="object-count">—</dd></div>
+        <div><dt>Snapshot</dt><dd id="snapshot-name">—</dd></div>
+        <div><dt>Status</dt><dd>Local preview</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <section class="toolbar" aria-label="Atlas controls">
+    <div class="toolbar-inner">
+      <label class="search-control" for="atlas-search">
+        <span class="control-label">Find a space</span>
+        <span class="search-wrap">
+          <span class="search-mark" aria-hidden="true">⌕</span>
+          <input id="atlas-search" type="search" autocomplete="off"
+            placeholder="Names, aliases, notation…" aria-describedby="search-help result-status">
+          <kbd aria-hidden="true">/</kbd>
+        </span>
+      </label>
+
+      <label class="compact-control" for="coefficient-filter">
+        <span class="control-label">Coefficients</span>
+        <select id="coefficient-filter">
+          <option value="Z">ℤ</option>
+          <option value="F2">𝔽₂</option>
+          <option value="F3">𝔽₃</option>
+          <option value="F5">𝔽₅</option>
+          <option value="F7">𝔽₇</option>
+        </select>
+      </label>
+
+      <label class="compact-control" for="family-filter">
+        <span class="control-label">Family</span>
+        <select id="family-filter"><option value="">All families</option></select>
+      </label>
+
+      <label class="compact-control" for="dimension-filter">
+        <span class="control-label">Dimension</span>
+        <select id="dimension-filter"><option value="">Any</option></select>
+      </label>
+
+      <div class="toggle-stack" aria-label="Display options">
+        <label class="check-control" for="reduced-filter">
+          <input id="reduced-filter" type="checkbox">
+          <span>Reduced</span>
+        </label>
+        <label class="check-control" for="torsion-filter">
+          <input id="torsion-filter" type="checkbox">
+          <span>Has torsion</span>
+        </label>
+      </div>
+
+      <div class="toolbar-actions">
+        <button id="review-toggle" class="text-button" type="button" aria-pressed="false">Review details</button>
+        <button id="index-toggle" class="text-button mobile-only" type="button" aria-expanded="false" aria-controls="atlas-index">Index</button>
+        <button id="clear-filters" class="text-button quiet" type="button">Reset</button>
+      </div>
+    </div>
+    <p id="search-help" class="visually-hidden">Press slash to focus search. Use J and K to move through visible entries.</p>
+  </section>
+
+  <div class="page-shell">
+    <aside id="atlas-index" class="atlas-index" aria-label="Atlas index">
+      <div class="index-inner">
+        <div class="index-heading">
+          <h2>Atlas index</h2>
+          <output id="result-status" role="status" aria-live="polite">Preparing atlas…</output>
+        </div>
+        <nav id="section-index" aria-label="Mathematical families"></nav>
+        <div class="object-index-wrap">
+          <h3>Visible spaces</h3>
+          <ol id="object-index" class="object-index"></ol>
+        </div>
+        <details class="snapshot-about">
+          <summary>About this snapshot</summary>
+          <div id="snapshot-detail"></div>
+        </details>
+      </div>
+    </aside>
+
+    <main id="object-list" class="atlas-document" tabindex="-1">
+      <noscript>This atlas requires JavaScript to render its embedded, offline snapshot.</noscript>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>Homology DB development snapshot. Unknown, missing, and not-computed states are never treated as zero.</p>
+  </footer>
+
+  <script id="atlas-data" type="application/json">__ATLAS_JSON__</script>
+  <script>/*__ATLAS_JS__*/</script>
+</body>
+</html>

@@ -2,6 +2,24 @@
 
 Homology DB is a searchable, citable, provenance-rich atlas of algebraic-topological objects and computations, inspired by the LMFDB. It is under active construction; a local preview is available now.
 
+## Browse the atlas
+
+Open [`dist/atlas.html`](dist/atlas.html) directly in a browser. It is a single
+self-contained, offline file: search all 60 spaces, follow stable object links,
+switch coefficient systems and reduced conventions, filter the corpus, and
+open provenance or raw JSON in review mode.
+
+The atlas is a human-facing view of `local-preview-60`, not the held
+`named-atlas-review-v1` release candidate. Its visible “local preview” status is
+intentional. Rebuild it deterministically with:
+
+```bash
+python3 scripts/export_static_atlas.py --snapshot current --output dist/atlas.html
+```
+
+The [static atlas read-model note](docs/static-atlas-read-model.md) records the
+schema mapping, measured database and HTML sizes, and validation boundaries.
+
 ## Try it now
 
 No installation or network access is required beyond Python 3.10 or newer:

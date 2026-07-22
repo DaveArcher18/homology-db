@@ -308,3 +308,35 @@ verification:
 | Markdown links and fences | 7 changed files; all 31 local links resolve; fences balanced |
 | `git diff --check` | passed |
 | final two-axis review | standards and specification passes found no hard issue; the preflight now explicitly replaces only a stale disposable Loom database before its single build |
+
+## 2026-07-22 — static Homology Atlas frontend
+
+Scope: implement the self-contained human-facing atlas in the supplied PRD
+without changing the frozen `local-preview-60` Snapshot or claiming that it is
+the held `named-atlas-review-v1` release candidate.
+
+- Measured the disposable SQLite database at 1,167,360 bytes: 60 Conceptual
+  spaces, 181 aliases, 2,570 Homology assertions, 60 evidence records, and 60
+  primary-summand rows.
+- Added `homology-db.static-atlas/1`, a denormalized read model over the stable
+  preview tool layer. The browser never opens SQLite or names physical tables.
+- Added a deterministic exporter that rejects duplicate identity, incomplete
+  section coverage, and unresolved evidence before writing output. Nonexact
+  Knowledge states are projected by state rather than by the row's numeric
+  columns.
+- Added the continuous atlas interface: all 60 entries, local normalized
+  search, data-backed family/dimension/torsion filters, coefficient and reduced
+  convention controls, stable hashes, keyboard navigation, review expansion,
+  JSON copy/download, narrow-layout index, and print rules.
+- The generated artifact is 1,872,477 bytes and has no external script,
+  stylesheet, font, or image dependency.
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -q` | 47/47 tests passed; existing SQLite resource warnings remain visible |
+| static-atlas seam tests | 6/6 passed, including deterministic current-Snapshot rebuild, identity, unresolved evidence, unknown-vs-zero, and external-resource checks |
+| `python3 -m compileall -q homology_db scripts tests` | passed |
+| `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
+| `node --check static_atlas/atlas.js` | passed |
+| `git diff --check` | passed |
+| `ruff` | unavailable in this environment; no replacement was installed |

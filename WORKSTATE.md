@@ -162,6 +162,11 @@ the first test-driven production-schema slices and coordinating audits.
   preparation read-only, returns a compact readiness card, and then accepts two
   paste-ready on-camera prompts. The spoken introduction is 264 words, so the
   presenter does not need to operate a terminal or improvise the scope.
+- A direct user request temporarily brought the previously deferred static Web
+  UI into scope. The resulting `homology-db.static-atlas/1` exporter and
+  self-contained atlas bind only to the frozen `local-preview-60` data and
+  display its preview limitations. This does not resolve production-schema
+  ticket 03 or lift the external-review hold.
 
 ## Exact next action
 
@@ -200,6 +205,11 @@ none of the new schema, corpus, Model-kind, definition, or QA gates is claimed
 complete. The review-hold documentation and ICERM/LMFDB research passed the
 scoped verification recorded in `TESTLOG.md`; the frozen preview rebuilt with
 the unchanged Snapshot ID `preview-5ea7db464f937061`.
+The static-atlas exporter adds six public-seam checks; the complete suite now
+passes 47 tests. The generated development atlas contains all 60 preview
+subjects in a 1,872,477-byte self-contained HTML file with zero unresolved
+evidence references. Browser-facing review language preserves
+`local_preview_not_release_evidence` and does not claim named-atlas coverage.
 
 ## Recovery notes
 
