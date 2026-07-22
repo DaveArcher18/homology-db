@@ -32,6 +32,10 @@ class ChromaticAtlasTests(unittest.TestCase):
         summary = self.tools.corpus_summary()
         self.assertEqual(summary["subject_count"], 42)
         self.assertEqual(
+            summary["release_status"],
+            "development_corpus_not_externally_reviewed",
+        )
+        self.assertEqual(
             summary["family_counts"],
             {
                 "compact_lie_group": 2,

@@ -988,10 +988,6 @@ body.review-mode .review-warning {
     grid-template-columns: 1fr 1fr;
   }
 
-  .compact-control:nth-of-type(4) {
-    display: none;
-  }
-
   .toolbar-actions {
     grid-column: 1 / -1;
   }

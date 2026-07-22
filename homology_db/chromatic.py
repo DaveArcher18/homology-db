@@ -36,7 +36,7 @@ MANIFEST_PATH = REPOSITORY_ROOT / "corpus" / "chromatic-v1" / "manifest.json"
 DEFAULT_DB = Path("/tmp/homology-db-chromatic.sqlite3")
 SCHEMA_VERSION = "homology-db.chromatic/2"
 ALGORITHM_ID = "owned-cellular-smith-and-modular-rank/1"
-RELEASE_STATUS = "development_corpus_not_external_reviewed"
+RELEASE_STATUS = "development_corpus_not_externally_reviewed"
 
 
 SCHEMA = """
