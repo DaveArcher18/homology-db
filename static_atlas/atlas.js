@@ -875,7 +875,7 @@
   }
 
   function updateAtlas() {
-    const visibleWithRank = conceptualSpaces.map((space) => ({
+    const eligibleWithRank = conceptualSpaces.map((space) => ({
       space,
       rank: searchRank(space, state.query),
     })).filter(({ space, rank }) => {
@@ -887,6 +887,12 @@
       if (state.torsion && !hasIntegralTorsion(space)) return false;
       return true;
     });
+    const bestRank = state.query.trim() && eligibleWithRank.length
+      ? Math.min(...eligibleWithRank.map(({ rank }) => rank))
+      : null;
+    const visibleWithRank = bestRank === null
+      ? eligibleWithRank
+      : eligibleWithRank.filter(({ rank }) => rank === bestRank);
     state.visible = visibleWithRank
       .slice()
       .sort((left, right) => left.rank - right.rank || left.space.name.plain.localeCompare(right.space.name.plain))
