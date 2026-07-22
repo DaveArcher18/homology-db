@@ -47,19 +47,31 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertIsNotNone(embedded)
             atlas = json.loads(embedded.group(1))
             self.assertEqual(atlas["snapshot"]["snapshot_id"], snapshot_id)
-            self.assertEqual(atlas["snapshot"]["object_count"], 60)
-            self.assertEqual(len(atlas["objects"]), 60)
-            self.assertEqual(len({item["id"] for item in atlas["objects"]}), 60)
+            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 60)
+            self.assertEqual(len(atlas["conceptual_spaces"]), 60)
+            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 60)
             self.assertIn("Klein bottle", next(
-                item["aliases"] for item in atlas["objects"]
+                item["aliases"] for item in atlas["conceptual_spaces"]
                 if item["id"] == "nonorientable_surface:2"
             ))
             projective_aliases = next(
                 item["aliases"]
-                for item in atlas["objects"]
+                for item in atlas["conceptual_spaces"]
                 if item["id"] == "real_projective_space:4"
             )
             self.assertIn("RP4", [alias.replace("^", "") for alias in projective_aliases])
+            projective_space = next(
+                item
+                for item in atlas["conceptual_spaces"]
+                if item["id"] == "real_projective_space:4"
+            )
+            homology_row = projective_space["homology"][0]
+            self.assertEqual(homology_row["theory"], "ordinary_homology")
+            self.assertIn("#ordinary-homology-", homology_row["homology_convention"])
+            self.assertNotIn("reliability", homology_row)
+            self.assertIsNone(projective_space["evidence"][0]["reliability"])
+            self.assertEqual(projective_space["computations"], [])
+            self.assertEqual(projective_space["data_quality"]["state"], "valid")
             self.assertNotIn("<script src=", html)
             self.assertNotRegex(html, r'<link[^>]+rel=["\']stylesheet["\']')
             self.assertNotRegex(html, r"url\(\s*[\"']?https?://")
@@ -91,12 +103,17 @@ class StaticAtlasTest(unittest.TestCase):
                 'id="coefficient-filter"',
                 'id="reduced-filter"',
                 'id="review-toggle"',
+                'id="browse-control"',
+                'id="about-toggle"',
                 'id="atlas-index"',
-                'id="object-list"',
+                'id="atlas-document"',
                 'id="result-status"',
                 "Copy link",
                 "Copy JSON",
                 "Download JSON",
+                "Computation runs",
+                "Data quality",
+                "JSON.stringify(space.raw",
             ):
                 self.assertIn(required_control, html)
 
@@ -190,7 +207,7 @@ class StaticAtlasTest(unittest.TestCase):
                 re.DOTALL,
             )
             atlas = json.loads(embedded.group(1))
-            sphere = next(item for item in atlas["objects"] if item["id"] == "sphere:1")
+            sphere = next(item for item in atlas["conceptual_spaces"] if item["id"] == "sphere:1")
             row = next(
                 group for group in sphere["homology"]
                 if group["coefficient_ring"] == "Z"
@@ -230,6 +247,36 @@ class StaticAtlasTest(unittest.TestCase):
             )
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("unresolved evidence", completed.stderr)
+            self.assertFalse(output_path.exists())
+
+    def test_export_fails_with_a_precise_malformed_record_error(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            database_path = directory / "preview.sqlite3"
+            output_path = directory / "atlas.html"
+            PreviewDatabase.build(database_path)
+            with closing(sqlite3.connect(database_path)) as connection:
+                connection.execute(
+                    "UPDATE space SET label = '' WHERE space_id = 'sphere:1'"
+                )
+                connection.commit()
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--database",
+                    str(database_path),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("malformed Conceptual-space records", completed.stderr)
+            self.assertIn("label", completed.stderr)
             self.assertFalse(output_path.exists())
 
 

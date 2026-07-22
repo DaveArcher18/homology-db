@@ -205,9 +205,9 @@ none of the new schema, corpus, Model-kind, definition, or QA gates is claimed
 complete. The review-hold documentation and ICERM/LMFDB research passed the
 scoped verification recorded in `TESTLOG.md`; the frozen preview rebuilt with
 the unchanged Snapshot ID `preview-5ea7db464f937061`.
-The static-atlas exporter adds six public-seam checks; the complete suite now
-passes 47 tests. The generated development atlas contains all 60 preview
-subjects in a 1,872,477-byte self-contained HTML file with zero unresolved
+The static-atlas exporter adds seven public-seam checks; the complete suite now
+passes 48 tests. The generated development atlas contains all 60 preview
+subjects in a 2,065,520-byte self-contained HTML file with zero unresolved
 evidence references. Browser-facing review language preserves
 `local_preview_not_release_evidence` and does not claim named-atlas coverage.
 

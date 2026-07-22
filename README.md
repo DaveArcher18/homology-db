@@ -1,11 +1,13 @@
 # Homology DB
 
-Homology DB is a searchable, citable, provenance-rich atlas of algebraic-topological objects and computations, inspired by the LMFDB. It is under active construction; a local preview is available now.
+Homology DB is a searchable, citable, provenance-rich atlas of Conceptual
+spaces and computations, inspired by the LMFDB. It is under active
+construction; a local preview is available now.
 
 ## Browse the atlas
 
 Open [`dist/atlas.html`](dist/atlas.html) directly in a browser. It is a single
-self-contained, offline file: search all 60 spaces, follow stable object links,
+self-contained, offline file: search all 60 spaces, follow stable Conceptual-space links,
 switch coefficient systems and reduced conventions, filter the corpus, and
 open provenance or raw JSON in review mode.
 
@@ -63,7 +65,7 @@ The current recommendation is to begin with a deliberately narrow vertical slice
 - ordinary integral homology in explicit degrees;
 - relationships between spaces, models, and constructions;
 - reproducible computation records with sources, software versions, and reliability states;
-- an object page, browse/search experience, downloads, and a versioned JSON API.
+- a Conceptual-space page, browse/search experience, downloads, and a versioned JSON API.
 
 The identity model and pilot corpus selection contract are now fixed. The
 current implementation frontier is owned chain computation, followed by
@@ -96,4 +98,4 @@ measured persistence/query design and the release pipeline.
 
 ## Working position
 
-Build an independent prototype that adopts LMFDB's information architecture and editorial discipline. Do not fork the LMFDB application until there is a decision to pursue an official LMFDB section and the LMFDB developers have been consulted. This keeps the first experiment small and avoids prematurely inheriting its Sage/Flask deployment stack and runtime object model.
+Build an independent prototype that adopts LMFDB's information architecture and editorial discipline. Do not fork the LMFDB application until there is a decision to pursue an official LMFDB section and the LMFDB developers have been consulted. This keeps the first experiment small and avoids prematurely inheriting its Sage/Flask deployment stack and runtime type model.

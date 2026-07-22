@@ -328,13 +328,13 @@ the held `named-atlas-review-v1` release candidate.
   search, data-backed family/dimension/torsion filters, coefficient and reduced
   convention controls, stable hashes, keyboard navigation, review expansion,
   JSON copy/download, narrow-layout index, and print rules.
-- The generated artifact is 1,872,477 bytes and has no external script,
+- The generated artifact is 2,065,520 bytes and has no external script,
   stylesheet, font, or image dependency.
 
 | Check | Result |
 | --- | --- |
-| `python3 -m unittest discover -s tests -q` | 47/47 tests passed; existing SQLite resource warnings remain visible |
-| static-atlas seam tests | 6/6 passed, including deterministic current-Snapshot rebuild, identity, unresolved evidence, unknown-vs-zero, and external-resource checks |
+| `python3 -m unittest discover -s tests -q` | 48/48 tests passed; existing SQLite resource warnings remain visible |
+| static-atlas seam tests | 7/7 passed, including deterministic current-Snapshot rebuild, identity, unresolved evidence, malformed-record failure, unknown-vs-zero, and external-resource checks |
 | `python3 -m compileall -q homology_db scripts tests` | passed |
 | `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
 | `node --check static_atlas/atlas.js` | passed |

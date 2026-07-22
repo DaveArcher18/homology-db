@@ -9,7 +9,7 @@
   <style>/*__ATLAS_CSS__*/</style>
 </head>
 <body>
-  <a class="skip-link" href="#object-list">Skip to atlas entries</a>
+  <a class="skip-link" href="#atlas-document">Skip to atlas entries</a>
 
   <header class="site-header">
     <div class="header-inner">
@@ -19,7 +19,7 @@
         <p class="dek">A browsable development snapshot of spaces and their ordinary homology.</p>
       </div>
       <dl class="snapshot-facts" aria-label="Snapshot summary">
-        <div><dt>Spaces</dt><dd id="object-count">—</dd></div>
+        <div><dt>Spaces</dt><dd id="conceptual-space-count">—</dd></div>
         <div><dt>Snapshot</dt><dd id="snapshot-name">—</dd></div>
         <div><dt>Status</dt><dd>Local preview</dd></div>
       </dl>
@@ -71,7 +71,9 @@
       </div>
 
       <div class="toolbar-actions">
+        <a id="browse-control" class="text-button" href="#atlas-document">Browse</a>
         <button id="review-toggle" class="text-button" type="button" aria-pressed="false">Review details</button>
+        <button id="about-toggle" class="text-button" type="button" aria-expanded="false">About</button>
         <button id="index-toggle" class="text-button mobile-only" type="button" aria-expanded="false" aria-controls="atlas-index">Index</button>
         <button id="clear-filters" class="text-button quiet" type="button">Reset</button>
       </div>
@@ -87,18 +89,18 @@
           <output id="result-status" role="status" aria-live="polite">Preparing atlas…</output>
         </div>
         <nav id="section-index" aria-label="Mathematical families"></nav>
-        <div class="object-index-wrap">
+        <div class="space-index-wrap">
           <h3>Visible spaces</h3>
-          <ol id="object-index" class="object-index"></ol>
+          <ol id="space-index" class="space-index"></ol>
         </div>
-        <details class="snapshot-about">
+        <details id="snapshot-about" class="snapshot-about">
           <summary>About this snapshot</summary>
           <div id="snapshot-detail"></div>
         </details>
       </div>
     </aside>
 
-    <main id="object-list" class="atlas-document" tabindex="-1">
+    <main id="atlas-document" class="atlas-document" tabindex="-1">
       <noscript>This atlas requires JavaScript to render its embedded, offline snapshot.</noscript>
     </main>
   </div>

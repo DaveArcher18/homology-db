@@ -25,6 +25,7 @@ from homology_db.preview import COEFFICIENTS, Tools
 
 SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
 READ_MODEL_VERSION = "homology-db.static-atlas/1"
+THEORY_ID = "ordinary_homology"
 
 
 def file_sha256(path: Path) -> str:
@@ -110,37 +111,55 @@ def group_projection(group: dict[str, Any], coefficient: str) -> dict[str, Any]:
     }
 
 
+def homology_convention_id(snapshot_version: str, reduced: bool) -> str:
+    convention = "reduced" if reduced else "unreduced"
+    return f"{snapshot_version}#ordinary-homology-{convention}"
+
+
 def validate_read_model(atlas: dict[str, Any]) -> None:
-    objects = atlas["objects"]
-    object_ids = [item["id"] for item in objects]
-    slugs = [item["slug"] for item in objects]
-    if len(object_ids) != len(set(object_ids)):
-        raise ValueError("static atlas contains duplicate stable object IDs")
+    conceptual_spaces = atlas["conceptual_spaces"]
+    conceptual_space_ids = [item["id"] for item in conceptual_spaces]
+    slugs = [item["slug"] for item in conceptual_spaces]
+    if len(conceptual_space_ids) != len(set(conceptual_space_ids)):
+        raise ValueError("static atlas contains duplicate stable Conceptual-space IDs")
     if len(slugs) != len(set(slugs)):
-        raise ValueError("static atlas contains duplicate object slugs")
+        raise ValueError("static atlas contains duplicate Conceptual-space slugs")
+    required_fields = ("id", "slug", "kind", "name", "taxonomy", "homology")
+    malformed_spaces = []
+    for conceptual_space in conceptual_spaces:
+        missing = [field for field in required_fields if not conceptual_space.get(field)]
+        if missing:
+            malformed_spaces.append(f"{conceptual_space.get('id', '<missing id>')}: {missing}")
+        if conceptual_space["data_quality"]["missing_required_fields"]:
+            malformed_spaces.append(
+                f"{conceptual_space['id']}: "
+                f"{conceptual_space['data_quality']['missing_required_fields']}"
+            )
+    if malformed_spaces:
+        raise ValueError(f"malformed Conceptual-space records: {malformed_spaces}")
     evidence_ids = {
-        evidence["id"] for item in objects for evidence in item["evidence"]
+        evidence["id"] for item in conceptual_spaces for evidence in item["evidence"]
     }
     referenced_evidence = {
         evidence_id
-        for item in objects
+        for item in conceptual_spaces
         for row in item["homology"]
         for evidence_id in row["evidence_ids"]
     }
     missing_evidence = sorted(referenced_evidence - evidence_ids)
     if missing_evidence:
         raise ValueError(f"unresolved evidence references: {missing_evidence}")
-    known_ids = set(object_ids)
+    known_ids = set(conceptual_space_ids)
     unresolved_relations = [
         relation
-        for item in objects
+        for item in conceptual_spaces
         for relation in item["relations"]
         if relation.get("target_id") not in known_ids
     ]
     atlas["snapshot"]["unresolved_reference_count"] = len(unresolved_relations)
-    section_ids = [object_id for section in atlas["sections"] for object_id in section["object_ids"]]
-    if sorted(section_ids) != sorted(object_ids):
-        raise ValueError("static atlas sections must contain every object exactly once")
+    section_ids = [conceptual_space_id for section in atlas["sections"] for conceptual_space_id in section["conceptual_space_ids"]]
+    if sorted(section_ids) != sorted(conceptual_space_ids):
+        raise ValueError("static atlas sections must contain every Conceptual space exactly once")
 
 
 def build_read_model(database_path: Path) -> dict[str, Any]:
@@ -173,7 +192,7 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
     if summary["subject_count"] != len(spaces):
         raise ValueError("Snapshot subject count does not match enumerated spaces")
 
-    objects: list[dict[str, Any]] = []
+    conceptual_spaces: list[dict[str, Any]] = []
     evidence_total = 0
     homology_total = 0
     for space in spaces:
@@ -187,7 +206,7 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
         )
         homology: list[dict[str, Any]] = []
         raw_homology: list[dict[str, Any]] = []
-        object_evidence_ids: set[str] = set()
+        space_evidence_ids: set[str] = set()
         for coefficient in COEFFICIENTS:
             for reduced in (False, True):
                 response = tools.read_homology(
@@ -199,22 +218,26 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
                     )
                 raw_homology.append(response)
                 for group in response["groups"]:
-                    object_evidence_ids.add(group["evidence_id"])
+                    space_evidence_ids.add(group["evidence_id"])
                     homology.append(
                         {
+                            "theory": THEORY_ID,
                             "coefficient_ring": coefficient,
+                            "coefficient_system": f"preview:{coefficient}",
+                            "homology_convention": homology_convention_id(
+                                snapshot_row["schema_version"], reduced
+                            ),
                             "reduced": reduced,
                             "degree": group["degree"],
                             "group": group_projection(group, coefficient),
                             "knowledge_state": group["knowledge_state"],
                             "value_scope": group["value_scope"],
-                            "reliability": group["knowledge_state"],
                             "evidence_ids": [group["evidence_id"]],
-                            "computation_ids": [group["evidence_id"]],
+                            "computation_ids": [],
                             "assertion_id": group["assertion_id"],
                         }
                     )
-        expanded = tools.expand_evidence(sorted(object_evidence_ids))
+        expanded = tools.expand_evidence(sorted(space_evidence_ids))
         if expanded["outcome"] != "complete":
             raise ValueError(
                 f"unresolved evidence for {space['space_id']}: {expanded['missing_evidence_ids']}"
@@ -222,10 +245,11 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
         evidence = [
             {
                 "id": item["evidence_id"],
-                "kind": "owned_computation",
+                "kind": "owned_computation_evidence",
                 "citation": None,
                 "locator": None,
-                "reliability": summary["release_status"],
+                "reliability": None,
+                "release_status": summary["release_status"],
                 "algorithm_id": item["algorithm_id"],
                 "chain_sha256": item["chain_sha256"],
                 "representatives_state": item["representatives_state"],
@@ -233,19 +257,12 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
             }
             for item in expanded["evidence"]
         ]
-        computations = [
-            {
-                "id": item["id"],
-                "algorithm_id": item["algorithm_id"],
-                "software": "homology_db.preview",
-                "software_version": "0-preview",
-                "input_sha256": item["chain_sha256"],
-                "representatives_state": item["representatives_state"],
-                "induced_maps_state": item["induced_maps_state"],
-            }
-            for item in evidence
+        missing_required_fields = [
+            field
+            for field in ("space_id", "label", "family", "dimension")
+            if space.get(field) is None or space.get(field) == ""
         ]
-        object_record = {
+        conceptual_space_record = {
             "id": space["space_id"],
             "slug": slug_from_id(space["space_id"]),
             "kind": "conceptual_space",
@@ -265,7 +282,12 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
             "models": [],
             "relations": [],
             "evidence": evidence,
-            "computations": computations,
+            "computations": [],
+            "data_quality": {
+                "state": "valid" if not missing_required_fields else "malformed",
+                "missing_required_fields": missing_required_fields,
+                "malformed_fields": [],
+            },
             "raw": {
                 "subject": space,
                 "aliases": aliases,
@@ -273,21 +295,21 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
                 "evidence_response": expanded,
             },
         }
-        objects.append(object_record)
+        conceptual_spaces.append(conceptual_space_record)
         evidence_total += len(evidence)
         homology_total += len(homology)
     tools.connection.close()
 
     sections_by_family: dict[str, list[str]] = defaultdict(list)
-    for item in objects:
+    for item in conceptual_spaces:
         sections_by_family[item["taxonomy"]["family"]].append(item["id"])
     sections = [
         {
             "id": family,
             "label": family.replace("_", " ").title(),
-            "object_ids": object_ids,
+            "conceptual_space_ids": conceptual_space_ids,
         }
-        for family, object_ids in sorted(sections_by_family.items())
+        for family, conceptual_space_ids in sorted(sections_by_family.items())
     ]
     modified_at = datetime.fromtimestamp(database_path.stat().st_mtime, UTC).replace(
         microsecond=0
@@ -298,7 +320,7 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
             "snapshot_version": snapshot_row["schema_version"],
             "schema_version": READ_MODEL_VERSION,
             "generated_at": modified_at.isoformat().replace("+00:00", "Z"),
-            "object_count": len(objects),
+            "conceptual_space_count": len(conceptual_spaces),
             "evidence_count": evidence_total,
             "homology_row_count": homology_total,
             "source_database_bytes": database_path.stat().st_size,
@@ -306,9 +328,14 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
             "source_commit": source_commit(),
             "release_status": summary["release_status"],
             "supported_coefficients": list(COEFFICIENTS),
+            "homology_theory": THEORY_ID,
+            "homology_conventions": [
+                homology_convention_id(snapshot_row["schema_version"], reduced)
+                for reduced in (False, True)
+            ],
         },
         "sections": sections,
-        "objects": objects,
+        "conceptual_spaces": conceptual_spaces,
     }
     validate_read_model(atlas)
     return atlas
@@ -352,7 +379,7 @@ def export_atlas(database_path: Path, output_path: Path) -> dict[str, Any]:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8", newline="\n")
     return {
-        "object_count": atlas["snapshot"]["object_count"],
+        "conceptual_space_count": atlas["snapshot"]["conceptual_space_count"],
         "evidence_count": atlas["snapshot"]["evidence_count"],
         "unresolved_reference_count": atlas["snapshot"]["unresolved_reference_count"],
         "html_bytes": output_path.stat().st_size,

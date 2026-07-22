@@ -22,7 +22,7 @@ bytes). Its current record counts are:
 | Evidence records | 60 |
 | Primary summands | 60 |
 
-The generated self-contained HTML is **1,872,477 bytes**. It is below the PRD's
+The generated self-contained HTML is **2,065,520 bytes**. It is below the PRD's
 5 MB one-file threshold and contains no external script, stylesheet, font, or
 image dependency.
 
@@ -34,11 +34,12 @@ only `homology-db.static-atlas/1`:
 | Atlas field | Authoritative input |
 |---|---|
 | Snapshot identity and count | `Tools.corpus_summary()` plus the one Snapshot record |
-| Stable object ID | preview Conceptual-space ID |
+| Stable Conceptual-space ID | preview Conceptual-space ID |
 | Display name, family, dimension, model-relation qualifier | preview subject record |
 | Aliases and notation | recorded preview aliases |
-| Homology | `Tools.read_homology()` for each recorded coefficient and convention |
-| Evidence and computation capability | `Tools.expand_evidence()` |
+| Homology | `Tools.read_homology()` for each recorded coefficient and reduced choice, qualified by ordinary theory and a Snapshot-versioned convention identity |
+| Evidence and algorithm capability | `Tools.expand_evidence()` |
+| Computation runs | empty, because the preview has no distinct run records with inputs, outputs, environment, parameters, and logs |
 | Models and relations | empty arrays, because the preview exposes no qualified records of those kinds |
 | Raw record | stable tool responses and their source subject record |
 
@@ -49,9 +50,14 @@ metadata. It does not add mathematical assertions or infer taxonomy.
 ## Export invariants
 
 - Stable IDs and slugs are unique.
-- Every object appears in exactly one data-backed section.
+- Every Conceptual space appears in exactly one data-backed section.
+- Every Homology row names its theory, coefficient system, versioned
+  convention, reduced choice, degree, Knowledge state, and evidence.
 - Every Homology evidence reference resolves before output is written.
 - A non-`exact` Knowledge state is rendered by state, never by a numeric value.
+- Knowledge state, evidence reliability, Snapshot release status, and
+  Computation runs remain separate. Missing reliability or run records are
+  reported as missing rather than synthesized.
 - Output order and bytes are deterministic for one input Snapshot; the
   `--snapshot current` build is deterministic at a fixed source commit.
 - Embedded JSON escapes HTML/script delimiters and Unicode line separators.
@@ -66,5 +72,5 @@ python3 scripts/export_static_atlas.py \
   --output dist/atlas.html
 ```
 
-The command prints the object and evidence counts, unresolved-reference count,
+The command prints the Conceptual-space and evidence counts, unresolved-reference count,
 HTML byte size, and source database SHA-256.
