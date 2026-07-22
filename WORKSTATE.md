@@ -210,6 +210,8 @@ passes 49 tests. The generated development atlas contains all 60 preview
 subjects in a 2,076,630-byte self-contained HTML file with zero unresolved
 evidence references. Browser-facing review language preserves
 `local_preview_not_release_evidence` and does not claim named-atlas coverage.
+The checked-in atlas is deployed from `main` by GitHub Pages at
+<https://davearcher18.github.io/homology-db/> for browser testing.
 
 ## Recovery notes
 

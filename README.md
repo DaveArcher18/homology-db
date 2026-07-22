@@ -6,6 +6,8 @@ construction; a local preview is available now.
 
 ## Browse the atlas
 
+**Live atlas:** [davearcher18.github.io/homology-db](https://davearcher18.github.io/homology-db/)
+
 Open [`dist/atlas.html`](dist/atlas.html) directly in a browser. It is a single
 self-contained, offline file: search all 60 spaces, follow stable Conceptual-space links,
 switch coefficient systems and reduced/unreduced choices, filter the corpus, and
@@ -21,6 +23,8 @@ python3 scripts/export_static_atlas.py --snapshot current --output dist/atlas.ht
 
 The [static atlas read-model note](docs/static-atlas-read-model.md) records the
 schema mapping, measured database and HTML sizes, and validation boundaries.
+Pushes of the checked-in artifact to `main` are deployed by
+[`deploy-atlas-pages.yml`](.github/workflows/deploy-atlas-pages.yml).
 
 ## Try it now
 

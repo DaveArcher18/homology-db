@@ -330,6 +330,8 @@ the held `named-atlas-review-v1` release candidate.
   JSON copy/download, narrow-layout index, and print rules.
 - The generated artifact is 2,076,630 bytes and has no external script,
   stylesheet, font, or image dependency.
+- The checked-in artifact is published from `main` to the repository's free
+  GitHub Pages site at <https://davearcher18.github.io/homology-db/>.
 
 | Check | Result |
 | --- | --- |
