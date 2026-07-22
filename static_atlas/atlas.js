@@ -23,6 +23,7 @@
     reduced: false,
     family: "",
     dimension: "",
+    reliability: "",
     torsion: false,
     review: false,
     visible: [],
@@ -34,6 +35,7 @@
   const reducedFilter = document.getElementById("reduced-filter");
   const familyFilter = document.getElementById("family-filter");
   const dimensionFilter = document.getElementById("dimension-filter");
+  const reliabilityFilter = document.getElementById("reliability-filter");
   const torsionFilter = document.getElementById("torsion-filter");
   const reviewToggle = document.getElementById("review-toggle");
   const aboutToggle = document.getElementById("about-toggle");
@@ -538,13 +540,25 @@
     relations.forEach((relation) => {
       const target = spacesById.get(relation.target_id);
       const item = element("li");
-      item.append(document.createTextNode(`${humanize(relation.kind ?? relation.relation_type)}: `));
+      item.append(document.createTextNode(
+        `${space.name.plain} — ${humanize(relation.type)} → `,
+      ));
       if (target) {
         const link = element("a", "", target.name.plain);
         link.href = `#space=${encodeURIComponent(target.slug)}`;
         item.append(link);
       } else {
         item.append(document.createTextNode(relation.target_id ?? "unresolved target"));
+      }
+      if (relation.detail) {
+        item.append(element("span", "relation-context", relation.detail));
+      }
+      const reviewContext = [
+        relation.id,
+        ...asArray(relation.evidence_ids),
+      ].filter(Boolean).join(" · ");
+      if (reviewContext) {
+        item.append(element("span", "relation-context review-only", reviewContext));
       }
       list.append(item);
     });
@@ -625,10 +639,16 @@
     const evidence = evidenceRecords(space);
     const computations = computationRecords(space);
     const evidenceSummary = element("p", "evidence-summary");
-    const reliability = evidence[0]?.reliability ?? "reliability not recorded";
-    const evidenceKind = humanize(evidence[0]?.kind ?? "source not recorded");
+    const firstEvidence = evidence[0];
+    const firstCitation = citationRecords(firstEvidence ?? {})[0];
+    const sourceTitle = typeof firstCitation === "string"
+      ? firstCitation
+      : firstRecorded(firstCitation?.title, firstEvidence?.citation, "source not recorded");
+    const reliability = firstEvidence?.reliability ?? "reliability not recorded";
+    const evidenceKind = humanize(firstEvidence?.kind ?? "source not recorded");
     evidenceSummary.append(
       element("strong", "", "Provenance"),
+      element("span", "", `Source: ${sourceTitle}`),
       element("span", "", evidenceKind),
       element("span", "", `${evidence.length} evidence record${evidence.length === 1 ? "" : "s"}`),
       element("span", "", `${computations.length} recorded computation run${computations.length === 1 ? "" : "s"}`),
@@ -645,7 +665,7 @@
     const relationBlock = detailsBlock("Relationships", relations.length, true);
     renderRelations(space, relationBlock.content);
 
-    const evidenceBlock = detailsBlock("Evidence, sketches & citations", evidence.length);
+    const evidenceBlock = detailsBlock("Evidence, sketches & citations", evidence.length, true);
     renderEvidence(space, evidenceBlock.content);
 
     const computationBlock = detailsBlock("Computation runs (recorded)", computations.length, true);
@@ -689,8 +709,8 @@
 
     details.append(
       modelBlock.details,
-      evidenceBlock.details,
       relationBlock.details,
+      evidenceBlock.details,
       computationBlock.details,
       qualityBlock.details,
       rawBlock.details,
@@ -771,6 +791,15 @@
       option.value = "finite-type";
       dimensionFilter.append(option);
     }
+    const reliabilityStates = [...new Set(
+      conceptualSpaces.flatMap((space) => evidenceRecords(space).map((record) => record.reliability))
+        .filter((value) => typeof value === "string" && value),
+    )].sort((left, right) => humanize(left).localeCompare(humanize(right)));
+    reliabilityStates.forEach((reliability) => {
+      const option = element("option", "", humanize(reliability));
+      option.value = reliability;
+      reliabilityFilter.append(option);
+    });
 
     document.getElementById("conceptual-space-count").textContent = String(snapshot.conceptual_space_count ?? conceptualSpaces.length);
     document.getElementById("snapshot-name").textContent = snapshotReference();
@@ -854,6 +883,7 @@
       if (state.family && space.taxonomy.family !== state.family) return false;
       if (state.dimension === "finite-type" && !isInfiniteFiniteType(space)) return false;
       if (state.dimension !== "" && state.dimension !== "finite-type" && String(spaceDimension(space)) !== state.dimension) return false;
+      if (state.reliability && !evidenceRecords(space).some((record) => record.reliability === state.reliability)) return false;
       if (state.torsion && !hasIntegralTorsion(space)) return false;
       return true;
     });
@@ -911,8 +941,9 @@
       searchInput.value = "";
       familyFilter.value = "";
       dimensionFilter.value = "";
+      reliabilityFilter.value = "";
       torsionFilter.checked = false;
-      state.query = state.family = state.dimension = "";
+      state.query = state.family = state.dimension = state.reliability = "";
       state.torsion = false;
       updateAtlas();
     }
@@ -946,6 +977,7 @@
     reducedFilter.checked = false;
     familyFilter.value = "";
     dimensionFilter.value = "";
+    reliabilityFilter.value = "";
     torsionFilter.checked = false;
     Object.assign(state, {
       query: "",
@@ -953,6 +985,7 @@
       reduced: false,
       family: "",
       dimension: "",
+      reliability: "",
       torsion: false,
     });
     updateAtlas();
@@ -970,6 +1003,7 @@
   reducedFilter.addEventListener("change", () => { state.reduced = reducedFilter.checked; updateAtlas(); });
   familyFilter.addEventListener("change", () => { state.family = familyFilter.value; updateAtlas(); });
   dimensionFilter.addEventListener("change", () => { state.dimension = dimensionFilter.value; updateAtlas(); });
+  reliabilityFilter.addEventListener("change", () => { state.reliability = reliabilityFilter.value; updateAtlas(); });
   torsionFilter.addEventListener("change", () => { state.torsion = torsionFilter.checked; updateAtlas(); });
   clearFilters.addEventListener("click", clearAllFilters);
   indexToggle.addEventListener("click", () => {

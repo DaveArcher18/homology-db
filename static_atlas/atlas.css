@@ -161,7 +161,7 @@ h1 {
 
 .toolbar-inner {
   display: grid;
-  grid-template-columns: minmax(16rem, 2.4fr) repeat(3, minmax(7rem, 0.75fr)) auto auto;
+  grid-template-columns: minmax(16rem, 2.4fr) repeat(4, minmax(7rem, 0.75fr)) auto auto;
   align-items: end;
   gap: 0.75rem;
   width: min(100% - 3rem, 92rem);
@@ -817,7 +817,8 @@ select {
   overflow-wrap: anywhere;
 }
 
-.citation-context {
+.citation-context,
+.relation-context {
   display: block;
   margin-top: 0.1rem;
   color: var(--muted);

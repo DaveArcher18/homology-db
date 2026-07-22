@@ -16,6 +16,16 @@ EXPORTER = REPOSITORY_ROOT / "scripts" / "export_static_atlas.py"
 
 
 class StaticAtlasTest(unittest.TestCase):
+    def test_pages_actions_are_pinned_to_full_commit_shas(self) -> None:
+        workflow = (
+            REPOSITORY_ROOT / ".github" / "workflows" / "deploy-atlas-pages.yml"
+        ).read_text(encoding="utf-8")
+        action_revisions = re.findall(r"^\s*uses:\s+[^@\s]+@([^\s]+)", workflow, re.MULTILINE)
+        self.assertEqual(len(action_revisions), 4)
+        self.assertTrue(
+            all(re.fullmatch(r"[0-9a-f]{40}", revision) for revision in action_revisions)
+        )
+
     def test_exporter_generates_complete_self_contained_atlas(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
@@ -38,6 +48,9 @@ class StaticAtlasTest(unittest.TestCase):
             )
 
             self.assertEqual(completed.returncode, 0, completed.stderr)
+            build_summary = json.loads(completed.stdout)
+            self.assertEqual(build_summary["relation_count"], 11)
+            self.assertGreater(build_summary["source_database_bytes"], 0)
             html = output_path.read_text(encoding="utf-8")
             embedded = re.search(
                 r'<script id="atlas-data" type="application/json">(.*?)</script>',
@@ -71,6 +84,7 @@ class StaticAtlasTest(unittest.TestCase):
                 atlas["snapshot"]["source_tree_state"] == "dirty",
             )
             self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 42)
+            self.assertEqual(atlas["snapshot"]["relation_count"], 11)
             self.assertEqual(len(atlas["conceptual_spaces"]), 42)
             self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 42)
             self.assertIn("nonorientable surface genus 2", next(
@@ -120,6 +134,21 @@ class StaticAtlasTest(unittest.TestCase):
                 "Attach e^4 to S^2 by the Hopf map eta.",
             )
             self.assertTrue(complex_projective_plane["evidence"][0]["citations"])
+            self.assertEqual(
+                complex_projective_plane["relations"],
+                [
+                    {
+                        "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity.",
+                        "evidence_ids": [
+                            "chromatic:evidence:complex_projective_space:2"
+                        ],
+                        "id": "relation:cp2:finite-skeleton:cp-infinity",
+                        "source_id": "complex_projective_space:2",
+                        "target_id": "complex_projective_space:infinity",
+                        "type": "finite_skeleton_of",
+                    }
+                ],
+            )
             self.assertTrue(all(
                 citation["url"].startswith("https://")
                 for evidence in complex_projective_plane["evidence"]
@@ -197,6 +226,7 @@ class StaticAtlasTest(unittest.TestCase):
                 'id="atlas-search"',
                 'id="coefficient-filter"',
                 'id="reduced-filter"',
+                'id="reliability-filter"',
                 'id="review-toggle"',
                 'id="browse-control"',
                 'id="about-toggle"',
@@ -210,6 +240,8 @@ class StaticAtlasTest(unittest.TestCase):
                 "Computation runs",
                 "Data quality",
                 "Source locator",
+                "Source: ${sourceTitle}",
+                'detailsBlock("Evidence, sketches & citations", evidence.length, true)',
                 "JSON.stringify(space.raw",
             ):
                 self.assertIn(required_control, html)
@@ -396,6 +428,39 @@ class StaticAtlasTest(unittest.TestCase):
             )
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("Model/Evidence input mismatch", completed.stderr)
+            self.assertFalse(output_path.exists())
+
+    def test_export_rejects_relation_evidence_from_another_space(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            database_path = directory / "chromatic.sqlite3"
+            output_path = directory / "atlas.html"
+            ChromaticDatabase.build(database_path)
+            with closing(sqlite3.connect(database_path)) as connection:
+                connection.execute(
+                    """
+                    UPDATE space_relation
+                    SET evidence_id = 'chromatic:evidence:complex_projective_space:infinity'
+                    WHERE relation_id = 'relation:cp2:finite-skeleton:cp-infinity'
+                    """
+                )
+                connection.commit()
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--database",
+                    str(database_path),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("references unresolved Evidence", completed.stderr)
             self.assertFalse(output_path.exists())
 
     def test_export_rejects_non_https_citation_urls(self) -> None:

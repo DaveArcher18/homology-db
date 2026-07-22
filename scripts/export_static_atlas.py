@@ -209,6 +209,7 @@ def validate_read_model(
         ):
             raise ValueError(f"family section {section.get('id')} is malformed")
     known_ids = set(conceptual_space_ids)
+    relation_ids: set[str] = set()
     section_space_ids = [
         conceptual_space_id
         for section in sections
@@ -349,6 +350,33 @@ def validate_read_model(
                 f"Conceptual space {conceptual_space['id']} contains duplicate Model IDs"
             )
         local_evidence_ids = {evidence["id"] for evidence in conceptual_space["evidence"]}
+        for relation in conceptual_space["relations"]:
+            required_relation_fields = (
+                "id",
+                "source_id",
+                "type",
+                "target_id",
+                "detail",
+            )
+            if any(not relation.get(field) for field in required_relation_fields):
+                raise ValueError(
+                    f"relation {relation.get('id', '<missing id>')} is malformed"
+                )
+            if relation["id"] in relation_ids:
+                raise ValueError(f"duplicate relation ID {relation['id']}")
+            relation_ids.add(relation["id"])
+            if relation["source_id"] != conceptual_space["id"]:
+                raise ValueError(
+                    f"relation {relation['id']} is attached to the wrong source space"
+                )
+            unresolved_evidence = sorted(
+                set(relation["evidence_ids"]) - local_evidence_ids
+            )
+            if unresolved_evidence:
+                raise ValueError(
+                    f"relation {relation['id']} references unresolved Evidence: "
+                    + ", ".join(unresolved_evidence)
+                )
         for model in conceptual_space["models"]:
             if model["space_id"] != conceptual_space["id"]:
                 raise ValueError(
@@ -560,6 +588,25 @@ def build_read_model(
                 "SELECT * FROM homology_coverage ORDER BY space_id"
             )
         }
+        relations_by_space: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for row in connection.execute(
+            """
+            SELECT relation_id, source_space_id, relation_type,
+                   target_space_id, evidence_id, detail
+            FROM space_relation
+            ORDER BY source_space_id, relation_id
+            """
+        ):
+            relations_by_space[row["source_space_id"]].append(
+                {
+                    "id": row["relation_id"],
+                    "source_id": row["source_space_id"],
+                    "type": row["relation_type"],
+                    "target_id": row["target_space_id"],
+                    "evidence_ids": [row["evidence_id"]],
+                    "detail": row["detail"],
+                }
+            )
 
     conceptual_spaces: list[dict[str, Any]] = []
     evidence_total = 0
@@ -567,6 +614,7 @@ def build_read_model(
     computation_total = 0
     model_total = 0
     citation_total = 0
+    relation_total = 0
     with ChromaticTools(database_path) as tools:
         summary = tools.corpus_summary()
         if summary["subject_count"] != len(spaces):
@@ -762,7 +810,7 @@ def build_read_model(
                 "homology_coverage": coverage,
                 "homology": homology,
                 "models": models,
-                "relations": [],
+                "relations": relations_by_space[space_id],
                 "evidence": evidence,
                 "citations": citations,
                 "computations": computations,
@@ -777,6 +825,7 @@ def build_read_model(
                     "homology_coverage": coverage,
                     "homology_responses": raw_homology,
                     "evidence_response": expanded,
+                    "relations": relations_by_space[space_id],
                 },
             }
             conceptual_spaces.append(conceptual_space_record)
@@ -785,6 +834,7 @@ def build_read_model(
             computation_total += len(computations)
             model_total += len(models)
             citation_total += len(citations)
+            relation_total += len(relations_by_space[space_id])
 
     conceptual_space_ids_by_family: dict[str, list[str]] = defaultdict(list)
     for item in conceptual_spaces:
@@ -814,6 +864,7 @@ def build_read_model(
             "evidence_count": evidence_total,
             "model_count": model_total,
             "citation_count": citation_total,
+            "relation_count": relation_total,
             "computation_count": computation_total,
             "homology_row_count": homology_total,
             "source_database_bytes": database_path.stat().st_size,
@@ -897,9 +948,12 @@ def export_atlas(
         "evidence_count": atlas["snapshot"]["evidence_count"],
         "model_count": atlas["snapshot"]["model_count"],
         "citation_count": atlas["snapshot"]["citation_count"],
+        "relation_count": atlas["snapshot"]["relation_count"],
         "computation_count": atlas["snapshot"]["computation_count"],
+        "homology_row_count": atlas["snapshot"]["homology_row_count"],
         "unresolved_reference_count": atlas["snapshot"]["unresolved_reference_count"],
         "html_bytes": output_path.stat().st_size,
+        "source_database_bytes": atlas["snapshot"]["source_database_bytes"],
         "source_database_sha256": atlas["snapshot"]["source_database_sha256"],
     }
 

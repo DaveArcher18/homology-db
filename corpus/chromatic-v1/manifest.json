@@ -1,5 +1,5 @@
 {
-  "schema_version": "homology-db.chromatic-corpus/2",
+  "schema_version": "homology-db.chromatic-corpus/3",
   "snapshot_name": "chromatic-gateway-42",
   "title": "Chromatic gateway CW corpus",
   "materialized_through_degree": 24,
@@ -9,6 +9,85 @@
       "path": "corpus/chromatic-v1/poincare-sphere-facets.json",
       "sha256": "41ca884492be84a54c3923ee9976b79d7dc66a06847b2b7d8c8ac7cbb9d8e2e2",
       "reference_id": "sage-poincare-source"
+    }
+  ],
+  "relations": [
+    {
+      "id": "relation:rp2:finite-skeleton:bc2",
+      "source_space_id": "real_projective_space:2",
+      "type": "finite_skeleton_of",
+      "target_space_id": "classifying_space:cyclic:2",
+      "detail": "The standard RP^2 CW model is the 2-skeleton of RP^infinity = B(C_2)."
+    },
+    {
+      "id": "relation:rp3:finite-skeleton:bc2",
+      "source_space_id": "real_projective_space:3",
+      "type": "finite_skeleton_of",
+      "target_space_id": "classifying_space:cyclic:2",
+      "detail": "The standard RP^3 CW model is the 3-skeleton of RP^infinity = B(C_2)."
+    },
+    {
+      "id": "relation:rp4:finite-skeleton:bc2",
+      "source_space_id": "real_projective_space:4",
+      "type": "finite_skeleton_of",
+      "target_space_id": "classifying_space:cyclic:2",
+      "detail": "The standard RP^4 CW model is the 4-skeleton of RP^infinity = B(C_2)."
+    },
+    {
+      "id": "relation:cp2:finite-skeleton:cp-infinity",
+      "source_space_id": "complex_projective_space:2",
+      "type": "finite_skeleton_of",
+      "target_space_id": "complex_projective_space:infinity",
+      "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity."
+    },
+    {
+      "id": "relation:lens-3-3:finite-skeleton:bc3",
+      "source_space_id": "lens:3:3:1-1",
+      "type": "finite_skeleton_of",
+      "target_space_id": "classifying_space:cyclic:3",
+      "detail": "The diagonal 3-dimensional lens-space model is the 3-skeleton of the standard infinite lens-space model B(C_3)."
+    },
+    {
+      "id": "relation:lens-5-3:finite-skeleton:bc5",
+      "source_space_id": "lens:5:3:1-1",
+      "type": "finite_skeleton_of",
+      "target_space_id": "classifying_space:cyclic:5",
+      "detail": "The diagonal 3-dimensional lens-space model is the 3-skeleton of the standard infinite lens-space model B(C_5)."
+    },
+    {
+      "id": "relation:lens-3-5:finite-skeleton:bc3",
+      "source_space_id": "lens:3:5:1-1-1",
+      "type": "finite_skeleton_of",
+      "target_space_id": "classifying_space:cyclic:3",
+      "detail": "The diagonal 5-dimensional lens-space model is the 5-skeleton of the standard infinite lens-space model B(C_3)."
+    },
+    {
+      "id": "relation:bec2-rank2:product-power:bc2",
+      "source_space_id": "classifying_space:elementary_abelian:2:2",
+      "type": "cartesian_product_power_of",
+      "target_space_id": "classifying_space:cyclic:2",
+      "detail": "The product CW model is the 2-fold Cartesian product of the cyclic classifying-space model B(C_2)."
+    },
+    {
+      "id": "relation:bec3-rank2:product-power:bc3",
+      "source_space_id": "classifying_space:elementary_abelian:3:2",
+      "type": "cartesian_product_power_of",
+      "target_space_id": "classifying_space:cyclic:3",
+      "detail": "The product CW model is the 2-fold Cartesian product of the cyclic classifying-space model B(C_3)."
+    },
+    {
+      "id": "relation:bec2-rank3:product-power:bc2",
+      "source_space_id": "classifying_space:elementary_abelian:2:3",
+      "type": "cartesian_product_power_of",
+      "target_space_id": "classifying_space:cyclic:2",
+      "detail": "The product CW model is the 3-fold Cartesian product of the cyclic classifying-space model B(C_2)."
+    },
+    {
+      "id": "relation:mu2:thom-space:bu2",
+      "source_space_id": "universal_complex_thom:2",
+      "type": "thom_space_of_bundle_over",
+      "target_space_id": "unitary_classifying_space:2",
+      "detail": "Th(gamma_2 -> BU(2)) is the Thom space of the universal complex rank-two bundle over BU(2)."
     }
   ],
   "references": [

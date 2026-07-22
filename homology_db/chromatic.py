@@ -34,7 +34,7 @@ from .preview import (
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPOSITORY_ROOT / "corpus" / "chromatic-v1" / "manifest.json"
 DEFAULT_DB = Path("/tmp/homology-db-chromatic.sqlite3")
-SCHEMA_VERSION = "homology-db.chromatic/1"
+SCHEMA_VERSION = "homology-db.chromatic/2"
 ALGORITHM_ID = "owned-cellular-smith-and-modular-rank/1"
 RELEASE_STATUS = "development_corpus_not_external_reviewed"
 
@@ -123,6 +123,17 @@ CREATE TABLE evidence_reference(
     locator TEXT NOT NULL,
     PRIMARY KEY(evidence_id, reference_id, role, locator)
 );
+CREATE TABLE space_relation(
+    relation_id TEXT PRIMARY KEY,
+    source_space_id TEXT NOT NULL REFERENCES space(space_id),
+    relation_type TEXT NOT NULL,
+    target_space_id TEXT NOT NULL REFERENCES space(space_id),
+    evidence_id TEXT NOT NULL REFERENCES evidence(evidence_id),
+    detail TEXT NOT NULL,
+    UNIQUE(source_space_id, relation_type, target_space_id)
+);
+CREATE INDEX space_relation_source_idx ON space_relation(source_space_id);
+CREATE INDEX space_relation_target_idx ON space_relation(target_space_id);
 CREATE TABLE computation_run(
     computation_id TEXT PRIMARY KEY,
     evidence_id TEXT NOT NULL REFERENCES evidence(evidence_id),
@@ -171,7 +182,7 @@ CREATE INDEX primary_query_idx
 
 def load_manifest(path: Path = MANIFEST_PATH) -> dict[str, Any]:
     manifest = json.loads(path.read_text(encoding="utf-8"))
-    if manifest.get("schema_version") != "homology-db.chromatic-corpus/2":
+    if manifest.get("schema_version") != "homology-db.chromatic-corpus/3":
         raise ValueError("unsupported chromatic corpus manifest version")
     bound = manifest.get("materialized_through_degree")
     if not isinstance(bound, int) or isinstance(bound, bool) or bound < 1:
@@ -330,7 +341,7 @@ def _base_spec(
     algorithm_id: str = ALGORITHM_ID,
     run_recorded: bool = True,
 ) -> dict[str, Any]:
-    chain = chain_override or make_chain(ranks, nonzero)
+    chain = chain_override if chain_override is not None else make_chain(ranks, nonzero)
     chain_sha256 = digest(chain)
     model_id = f"cw:{key}"
     infinite_finite_type = dimension is None
@@ -401,12 +412,19 @@ def _integral_rows(
     maximum_degree: int,
     groups: dict[int, tuple[int, list[int]]],
 ) -> list[dict[str, Any]]:
+    expected_degrees = set(range(maximum_degree + 1))
+    if set(groups) != expected_degrees:
+        raise ValueError(
+            "cited homology must provide explicit groups for every degree "
+            f"0 through {maximum_degree}"
+        )
     return [
         {
             "degree": degree,
-            "free_rank": groups.get(degree, (0, []))[0],
-            "torsion_orders": list(groups.get(degree, (0, []))[1]),
-            "smith_diagonal_of_incoming_boundary": [],
+            "free_rank": groups[degree][0],
+            "torsion_orders": list(groups[degree][1]),
+            "smith_diagonal_of_incoming_boundary": None,
+            "smith_diagonal_state": "not_computed",
             "representatives": {
                 "state": "not_computed",
                 "reason": "formula_or_cited_model_does_not_retain_basis_transforms",
@@ -414,6 +432,43 @@ def _integral_rows(
         }
         for degree in range(maximum_degree + 1)
     ]
+
+
+def _require_explicit_integral_rows(
+    maximum_degree: int, rows: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    expected_degrees = list(range(maximum_degree + 1))
+    try:
+        degrees = [row["degree"] for row in rows]
+    except (KeyError, TypeError) as error:
+        raise ValueError("integral homology rows must record every degree") from error
+    if degrees != expected_degrees:
+        raise ValueError(
+            "integral homology rows must record every degree exactly once in order"
+        )
+    for row in rows:
+        if "free_rank" not in row or "torsion_orders" not in row:
+            raise ValueError(
+                f"integral homology degree {row['degree']} lacks explicit group data"
+            )
+        free_rank = row["free_rank"]
+        torsion_orders = row["torsion_orders"]
+        if (
+            not isinstance(free_rank, int)
+            or isinstance(free_rank, bool)
+            or free_rank < 0
+            or not isinstance(torsion_orders, list)
+            or any(
+                not isinstance(order, int)
+                or isinstance(order, bool)
+                or order < 2
+                for order in torsion_orders
+            )
+        ):
+            raise ValueError(
+                f"integral homology degree {row['degree']} has malformed group data"
+            )
+    return rows
 
 
 def _partition_count(total: int, maximum_part: int) -> int:
@@ -635,7 +690,15 @@ def _materialize_family(
             model_cell_degrees=cell_degrees,
             artifact_path="corpus/chromatic-v1/poincare-sphere-facets.json",
             artifact_sha256=artifact_sha256,
-            integral_override=_integral_rows(3, {0: (1, []), 3: (1, [])}),
+            integral_override=_integral_rows(
+                3,
+                {
+                    0: (1, []),
+                    1: (0, []),
+                    2: (0, []),
+                    3: (1, []),
+                },
+            ),
             evidence_kind="official_model_and_cited_computation",
             algorithm_id="pinned-sage-poincare-model/686dc1a8",
             run_recorded=False,
@@ -1048,6 +1111,54 @@ def materialize_specs(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     return specs
 
 
+def materialize_relations(
+    manifest: dict[str, Any], specs: list[dict[str, Any]]
+) -> list[dict[str, str]]:
+    relations = manifest.get("relations")
+    if not isinstance(relations, list):
+        raise ValueError("chromatic corpus relations must be a list")
+    known_space_ids = {spec["key"] for spec in specs}
+    relation_ids: set[str] = set()
+    relation_slots: set[tuple[str, str, str]] = set()
+    materialized: list[dict[str, str]] = []
+    for relation in relations:
+        if not isinstance(relation, dict) or not all(
+            isinstance(relation.get(field), str) and relation[field].strip()
+            for field in (
+                "id",
+                "source_space_id",
+                "type",
+                "target_space_id",
+                "detail",
+            )
+        ):
+            raise ValueError("chromatic corpus contains a malformed relation")
+        relation_id = relation["id"]
+        source_space_id = relation["source_space_id"]
+        target_space_id = relation["target_space_id"]
+        slot = (source_space_id, relation["type"], target_space_id)
+        if relation_id in relation_ids or slot in relation_slots:
+            raise ValueError("chromatic corpus contains a duplicate relation")
+        if source_space_id not in known_space_ids:
+            raise ValueError(f"relation {relation_id} has an unknown source space")
+        if target_space_id not in known_space_ids:
+            raise ValueError(f"relation {relation_id} has an unknown target space")
+        if source_space_id == target_space_id:
+            raise ValueError(f"relation {relation_id} cannot target its source")
+        relation_ids.add(relation_id)
+        relation_slots.add(slot)
+        materialized.append(
+            {
+                "id": relation_id,
+                "source_space_id": source_space_id,
+                "type": relation["type"],
+                "target_space_id": target_space_id,
+                "detail": relation["detail"],
+            }
+        )
+    return sorted(materialized, key=lambda relation: relation["id"])
+
+
 def _insert_homology(
     connection: sqlite3.Connection,
     *,
@@ -1055,16 +1166,27 @@ def _insert_homology(
     spec: dict[str, Any],
     evidence_id: str,
 ) -> None:
-    integral = spec["integral_override"] or compute_integral_homology(
-        spec["chain"], spec["computed_through_degree"]
+    integral = _require_explicit_integral_rows(
+        spec["computed_through_degree"],
+        (
+            spec["integral_override"]
+            if spec["integral_override"] is not None
+            else compute_integral_homology(
+                spec["chain"], spec["computed_through_degree"]
+            )
+        ),
     )
+    if integral[0]["free_rank"] != spec["connected_components"]:
+        raise ValueError(
+            f"H_0 rank for {spec['key']} does not match its connected components"
+        )
     coefficient_rows: dict[str, list[dict[str, Any]]] = {"Z": integral}
     for coefficient, prime in COEFFICIENTS.items():
         if prime is not None:
             field_rows: list[dict[str, Any]] = []
             previous_torsion: list[int] = []
             for row in integral:
-                torsion = row.get("torsion_orders", [])
+                torsion = row["torsion_orders"]
                 dimension = (
                     row["free_rank"]
                     + sum(order % prime == 0 for order in torsion)
@@ -1077,10 +1199,14 @@ def _insert_homology(
         for reduced in (False, True):
             for row in rows:
                 degree = row["degree"]
-                free_rank = row.get("free_rank", row.get("dimension", 0))
-                torsion = row.get("torsion_orders", []) if coefficient == "Z" else []
+                if coefficient == "Z":
+                    free_rank = row["free_rank"]
+                    torsion = row["torsion_orders"]
+                else:
+                    free_rank = row["dimension"]
+                    torsion = []
                 if reduced and degree == 0:
-                    free_rank = max(0, free_rank - 1)
+                    free_rank -= 1
                 assertion_id = (
                     f"chromatic:assertion:{spec['key']}:{coefficient}:"
                     f"{'r' if reduced else 'u'}:{degree}"
@@ -1117,6 +1243,7 @@ def _insert_homology(
 def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
     manifest = load_manifest(manifest_path)
     specs = materialize_specs(manifest)
+    relations = materialize_relations(manifest, specs)
     manifest_bytes = manifest_path.read_bytes()
     manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
     builder_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -1221,8 +1348,15 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                     model["artifact_sha256"],
                 ),
             )
-            integral = spec["integral_override"] or compute_integral_homology(
-                spec["chain"], spec["computed_through_degree"]
+            integral = _require_explicit_integral_rows(
+                spec["computed_through_degree"],
+                (
+                    spec["integral_override"]
+                    if spec["integral_override"] is not None
+                    else compute_integral_homology(
+                        spec["chain"], spec["computed_through_degree"]
+                    )
+                ),
             )
             representative_states = {
                 row["representatives"]["state"] for row in integral
@@ -1307,6 +1441,18 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                 snapshot_id=snapshot_id,
                 spec=spec,
                 evidence_id=evidence_id,
+            )
+        for relation in relations:
+            connection.execute(
+                "INSERT INTO space_relation VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    relation["id"],
+                    relation["source_space_id"],
+                    relation["type"],
+                    relation["target_space_id"],
+                    f"chromatic:evidence:{relation['source_space_id']}",
+                    relation["detail"],
+                ),
             )
         connection.commit()
     except BaseException:

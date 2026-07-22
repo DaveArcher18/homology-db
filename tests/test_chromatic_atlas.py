@@ -10,7 +10,12 @@ import unittest
 from contextlib import closing
 from pathlib import Path
 
-from homology_db.chromatic import ChromaticDatabase, ChromaticTools, load_manifest
+from homology_db.chromatic import (
+    ChromaticDatabase,
+    ChromaticTools,
+    _integral_rows,
+    load_manifest,
+)
 from homology_db.preview import digest
 
 
@@ -51,6 +56,17 @@ class ChromaticAtlasTests(unittest.TestCase):
         second_path = Path(self.temporary_directory.name) / "second.sqlite3"
         self.assertEqual(ChromaticDatabase.build(second_path), self.snapshot_id)
         self.assertEqual(self.database_path.read_bytes(), second_path.read_bytes())
+
+    def test_cited_integral_rows_require_an_explicit_group_in_every_degree(
+        self,
+    ) -> None:
+        with self.assertRaisesRegex(ValueError, "explicit groups for every degree"):
+            _integral_rows(2, {0: (1, []), 2: (1, [])})
+        cited_rows = _integral_rows(0, {0: (1, [])})
+        self.assertIsNone(
+            cited_rows[0]["smith_diagonal_of_incoming_boundary"]
+        )
+        self.assertEqual(cited_rows[0]["smith_diagonal_state"], "not_computed")
 
     def test_parameterized_torsion_computations_include_uct_tor_classes(self) -> None:
         integral = self.tools.read_homology("M(Z/9,2)", coefficient="Z")
@@ -154,6 +170,21 @@ class ChromaticAtlasTests(unittest.TestCase):
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM space").fetchone()[0], 42)
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM model").fetchone()[0], 42)
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM evidence").fetchone()[0], 42)
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM space_relation").fetchone()[0],
+                11,
+            )
+            self.assertEqual(
+                connection.execute(
+                    """
+                    SELECT target_space_id
+                    FROM space_relation
+                    WHERE source_space_id = 'complex_projective_space:2'
+                      AND relation_type = 'finite_skeleton_of'
+                    """
+                ).fetchone()[0],
+                "complex_projective_space:infinity",
+            )
             self.assertEqual(
                 connection.execute(
                     "SELECT COUNT(*) FROM space WHERE infinite_finite_type = 1"
