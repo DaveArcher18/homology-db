@@ -1,0 +1,277 @@
+{
+  "schema_version": "homology-db.chromatic-corpus/2",
+  "snapshot_name": "chromatic-gateway-42",
+  "title": "Chromatic gateway CW corpus",
+  "materialized_through_degree": 24,
+  "scope": "Forty-two named CW spaces spanning calibration examples, torsion cofibers, projective and lens filtrations, Lie and Schubert spaces, cyclic and elementary-abelian classifying spaces, complex orientations, and a universal Thom space. Finite-type formulas are materialized only through degree 24; the snapshot computes ordinary homology and does not claim Morava K-theory or chromatic type calculations.",
+  "artifacts": [
+    {
+      "path": "corpus/chromatic-v1/poincare-sphere-facets.json",
+      "sha256": "41ca884492be84a54c3923ee9976b79d7dc66a06847b2b7d8c8ac7cbb9d8e2e2",
+      "reference_id": "sage-poincare-source"
+    }
+  ],
+  "references": [
+    {
+      "id": "hatcher-at",
+      "authors": ["Allen Hatcher"],
+      "title": "Algebraic Topology",
+      "year": 2002,
+      "url": "https://pi.math.cornell.edu/~hatcher/AT/AT.pdf",
+      "source_kind": "author_owned_text"
+    },
+    {
+      "id": "hatcher-vbkt",
+      "authors": ["Allen Hatcher"],
+      "title": "Vector Bundles and K-Theory",
+      "year": 2017,
+      "url": "https://pi.math.cornell.edu/~hatcher/VBKT/VB.pdf",
+      "source_kind": "author_owned_text"
+    },
+    {
+      "id": "postnikov-flag-thesis",
+      "authors": ["Alexander Postnikov"],
+      "title": "Enumeration in Algebra and Geometry",
+      "year": 1997,
+      "url": "https://math.mit.edu/~apost/papers/thesis.pdf",
+      "source_kind": "author_owned_thesis"
+    },
+    {
+      "id": "sage-poincare-source",
+      "authors": ["The SageMath Developers"],
+      "title": "Pinned PoincareHomologyThreeSphere simplicial-complex source",
+      "year": 2025,
+      "url": "https://github.com/sagemath/sage/blob/686dc1a8d420c2e0aabadd4f602d9a0aa4690c50/src/sage/topology/simplicial_complex_examples.py#L610-L653",
+      "source_kind": "official_software_source"
+    },
+    {
+      "id": "bmms-ring-spectra-v",
+      "authors": ["Robert R. Bruner", "J. Peter May", "James E. McClure", "Mark Steinberger"],
+      "title": "H infinity Ring Spectra and Their Applications, Chapter V",
+      "year": 1986,
+      "url": "https://people.math.rochester.edu/faculty/doug/otherpapers/BMMS5.pdf",
+      "source_kind": "authoritative_monograph"
+    },
+    {
+      "id": "walker-wood-lie-cells",
+      "authors": ["G. Walker", "R. M. W. Wood"],
+      "title": "Low codimensional embeddings of Sp(n) and SU(n)",
+      "year": 1984,
+      "url": "https://doi.org/10.1017/S0013091500022082",
+      "source_kind": "primary_research"
+    },
+    {
+      "id": "fernandez-sp2-cells",
+      "authors": ["L. Fernandez-Suarez", "A. Gomez-Tato", "J. Strom", "D. Tanre"],
+      "title": "The Lusternik-Schnirelmann category of Sp(3)",
+      "year": 2001,
+      "url": "https://arxiv.org/abs/math/0111263",
+      "source_kind": "primary_research"
+    },
+    {
+      "id": "hkr-characters",
+      "authors": ["Michael J. Hopkins", "Nicholas J. Kuhn", "Douglas C. Ravenel"],
+      "title": "Generalized group characters and complex oriented cohomology theories",
+      "year": 2000,
+      "url": "https://people.math.rochester.edu/faculty/doug/mypapers/hkr.pdf",
+      "source_kind": "primary_research"
+    },
+    {
+      "id": "ravenel-green-book",
+      "authors": ["Douglas C. Ravenel"],
+      "title": "Complex Cobordism and Stable Homotopy Groups of Spheres",
+      "year": 1986,
+      "url": "https://www.sas.rochester.edu/mth/sites/doug-ravenel/mybooks/ravenel.pdf",
+      "source_kind": "author_owned_monograph"
+    }
+  ],
+  "families": [
+    {
+      "id": "point",
+      "label": "Point",
+      "summary": "The terminal one-cell CW complex and zero-dimensional calibration object.",
+      "chromatic_relevance": "A baseline for reduced versus unreduced conventions and contractible-space behavior.",
+      "model_formula": "point_one_cell",
+      "instances": [{}],
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Chapter 0, CW-complex conventions"}]
+    },
+    {
+      "id": "sphere",
+      "label": "Spheres",
+      "summary": "The basic finite CW complexes whose suspension spectra organize stable and chromatic homotopy.",
+      "chromatic_relevance": "The sphere spectrum is the unit and primary target of chromatic stable-homotopy calculations.",
+      "model_formula": "sphere_standard",
+      "parameters": {"n": [0, 1, 2, 3, 4]},
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 0.3, p. 5"}]
+    },
+    {
+      "id": "homology_sphere",
+      "label": "Homology spheres",
+      "summary": "A triangulated Poincare homology sphere, deliberately paired with S^3 to prevent identity-by-homology.",
+      "chromatic_relevance": "It is an identity and model-integrity guard: ordinary homology agrees with S^3 while the fundamental group does not.",
+      "model_formula": "poincare_simplicial",
+      "instances": [{}],
+      "sources": [{"reference_id": "sage-poincare-source", "role": "model_and_homology", "locator": "PoincareHomologyThreeSphere, lines 610-653 at pinned commit"}]
+    },
+    {
+      "id": "wedge",
+      "label": "Wedges",
+      "summary": "A simple attaching-map control with the same cellular chain ranks as CP^2 but a different homotopy type.",
+      "chromatic_relevance": "It guards against treating cellular homology matrices as complete CW identity data.",
+      "model_formula": "sphere_wedge",
+      "instances": [{"a": 2, "b": 4}],
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Chapter 0, wedge sums and CW constructions"}]
+    },
+    {
+      "id": "surface",
+      "label": "Surfaces",
+      "summary": "The torus and Klein bottle provide orientable, nonorientable, free, and 2-torsion two-dimensional test cases.",
+      "chromatic_relevance": "These common topology spaces stress nontrivial 2-cell attaching words and distinguish zero cellular boundaries from degree-two boundaries.",
+      "model_formula": "closed_surface_cells",
+      "instances": [{"kind": "torus"}, {"kind": "klein_bottle"}],
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology"}]
+    },
+    {
+      "id": "real_projective_space",
+      "label": "Real projective spaces",
+      "summary": "Finite skeleta of BC_2 with one cell in every degree and visible 2-primary torsion.",
+      "chromatic_relevance": "Real projective filtrations are standard inputs to 2-primary stable homotopy, image-of-J, and vector-field calculations.",
+      "model_formula": "real_projective_standard_cw",
+      "parameters": {"n": [2, 3, 4]},
+      "sources": [
+        {"reference_id": "hatcher-at", "role": "model", "locator": "Example 0.4, pp. 6-7"},
+        {"reference_id": "hatcher-at", "role": "homology", "locator": "Example 2.42, p. 144"}
+      ]
+    },
+    {
+      "id": "hopf_projective_plane",
+      "label": "Hopf projective planes",
+      "summary": "The complex, quaternionic, and octonionic projective planes retain the eta, nu, and sigma attaching maps.",
+      "chromatic_relevance": "These three Hopf-invariant-one cofibers are foundational finite complexes whose identical-looking zero cellular differentials hide different attaching maps.",
+      "model_formula": "hopf_projective_plane",
+      "instances": [{"division_algebra": "complex"}, {"division_algebra": "quaternionic"}, {"division_algebra": "octonionic"}],
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.6 and 4.47; pp. 6-8 and 378-379"}]
+    },
+    {
+      "id": "moore_space",
+      "label": "Moore spaces",
+      "summary": "Degree-m two-cell cofibers isolate torsion at chosen primes, prime powers, and degrees.",
+      "chromatic_relevance": "After stabilization, prime Moore spaces supply V(0), the first finite torsion input to the chromatic type filtration.",
+      "model_formula": "cyclic_moore_degree_m",
+      "instances": [{"m": 3, "n": 1}, {"m": 4, "n": 1}, {"m": 5, "n": 2}, {"m": 9, "n": 2}, {"m": 7, "n": 3}, {"m": 8, "n": 4}],
+      "sources": [
+        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.40, pp. 143-144"},
+        {"reference_id": "ravenel-green-book", "role": "chromatic_context", "locator": "Section 1.3, pp. 18-19"}
+      ]
+    },
+    {
+      "id": "lens_space",
+      "label": "Lens spaces",
+      "summary": "Weighted odd-dimensional cyclic sphere quotients with explicit primary torsion and identity-sensitive weights.",
+      "chromatic_relevance": "Finite lens filtrations approximate BC_p; the two 5-primary three-spaces deliberately share homology but not homotopy type.",
+      "model_formula": "weighted_lens_cw",
+      "instances": [
+        {"p": 3, "weights": [1, 1]},
+        {"p": 5, "weights": [1, 1]},
+        {"p": 5, "weights": [1, 2]},
+        {"p": 3, "weights": [1, 1, 1]}
+      ],
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.43, pp. 144-146"}]
+    },
+    {
+      "id": "stunted_projective_space",
+      "label": "Stunted projective spaces",
+      "summary": "Quotients retaining consecutive real or complex projective cells.",
+      "chromatic_relevance": "Stunted projective complexes are classical finite inputs to stable homotopy, K-theory, vector-field, and image-of-J calculations.",
+      "model_formula": "stunted_projective_quotient",
+      "instances": [{"kind": "real", "bottom": 3, "top": 6}, {"kind": "complex", "bottom": 2, "top": 4}],
+      "sources": [
+        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.4, 0.6, and 2.42, using the CW quotient filtration"},
+        {"reference_id": "bmms-ring-spectra-v", "role": "stable_context", "locator": "Definition 2.10, p. 148"}
+      ]
+    },
+    {
+      "id": "compact_lie_group",
+      "label": "Compact Lie groups",
+      "summary": "Low-rank SU and Sp examples with finite CW decompositions and nontrivial attaching maps.",
+      "chromatic_relevance": "Compact Lie groups are core generalized-cohomology inputs and expose finite complexes whose cellular boundaries alone omit essential attaching data.",
+      "model_formula": "compact_lie_low_rank",
+      "instances": [{"group": "SU", "rank": 3}, {"group": "Sp", "rank": 2}],
+      "sources": [
+        {"reference_id": "walker-wood-lie-cells", "role": "model_and_homology", "locator": "Cell structure for SU(3), p. 29", "applies_to": {"group": "SU", "rank": 3}},
+        {"reference_id": "fernandez-sp2-cells", "role": "model_and_homology", "locator": "Section 2, cell structure for Sp(2)", "applies_to": {"group": "Sp", "rank": 2}}
+      ]
+    },
+    {
+      "id": "schubert_space",
+      "label": "Schubert spaces",
+      "summary": "A complete flag variety and Grassmannian with explicit even Schubert-cell ranks.",
+      "chromatic_relevance": "Schubert filtrations supply geometric, complex-oriented test spaces beyond projective space while remaining finitely computable.",
+      "model_formula": "finite_schubert_cells",
+      "instances": [{"kind": "complete_flag_c3"}, {"kind": "grassmannian_2_c4"}],
+      "sources": [
+        {"reference_id": "postnikov-flag-thesis", "role": "model_and_homology", "locator": "Section 2.2.1, Flag manifold and Schubert cells, pp. 53-54", "applies_to": {"kind": "complete_flag_c3"}},
+        {"reference_id": "hatcher-vbkt", "role": "model_and_homology", "locator": "Section 1.2, Grassmannian Schubert CW structures, pp. 31-34", "applies_to": {"kind": "grassmannian_2_c4"}}
+      ]
+    },
+    {
+      "id": "cyclic_classifying_space",
+      "label": "Cyclic classifying spaces",
+      "summary": "Infinite lens spaces BC_p with finite-type CW filtrations and recurring p-torsion.",
+      "chromatic_relevance": "Complex-oriented theories see the formal-group p-series on BC_p; these are direct chromatic character-theory inputs.",
+      "model_formula": "cyclic_classifying_finite_type",
+      "parameters": {"p": [2, 3, 5]},
+      "sources": [
+        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 1B.4 and 2.43, pp. 88 and 144-146"},
+        {"reference_id": "hkr-characters", "role": "chromatic_context", "locator": "Introduction and Section 5"}
+      ]
+    },
+    {
+      "id": "elementary_abelian_classifying_space",
+      "label": "Elementary-abelian classifying spaces",
+      "summary": "Products B(C_p^r) with explicit tensor-product CW filtrations and parameterized p-torsion ranks.",
+      "chromatic_relevance": "Elementary abelian p-groups are central test groups in generalized character theory, chromatic fixed points, and detection.",
+      "model_formula": "elementary_abelian_classifying_finite_type",
+      "instances": [{"p": 2, "rank": 2}, {"p": 3, "rank": 2}, {"p": 2, "rank": 3}],
+      "sources": [
+        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Product CW structures and Kunneth formula, Sections 0 and 3B"},
+        {"reference_id": "hkr-characters", "role": "chromatic_context", "locator": "Introduction and Section 5"}
+      ]
+    },
+    {
+      "id": "infinite_projective_space",
+      "label": "Infinite projective spaces",
+      "summary": "The universal complex and quaternionic line spaces with even finite-type CW filtrations.",
+      "chromatic_relevance": "CP-infinity equals BU(1) and is the universal complex-orientation/formal-group-law test object; HP-infinity supplies the quaternionic analogue.",
+      "model_formula": "infinite_projective_finite_type",
+      "instances": [{"division_algebra": "complex"}, {"division_algebra": "quaternionic"}],
+      "sources": [
+        {"reference_id": "hatcher-at", "role": "model_homology_and_identity", "locator": "Example 0.6, p. 7, and Example 4.50, p. 388: CP-infinity cells and K(Z,2)", "applies_to": {"division_algebra": "complex"}},
+        {"reference_id": "hatcher-vbkt", "role": "classifying_space_identity", "locator": "Proposition 3.10 and preceding discussion, p. 89: G_1(C^infinity)=CP-infinity classifies complex line bundles", "applies_to": {"division_algebra": "complex"}},
+        {"reference_id": "hatcher-at", "role": "model_homology_and_identity", "locator": "Quaternionic projective cells, p. 222; Examples 4.46 and 4.50, pp. 386 and 388: S^3 -> S^infinity -> HP^infinity", "applies_to": {"division_algebra": "quaternionic"}}
+      ]
+    },
+    {
+      "id": "unitary_classifying_space",
+      "label": "Unitary classifying spaces",
+      "summary": "BU(2) via the infinite complex Grassmannian and its partition-indexed Schubert cells.",
+      "chromatic_relevance": "BU(2) is the first universal complex-bundle base with two Chern classes and the base for the universal rank-two Thom space.",
+      "model_formula": "unitary_classifying_schubert",
+      "instances": [{"n": 2}],
+      "sources": [{"reference_id": "hatcher-vbkt", "role": "model_and_homology", "locator": "Section 1.2, pp. 31-34; Theorem 3.9, pp. 84-85"}]
+    },
+    {
+      "id": "thom_space",
+      "label": "Universal Thom spaces",
+      "summary": "The Thom space of the universal complex 2-plane bundle over BU(2), represented by its shifted Schubert filtration.",
+      "chromatic_relevance": "This is the actual space commonly denoted MU(2), one of the spaces assembled into the complex-cobordism spectrum underlying the Adams-Novikov and chromatic stories.",
+      "model_formula": "universal_complex_thom",
+      "instances": [{"rank": 2}],
+      "sources": [
+        {"reference_id": "hatcher-vbkt", "role": "model", "locator": "Thom spaces, Section 4.1, pp. 112-113"},
+        {"reference_id": "hatcher-at", "role": "homology", "locator": "Integral Thom isomorphism, pp. 441-443"},
+        {"reference_id": "ravenel-green-book", "role": "chromatic_context", "locator": "MU(n)=Th(gamma_n), Chapter 4, Section 1, pp. 103-104"}
+      ]
+    }
+  ]
+}
