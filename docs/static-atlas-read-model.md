@@ -23,16 +23,21 @@ The current database contains:
 | References | 9 |
 | Evidence records | 42 |
 | Evidence-to-reference links | 62 |
+| Space relationships | 11 |
 | Recorded computation runs | 41 |
 | Homology coverage records | 42 |
 | Homology assertions | 4,190 |
 | Primary-summand rows | 252 |
 
-The exact byte sizes, hashes, Snapshot ID, source commit, generation time, and
-counts are embedded in each generated artifact rather than treated as stable
-prose constants. The one-file exporter enforces the product requirement that
-`dist/atlas.html` remain below 5 MiB and contain no external script,
-stylesheet, font, or image dependency.
+The checked-in release candidate has Snapshot ID
+`chromatic-16e4f2be46edd93a`. Its disposable SQLite database is 2,535,424
+bytes with SHA-256
+`4c9791aba051dec8b0fe5643f710e0fb674426ff96a65b730eef46c469da820f`.
+The generated `dist/atlas.html` is 4,097,121 bytes with SHA-256
+`f1d3742018f40e74c6dd2378e331623728aa5a0be3b5d05d3dd077890954c36c`.
+The same measurements, Snapshot identity, source commit, generation time, and
+record counts are embedded in the artifact. The one-file exporter enforces the
+5 MiB cap and rejects external script, stylesheet, font, or image dependencies.
 
 ## Mapping
 
@@ -51,6 +56,7 @@ only the denormalized `/2` read model:
 | Citation | typed reference links with role and pinpoint locator from expanded Evidence |
 | Computation sketch | expanded Evidence; always present and not represented as a run |
 | Computation run | the nullable expanded run record; absent for the citation-backed Poincare calculation |
+| Relationship | recorded source, typed target, detail, and source-owned Evidence link from `space_relation` |
 | Raw record | stable tool responses and the database subject projection for review/download |
 
 The adapter adds stable-ID-derived slugs, deterministic display ordering,
@@ -70,7 +76,7 @@ above degree 24 is not a zero assertion.
 
 ## Export invariants
 
-- Stable Conceptual-space, slug, Model, Evidence, and Computation IDs are
+- Stable Conceptual-space, slug, Model, Evidence, Computation, and Relationship IDs are
   unique within the Snapshot.
 - Every Conceptual space appears exactly once in a data-backed family section.
 - Every space has a qualified Model, Evidence, computation sketch, and at least
@@ -79,6 +85,9 @@ above degree 24 is not a zero assertion.
   hash are either both present and verified or both absent.
 - Every Homology row names its theory, coefficient, reduced choice, degree,
   Knowledge state, assertion, and Evidence. Recorded computation IDs resolve.
+- Every Relationship names its source, type, in-Snapshot target, explanatory
+  detail, and source-owned Evidence record. The current build has zero
+  unresolved relationship or evidence references.
 - Every coefficient/reduced combination is present in every degree covered by
   that record.
 - Finite and finite-type coverage satisfy the rules above.

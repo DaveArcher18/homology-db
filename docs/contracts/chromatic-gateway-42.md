@@ -27,6 +27,8 @@ suspension spectra provide the connection to `V(0)`.
 - Exact Homology rows cite one evidence record. That record identifies its
   Model, computation sketch, sources, and an optional local computation run.
   No run is synthesized when the result is citation-backed.
+- Cited or formula-derived group rows explicitly record every degree. An
+  unperformed Smith calculation is `not_computed`, never an empty diagonal.
 - Finite CW records are complete and assert zero above their dimension.
   Infinite finite-type records are materialized through degree 24 and make no
   assertion above that degree.
@@ -110,6 +112,17 @@ the Klein bottle has mod-2 dimensions `1,2,1` in degrees `0,1,2`.
   the former retains its actual triangulation and nontrivial fundamental group.
 - `L^3(5;1,1)` and `L^3(5;1,2)` have identical cellular Homology but distinct
   weight data and are not collapsed into one Conceptual-space identity.
+
+## Recorded relationships
+
+Eleven typed relationships connect models already present in the Snapshot:
+the standard `RP^2`, `RP^3`, and `RP^4` skeleta to `BC_2`; `CP^2` to
+`CP^infinity`; the three diagonal lens-space skeleta to `BC_3` or `BC_5`;
+each elementary-abelian classifying-space product to its cyclic factor; and
+`Th(gamma_2 -> BU(2))` to its base `BU(2)`. The weighted
+`L^3(5;1,2)` record is deliberately not called a standard `BC_5` skeleton.
+Every relationship has a stable ID, resolved target, explanatory detail, and
+an Evidence link owned by its source space.
 
 ## Primary sources
 

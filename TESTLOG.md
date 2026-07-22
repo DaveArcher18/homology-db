@@ -349,3 +349,84 @@ states, raw-record and permalink defects, and duplicated search/coefficient
 normalization. Corrections keep absent Homology conventions, reliability,
 Model assertions, and Computation runs explicit rather than synthesizing them.
 Final Standards and PRD closure reviews report no remaining finding.
+
+## 2026-07-22 — chromatic gateway release candidate
+
+Scope: replace the deployed historical preview artifact with a focused
+42-space chromatic gateway, add structured correction/request feedback, close
+the supplied static-frontend PRD, and prepare an immutable GitHub Pages build.
+
+- Snapshot `chromatic-16e4f2be46edd93a` contains 42 spaces in 17 families:
+  32 finite CW complexes and 10 infinite finite-type CW complexes.
+- Twenty-one spaces have exact integral torsion at primes 2, 3, 5, and 7,
+  including prime powers `Z/4`, `Z/8`, and `Z/9`. Field calculations retain
+  the preceding-degree UCT Tor contribution.
+- The release projection contains 42 qualified Models, 42 Evidence records,
+  62 cited source links with locators, 41 recorded computations, 11 typed and
+  resolved space relationships, and 4,190 Homology rows.
+- Every space and family exposes a structured GitHub correction/better-
+  computation link, and the toolbar exposes a request-a-space form. Issue
+  titles carry stable object/family and Snapshot identity.
+- Exact cited/formula groups must now name every degree explicitly. Missing
+  group fields cannot become zero, and an unperformed Smith diagonal is
+  recorded as `not_computed`, not as an empty computation.
+- GitHub Pages actions are pinned to immutable full commit SHAs. The browser
+  uses safe DOM text rendering, HTTPS-gated user-click links, embedded JSON
+  delimiter escaping, and no automatic external resource loads.
+
+### Measured release candidate
+
+| Artifact | Measurement |
+| --- | --- |
+| disposable SQLite Snapshot | 2,535,424 bytes; SHA-256 `4c9791aba051dec8b0fe5643f710e0fb674426ff96a65b730eef46c469da820f` |
+| `dist/atlas.html` | 4,097,121 bytes; SHA-256 `f1d3742018f40e74c6dd2378e331623728aa5a0be3b5d05d3dd077890954c36c` |
+| embedded source | commit `4544ae38e6de9cd32781bbe010e1b7afb0c78109`; input SHA-256 `3fff1ba95d2365f92f98f862997ce3fcadb2f3dd4c708e3b0c94974f09b2efc9`; clean |
+| size margin | 1,145,759 bytes below the 5 MiB cap |
+
+### Verification
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 63/63 passed, including artifact parity; legacy/shared-process SQLite cleanup warnings remain visible |
+| current chromatic suite with `ResourceWarning` promoted to error | 10/10 passed clean in an isolated process |
+| two independent current exports plus checked-in artifact | byte-identical; all three SHA-256 values `f1d37420…54c36c` |
+| database builds with `PYTHONHASHSEED=0,1,99` | byte-identical; all three SHA-256 values `4c9791ab…820f` |
+| `python3 -m compileall -q homology_db scripts tests` | passed |
+| `node --check static_atlas/atlas.js` | passed |
+| manifest JSON, workflow/Issue-Form YAML | parsed successfully |
+| `python3 scripts/verify_manifest_spec.py` | re-derived the separate 174-space/1,159-Model planned-corpus contract |
+| `git diff --check` | passed |
+| `ruff` | unavailable; no package was installed |
+
+### Local browser QA
+
+The exact checked-in candidate (`f1d37420…54c36c`) was served locally and
+exercised in the Codex in-app browser before release:
+
+- The banner and Snapshot summary render
+  `development corpus not externally reviewed` and
+  `chromatic-16e4f2be46edd93a`.
+- Exact searches for `M(Z/9,2)` and `RP^4` each return one of 42 spaces rather
+  than lower-quality token matches.
+- Switching `M(Z/9,2)` from integral coefficients to `F3` renders dimensions
+  1, 0, 1, 1 in degrees 0 through 3, including the UCT Tor class in degree 3.
+- RP^4 Review mode expands its `finite skeleton of` relationship to `B(C_2)`,
+  source locators, qualified Model, Evidence, recorded run, and raw record.
+- Space, family, and request links target the matching structured Issue Forms
+  with stable space/family and Snapshot identity in their prefilled titles.
+- The cited-computation reliability filter returns only the Poincare homology
+  sphere. Its facet input remains hash-pinned in the corpus.
+- At 390 by 844 CSS pixels, Coefficients, Family, Dimension, and Reliability
+  all remain available, the index drawer opens and closes, and the layout has
+  no horizontal overflow. The desktop viewport was restored after the check.
+- The RP^4 deep link selects and scrolls the requested card into view; the
+  browser console remained clear during the local interaction pass.
+
+Independent mathematical, PRD/specification, repository-standards, and
+release-security reviews found and then closed: source applicability errors,
+an incorrect bibliography entry, a misleading weighted-lens tag, unpinned
+Poincare artifact identity, missing relationships/reliability filtering,
+collapsed review details, absent-data defaults, false empty Smith metadata,
+stale publication state, and mutable workflow action tags. No hard finding
+remains. Live deployment and browser/byte-parity verification are intentionally
+recorded only after the Pages workflow succeeds.

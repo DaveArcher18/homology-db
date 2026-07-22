@@ -34,8 +34,9 @@ release verification, main-branch push, Pages deployment, and live smoke test.
 
 ## Last checkpoint
 
-- The current uncommitted vertical slice materializes 42 named spaces in 17
-  families: 32 finite CW complexes and 10 infinite finite-type CW complexes.
+- Commits `caeedc4`, `5a7e867`, `41025c8`, `e9c8b9e`, and `4544ae3` implement and independently
+  review the 42-space vertical slice: 32 finite CW complexes and 10 infinite
+  finite-type CW complexes in 17 families.
 - Twenty-one spaces carry exact integral torsion at primes 2, 3, 5, and 7,
   including `Z/4`, `Z/8`, and `Z/9`; field rows include the UCT Tor term.
 - Every space has a qualified Model, at least one HTTPS source with a pinpoint,
@@ -47,8 +48,20 @@ release verification, main-branch push, Pages deployment, and live smoke test.
 - The current product is routed through `python3 -m homology_db chromatic ...`;
   the unprefixed 60-space preview remains replayable without modifying its
   cryptographically pinned builder or tests.
-- Static frontend/exporter and feedback Issue Forms are in progress. No new
-  deployment or main-branch push is claimed at this checkpoint.
+- The checked-in release candidate is Snapshot `chromatic-16e4f2be46edd93a`:
+  a 4,097,121-byte one-file atlas with 42 Models, 42 Evidence records, 62 cited
+  source links, 41 recorded runs, 11 resolved relationships, and 4,190
+  Homology rows. It embeds source commit `4544ae3`, a clean source-input state,
+  and zero unresolved references.
+- Every space and family has structured correction/computation feedback; a
+  global structured form requests more spaces. Reliability is filterable and
+  Review mode expands source locators and exact record metadata.
+- The full 63-test suite, two deterministic rebuilds, three hash-seed database
+  builds, current-corpus warning-strict run, Python/JavaScript compilation,
+  JSON/YAML parsing, manifest verification, and diff checks pass. Independent
+  mathematical, specification, standards, and release-security reviews have
+  no remaining hard finding.
+- The artifact has not yet been pushed or claimed live at this checkpoint.
 
 - `cfe6333` established the standalone repository, project/domain docs, and recovery conventions.
 - `1fb1430` committed the Wayfinder map and eleven decision tickets from three independent breadth-first audits.
@@ -189,11 +202,10 @@ release verification, main-branch push, Pages deployment, and live smoke test.
 
 ## Exact next action
 
-Finish and inspect the static read model and feedback UI, regenerate the
-checked-in one-file artifact, run focused and full verification plus the
-required two-axis code review, clean generated caches, commit coherent scopes,
-push `main`, wait for GitHub Pages, and compare the live artifact byte-for-byte
-with `dist/atlas.html` before reporting the deployed URL.
+Commit the measured artifact and release notes, push `main`, wait for the
+GitHub Pages workflow, smoke-test search/relationships/evidence/feedback in a
+real browser, and compare the downloaded live artifact byte-for-byte with
+`dist/atlas.html` before reporting the deployed URL.
 
 ## Verification state
 
@@ -223,13 +235,14 @@ none of the new schema, corpus, Model-kind, definition, or QA gates is claimed
 complete. The review-hold documentation and ICERM/LMFDB research passed the
 scoped verification recorded in `TESTLOG.md`; the frozen preview rebuilt with
 the unchanged Snapshot ID `preview-5ea7db464f937061`.
-The static-atlas exporter adds eight public-seam checks; the complete suite now
-passes 49 tests. The generated development atlas contains all 60 preview
-subjects in a 2,076,630-byte self-contained HTML file with zero unresolved
-evidence references. Browser-facing review language preserves
-`local_preview_not_release_evidence` and does not claim named-atlas coverage.
-The checked-in atlas is deployed from `main` by GitHub Pages at
-<https://davearcher18.github.io/homology-db/> for browser testing.
+The current chromatic corpus and `/2` static exporter have 22 focused checks
+while retaining the frozen preview and schema replays; the complete suite
+passes 63 tests. The release candidate is a 4,097,121-byte self-contained
+HTML file with 42 spaces and zero unresolved relationship/evidence references.
+Browser-facing language preserves
+`development_corpus_not_externally_reviewed`. Deployment of this new artifact is
+the only remaining task; the existing Pages URL still serves the prior build
+until the pending `main` push succeeds.
 
 ## Recovery notes
 
