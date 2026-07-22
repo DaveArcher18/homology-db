@@ -172,6 +172,28 @@ class StaticAtlasTest(unittest.TestCase):
 
             self.assertEqual(first_output.read_bytes(), second_output.read_bytes())
 
+    def test_checked_in_artifact_matches_the_current_source_build(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            output_path = Path(temporary_directory) / "atlas.html"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--snapshot",
+                    "current",
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(
+                (REPOSITORY_ROOT / "dist" / "atlas.html").read_bytes(),
+                output_path.read_bytes(),
+            )
+
     def test_nonexact_homology_state_is_not_exported_as_zero(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)

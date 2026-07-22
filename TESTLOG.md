@@ -333,10 +333,17 @@ the held `named-atlas-review-v1` release candidate.
 
 | Check | Result |
 | --- | --- |
-| `python3 -m unittest discover -s tests -q` | 48/48 tests passed; existing SQLite resource warnings remain visible |
-| static-atlas seam tests | 7/7 passed, including deterministic current-Snapshot rebuild, identity, unresolved evidence, malformed-record failure, unknown-vs-zero, and external-resource checks |
+| `python3 -m unittest discover -s tests -q` | 49/49 tests passed; existing SQLite resource warnings remain visible |
+| static-atlas seam tests | 8/8 passed, including checked-in-artifact parity, deterministic current-Snapshot rebuild, identity, unresolved evidence, malformed-record review/failure, unknown-vs-zero, and external-resource checks |
 | `python3 -m compileall -q homology_db scripts tests` | passed |
 | `python3 scripts/verify_manifest_spec.py` | re-derived 174 curated spaces, 1,159 planned Models, 128 common manifolds, 138 torsion pairs, and 100 QA prompts |
 | `node --check static_atlas/atlas.js` | passed |
 | `git diff --check` | passed |
 | `ruff` | unavailable in this environment; no replacement was installed |
+
+The required two-axis review first identified a missing checked-in artifact,
+domain terminology drift, provenance/convention conflation, missing review
+states, raw-record and permalink defects, and duplicated search/coefficient
+normalization. Corrections keep absent Homology conventions, reliability,
+Model assertions, and Computation runs explicit rather than synthesizing them.
+Final Standards and PRD closure reviews report no remaining finding.

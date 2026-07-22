@@ -36,9 +36,17 @@ def file_sha256(path: Path) -> str:
     return hasher.hexdigest()
 
 
-def source_commit() -> str | None:
+def source_revision(format_string: str) -> str | None:
     completed = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
+        [
+            "git",
+            "log",
+            "-1",
+            f"--format={format_string}",
+            "--",
+            ".",
+            ":(exclude)dist/atlas.html",
+        ],
         cwd=REPOSITORY_ROOT,
         capture_output=True,
         text=True,
@@ -46,17 +54,16 @@ def source_commit() -> str | None:
     return completed.stdout.strip() if completed.returncode == 0 else None
 
 
+def source_commit() -> str | None:
+    return source_revision("%H")
+
+
 def source_commit_timestamp() -> int | None:
-    completed = subprocess.run(
-        ["git", "show", "-s", "--format=%ct", "HEAD"],
-        cwd=REPOSITORY_ROOT,
-        capture_output=True,
-        text=True,
-    )
-    if completed.returncode != 0:
+    timestamp = source_revision("%ct")
+    if timestamp is None:
         return None
     try:
-        return int(completed.stdout.strip())
+        return int(timestamp)
     except ValueError:
         return None
 
