@@ -111,12 +111,9 @@ def group_projection(group: dict[str, Any], coefficient: str) -> dict[str, Any]:
     }
 
 
-def homology_convention_id(snapshot_version: str, reduced: bool) -> str:
-    convention = "reduced" if reduced else "unreduced"
-    return f"{snapshot_version}#ordinary-homology-{convention}"
-
-
-def validate_read_model(atlas: dict[str, Any]) -> None:
+def validate_read_model(
+    atlas: dict[str, Any], *, allow_malformed_for_review: bool = False
+) -> None:
     conceptual_spaces = atlas["conceptual_spaces"]
     conceptual_space_ids = [item["id"] for item in conceptual_spaces]
     slugs = [item["slug"] for item in conceptual_spaces]
@@ -135,7 +132,7 @@ def validate_read_model(atlas: dict[str, Any]) -> None:
                 f"{conceptual_space['id']}: "
                 f"{conceptual_space['data_quality']['missing_required_fields']}"
             )
-    if malformed_spaces:
+    if malformed_spaces and not allow_malformed_for_review:
         raise ValueError(f"malformed Conceptual-space records: {malformed_spaces}")
     evidence_ids = {
         evidence["id"] for item in conceptual_spaces for evidence in item["evidence"]
@@ -162,7 +159,9 @@ def validate_read_model(atlas: dict[str, Any]) -> None:
         raise ValueError("static atlas sections must contain every Conceptual space exactly once")
 
 
-def build_read_model(database_path: Path) -> dict[str, Any]:
+def build_read_model(
+    database_path: Path, *, allow_malformed_for_review: bool = False
+) -> dict[str, Any]:
     if not database_path.exists():
         raise FileNotFoundError(database_path)
     with sqlite3.connect(database_path) as connection:
@@ -224,9 +223,8 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
                             "theory": THEORY_ID,
                             "coefficient_ring": coefficient,
                             "coefficient_system": f"preview:{coefficient}",
-                            "homology_convention": homology_convention_id(
-                                snapshot_row["schema_version"], reduced
-                            ),
+                            "homology_convention": None,
+                            "convention_state": "not_recorded_in_preview_schema",
                             "reduced": reduced,
                             "degree": group["degree"],
                             "group": group_projection(group, coefficient),
@@ -272,11 +270,6 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
             "taxonomy": {"family": space["family"], "tags": []},
             "properties": [
                 {"key": "dimension", "label": "dimension", "value": space["dimension"]},
-                {
-                    "key": "equivalence_kind",
-                    "label": "preview model relation",
-                    "value": space["equivalence_kind"],
-                },
             ],
             "homology": homology,
             "models": [],
@@ -329,15 +322,13 @@ def build_read_model(database_path: Path) -> dict[str, Any]:
             "release_status": summary["release_status"],
             "supported_coefficients": list(COEFFICIENTS),
             "homology_theory": THEORY_ID,
-            "homology_conventions": [
-                homology_convention_id(snapshot_row["schema_version"], reduced)
-                for reduced in (False, True)
-            ],
+            "homology_conventions": [],
+            "homology_convention_state": "not_recorded_in_preview_schema",
         },
         "sections": sections,
         "conceptual_spaces": conceptual_spaces,
     }
-    validate_read_model(atlas)
+    validate_read_model(atlas, allow_malformed_for_review=allow_malformed_for_review)
     return atlas
 
 
@@ -373,8 +364,15 @@ def render_atlas(atlas: dict[str, Any]) -> str:
     return template
 
 
-def export_atlas(database_path: Path, output_path: Path) -> dict[str, Any]:
-    atlas = build_read_model(database_path)
+def export_atlas(
+    database_path: Path,
+    output_path: Path,
+    *,
+    allow_malformed_for_review: bool = False,
+) -> dict[str, Any]:
+    atlas = build_read_model(
+        database_path, allow_malformed_for_review=allow_malformed_for_review
+    )
     html = render_atlas(atlas)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8", newline="\n")
@@ -397,13 +395,22 @@ def parse_args() -> argparse.Namespace:
         help="build the current disposable preview Snapshot before export",
     )
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--allow-malformed-for-review",
+        action="store_true",
+        help="emit malformed records with diagnostics instead of failing the normal build",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     if args.database:
-        summary = export_atlas(args.database.resolve(), args.output.resolve())
+        summary = export_atlas(
+            args.database.resolve(),
+            args.output.resolve(),
+            allow_malformed_for_review=args.allow_malformed_for_review,
+        )
     else:
         with tempfile.TemporaryDirectory() as temporary_directory:
             database_path = Path(temporary_directory) / "homology-db-preview.sqlite3"
@@ -411,7 +418,11 @@ def main() -> int:
             commit_timestamp = source_commit_timestamp()
             if commit_timestamp is not None:
                 os.utime(database_path, (commit_timestamp, commit_timestamp))
-            summary = export_atlas(database_path, args.output.resolve())
+            summary = export_atlas(
+                database_path,
+                args.output.resolve(),
+                allow_malformed_for_review=args.allow_malformed_for_review,
+            )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0
 

@@ -133,7 +133,7 @@ h1 {
 
 .snapshot-facts {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(4, auto);
   gap: 1.8rem;
   margin-bottom: 0.2rem;
   white-space: nowrap;

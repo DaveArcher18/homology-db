@@ -22,7 +22,7 @@ bytes). Its current record counts are:
 | Evidence records | 60 |
 | Primary summands | 60 |
 
-The generated self-contained HTML is **2,065,520 bytes**. It is below the PRD's
+The generated self-contained HTML is **2,076,630 bytes**. It is below the PRD's
 5 MB one-file threshold and contains no external script, stylesheet, font, or
 image dependency.
 
@@ -35,9 +35,9 @@ only `homology-db.static-atlas/1`:
 |---|---|
 | Snapshot identity and count | `Tools.corpus_summary()` plus the one Snapshot record |
 | Stable Conceptual-space ID | preview Conceptual-space ID |
-| Display name, family, dimension, model-relation qualifier | preview subject record |
+| Display name, family, dimension | preview subject record |
 | Aliases and notation | recorded preview aliases |
-| Homology | `Tools.read_homology()` for each recorded coefficient and reduced choice, qualified by ordinary theory and a Snapshot-versioned convention identity |
+| Homology | `Tools.read_homology()` for each recorded coefficient and reduced choice; ordinary theory is explicit, while the missing full convention record is exposed as `not_recorded_in_preview_schema` |
 | Evidence and algorithm capability | `Tools.expand_evidence()` |
 | Computation runs | empty, because the preview has no distinct run records with inputs, outputs, environment, parameters, and logs |
 | Models and relations | empty arrays, because the preview exposes no qualified records of those kinds |
@@ -51,8 +51,10 @@ metadata. It does not add mathematical assertions or infer taxonomy.
 
 - Stable IDs and slugs are unique.
 - Every Conceptual space appears in exactly one data-backed section.
-- Every Homology row names its theory, coefficient system, versioned
-  convention, reduced choice, degree, Knowledge state, and evidence.
+- Every Homology row names its theory, coefficient system, reduced choice,
+  degree, Knowledge state, and evidence. The preview's missing versioned
+  Homology convention remains explicit rather than being synthesized from the
+  reduced flag.
 - Every Homology evidence reference resolves before output is written.
 - A non-`exact` Knowledge state is rendered by state, never by a numeric value.
 - Knowledge state, evidence reliability, Snapshot release status, and
@@ -74,3 +76,8 @@ python3 scripts/export_static_atlas.py \
 
 The command prints the Conceptual-space and evidence counts, unresolved-reference count,
 HTML byte size, and source database SHA-256.
+
+Normal export fails on a malformed required record. A validator can add
+`--allow-malformed-for-review` to produce an explicitly diagnostic review
+artifact in which the record remains visible; that flag is never used for the
+checked-in atlas.

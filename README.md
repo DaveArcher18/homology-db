@@ -8,7 +8,7 @@ construction; a local preview is available now.
 
 Open [`dist/atlas.html`](dist/atlas.html) directly in a browser. It is a single
 self-contained, offline file: search all 60 spaces, follow stable Conceptual-space links,
-switch coefficient systems and reduced conventions, filter the corpus, and
+switch coefficient systems and reduced/unreduced choices, filter the corpus, and
 open provenance or raw JSON in review mode.
 
 The atlas is a human-facing view of `local-preview-60`, not the held

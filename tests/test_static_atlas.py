@@ -67,7 +67,10 @@ class StaticAtlasTest(unittest.TestCase):
             )
             homology_row = projective_space["homology"][0]
             self.assertEqual(homology_row["theory"], "ordinary_homology")
-            self.assertIn("#ordinary-homology-", homology_row["homology_convention"])
+            self.assertIsNone(homology_row["homology_convention"])
+            self.assertEqual(
+                homology_row["convention_state"], "not_recorded_in_preview_schema"
+            )
             self.assertNotIn("reliability", homology_row)
             self.assertIsNone(projective_space["evidence"][0]["reliability"])
             self.assertEqual(projective_space["computations"], [])
@@ -108,11 +111,13 @@ class StaticAtlasTest(unittest.TestCase):
                 'id="atlas-index"',
                 'id="atlas-document"',
                 'id="result-status"',
+                'id="generated-at"',
                 "Copy link",
                 "Copy JSON",
                 "Download JSON",
                 "Computation runs",
                 "Data quality",
+                "Source locator",
                 "JSON.stringify(space.raw",
             ):
                 self.assertIn(required_control, html)
@@ -278,6 +283,36 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertIn("malformed Conceptual-space records", completed.stderr)
             self.assertIn("label", completed.stderr)
             self.assertFalse(output_path.exists())
+
+            review_completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--database",
+                    str(database_path),
+                    "--output",
+                    str(output_path),
+                    "--allow-malformed-for-review",
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(review_completed.returncode, 0, review_completed.stderr)
+            html = output_path.read_text(encoding="utf-8")
+            embedded = re.search(
+                r'<script id="atlas-data" type="application/json">(.*?)</script>',
+                html,
+                re.DOTALL,
+            )
+            atlas = json.loads(embedded.group(1))
+            malformed_space = next(
+                item for item in atlas["conceptual_spaces"] if item["id"] == "sphere:1"
+            )
+            self.assertEqual(malformed_space["data_quality"]["state"], "malformed")
+            self.assertEqual(
+                malformed_space["data_quality"]["missing_required_fields"], ["label"]
+            )
 
 
 if __name__ == "__main__":

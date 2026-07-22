@@ -2,6 +2,13 @@
   "use strict";
 
   const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
+  const coefficientLabels = Object.freeze({
+    Z: "ℤ",
+    F2: "𝔽₂",
+    F3: "𝔽₃",
+    F5: "𝔽₅",
+    F7: "𝔽₇",
+  });
   const spacesById = new Map(atlas.conceptual_spaces.map((space) => [space.id, space]));
   const entriesById = new Map();
   const sectionsById = new Map();
@@ -96,8 +103,7 @@
   }
 
   function coefficientDisplay(coefficient) {
-    const labels = { Z: "ℤ", F2: "𝔽₂", F3: "𝔽₃", F5: "𝔽₅", F7: "𝔽₇" };
-    return labels[coefficient] ?? coefficient;
+    return coefficientLabels[coefficient] ?? coefficient;
   }
 
   function superscript(value) {
@@ -112,14 +118,13 @@
 
   function groupDisplay(row) {
     if (row.group.state !== "exact") return row.group.plain;
-    return row.group.plain
-      .replaceAll("Z", "ℤ")
-      .replaceAll("F2", "𝔽₂")
-      .replaceAll("F3", "𝔽₃")
-      .replaceAll("F5", "𝔽₅")
-      .replaceAll("F7", "𝔽₇")
-      .replaceAll(" + ", " ⊕ ")
-      .replace(/\^(\d+)/g, (_, exponent) => superscript(exponent));
+    if (row.coefficient_ring === "Z") {
+      return row.group.plain.replaceAll("Z", "ℤ").replaceAll(" + ", " ⊕ ");
+    }
+    const fieldGroup = row.group.plain.match(/^(F\d+)(?:\^(\d+))?$/);
+    if (!fieldGroup) return row.group.plain;
+    return coefficientDisplay(fieldGroup[1])
+      + (fieldGroup[2] ? superscript(fieldGroup[2]) : "");
   }
 
   function permalinkFor(space) {
@@ -176,8 +181,9 @@
       row.coefficient_ring === state.coefficient && row.reduced === state.reduced
     );
     heading.textContent = `H${state.reduced ? "̃" : ""}ₙ(${space.name.plain}; ${coefficientDisplay(state.coefficient)})`;
-    convention.textContent = `ordinary homology · ${state.reduced ? "reduced" : "unreduced"} · ${rows[0]?.value_scope?.replaceAll("_", " ") ?? "no recorded scope"}`;
-    convention.title = rows[0]?.homology_convention ?? "No convention identity recorded";
+    convention.textContent = `ordinary homology · ${state.reduced ? "reduced" : "unreduced"} · convention not recorded · ${rows[0]?.value_scope?.replaceAll("_", " ") ?? "no recorded scope"}`;
+    convention.title = rows[0]?.convention_state?.replaceAll("_", " ")
+      ?? "No convention identity recorded";
     tableBody.replaceChildren();
     rows.forEach((row) => {
       const tableRow = element("tr");
@@ -235,11 +241,14 @@
 
     const evidenceSummary = element("p", "evidence-summary");
     const reliability = space.evidence[0]?.reliability ?? "reliability not recorded";
+    const evidenceKind = space.evidence[0]?.kind?.replaceAll("_", " ")
+      ?? "source not recorded";
     evidenceSummary.append(
       element("strong", "", "Evidence"),
+      element("span", "", evidenceKind),
       element("span", "", `${space.evidence.length} evidence record${space.evidence.length === 1 ? "" : "s"}`),
       element("span", "", `${space.computations.length} Computation run${space.computations.length === 1 ? "" : "s"}`),
-      element("span", "review-only", reliability),
+      element("span", "", reliability),
       element("span", "review-only review-warning", atlas.snapshot.release_status.replaceAll("_", " ")),
     );
 
@@ -257,6 +266,7 @@
       appendDefinition(list, "Kind", record.kind);
       appendDefinition(list, "Reliability", record.reliability ?? "Not recorded in preview schema");
       appendDefinition(list, "Release status", record.release_status);
+      appendDefinition(list, "Source locator", record.locator ?? "Not recorded in preview schema");
       appendDefinition(list, "Algorithm", record.algorithm_id);
       appendDefinition(list, "Input SHA-256", record.chain_sha256);
       appendDefinition(list, "Representatives", record.representatives_state);
@@ -346,6 +356,13 @@
       atlasDocument.append(sectionNode);
     });
 
+    atlas.snapshot.supported_coefficients.forEach((coefficient) => {
+      const option = element("option", "", coefficientDisplay(coefficient));
+      option.value = coefficient;
+      coefficientFilter.append(option);
+    });
+    coefficientFilter.value = state.coefficient;
+
     const families = [...atlas.sections].sort((left, right) => left.label.localeCompare(right.label));
     families.forEach((section) => {
       const option = element("option", "", section.label);
@@ -363,6 +380,9 @@
 
     document.getElementById("conceptual-space-count").textContent = String(atlas.snapshot.conceptual_space_count);
     document.getElementById("snapshot-name").textContent = atlas.snapshot.snapshot_id.replace("preview-", "preview · ").slice(0, 26);
+    const generatedAt = document.getElementById("generated-at");
+    generatedAt.dateTime = atlas.snapshot.generated_at;
+    generatedAt.textContent = atlas.snapshot.generated_at.replace("T", " ").replace("Z", " UTC");
     const snapshotDetail = document.getElementById("snapshot-detail");
     const detailList = element("dl");
     appendDefinition(detailList, "Snapshot ID", atlas.snapshot.snapshot_id);
@@ -442,6 +462,9 @@
       const sectionNode = sectionsById.get(section.id);
       sectionNode.hidden = visibleCount === 0;
       sectionNode.querySelector(".section-count").textContent = String(visibleCount);
+    });
+    document.querySelectorAll("details[data-review-detail]").forEach((details) => {
+      details.open = state.review && !details.closest("article").hidden;
     });
     resultStatus.textContent = `${state.visible.length} of ${atlas.snapshot.conceptual_space_count}`;
     renderIndex(visibleWithRank);

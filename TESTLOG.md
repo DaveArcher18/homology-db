@@ -325,10 +325,10 @@ the held `named-atlas-review-v1` release candidate.
   Knowledge states are projected by state rather than by the row's numeric
   columns.
 - Added the continuous atlas interface: all 60 entries, local normalized
-  search, data-backed family/dimension/torsion filters, coefficient and reduced
-  convention controls, stable hashes, keyboard navigation, review expansion,
+  search, data-backed family/dimension/torsion filters, coefficient and
+  reduced/unreduced controls, stable hashes, keyboard navigation, review expansion,
   JSON copy/download, narrow-layout index, and print rules.
-- The generated artifact is 2,065,520 bytes and has no external script,
+- The generated artifact is 2,076,630 bytes and has no external script,
   stylesheet, font, or image dependency.
 
 | Check | Result |
