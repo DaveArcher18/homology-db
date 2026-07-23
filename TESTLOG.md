@@ -448,3 +448,68 @@ remains.
   prefilled feedback form, all four narrow-screen filters, and the mobile
   index drawer passed. The browser was restored to its desktop viewport and
   left on the clean public atlas URL for user testing.
+
+## 2026-07-23 — static atlas UI/UX redesign
+
+Scope: research and implement a lower-chrome visual hierarchy for the existing
+42-space continuous atlas, add persistent System/Light/Dark themes, and improve
+responsive and keyboard accessibility without changing mathematical data,
+provenance, stable anchors, review records, print behavior, or structured
+space/family/request feedback.
+
+- Primary-source decisions are recorded in
+  `docs/research/atlas-ui-ux-redesign-2026-07-23.md`.
+- Search and coefficients stay visible; advanced family, dimension,
+  reliability, reduced, and torsion controls use one Filters disclosure with
+  an active count and one-click Reset.
+- The palette is semantic cool-neutral/indigo in light and charcoal/indigo in
+  dark. Explicit theme choices persist; System follows the browser/OS.
+- Family and entry hierarchy now relies on type, whitespace, and a few rules
+  rather than nested bordered panels. Essential Homology, coverage,
+  reliability, and provenance remain visible.
+- The mobile index is a named modal drawer with inert background, visible
+  close, Escape, opener/destination focus handling, and a light-dismiss
+  backdrop. Mobile filters remain inline, scroll when zoomed/short, and dismiss
+  with their summary, outside click, or Escape.
+- Global unmodified `/`, `j`, `k`, and Arrow shortcuts were intentionally
+  removed under WCAG 2.1.4; native controls, Enter, Escape, visible focus, and
+  continuous browser-find remain.
+
+### Measured release candidate
+
+| Artifact | Measurement |
+| --- | --- |
+| Snapshot database | 2,535,424 bytes; SHA-256 `4c9791aba051dec8b0fe5643f710e0fb674426ff96a65b730eef46c469da820f` |
+| `dist/atlas.html` | 4,113,332 bytes; SHA-256 `59f32287e8534af13fc640c1500711dcb3abb16f7cb8b1c6f96418d4d5b8da40` |
+| embedded source | commit `2008d56fe2cd73603780cf24a554bdab7e920b1a`; input SHA-256 `9d92a8966cca0cdc913119f0953ef6244d138015fbcffe70946f6dcd4a813bb3`; clean |
+| size margin | 1,129,548 bytes below the 5 MiB cap |
+
+### Verification
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest discover -s tests -v` | 64/64 passed, including checked-in-artifact parity; pre-existing shared-process SQLite `ResourceWarning`s remain non-failing |
+| focused theme/progressive-controls seam | passed after an initial expected red against the light-only frontend |
+| `node --check static_atlas/atlas.js` | passed |
+| deterministic checked-in rebuild | byte-identical at `59f32287…d5b8da40` |
+| `git diff --check` | passed |
+| release-security review | no blocker; storage is guarded/whitelisted, links remain encoded and HTTPS-gated, JSON resists script breakout, and there are no external resource loads |
+| final specification review | no code/content blocker; only push, Pages completion, and live verification remain |
+
+### Local browser QA
+
+The exact checked-in artifact was served locally and exercised before push:
+
+- At 1440×900, both explicit themes render without horizontal overflow; Dark
+  survives reload, and System clears the override and follows the dark OS
+  preference.
+- `RP^4` returns exactly `Real projective space RP^4`; choosing `F2` renders
+  `F2` in degrees 0 through 4. Review mode exposes State/Assertion headers and
+  opens relationships, evidence, recorded computation, data quality, and raw
+  record disclosures.
+- Reset restores the integral, unfiltered 42-space document. The RP^4 feedback
+  URL carries the space ID and Snapshot identity.
+- At 390×844 and 320×720, the document has no page-level horizontal overflow.
+  Sticky mobile controls, inline filters and Escape dismissal, index
+  inert/focus behavior, About positioning, and focus return passed.
+- Browser console warnings/errors: zero.

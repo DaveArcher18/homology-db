@@ -7,8 +7,11 @@ Status: ACTIVE
 Research, implement, deploy, and test a calmer UI/UX for the 42-space
 Chromatic Homology Atlas. Reduce box and border density, preserve the
 continuous mathematical document, add accessible light/dark/system themes,
-and retain every data, provenance, feedback, permalink, keyboard, print, and
-review behavior from the deployed release.
+and retain every data, provenance, feedback, permalink, print, and review
+behavior from the deployed release. Global unmodified `/`, `j`, `k`, and Arrow
+shortcuts are the deliberate exception: the redesign removes them under WCAG
+2.1.4 while preserving keyboard operation through native controls, Enter,
+Escape, visible focus, and modal focus return.
 
 ## Active map
 
@@ -38,6 +41,22 @@ testing, pushing, and redeploying the atlas redesign.
   byte-verified live Snapshot `chromatic-16e4f2be46edd93a`. Mathematical data
   and read-model semantics are fixed inputs; this ticket changes presentation
   and preference behavior only.
+- `2008d56` implements the researched low-chrome continuous document,
+  progressive filters, compact responsive index, corrected heading/table
+  semantics, accessible mobile drawer, and persistent System/Light/Dark
+  preference. The primary-source synthesis and implementation decisions are
+  recorded in `docs/research/atlas-ui-ux-redesign-2026-07-23.md`.
+- `420d0bd` checks in the deterministic one-file release artifact:
+  4,113,332 bytes, SHA-256
+  `59f32287e8534af13fc640c1500711dcb3abb16f7cb8b1c6f96418d4d5b8da40`,
+  source commit `2008d56fe2cd73603780cf24a554bdab7e920b1a`, clean source
+  tree, and 1,129,548 bytes below the 5 MiB cap.
+- The 64-test suite passes including artifact parity. The exact artifact passed
+  light/dark/system persistence, search, coefficients, review, reset, feedback,
+  1440/390/320-pixel reflow, inline filter dismissal, modal-index focus,
+  mobile About, and zero-console-error browser checks. Final specification and
+  release-security reviews found no code/content blocker; the standards review
+  requested this checkpoint and `TESTLOG.md` update before publication.
 - Commits `caeedc4` through `e1d9a4b` implement, independently review, test,
   and publish the 42-space vertical slice: 32 finite CW complexes and 10
   infinite finite-type CW complexes in 17 families.
@@ -209,10 +228,9 @@ testing, pushing, and redeploying the atlas redesign.
 
 ## Exact next action
 
-Complete the primary-source UX research and source audit, record an
-implementation brief, redesign the static atlas with light/dark/system theme
-support, then run focused/full tests and independent review before rebuilding,
-pushing `main`, and verifying the new GitHub Pages artifact byte-for-byte.
+Commit this completed verification checkpoint, push the redesign and artifact
+to `main`, monitor the GitHub Pages workflow, then compare the live response
+byte-for-byte with `dist/atlas.html` and complete one live browser smoke test.
 
 ## Verification state
 
@@ -250,6 +268,13 @@ Browser-facing language preserves
 `development_corpus_not_externally_reviewed`. GitHub Pages run `29960163529`
 deployed release commit `e1d9a4b`; the live download matches the committed
 artifact byte-for-byte and the live browser smoke test passed.
+
+The redesign adds one focused static-atlas contract test, bringing the full
+suite to 64 passing tests. `dist/atlas.html` is byte-identical to a clean
+rebuild at SHA-256 `59f32287…d5b8da40`; JavaScript syntax and diff checks pass.
+Local browser QA exercised the exact artifact at 1440×900, 390×844, and
+320×720 with no horizontal overflow or console warning/error. Deployment and
+live byte verification are the only remaining release actions.
 
 ## Recovery notes
 
