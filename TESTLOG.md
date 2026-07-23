@@ -747,5 +747,22 @@ corrected command and passing result are recorded in the table.
 | embedded source metadata | clean source `7f33ebc58451a75f85a7c2f0274edd9057d43bfc`, input SHA-256 `97452364ee60b05cfa9d320afba95a5e716cafeb7d8494e7e0c9ffd4dbc69146`, `source_inputs_dirty = false` |
 | `python3 -m unittest discover -s tests -v` | 66/66 passed, including checked-in-artifact parity; pre-existing shared-process SQLite `ResourceWarning`s remain non-failing |
 
-The GitHub Pages workflow and live byte comparison are recorded after
-publication.
+### Live deployment verification
+
+- Synchronized `main` through artifact commit
+  `3438f089cd37bacbc715b37a9b292f424d5a1780` was pushed without force or
+  remote divergence.
+- GitHub Pages workflow
+  [30007764780](https://github.com/DaveArcher18/homology-db/actions/runs/30007764780)
+  completed successfully in 15 seconds. Its Node 20-to-24 action-runtime
+  deprecation annotation was non-blocking; all deployment steps passed.
+- <https://davearcher18.github.io/homology-db/> returned HTTP 200 with
+  `text/html; charset=utf-8`, a 4,169,450-byte body, and SHA-256
+  `99250df50129a70a3734944c3ce780909e0ce02e9dff49a2ca872c26ac4e43f9`.
+  `cmp` confirmed byte identity with `dist/atlas.html`.
+- Live browser checks at 1280×800 and 390×844 reproduced the simplified Home,
+  Spaces, and S² surfaces without horizontal overflow. Spaces starts with zero
+  result rows, an explicit 42-space search prompt, and the 17-family directory.
+  S² shows one feedback link and only the populated `Model & sources`
+  disclosure. Adding `review=1` exposes no reviewer toggle or review-only
+  content.
