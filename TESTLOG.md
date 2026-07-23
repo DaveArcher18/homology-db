@@ -536,7 +536,7 @@ The exact checked-in artifact was served locally and exercised before push:
   blocker after the WCAG shortcut exception, work state, and test record were
   made explicit.
 
-## 2026-07-23 — family-first menu revision (pre-release checkpoint)
+## 2026-07-23 — family-first menu revision
 
 Scope: respond to direct feedback that the menus remained visually poor and
 that families of spaces were not represented well. Keep the mathematical
@@ -560,9 +560,12 @@ persistent family/member outline and compact command surface.
 | Check | Result |
 | --- | --- |
 | two focused export/seam tests | expected red before implementation, then 2/2 passed |
+| `python3 -m unittest discover -s tests -v` | 64/64 passed, including checked-in-artifact parity; pre-existing shared-process SQLite `ResourceWarning`s remain non-failing |
 | `node --check static_atlas/atlas.js` | passed |
 | `git diff --check` | passed |
 | dirty-tree browser preview | 4,149,025 bytes; SHA-256 `71b02227dbc70f3b09c4ce458fa81caebd901b36864f15e4454adb0a129d2f81` |
+| checked-in `dist/atlas.html` | 4,149,026 bytes; SHA-256 `b6efaad48b0d8382963592a540ed07ab77291c23c8f85ad4331efc92b8e6ee99` |
+| embedded source | clean commit `55f4952e8ca3f820b8a1c3542e3c8267c4efd5c3`; input SHA-256 `ffefc24a3084d31fe7e3edc3844dd734c7e45800b641319d1e83902df49edb1d` |
 
 Local browser checks against that preview:
 
@@ -586,5 +589,10 @@ Local browser checks against that preview:
 - Feedback issue titles include the full database hash; the longest rendered
   title is 211 characters. The 320-pixel layout has zero horizontal overflow.
 
-The exact checked-in artifact, full suite, Pages run, byte comparison, and live
-browser smoke test remain the next release boundary and are not claimed here.
+Targeted closure re-reviews at `c4790fb` reproduced all corrected
+specification and accessibility scenarios and found no remaining blocker. The
+repository-standards closure review confirms that shared reset logic is now
+factored and this recovery record is current.
+
+The Pages run, live byte comparison, and live browser smoke test remain the
+next release boundary and are not claimed here.

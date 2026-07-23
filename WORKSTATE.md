@@ -50,6 +50,14 @@ pushing, and redeploying the menu/family iteration.
   A–Z index, 320-pixel Refine trap/return/inert behavior, mobile family
   filtering and heading focus, theme focus return, desktop-to-mobile sidebar
   focus handoff, feedback-title length, and zero horizontal overflow.
+- `c4790fb` records the deterministic reviewed artifact: 4,149,026 bytes,
+  SHA-256
+  `b6efaad48b0d8382963592a540ed07ab77291c23c8f85ad4331efc92b8e6ee99`,
+  embedding clean source `55f4952` and source-input SHA-256
+  `ffefc24a3084d31fe7e3edc3844dd734c7e45800b641319d1e83902df49edb1d`.
+  The full 64-test suite passes including artifact parity. Targeted closure
+  re-reviews report no remaining specification, accessibility, or
+  repository-standards blocker.
 - This iteration starts from clean, synchronized `main` at `ccb6465`. The
   deployed redesign is byte-verified and mathematically fixed; direct user
   feedback identifies the remaining problem as menu quality and weak family
@@ -251,19 +259,19 @@ pushing, and redeploying the menu/family iteration.
 
 ## Exact next action
 
-Regenerate `dist/atlas.html` from clean source commit `55f4952`, commit the
-deterministic artifact, run the full 64-test suite and final targeted review,
-then fetch/push synchronized `main`, watch the GitHub Pages workflow, and
-verify the live response byte-for-byte and in the browser.
+Fetch and confirm synchronized `origin/main`, push reviewed release commit
+`c4790fb` and its supporting commits to `main`, watch the GitHub Pages
+workflow, then verify the live HTTP response byte-for-byte and complete the
+desktop/narrow browser smoke test.
 
 ## Verification state
 
-The current menu/family source is committed at `55f4952`. Two focused export
-tests, `node --check static_atlas/atlas.js`, `git diff --check`, and the local
-browser scenarios recorded in `TESTLOG.md` pass. The checked-in release
-artifact is intentionally still at `7f31886` until the next exact action;
-therefore artifact parity and live publication are not yet claimed for this
-iteration.
+The current menu/family source is committed at `55f4952`, and its checked-in
+release artifact is committed at `c4790fb`. The full 64-test suite, artifact
+parity, two focused export tests, `node --check static_atlas/atlas.js`,
+`git diff --check`, local browser scenarios recorded in `TESTLOG.md`, and
+targeted specification/accessibility/standards closure re-reviews pass. Live
+publication is the only unverified release boundary for this iteration.
 
 The release contract is documented and reviewed. Ticket 02's deterministic
 script exits successfully with 22/22 observations. Ticket 03's primary-source
