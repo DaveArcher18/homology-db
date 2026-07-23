@@ -23,6 +23,7 @@
     dark: "Dark",
   });
   const spacesById = new Map(conceptualSpaces.map((space) => [space.id, space]));
+  const familiesById = new Map(sections.map((section) => [section.id, section]));
   const entriesById = new Map();
   const sectionsById = new Map();
   const familyOutlineNodes = new Map();
@@ -30,6 +31,7 @@
   const spaceNavigationLinks = new Map();
   const selectionTimers = new Map();
   const narrowIndexMedia = window.matchMedia("(max-width: 58rem)");
+  const narrowFilterMedia = window.matchMedia("(max-width: 48rem)");
   const state = {
     query: "",
     coefficient: "Z",
@@ -58,6 +60,7 @@
   const themeInputs = [...themeMenu.querySelectorAll('input[name="theme-preference"]')];
   const clearFilters = document.getElementById("clear-filters");
   const filterDisclosure = document.getElementById("filter-disclosure");
+  const filterPanel = filterDisclosure.querySelector(".filter-panel");
   const filterClose = document.getElementById("filter-close");
   const activeFilterCount = document.getElementById("active-filter-count");
   const familyToggle = document.getElementById("family-toggle");
@@ -82,7 +85,19 @@
     atlasDocument,
     document.querySelector(".site-footer"),
   ].filter(Boolean);
+  const filterBackgroundInertTargets = [
+    document.querySelector(".skip-link"),
+    document.querySelector(".site-header"),
+    searchInput.closest(".search-control"),
+    coefficientSwitcher,
+    resultStatus,
+    document.querySelector(".toolbar-actions"),
+    document.querySelector(".page-shell"),
+    document.querySelector(".site-footer"),
+    filterSummary,
+  ].filter(Boolean);
   let indexReturnFocus = familyToggle;
+  let alphabeticalOutlineNodes = null;
   let currentFamilyId = null;
   let currentSpaceId = null;
   let navigationObserver = null;
@@ -224,6 +239,18 @@
     return references.length ? references : asArray(record.citations);
   }
 
+  function familySearchValues(space) {
+    const family = familiesById.get(space.taxonomy?.family);
+    if (!family) return [];
+    return [
+      family.label,
+      family.id,
+      family.summary,
+      family.chromatic_relevance,
+      family.relevance,
+    ].filter(Boolean);
+  }
+
   function searchValues(space) {
     const relatedNames = asArray(space.relations)
       .map((relation) => spacesById.get(relation.target_id)?.name?.plain)
@@ -268,6 +295,7 @@
       space.id,
       space.slug,
       space.taxonomy?.family,
+      ...familySearchValues(space),
       ...asArray(space.taxonomy?.tags),
       ...relatedNames,
       ...searchTextValues(details),
@@ -345,6 +373,11 @@
     return firstRecorded(snapshot.snapshot_id, snapshot.snapshot_name, "unknown-snapshot");
   }
 
+  function snapshotIssueReference() {
+    const hash = firstRecorded(snapshot.source_database_sha256, snapshot.source_inputs_sha256);
+    return hash ? `${snapshotReference()} | sha256:${hash}` : snapshotReference();
+  }
+
   function issueUrl(template, title) {
     const url = new URL(issueEndpoint);
     url.searchParams.set("template", template);
@@ -355,14 +388,14 @@
   function spaceFeedbackUrl(space) {
     return issueUrl(
       "space-feedback.yml",
-      `[Space feedback] ${space.name?.plain ?? space.id} | ${space.id} | ${snapshotReference()}`,
+      `[Space feedback] ${space.name?.plain ?? space.id} | ${space.id} | ${snapshotIssueReference()}`,
     );
   }
 
   function familyFeedbackUrl(section) {
     return issueUrl(
       "family-feedback.yml",
-      `[Family feedback] ${section.label} | ${section.id} | ${snapshotReference()}`,
+      `[Family feedback] ${section.label} | ${section.id} | ${snapshotIssueReference()}`,
     );
   }
 
@@ -494,17 +527,68 @@
 
   function focusFamily(section) {
     const focusing = state.family !== section.id;
+    const moveFocusToDocument = focusing
+      && narrowIndexMedia.matches
+      && atlasIndex.classList.contains("is-open");
     state.family = focusing ? section.id : "";
     updateAtlas();
     if (focusing) {
       closeIndex();
       window.requestAnimationFrame(() => {
-        sectionsById.get(section.id)?.scrollIntoView({ block: "start" });
+        const sectionNode = sectionsById.get(section.id);
+        const heading = sectionNode?.querySelector("h2");
+        sectionNode?.scrollIntoView({ block: "start" });
+        if (moveFocusToDocument && heading) {
+          heading.tabIndex = -1;
+          heading.focus({ preventScroll: true });
+        }
       });
       announce(`Showing only ${section.label}.`);
     } else {
       announce("Showing all families.");
     }
+  }
+
+  function buildAlphabeticalOutline() {
+    const group = element("details", "alphabetical-outline");
+    const summary = element("summary");
+    const label = element("span", "alphabetical-outline-title", "All spaces A–Z");
+    const count = element(
+      "span",
+      "family-outline-count",
+      `${conceptualSpaces.length} / ${conceptualSpaces.length}`,
+    );
+    count.setAttribute(
+      "aria-label",
+      `${conceptualSpaces.length} of ${conceptualSpaces.length} spaces visible`,
+    );
+    summary.append(label, count);
+
+    const body = element("div", "alphabetical-outline-body");
+    body.append(element(
+      "p",
+      "alphabetical-outline-note",
+      "A compact name index when you know the space but not its family.",
+    ));
+    const memberList = element("ol", "family-member-list alphabetical-space-list");
+    const memberItems = new Map();
+    conceptualSpaces
+      .slice()
+      .sort((left, right) => left.name.plain.localeCompare(right.name.plain))
+      .forEach((space) => {
+        const item = createFamilyMemberItem(space, "alphabetical-space-item");
+        memberItems.set(space.id, item);
+        memberList.append(item);
+      });
+    body.append(memberList);
+    group.append(summary, body);
+    alphabeticalOutlineNodes = {
+      group,
+      count,
+      memberItems,
+      total: conceptualSpaces.length,
+    };
+    familyOutline.append(group);
   }
 
   function buildFamilyOutline() {
@@ -571,6 +655,7 @@
       group.append(summary, body);
       familyOutlineNodes.set(section.id, {
         group,
+        summary,
         count,
         focus,
         memberItems,
@@ -578,6 +663,7 @@
       });
       familyOutline.append(group);
     });
+    buildAlphabeticalOutline();
   }
 
   function buildFamilyMembers(section) {
@@ -1089,7 +1175,7 @@
     eyebrow.textContent = `Homology DB · ${humanize(snapshot.release_status)}`;
     requestSpace.href = issueUrl(
       "space-request.yml",
-      `[Space request] requested from ${snapshotReference()}`,
+      `[Space request] requested from ${snapshotIssueReference()}`,
     );
     requestSpace.setAttribute("aria-label", "Request another space (opens in a new tab)");
 
@@ -1151,8 +1237,10 @@
         else link.removeAttribute("aria-current");
       });
     });
-    familyOutlineNodes.forEach(({ group }, id) => {
+    familyOutlineNodes.forEach(({ group, summary }, id) => {
       group.classList.toggle("is-current", id === familyId);
+      if (id === familyId) summary.setAttribute("aria-current", "location");
+      else summary.removeAttribute("aria-current");
     });
   }
 
@@ -1215,6 +1303,17 @@
       if (searchActive) nodes.group.open = visibleCount > 0;
       else if (state.family === familyId) nodes.group.open = true;
     });
+    if (alphabeticalOutlineNodes) {
+      const visibleCount = visibleIds.size;
+      alphabeticalOutlineNodes.count.textContent = `${visibleCount} / ${alphabeticalOutlineNodes.total}`;
+      alphabeticalOutlineNodes.count.setAttribute(
+        "aria-label",
+        `${visibleCount} of ${alphabeticalOutlineNodes.total} spaces visible`,
+      );
+      alphabeticalOutlineNodes.memberItems.forEach((item, id) => {
+        item.hidden = !visibleIds.has(id);
+      });
+    }
     familyCount.textContent = visibleFamilyCount === sections.length
       ? String(sections.length)
       : `${visibleFamilyCount} / ${sections.length}`;
@@ -1313,7 +1412,7 @@
     return sections.find((section) => section.id === id) ?? null;
   }
 
-  function clearVisibilityFilters() {
+  function clearVisibilityFilters({ refresh = true } = {}) {
     searchInput.value = "";
     dimensionFilter.value = "";
     reliabilityFilter.value = "";
@@ -1325,7 +1424,7 @@
       reliability: "",
       torsion: false,
     });
-    updateAtlas();
+    if (refresh) updateAtlas();
   }
 
   function handleHash() {
@@ -1354,6 +1453,7 @@
   }
 
   function syncIndexAccessibility() {
+    const focusWasInIndex = atlasIndex.contains(document.activeElement);
     if (!narrowIndexMedia.matches) {
       atlasIndex.classList.remove("is-open");
       atlasIndex.inert = false;
@@ -1364,6 +1464,10 @@
       indexBackdrop.hidden = true;
       document.body.classList.remove("index-open");
       familyToggle.setAttribute("aria-expanded", "false");
+      if (document.activeElement === indexClose) {
+        const currentSummary = familyOutlineNodes.get(currentFamilyId)?.summary;
+        (currentSummary ?? familyOutline.querySelector("summary"))?.focus();
+      }
       return;
     }
     const open = atlasIndex.classList.contains("is-open");
@@ -1375,6 +1479,7 @@
     indexBackdrop.hidden = !open;
     document.body.classList.toggle("index-open", open);
     familyToggle.setAttribute("aria-expanded", String(open));
+    if (!open && focusWasInIndex) familyToggle.focus();
   }
 
   function openIndex({ focusClose = true, returnFocus = familyToggle } = {}) {
@@ -1404,15 +1509,19 @@
     if (returnFocus && narrowIndexMedia.matches) indexReturnFocus.focus();
   }
 
+  function focusableWithin(container) {
+    return [...container.querySelectorAll(
+      'a[href], button:not([disabled]), summary, input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    )].filter((node) => !node.closest("[hidden]") && !node.closest("[inert]"));
+  }
+
   function trapIndexFocus(event) {
     if (
       event.key !== "Tab"
       || !narrowIndexMedia.matches
       || !atlasIndex.classList.contains("is-open")
     ) return;
-    const focusable = [...atlasIndex.querySelectorAll(
-      'a[href], button:not([disabled]), summary, input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    )].filter((node) => !node.closest("[hidden]"));
+    const focusable = focusableWithin(atlasIndex);
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -1425,26 +1534,62 @@
     }
   }
 
+  function syncFilterAccessibility({ focusPanel = false } = {}) {
+    const modal = narrowFilterMedia.matches && filterDisclosure.open;
+    if (modal) {
+      filterPanel.setAttribute("role", "dialog");
+      filterPanel.setAttribute("aria-modal", "true");
+      filterPanel.setAttribute("aria-labelledby", "filter-panel-title");
+    } else {
+      filterPanel.removeAttribute("role");
+      filterPanel.removeAttribute("aria-modal");
+      filterPanel.removeAttribute("aria-labelledby");
+    }
+    filterBackgroundInertTargets.forEach((target) => { target.inert = modal; });
+    document.body.classList.toggle("filter-open", modal);
+    if (modal && focusPanel) {
+      window.requestAnimationFrame(() => filterClose.focus());
+    }
+  }
+
+  function closeFilter(returnFocus = false) {
+    const focusWasInPanel = filterPanel.contains(document.activeElement);
+    filterDisclosure.open = false;
+    syncFilterAccessibility();
+    if (returnFocus || focusWasInPanel) filterSummary.focus();
+  }
+
+  function trapFilterFocus(event) {
+    if (
+      event.key !== "Tab"
+      || !narrowFilterMedia.matches
+      || !filterDisclosure.open
+    ) return;
+    const focusable = focusableWithin(filterPanel);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (document.activeElement === first || !filterPanel.contains(document.activeElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !filterPanel.contains(document.activeElement))) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function clearAllFilters() {
-    searchInput.value = "";
+    clearVisibilityFilters({ refresh: false });
     const defaultCoefficient = supportedCoefficients[0];
     coefficientSwitcher.querySelectorAll('input[name="coefficient"]').forEach((input) => {
       input.checked = input.value === defaultCoefficient;
     });
     reducedFilter.checked = false;
-    dimensionFilter.value = "";
-    reliabilityFilter.value = "";
-    torsionFilter.checked = false;
     Object.assign(state, {
-      query: "",
       coefficient: defaultCoefficient,
       reduced: false,
-      family: "",
-      dimension: "",
-      reliability: "",
-      torsion: false,
     });
-    filterDisclosure.open = false;
+    closeFilter();
     updateAtlas();
     searchInput.focus();
   }
@@ -1470,11 +1615,15 @@
     if (!event.target.matches('input[name="theme-preference"]')) return;
     applyThemePreference(event.target.value);
     themeMenu.open = false;
+    themeSummary.focus();
   });
   clearFilters.addEventListener("click", clearAllFilters);
-  filterClose.addEventListener("click", () => {
-    filterDisclosure.open = false;
-    filterSummary.focus();
+  filterClose.addEventListener("click", () => closeFilter(true));
+  filterDisclosure.addEventListener("toggle", () => {
+    if (filterDisclosure.open) themeMenu.open = false;
+    syncFilterAccessibility({
+      focusPanel: filterDisclosure.open && narrowFilterMedia.matches,
+    });
   });
   familyToggle.addEventListener("click", () => {
     if (atlasIndex.classList.contains("is-open")) closeIndex(true);
@@ -1512,9 +1661,14 @@
     if (event.key === themeStorageKey) applyThemePreference(event.newValue, false);
   });
   narrowIndexMedia.addEventListener("change", syncIndexAccessibility);
+  narrowFilterMedia.addEventListener("change", () => {
+    syncFilterAccessibility({
+      focusPanel: filterDisclosure.open && narrowFilterMedia.matches,
+    });
+  });
   document.addEventListener("click", (event) => {
     if (filterDisclosure.open && !filterDisclosure.contains(event.target)) {
-      filterDisclosure.open = false;
+      closeFilter();
     }
     if (themeMenu.open && !themeMenu.contains(event.target)) {
       themeMenu.open = false;
@@ -1522,6 +1676,7 @@
   });
   document.addEventListener("keydown", (event) => {
     trapIndexFocus(event);
+    trapFilterFocus(event);
     if (event.key === "Escape") {
       if (atlasIndex.classList.contains("is-open")) closeIndex(true);
       else if (themeMenu.open) {
@@ -1529,8 +1684,7 @@
         themeSummary.focus();
       }
       else if (filterDisclosure.open) {
-        filterDisclosure.open = false;
-        filterSummary.focus();
+        closeFilter(true);
       }
       else if (searchInput.value) {
         searchInput.value = "";
@@ -1542,6 +1696,7 @@
 
   applyThemePreference(storedThemePreference(), false);
   syncIndexAccessibility();
+  syncFilterAccessibility();
   buildAtlas();
   updateAtlas();
   handleHash();
