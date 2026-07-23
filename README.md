@@ -10,10 +10,14 @@ from 42 named CW spaces.
 **Live atlas:** [davearcher18.github.io/homology-db](https://davearcher18.github.io/homology-db/)
 
 Open [`dist/atlas.html`](dist/atlas.html) directly in a browser. It is a single
-self-contained, offline file: search all 42 spaces, follow stable
-Conceptual-space links, switch coefficient systems and reduced/unreduced
-choices, filter the corpus, and open CW models, citations, computation sketches,
-recorded runs, or raw JSON in review mode.
+self-contained, offline file with a landing page, a searchable Spaces
+directory, family landing pages, and one stable page per Conceptual space.
+Coefficient rings and reduced/unreduced choices are local to each space.
+Curated mathematical notation, compact direct sums, definition knowls,
+exhaustive/bounded coverage, CW models, citations, computation sketches,
+recorded runs, and full atlas JSON remain available without turning the atlas
+into one large control panel. An object-local `Review details` control exposes
+assertion IDs and provenance when validation work calls for them.
 
 The corpus includes Moore spaces with prime-power torsion, projective and lens
 spaces, low-rank compact Lie groups, Schubert spaces, classifying spaces,
@@ -34,7 +38,7 @@ schema mapping, measured database and HTML sizes, and validation boundaries.
 Pushes of the checked-in artifact to `main` are deployed by
 [`deploy-atlas-pages.yml`](.github/workflows/deploy-atlas-pages.yml).
 Every space and family has a correction/computation-feedback link, and the
-toolbar links to a structured request-a-space form. Browsing is account-free;
+header links to a structured request-a-space form. Browsing is account-free;
 submitting those GitHub Issue Forms requires a GitHub account.
 
 ## Try it now

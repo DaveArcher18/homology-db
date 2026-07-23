@@ -1,108 +1,93 @@
 (() => {
   "use strict";
 
+  const presentation = window.HomologyAtlasPresentation;
+  if (!presentation) {
+    throw new Error("Homology Atlas presentation helpers did not load.");
+  }
+  const {
+    blackboardCharacters,
+    coefficientDisplay,
+    coefficientTex,
+    coverageFor,
+    coveragePresentation: pureCoveragePresentation,
+    firstRecorded,
+    groupPresentation,
+    isSupportedTex,
+    simpleTexCommands,
+    texGroupCommands,
+  } = presentation;
   const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
   const snapshot = atlas.snapshot ?? {};
-  const conceptualSpaces = Array.isArray(atlas.conceptual_spaces) ? atlas.conceptual_spaces : [];
+  const conceptualSpaces = Array.isArray(atlas.conceptual_spaces)
+    ? atlas.conceptual_spaces
+    : [];
   const sections = Array.isArray(atlas.sections) ? atlas.sections : [];
-  const supportedCoefficients = Array.isArray(snapshot.supported_coefficients) && snapshot.supported_coefficients.length
-    ? snapshot.supported_coefficients
-    : ["Z"];
+  const definitions = Array.isArray(atlas.definitions) ? atlas.definitions : [];
+  const supportedCoefficients =
+    Array.isArray(snapshot.supported_coefficients)
+    && snapshot.supported_coefficients.length
+      ? snapshot.supported_coefficients
+      : ["Z"];
+
   const issueEndpoint = "https://github.com/DaveArcher18/homology-db/issues/new";
   const themeStorageKey = "homology-atlas-theme-v1";
-  const coefficientLabels = Object.freeze({
-    Z: "ℤ",
-    F2: "𝔽₂",
-    F3: "𝔽₃",
-    F5: "𝔽₅",
-    F7: "𝔽₇",
-  });
   const themeLabels = Object.freeze({
     system: "System",
     light: "Light",
     dark: "Dark",
   });
+
   const spacesById = new Map(conceptualSpaces.map((space) => [space.id, space]));
+  const spacesBySlug = new Map(
+    conceptualSpaces.map((space) => [space.slug, space]),
+  );
   const familiesById = new Map(sections.map((section) => [section.id, section]));
-  const entriesById = new Map();
-  const sectionsById = new Map();
-  const familyOutlineNodes = new Map();
+  const definitionsById = new Map(
+    definitions.map((definition) => [definition.id, definition]),
+  );
   const familyNavigationLinks = new Map();
-  const spaceNavigationLinks = new Map();
-  const selectionTimers = new Map();
-  const narrowIndexMedia = window.matchMedia("(max-width: 58rem)");
-  const narrowFilterMedia = window.matchMedia("(max-width: 48rem)");
   const state = {
-    query: "",
-    coefficient: "Z",
-    reduced: false,
-    family: "",
-    dimension: "",
-    reliability: "",
-    torsion: false,
-    review: false,
-    visible: [],
-    selectedId: null,
+    route: { kind: "home" },
+    queriesByScope: new Map(),
+    homologyViewBySpace: new Map(),
   };
 
-  const searchInput = document.getElementById("atlas-search");
-  const atlasControls = document.getElementById("atlas-controls");
-  const coefficientSwitcher = document.getElementById("coefficient-switcher");
-  const reducedFilter = document.getElementById("reduced-filter");
-  const dimensionFilter = document.getElementById("dimension-filter");
-  const reliabilityFilter = document.getElementById("reliability-filter");
-  const torsionFilter = document.getElementById("torsion-filter");
-  const reviewToggle = document.getElementById("review-toggle");
+  const siteBrand = document.getElementById("site-brand");
+  const requestSpace = document.getElementById("request-space");
   const aboutToggle = document.getElementById("about-toggle");
   const themeMenu = document.getElementById("theme-menu");
   const themeSummary = themeMenu.querySelector(":scope > summary");
   const themeCurrent = themeMenu.querySelector(".theme-current");
-  const themeInputs = [...themeMenu.querySelectorAll('input[name="theme-preference"]')];
-  const clearFilters = document.getElementById("clear-filters");
-  const filterDisclosure = document.getElementById("filter-disclosure");
-  const filterPanel = filterDisclosure.querySelector(".filter-panel");
-  const filterClose = document.getElementById("filter-close");
-  const activeFilterCount = document.getElementById("active-filter-count");
+  const themeInputs = [
+    ...themeMenu.querySelectorAll('input[name="theme-preference"]'),
+  ];
   const familyToggle = document.getElementById("family-toggle");
   const indexClose = document.getElementById("index-close");
   const indexBackdrop = document.getElementById("index-backdrop");
-  const requestSpace = document.getElementById("request-space");
   const atlasIndex = document.getElementById("atlas-index");
-  const indexInner = atlasIndex.querySelector(".index-inner");
   const familyOutline = document.getElementById("family-outline");
-  const atlasDocument = document.getElementById("atlas-document");
+  const navHome = document.getElementById("nav-home");
+  const navSpaces = document.getElementById("nav-spaces");
   const snapshotAbout = document.getElementById("snapshot-about");
-  const resultStatus = document.getElementById("result-status");
+  const snapshotDetail = document.getElementById("snapshot-detail");
+  const atlasDocument = document.getElementById("atlas-document");
   const actionStatus = document.getElementById("action-status");
-  const conceptualFamilyCount = document.getElementById("conceptual-family-count");
-  const familyCount = document.getElementById("family-count");
-  const familySpaceCount = document.getElementById("family-space-count");
-  const filterSummary = filterDisclosure.querySelector(":scope > summary");
+  const narrowIndexMedia = window.matchMedia("(max-width: 60rem)");
   const backgroundInertTargets = [
-    document.querySelector(".skip-link"),
-    document.querySelector(".site-header"),
-    document.querySelector(".toolbar"),
+    siteBrand,
+    requestSpace,
+    aboutToggle,
+    themeMenu,
     atlasDocument,
     document.querySelector(".site-footer"),
   ].filter(Boolean);
-  const filterBackgroundInertTargets = [
-    document.querySelector(".skip-link"),
-    document.querySelector(".site-header"),
-    searchInput.closest(".search-control"),
-    coefficientSwitcher,
-    resultStatus,
-    document.querySelector(".toolbar-actions"),
-    document.querySelector(".page-shell"),
-    document.querySelector(".site-footer"),
-    filterSummary,
-  ].filter(Boolean);
-  let indexReturnFocus = familyToggle;
-  let alphabeticalOutlineNodes = null;
-  let currentFamilyId = null;
-  let currentSpaceId = null;
-  let navigationObserver = null;
 
-  function element(tagName, className, text) {
+  let knowlInstance = 0;
+  let indexReturnFocus = familyToggle;
+  let isInitialRoute = true;
+
+  function element(tagName, className = "", text) {
     const node = document.createElement(tagName);
     if (className) node.className = className;
     if (text !== undefined) node.textContent = text;
@@ -113,30 +98,76 @@
     return Array.isArray(value) ? value : [];
   }
 
-  function firstRecorded(...values) {
-    return values.find((value) => value !== undefined && value !== null && value !== "");
-  }
-
   function humanize(value) {
     return String(value ?? "not recorded").replaceAll("_", " ");
   }
 
   function displayValue(value) {
-    if (value === undefined || value === null || value === "") return "Not recorded";
-    if (typeof value === "boolean") return value ? "yes" : "no";
-    if (Array.isArray(value)) return value.map(displayValue).join(", ") || "None";
+    if (value === undefined || value === null || value === "") {
+      return "Not recorded";
+    }
+    if (typeof value === "boolean") return value ? "Yes" : "No";
+    if (Array.isArray(value)) {
+      return value.length ? value.map(displayValue).join(", ") : "None";
+    }
     if (typeof value === "object") return JSON.stringify(value);
     return String(value);
   }
 
   function appendDefinition(list, term, description) {
-    list.append(element("dt", "", term), element("dd", "", displayValue(description)));
+    list.append(
+      element("dt", "", term),
+      element("dd", "", displayValue(description)),
+    );
   }
 
-  function appendDefinitionNode(list, term, descriptionNode) {
-    const description = element("dd");
-    description.append(descriptionNode);
-    list.append(element("dt", "", term), description);
+  function propertyValue(space, key) {
+    return asArray(space.properties).find((item) => item.key === key)?.value;
+  }
+
+  function spaceDimension(space) {
+    return firstRecorded(space.dimension, propertyValue(space, "dimension"));
+  }
+
+  function isInfiniteFiniteType(space) {
+    return Boolean(
+      firstRecorded(
+        space.infinite_finite_type,
+        space.raw?.subject?.infinite_finite_type,
+        false,
+      ),
+    );
+  }
+
+  function modelRecords(space) {
+    return asArray(space.models);
+  }
+
+  function evidenceRecords(space) {
+    return asArray(space.evidence);
+  }
+
+  function computationRecords(space) {
+    const records = [...asArray(space.computations)];
+    evidenceRecords(space).forEach((record) => {
+      const computation = record.computation;
+      if (computation?.computation_id || computation?.id) {
+        records.push(computation);
+      }
+    });
+    const seen = new Set();
+    return records.filter((record) => {
+      const identity =
+        record.computation_id ?? record.id ?? JSON.stringify(record);
+      if (seen.has(identity)) return false;
+      seen.add(identity);
+      return true;
+    });
+  }
+
+  function citationRecords(record) {
+    const references = asArray(record?.references);
+    return references.length ? references : asArray(record?.citations);
   }
 
   function normalizedThemePreference(value) {
@@ -144,10 +175,14 @@
   }
 
   function storedThemePreference() {
-    const bootPreference = normalizedThemePreference(document.documentElement.dataset.theme);
+    const bootPreference = normalizedThemePreference(
+      document.documentElement.dataset.theme,
+    );
     if (bootPreference !== "system") return bootPreference;
     try {
-      return normalizedThemePreference(window.localStorage.getItem(themeStorageKey));
+      return normalizedThemePreference(
+        window.localStorage.getItem(themeStorageKey),
+      );
     } catch (_error) {
       return "system";
     }
@@ -164,13 +199,19 @@
       input.checked = input.value === preference;
     });
     themeCurrent.textContent = themeLabels[preference];
-    themeSummary.setAttribute("aria-label", `Theme: ${themeLabels[preference]}`);
+    themeSummary.setAttribute(
+      "aria-label",
+      `Theme: ${themeLabels[preference]}`,
+    );
     if (!persist) return;
     try {
-      if (preference === "system") window.localStorage.removeItem(themeStorageKey);
-      else window.localStorage.setItem(themeStorageKey, preference);
+      if (preference === "system") {
+        window.localStorage.removeItem(themeStorageKey);
+      } else {
+        window.localStorage.setItem(themeStorageKey, preference);
+      }
     } catch (_error) {
-      // The atlas remains usable when storage is unavailable or file URL behavior varies.
+      // Theme storage is optional for the self-contained file.
     }
   }
 
@@ -185,8 +226,8 @@
     return String(value ?? "")
       .normalize("NFKD")
       .toLocaleLowerCase()
-      .replace(/\\mathbb/g, "")
-      .replace(/[\\{}_^.,;:()\[\]\/\-]+/g, " ")
+      .replace(/\\(?:mathbb|mathrm|operatorname)/g, "")
+      .replace(/[\\{}_^.,;:()[\]/\-]+/g, " ")
       .replace(/[^a-z0-9\s]+/g, " ")
       .trim();
   }
@@ -211,94 +252,31 @@
     return output;
   }
 
-  function modelRecords(space) {
-    return asArray(space.models);
-  }
-
-  function evidenceRecords(space) {
-    return asArray(space.evidence);
-  }
-
-  function computationRecords(space) {
-    const records = [...asArray(space.computations)];
-    evidenceRecords(space).forEach((record) => {
-      const computation = record.computation;
-      if (computation?.computation_id || computation?.id) records.push(computation);
-    });
-    const seen = new Set();
-    return records.filter((record) => {
-      const identity = record.computation_id ?? record.id ?? JSON.stringify(record);
-      if (seen.has(identity)) return false;
-      seen.add(identity);
-      return true;
-    });
-  }
-
-  function citationRecords(record) {
-    const references = asArray(record.references);
-    return references.length ? references : asArray(record.citations);
-  }
-
-  function familySearchValues(space) {
-    const family = familiesById.get(space.taxonomy?.family);
-    if (!family) return [];
-    return [
-      family.label,
-      family.id,
-      family.summary,
-      family.chromatic_relevance,
-      family.relevance,
-    ].filter(Boolean);
-  }
-
   function searchValues(space) {
+    const family = familiesById.get(space.taxonomy?.family);
     const relatedNames = asArray(space.relations)
       .map((relation) => spacesById.get(relation.target_id)?.name?.plain)
       .filter(Boolean);
-    const details = [
-      space.summary,
-      space.chromatic_relevance,
-      space.relevance,
-      space.parameters,
-      space.properties,
-      modelRecords(space).map((model) => ({
-        name: model.name,
-        kind: model.kind,
-        construction: model.construction,
-        cells: model.cell_degrees,
-        cell_formula: model.cell_formula,
-        attaching_map: model.attaching_map,
-        boundary_formula: model.boundary_formula,
-        scope: model.model_scope,
-      })),
-      evidenceRecords(space).map((record) => ({
-        kind: record.kind,
-        sketch: record.computation_sketch,
-        citation: record.citation,
-        references: citationRecords(record),
-      })),
-      asArray(space.homology).map((row) => ({
-        coefficient: row.coefficient_ring,
-        degree: row.degree,
-        group: row.group?.plain,
-        torsion: row.group?.torsion_orders,
-      })),
-      computationRecords(space).map((record) => ({
-        algorithm: record.algorithm_id,
-        parameters: record.parameters,
-        scope: record.output_scope,
-      })),
-    ];
     return [
       space.name?.plain,
+      space.name?.tex,
       ...asArray(space.aliases),
       space.id,
       space.slug,
-      space.taxonomy?.family,
-      ...familySearchValues(space),
+      family?.id,
+      family?.label,
+      family?.summary,
+      family?.chromatic_relevance,
       ...asArray(space.taxonomy?.tags),
       ...relatedNames,
-      ...searchTextValues(details),
+      ...searchTextValues({
+        summary: space.summary,
+        relevance: space.chromatic_relevance,
+        parameters: space.parameters,
+        properties: space.properties,
+        models: modelRecords(space),
+        evidence: evidenceRecords(space),
+      }),
     ].filter(Boolean);
   }
 
@@ -311,41 +289,183 @@
     if (compactValues.some((value) => value === compactQuery)) return 0;
     if (compactValues.some((value) => value.startsWith(compactQuery))) return 1;
     const joined = normalize(values.join(" "));
-    if (queryTokens.length && queryTokens.every((token) => joined.includes(token))) return 2;
+    if (
+      queryTokens.length
+      && queryTokens.every((token) => joined.includes(token))
+    ) {
+      return 2;
+    }
     if (compactValues.some((value) => value.includes(compactQuery))) return 3;
     return Number.POSITIVE_INFINITY;
   }
 
-  function coefficientDisplay(coefficient) {
-    if (coefficientLabels[coefficient]) return coefficientLabels[coefficient];
-    const fieldMatch = String(coefficient).match(/^F(\d+)$/);
-    return fieldMatch ? `𝔽${subscript(fieldMatch[1])}` : coefficient;
-  }
+  function renderTex(tex, fallback, className = "math-display") {
+    const math = element("span", className);
+    math.dataset.tex = String(tex ?? "");
+    math.setAttribute("aria-label", fallback);
+    const visual = element("span", "math-visual");
+    visual.setAttribute("aria-hidden", "true");
+    math.append(visual);
 
-  function superscript(value) {
-    const digits = { "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹", "-": "⁻" };
-    return String(value).split("").map((digit) => digits[digit] ?? digit).join("");
-  }
-
-  function subscript(value) {
-    const digits = { "0": "₀", "1": "₁", "2": "₂", "3": "₃", "4": "₄", "5": "₅", "6": "₆", "7": "₇", "8": "₈", "9": "₉", "-": "₋" };
-    return String(value).split("").map((digit) => digits[digit] ?? digit).join("");
-  }
-
-  function mathematicalName(value) {
-    return String(value ?? "")
-      .replace(/\^(?:infinity|\\infty)/gi, "∞")
-      .replace(/\^(-?\d+)/g, (_match, exponent) => superscript(exponent));
-  }
-
-  function groupDisplay(row) {
-    if (row.group.state !== "exact") return row.group.plain;
-    if (row.coefficient_ring === "Z") {
-      return row.group.plain.replaceAll("Z", "ℤ").replaceAll(" + ", " ⊕ ");
+    function grouped(source, start) {
+      if (source[start] !== "{") throw new Error("Expected TeX group");
+      let depth = 0;
+      for (let index = start; index < source.length; index += 1) {
+        if (source[index] === "{") depth += 1;
+        if (source[index] === "}") {
+          depth -= 1;
+          if (depth === 0) {
+            return {
+              content: source.slice(start + 1, index),
+              end: index + 1,
+            };
+          }
+        }
+      }
+      throw new Error("Unclosed TeX group");
     }
-    const fieldGroup = row.group.plain.match(/^(F\d+)(?:\^(\d+))?$/);
-    if (!fieldGroup) return row.group.plain;
-    return coefficientDisplay(fieldGroup[1]) + (fieldGroup[2] ? superscript(fieldGroup[2]) : "");
+
+    function appendSequence(target, source) {
+      let index = 0;
+      while (index < source.length) {
+        const character = source[index];
+        if (character === "\\") {
+          const commandMatch = source.slice(index + 1).match(/^[A-Za-z]+/);
+          if (!commandMatch) throw new Error("Malformed TeX command");
+          const command = commandMatch[0];
+          index += command.length + 1;
+          if (simpleTexCommands[command]) {
+            target.append(document.createTextNode(simpleTexCommands[command]));
+            continue;
+          }
+          if (!texGroupCommands.has(command)) {
+            throw new Error(`Unsupported TeX command: ${command}`);
+          }
+          const group = grouped(source, index);
+          index = group.end;
+          if (command === "mathbb") {
+            const converted = [...group.content]
+              .map((item) => blackboardCharacters[item] ?? item)
+              .join("");
+            target.append(document.createTextNode(converted));
+            continue;
+          }
+          const wrapper = element(
+            "span",
+            command === "widetilde" ? "tex-widetilde" : `tex-${command}`,
+          );
+          appendSequence(wrapper, group.content);
+          target.append(wrapper);
+          continue;
+        }
+        if (character === "^" || character === "_") {
+          const script = character === "^" ? element("sup") : element("sub");
+          index += 1;
+          if (source[index] === "{") {
+            const group = grouped(source, index);
+            appendSequence(script, group.content);
+            index = group.end;
+          } else {
+            if (index >= source.length) throw new Error("Missing TeX script");
+            script.textContent = source[index];
+            index += 1;
+          }
+          target.append(script);
+          continue;
+        }
+        if (character === "{") {
+          const group = grouped(source, index);
+          appendSequence(target, group.content);
+          index = group.end;
+          continue;
+        }
+        if (character === "}") throw new Error("Unexpected TeX brace");
+        target.append(document.createTextNode(character));
+        index += 1;
+      }
+    }
+
+    try {
+      const source = String(tex ?? "");
+      if (!isSupportedTex(source)) {
+        throw new Error("Unsafe or empty TeX");
+      }
+      appendSequence(visual, source);
+    } catch (_error) {
+      visual.replaceChildren(document.createTextNode(fallback));
+      math.classList.add("math-fallback");
+    }
+    return math;
+  }
+
+  function mathName(space, className = "math-display") {
+    return renderTex(
+      space.name?.tex,
+      space.name?.plain ?? space.id,
+      className,
+    );
+  }
+
+  function coveragePresentation(space, rows) {
+    return pureCoveragePresentation(space, rows, snapshot);
+  }
+
+  function buildCoverageBadge(space, rows, { withDefinitions = false } = {}) {
+    const presentation = coveragePresentation(space, rows);
+    const wrapper = element(
+      "div",
+      `coverage-summary ${presentation.className}`,
+    );
+    wrapper.append(
+      element(
+        "span",
+        `coverage-badge ${presentation.className}`,
+        presentation.label,
+      ),
+      element("p", "coverage-detail", presentation.detail),
+    );
+    if (withDefinitions) {
+      const definitionsLine = element("p", "coverage-definitions");
+      definitionsLine.append(buildKnowl("coverage", "Coverage definition"));
+      if (coverageFor(space).kind === "complete_finite_cw") {
+        definitionsLine.append(
+          document.createTextNode(" · "),
+          buildKnowl("finite-cw-space", "Finite CW space"),
+        );
+      }
+      wrapper.append(definitionsLine);
+    }
+    return wrapper;
+  }
+
+  function availableCoefficients(space) {
+    const recorded = new Set(
+      asArray(space.homology).map((row) => row.coefficient_ring),
+    );
+    const ordered = supportedCoefficients.filter((item) => recorded.has(item));
+    return ordered.length ? ordered : [...recorded];
+  }
+
+  function homologyViewFor(space) {
+    if (!state.homologyViewBySpace.has(space.id)) {
+      const coefficients = availableCoefficients(space);
+      const coefficient = coefficients.includes("Z")
+        ? "Z"
+        : coefficients[0] ?? "Z";
+      state.homologyViewBySpace.set(space.id, {
+        coefficient,
+        reduced: false,
+      });
+    }
+    return state.homologyViewBySpace.get(space.id);
+  }
+
+  function homologyRows(space, view = homologyViewFor(space)) {
+    return asArray(space.homology).filter(
+      (row) =>
+        row.coefficient_ring === view.coefficient
+        && row.reduced === view.reduced,
+    );
   }
 
   function safeHttpsUrl(value) {
@@ -359,23 +479,37 @@
   }
 
   function outboundLink(label, href, accessibleContext) {
-    const link = element("a", "external-link", label);
     const safeHref = safeHttpsUrl(href);
     if (!safeHref) return null;
+    const link = element("a", "external-link", label);
     link.href = safeHref;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    if (accessibleContext) link.setAttribute("aria-label", `${accessibleContext} (opens in a new tab)`);
+    if (accessibleContext) {
+      link.setAttribute(
+        "aria-label",
+        `${accessibleContext} (opens in a new tab)`,
+      );
+    }
     return link;
   }
 
   function snapshotReference() {
-    return firstRecorded(snapshot.snapshot_id, snapshot.snapshot_name, "unknown-snapshot");
+    return firstRecorded(
+      snapshot.snapshot_id,
+      snapshot.snapshot_name,
+      "unknown-snapshot",
+    );
   }
 
   function snapshotIssueReference() {
-    const hash = firstRecorded(snapshot.source_database_sha256, snapshot.source_inputs_sha256);
-    return hash ? `${snapshotReference()} | sha256:${hash}` : snapshotReference();
+    const hash = firstRecorded(
+      snapshot.source_database_sha256,
+      snapshot.source_inputs_sha256,
+    );
+    return hash
+      ? `${snapshotReference()} | sha256:${hash}`
+      : snapshotReference();
   }
 
   function issueUrl(template, title) {
@@ -399,10 +533,21 @@
     );
   }
 
+  function requestSpaceUrl() {
+    return issueUrl(
+      "space-request.yml",
+      `[Space request] ${snapshotIssueReference()}`,
+    );
+  }
+
   function permalinkFor(space) {
     const url = new URL(window.location.href);
     url.hash = `space=${encodeURIComponent(space.slug)}`;
     return url.href;
+  }
+
+  function serializedSpaceRecord(space) {
+    return JSON.stringify(space, null, 2);
   }
 
   async function copyText(text, button) {
@@ -421,341 +566,714 @@
     const previous = button.textContent;
     button.textContent = "Copied";
     announce(`${previous} copied to the clipboard.`);
-    window.setTimeout(() => { button.textContent = previous; }, 1200);
+    window.setTimeout(() => {
+      button.textContent = previous;
+    }, 1400);
   }
 
   function downloadRecord(space) {
-    const contents = JSON.stringify(space.raw, null, 2);
-    const url = URL.createObjectURL(new Blob([contents], { type: "application/json" }));
+    const blob = new Blob([serializedSpaceRecord(space)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.download = `${space.slug}.json`;
-    document.body.append(link);
     link.click();
-    link.remove();
     URL.revokeObjectURL(url);
   }
 
-  function detailsBlock(title, count, reviewDetail = false) {
-    const details = element("details");
-    if (reviewDetail) details.dataset.reviewDetail = "true";
-    const summaryNode = element("summary");
-    summaryNode.append(element("h4", "details-heading", title), element("span", "review-label", String(count)));
-    const content = element("div", "detail-content");
-    details.append(summaryNode, content);
-    return { details, content };
-  }
-
-  function propertyValue(space, key) {
-    return asArray(space.properties).find((property) => property.key === key)?.value;
-  }
-
-  function spaceDimension(space) {
-    const property = asArray(space.properties).find((item) => item.key === "dimension");
-    return property ? property.value : space.dimension;
-  }
-
-  function isInfiniteFiniteType(space) {
-    return Boolean(space.infinite_finite_type) || (spaceDimension(space) === null && coverageFor(space)?.kind === "bounded_through_degree");
-  }
-
-  function explicitParameterText(space) {
-    const parameters = space.parameters;
-    if (parameters === undefined || parameters === null || parameters === "") return "";
-    if (Array.isArray(parameters)) return parameters.map(displayValue).join(", ");
-    if (typeof parameters !== "object") return displayValue(parameters);
-    return Object.entries(parameters)
-      .map(([key, value]) => `${humanize(key)} = ${displayValue(value)}`)
-      .join(", ");
-  }
-
-  function familyMemberMetadata(space) {
-    const metadata = [];
-    const parameters = explicitParameterText(space);
-    if (parameters) metadata.push(parameters);
-    const dimension = spaceDimension(space);
-    if (dimension !== undefined && dimension !== null) {
-      metadata.push(`dimension ${displayValue(dimension)}`);
-    } else if (space.infinite_finite_type) {
-      metadata.push("dimension ∞ · finite type");
-    }
-    return metadata.join(" · ");
-  }
-
-  function rememberNavigationLink(collection, id, link) {
-    const links = collection.get(id) ?? [];
-    links.push(link);
-    collection.set(id, links);
-  }
-
-  function appendFamilyNarratives(container, section, summaryClass, relevanceClass) {
-    if (section.summary) {
-      container.append(element("p", summaryClass, section.summary));
-    }
-    const relevance = firstRecorded(section.chromatic_relevance, section.relevance);
-    if (relevance) {
-      const paragraph = element("p", relevanceClass);
-      paragraph.append(
-        element("strong", "", "Why this family matters. "),
-        document.createTextNode(relevance),
-      );
-      container.append(paragraph);
-    }
-  }
-
-  function createFamilyMemberItem(space, className = "") {
-    const item = element("li", className);
-    item.dataset.spaceId = space.id;
-    const link = element("a", "family-member-link", mathematicalName(space.name.plain));
-    link.href = `#space=${encodeURIComponent(space.slug)}`;
-    rememberNavigationLink(spaceNavigationLinks, space.id, link);
-    link.addEventListener("click", () => {
-      closeIndex();
-      window.setTimeout(() => {
-        const heading = entriesById.get(space.id)?.querySelector(".entry-title");
-        if (heading) {
-          heading.tabIndex = -1;
-          heading.focus({ preventScroll: true });
-        }
-      }, 0);
+  function buildKnowl(definitionId, label) {
+    const definition = definitionsById.get(definitionId);
+    if (!definition) return document.createTextNode(label ?? humanize(definitionId));
+    knowlInstance += 1;
+    const instance = `knowl-${definition.id}-${knowlInstance}`;
+    const trigger = element(
+      "button",
+      "knowl-trigger knowl-button",
+      label ?? definition.term,
+    );
+    trigger.type = "button";
+    trigger.id = `${instance}-trigger`;
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.setAttribute("aria-controls", `${instance}-panel`);
+    const panel = element("span", "knowl-panel");
+    panel.id = `${instance}-panel`;
+    panel.hidden = true;
+    panel.setAttribute("role", "region");
+    panel.setAttribute("aria-labelledby", trigger.id);
+    panel.append(
+      element("strong", "knowl-term", definition.term),
+      document.createTextNode(` ${definition.body} `),
+      element(
+        "span",
+        "knowl-status",
+        definition.assertion_evidence
+          ? "Assertion evidence"
+          : (
+            `Definition ${definition.id} r${definition.revision}`
+            + ` · selected for Snapshot ${definition.selected_for_snapshot_id}`
+            + " · exposition, not assertion evidence"
+          ),
+      ),
+    );
+    trigger.addEventListener("click", () => {
+      const expanded = trigger.getAttribute("aria-expanded") === "true";
+      trigger.setAttribute("aria-expanded", String(!expanded));
+      panel.hidden = expanded;
     });
-    item.append(link);
-    const metadata = familyMemberMetadata(space);
-    if (metadata) item.append(element("span", "family-member-meta", metadata));
+    const wrapper = element("span", "knowl");
+    wrapper.append(trigger, panel);
+    return wrapper;
+  }
+
+  function buildBreadcrumbs(items) {
+    const nav = element("nav", "breadcrumbs");
+    nav.setAttribute("aria-label", "Breadcrumb");
+    const list = element("ol");
+    items.forEach((item, index) => {
+      const listItem = element("li");
+      if (item.href && index < items.length - 1) {
+        const link = element("a", "", item.label);
+        link.href = item.href;
+        listItem.append(link);
+      } else {
+        const current = element("span", "", item.label);
+        if (index === items.length - 1) {
+          current.setAttribute("aria-current", "page");
+        }
+        listItem.append(current);
+      }
+      list.append(listItem);
+    });
+    nav.append(list);
+    return nav;
+  }
+
+  function pageHeader(title, eyebrow, description) {
+    const header = element("header", "page-header");
+    if (eyebrow) header.append(element("p", "page-kicker", eyebrow));
+    header.append(element("h1", "page-title", title));
+    if (description) header.append(element("p", "page-lede", description));
+    return header;
+  }
+
+  function familyFor(space) {
+    return familiesById.get(space.taxonomy?.family);
+  }
+
+  function memberMeta(space) {
+    const dimension = spaceDimension(space);
+    if (isInfiniteFiniteType(space)) return "Infinite dimensional · finite type";
+    return dimension === undefined || dimension === null
+      ? "Dimension not recorded"
+      : `Dimension ${dimension}`;
+  }
+
+  function buildSpaceResultItem(space) {
+    const family = familyFor(space);
+    const item = element("li", "space-result space-list-item");
+    const main = element("div", "space-list-main");
+    const primary = element("a", "space-result-link");
+    primary.href = `#space=${encodeURIComponent(space.slug)}`;
+    primary.append(mathName(space, "space-result-math"));
+    const plainName = element("span", "space-result-plain", space.name?.plain);
+    plainName.setAttribute("aria-hidden", "true");
+    primary.append(plainName);
+    const meta = element("p", "space-result-meta");
+    if (family) {
+      const familyLink = element("a", "family-inline-link", family.label);
+      familyLink.href = `#family-${family.id}`;
+      meta.append(familyLink, document.createTextNode(" · "));
+    }
+    meta.append(document.createTextNode(memberMeta(space)));
+    const summary = element(
+      "p",
+      "space-result-summary",
+      space.summary ?? "No summary recorded.",
+    );
+    const defaultRows = homologyRows(space, {
+      coefficient: availableCoefficients(space).includes("Z")
+        ? "Z"
+        : availableCoefficients(space)[0],
+      reduced: false,
+    });
+    main.append(primary, meta, summary);
+    const aside = element("div", "space-list-meta compact-coverage");
+    aside.append(buildCoverageBadge(space, defaultRows));
+    item.append(main, aside);
     return item;
   }
 
-  function focusFamily(section) {
-    const focusing = state.family !== section.id;
-    const moveFocusToDocument = focusing
-      && narrowIndexMedia.matches
-      && atlasIndex.classList.contains("is-open");
-    state.family = focusing ? section.id : "";
-    updateAtlas();
-    if (focusing) {
-      closeIndex();
-      window.requestAnimationFrame(() => {
-        const sectionNode = sectionsById.get(section.id);
-        const heading = sectionNode?.querySelector("h2");
-        sectionNode?.scrollIntoView({ block: "start" });
-        if (moveFocusToDocument && heading) {
-          heading.tabIndex = -1;
-          heading.focus({ preventScroll: true });
-        }
-      });
-      announce(`Showing only ${section.label}.`);
-    } else {
-      announce("Showing all families.");
+  function rankedSpaces(spaces, query) {
+    const ranked = spaces
+      .map((space) => ({ space, rank: searchRank(space, query) }))
+      .filter((item) => Number.isFinite(item.rank));
+    if (!query.trim()) {
+      return ranked
+        .map((item) => item.space)
+        .sort((left, right) =>
+          left.name.plain.localeCompare(right.name.plain),
+        );
     }
+    return ranked
+      .sort(
+        (left, right) =>
+          left.rank - right.rank
+          || left.space.name.plain.localeCompare(right.space.name.plain),
+      )
+      .map((item) => item.space);
   }
 
-  function buildAlphabeticalOutline() {
-    const group = element("details", "alphabetical-outline");
-    const summary = element("summary");
-    const label = element("span", "alphabetical-outline-title", "All spaces A–Z");
-    const count = element(
-      "span",
-      "family-outline-count",
-      `${conceptualSpaces.length} / ${conceptualSpaces.length}`,
-    );
-    count.setAttribute(
-      "aria-label",
-      `${conceptualSpaces.length} of ${conceptualSpaces.length} spaces visible`,
-    );
-    summary.append(label, count);
+  function buildSpaceSearch(spaces, scopeKey, label) {
+    const section = element("section", "space-search-section");
+    const form = element("form", "space-search directory-tools");
+    form.setAttribute("role", "search");
+    const inputId = `search-${scopeKey}`;
+    const statusId = `search-status-${scopeKey}`;
+    const inputLabel = element("label", "search-label search-control");
+    inputLabel.htmlFor = inputId;
+    inputLabel.append(element("span", "search-label-text", label));
+    const searchWrap = element("span", "route-search-wrap search-wrap");
+    const input = element("input");
+    input.id = inputId;
+    input.type = "search";
+    input.autocomplete = "off";
+    input.placeholder =
+      scopeKey === "spaces"
+        ? "Try “sphere”, “torsion”, or “B(C₂)”"
+        : "Search names, parameters, and aliases";
+    input.value = state.queriesByScope.get(scopeKey) ?? "";
+    input.setAttribute("aria-describedby", statusId);
+    const searchMark = element("span", "route-search-mark search-mark");
+    searchMark.setAttribute("aria-hidden", "true");
+    searchWrap.append(searchMark, input);
+    inputLabel.append(searchWrap);
+    const status = element("output", "search-status directory-status");
+    status.id = statusId;
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    const results = element("ol", "space-results space-list");
 
-    const body = element("div", "alphabetical-outline-body");
-    body.append(element(
-      "p",
-      "alphabetical-outline-note",
-      "A compact name index when you know the space but not its family.",
-    ));
-    const memberList = element("ol", "family-member-list alphabetical-space-list");
-    const memberItems = new Map();
-    conceptualSpaces
-      .slice()
-      .sort((left, right) => left.name.plain.localeCompare(right.name.plain))
-      .forEach((space) => {
-        const item = createFamilyMemberItem(space, "alphabetical-space-item");
-        memberItems.set(space.id, item);
-        memberList.append(item);
-      });
-    body.append(memberList);
-    group.append(summary, body);
-    alphabeticalOutlineNodes = {
-      group,
-      count,
-      memberItems,
-      total: conceptualSpaces.length,
-    };
-    familyOutline.append(group);
-  }
-
-  function buildFamilyOutline() {
-    sections.forEach((section) => {
-      const memberIds = asArray(section.conceptual_space_ids);
-      const group = element("details", "family-outline-group");
-      group.dataset.familyId = section.id;
-
-      const summary = element("summary");
-      const label = element("span", "family-outline-title", section.label);
-      const count = element("span", "family-outline-count", `${memberIds.length} / ${memberIds.length}`);
-      count.setAttribute("aria-label", `${memberIds.length} of ${memberIds.length} spaces visible`);
-      summary.append(label, count);
-
-      const body = element("div", "family-outline-body");
-      appendFamilyNarratives(
-        body,
-        section,
-        "family-outline-summary",
-        "family-outline-relevance",
-      );
-
-      const actions = element("div", "family-outline-actions");
-      const jump = element("a", "family-jump-link", "Jump to family");
-      jump.href = `#family-${section.id}`;
-      rememberNavigationLink(familyNavigationLinks, section.id, jump);
-      jump.addEventListener("click", () => {
-        closeIndex();
-        window.setTimeout(() => {
-          const heading = sectionsById.get(section.id)?.querySelector("h2");
-          if (heading) {
-            heading.tabIndex = -1;
-            heading.focus({ preventScroll: true });
-          }
-        }, 0);
-      });
-
-      const focus = element("button", "family-focus-button", "Show only this family");
-      focus.type = "button";
-      focus.setAttribute("aria-pressed", "false");
-      focus.addEventListener("click", () => focusFamily(section));
-
-      const feedback = outboundLink(
-        "Family feedback ↗",
-        familyFeedbackUrl(section),
-        `Give feedback on the ${section.label} family`,
-      );
-      actions.append(jump, focus);
-      if (feedback) {
-        feedback.classList.add("family-outline-feedback");
-        actions.append(feedback);
+    function renderResults() {
+      const query = input.value;
+      state.queriesByScope.set(scopeKey, query);
+      const matches = rankedSpaces(spaces, query);
+      results.replaceChildren();
+      matches.forEach((space) => results.append(buildSpaceResultItem(space)));
+      status.textContent = query.trim()
+        ? `${matches.length} match${matches.length === 1 ? "" : "es"}`
+        : `${matches.length} space${matches.length === 1 ? "" : "s"}`;
+      if (!matches.length) {
+        results.append(
+          element(
+            "li",
+            "empty-state",
+            "No spaces match this search. Try a family name, alias, or parameter.",
+          ),
+        );
       }
-
-      const memberList = element("ol", "family-member-list");
-      const memberItems = new Map();
-      memberIds.forEach((id) => {
-        const space = spacesById.get(id);
-        if (!space) return;
-        const item = createFamilyMemberItem(space, "family-outline-member");
-        memberItems.set(id, item);
-        memberList.append(item);
-      });
-      body.append(actions, memberList);
-      group.append(summary, body);
-      familyOutlineNodes.set(section.id, {
-        group,
-        summary,
-        count,
-        focus,
-        memberItems,
-        total: memberIds.length,
-      });
-      familyOutline.append(group);
-    });
-    buildAlphabeticalOutline();
-  }
-
-  function buildFamilyMembers(section) {
-    const memberIds = asArray(section.conceptual_space_ids);
-    if (memberIds.length < 2) return null;
-    const memberNav = element("nav", "family-members");
-    memberNav.setAttribute("aria-label", `${section.label} members in this snapshot`);
-    memberNav.append(element("h3", "family-members-title", "Members in this snapshot"));
-    const memberList = element("ol", "family-member-list family-member-list-chapter");
-    memberIds.forEach((id) => {
-      const space = spacesById.get(id);
-      if (space) memberList.append(createFamilyMemberItem(space, "family-chapter-member"));
-    });
-    memberNav.append(memberList);
-    return memberNav;
-  }
-
-  function coverageFor(space) {
-    const directCoverage = firstRecorded(space.homology_coverage, space.coverage);
-    if (directCoverage && typeof directCoverage === "object") return directCoverage;
-    const rowCoverage = asArray(space.homology).find((row) => row.coverage)?.coverage;
-    if (rowCoverage) return rowCoverage;
-    return asArray(space.raw?.homology_responses).find((response) => response.coverage)?.coverage ?? null;
-  }
-
-  function coverageMessage(space) {
-    const coverage = coverageFor(space) ?? {};
-    const kind = firstRecorded(coverage.kind, coverage.coverage_kind, coverage.scope);
-    const through = firstRecorded(
-      coverage.computed_through_degree,
-      coverage.materialized_through_degree,
-      snapshot.materialized_through_degree,
-    );
-    const upperVanishing = firstRecorded(coverage.upper_vanishing_starts_at, space.upper_vanishing_starts_at);
-    if (kind === "bounded_through_degree" || isInfiniteFiniteType(space)) {
-      return through !== undefined
-        ? `finite-type CW filtration · computed through degree ${through} · no claim above degree ${through}`
-        : "finite-type CW filtration · bounded computation · no upper-vanishing claim";
     }
-    if (upperVanishing !== undefined && upperVanishing !== null) {
-      return `complete finite CW computation · groups vanish from degree ${upperVanishing}`;
-    }
-    if (kind) return humanize(kind);
-    return asArray(space.homology)[0]?.value_scope?.replaceAll("_", " ") ?? "coverage not recorded";
+
+    form.addEventListener("submit", (event) => event.preventDefault());
+    input.addEventListener("input", renderResults);
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && input.value) {
+        input.value = "";
+        renderResults();
+        return;
+      }
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        const links = [...results.querySelectorAll(".space-result-link")];
+        if (!links.length) return;
+        event.preventDefault();
+        const target = event.key === "ArrowDown" ? links[0] : links.at(-1);
+        target.focus();
+      }
+    });
+    results.addEventListener("keydown", (event) => {
+      const activeLink = event.target.closest(".space-result-link");
+      if (!activeLink) return;
+      const previous = event.key === "ArrowUp" || event.key === "k";
+      const next = event.key === "ArrowDown" || event.key === "j";
+      if (!previous && !next) return;
+      const links = [...results.querySelectorAll(".space-result-link")];
+      const current = links.indexOf(activeLink);
+      if (current < 0) return;
+      event.preventDefault();
+      const target = previous
+        ? links[Math.max(0, current - 1)]
+        : links[Math.min(links.length - 1, current + 1)];
+      target.focus();
+    });
+    form.append(inputLabel, status);
+    section.append(form, results);
+    renderResults();
+    return section;
   }
 
-  function renderHomology(space, entry) {
-    const heading = entry.querySelector(".homology-heading h4");
-    const convention = entry.querySelector(".homology-convention");
-    const coverage = entry.querySelector(".coverage-note");
-    const tableBody = entry.querySelector(".homology-table tbody");
-    const rows = asArray(space.homology).filter((row) =>
-      row.coefficient_ring === state.coefficient && row.reduced === state.reduced
+  function buildFamilyDirectory(limit = sections.length) {
+    const list = element("ol", "family-directory");
+    sections.slice(0, limit).forEach((section) => {
+      const item = element("li", "family-directory-item");
+      const heading = element("div", "family-directory-heading");
+      const link = element("a", "family-directory-link", section.label);
+      link.href = `#family-${section.id}`;
+      heading.append(
+        link,
+        element(
+          "span",
+          "family-count",
+          `${asArray(section.conceptual_space_ids).length}`,
+        ),
+      );
+      item.append(
+        heading,
+        element("p", "", section.summary),
+      );
+      list.append(item);
+    });
+    return list;
+  }
+
+  function buildHomeView() {
+    const view = element("article", "route-view home-view");
+    const hero = element("section", "home-hero");
+    const heroCopy = element("div", "home-hero-copy");
+    heroCopy.append(
+      element("p", "page-kicker", "An atlas of computed examples"),
+      element("h1", "page-title", "Homology, space by space"),
+      element(
+        "p",
+        "home-intro page-lede",
+        "Browse ordinary homology, concrete models, and provenance for a focused collection of familiar spaces.",
+      ),
     );
-    heading.textContent = `H${state.reduced ? "̃" : ""}ₙ(${mathematicalName(space.name.plain)}; ${coefficientDisplay(state.coefficient)})`;
-    convention.textContent = `ordinary homology · ${state.reduced ? "reduced" : "unreduced"} · ${humanize(rows[0]?.homology_convention ?? rows[0]?.convention_state ?? "convention not recorded")}`;
-    convention.title = humanize(rows[0]?.convention_state ?? "No convention identity recorded");
-    coverage.textContent = coverageMessage(space);
-    coverage.classList.toggle("coverage-bounded", isInfiniteFiniteType(space));
-    tableBody.replaceChildren();
+    const explanation = element("p", "home-explanation");
+    explanation.append(
+      document.createTextNode("Each "),
+      buildKnowl("conceptual-space", "conceptual space"),
+      document.createTextNode(
+        " has its own page, with coefficient choices and coverage stated where you use them.",
+      ),
+    );
+    heroCopy.append(explanation);
+    const actions = element("div", "hero-actions");
+    const explore = element("a", "primary-action", "Explore spaces");
+    explore.href = "#spaces";
+    const request = outboundLink(
+      "Request a space ↗",
+      requestSpaceUrl(),
+      "Request a space",
+    );
+    actions.append(explore);
+    if (request) {
+      request.classList.add("secondary-action");
+      actions.append(request);
+    }
+    heroCopy.append(actions);
+    const stats = element("dl", "home-stats snapshot-stats");
+    [
+      ["Spaces", snapshot.conceptual_space_count ?? conceptualSpaces.length],
+      ["Families", sections.length],
+      ["Homology rows", snapshot.homology_row_count ?? "—"],
+      ["Cited sources", snapshot.citation_count ?? "—"],
+    ].forEach(([term, value]) => {
+      const item = element("div");
+      item.append(element("dt", "", term), element("dd", "", value));
+      stats.append(item);
+    });
+    hero.append(heroCopy, stats);
+
+    const familySection = element("section", "home-families home-section");
+    const familyHeading = element("div", "section-heading");
+    familyHeading.append(
+      element("div", "", ""),
+    );
+    familyHeading.firstElementChild.append(
+      element("p", "section-kicker", "Start with a family"),
+      element("h2", "", "From points to classifying spaces"),
+    );
+    const allFamilies = element("a", "text-link", "See every family");
+    allFamilies.href = "#spaces";
+    familyHeading.append(allFamilies);
+    familySection.append(familyHeading, buildFamilyDirectory(6));
+
+    const principles = element("section", "atlas-principles home-section");
+    principles.append(element("h2", "", "How to read the atlas"));
+    const principleList = element("div", "principle-list");
+    const principlesData = [
+      [
+        "Choose locally",
+        "Coefficient rings and reduced or unreduced homology are selected on each space page—not across the collection.",
+        "coefficient-ring",
+        "Coefficient-ring definition",
+      ],
+      [
+        "Read the coverage",
+        "Green means the selected finite calculation is exhaustive; amber marks a bounded computation with no claim above the stated degree.",
+        "coverage",
+        "Coverage definition",
+      ],
+      [
+        "Follow the evidence",
+        "Models, computations, citations, and raw records remain attached to the mathematical subject they support.",
+        "evidence",
+        "Evidence definition",
+      ],
+    ];
+    principlesData.forEach(([title, body, knowl, knowlLabel]) => {
+      const item = element("section", "principle");
+      item.append(
+        element("h3", "", title),
+        element("p", "", body),
+        buildKnowl(knowl, knowlLabel),
+      );
+      principleList.append(item);
+    });
+    principles.append(principleList);
+
+    const scope = element("section", "snapshot-scope home-section");
+    scope.append(
+      element("p", "section-kicker", "Current snapshot"),
+      element("h2", "", snapshot.snapshot_name ?? "Development snapshot"),
+      element("p", "", snapshot.scope_note ?? "No scope note is recorded."),
+      element(
+        "p",
+        "snapshot-warning",
+        `Status: ${humanize(snapshot.release_status)}.`,
+      ),
+    );
+    view.append(hero, familySection, principles, scope);
+    return view;
+  }
+
+  function buildSpacesView() {
+    const view = element("article", "route-view spaces-view");
+    view.append(
+      buildBreadcrumbs([
+        { label: "Home", href: "#home" },
+        { label: "Spaces" },
+      ]),
+      pageHeader(
+        "Spaces",
+        `${conceptualSpaces.length} conceptual spaces in ${sections.length} families`,
+        "Browse by mathematical family or search the whole snapshot. Each result opens a focused page for one space.",
+      ),
+    );
+
+    const directory = element("section", "directory-section");
+    directory.append(
+      element("h2", "", "Families"),
+      element(
+        "p",
+        "section-intro",
+        "Families collect related spaces and explain their shared construction or role.",
+      ),
+      buildFamilyDirectory(),
+    );
+    const allSpaces = element("section", "all-spaces-section");
+    allSpaces.append(
+      element("h2", "", "All spaces"),
+      buildSpaceSearch(conceptualSpaces, "spaces", "Search all spaces"),
+    );
+    view.append(directory, allSpaces);
+    return view;
+  }
+
+  function buildFamilyView(section) {
+    const members = asArray(section.conceptual_space_ids)
+      .map((id) => spacesById.get(id))
+      .filter(Boolean);
+    const view = element("article", "route-view family-view family-page");
+    view.append(
+      buildBreadcrumbs([
+        { label: "Home", href: "#home" },
+        { label: "Spaces", href: "#spaces" },
+        { label: section.label },
+      ]),
+    );
+    const header = pageHeader(
+      section.label,
+      `${members.length} space${members.length === 1 ? "" : "s"} in this snapshot`,
+      section.summary,
+    );
+    const relevance = element("p", "family-relevance");
+    relevance.append(
+      element("strong", "", "Why this family matters. "),
+      document.createTextNode(
+        section.chromatic_relevance
+          ?? section.relevance
+          ?? "No family relevance note is recorded.",
+      ),
+    );
+    header.append(relevance);
+    const feedback = outboundLink(
+      "Correct or improve this family ↗",
+      familyFeedbackUrl(section),
+      `Give feedback on ${section.label}`,
+    );
+    if (feedback) {
+      feedback.classList.add("feedback-action");
+      header.append(feedback);
+    }
+    view.append(header);
+
+    const browse = element("section", "family-members-section home-section");
+    browse.append(
+      element("h2", "", `Spaces in ${section.label}`),
+      buildSpaceSearch(
+        members,
+        `family-${section.id}`,
+        "Search this family",
+      ),
+    );
+    const footer = element("aside", "feedback-band feedback-section");
+    const footerHeading = element("h2", "", "Help improve this family");
+    footerHeading.id = `family-feedback-title-${section.id}`;
+    footer.setAttribute("aria-labelledby", footerHeading.id);
+    footer.append(
+      footerHeading,
+      element(
+        "p",
+        "",
+        "Report an incorrect member, suggest a better parameterization or computation, or ask for another example.",
+      ),
+    );
+    const footerFeedback = outboundLink(
+      "Open the family feedback form ↗",
+      familyFeedbackUrl(section),
+      `Open feedback form for ${section.label}`,
+    );
+    if (footerFeedback) footer.append(footerFeedback);
+    view.append(browse, footer);
+    return view;
+  }
+
+  function buildHomologyControls(space, host) {
+    const controls = element(
+      "div",
+      "homology-controls coefficient-controls local-homology-controls",
+    );
+    const view = homologyViewFor(space);
+    const coefficientFieldset = element(
+      "fieldset",
+      "space-coefficients segmented-fieldset segmented-control-group",
+    );
+    coefficientFieldset.append(element("legend", "", "Coefficient ring"));
+    const coefficientOptions = element(
+      "div",
+      "segment-options segmented-control",
+    );
+    availableCoefficients(space).forEach((coefficient) => {
+      const option = element("label", "segment-option");
+      const input = element("input");
+      input.type = "radio";
+      input.name = `coefficient-${space.slug}`;
+      input.value = coefficient;
+      input.checked = coefficient === view.coefficient;
+      option.append(
+        input,
+        element("span", "", coefficientDisplay(coefficient)),
+      );
+      coefficientOptions.append(option);
+    });
+    coefficientFieldset.append(coefficientOptions);
+
+    const conventionFieldset = element(
+      "fieldset",
+      "space-convention segmented-fieldset segmented-control-group",
+    );
+    conventionFieldset.append(element("legend", "", "Homology convention"));
+    const conventionOptions = element(
+      "div",
+      "segment-options segmented-control",
+    );
+    [
+      [false, "Unreduced"],
+      [true, "Reduced"],
+    ].forEach(([reduced, label]) => {
+      const option = element("label", "segment-option");
+      const input = element("input");
+      input.type = "radio";
+      input.name = `convention-${space.slug}`;
+      input.value = String(reduced);
+      input.checked = reduced === view.reduced;
+      option.append(input, element("span", "", label));
+      conventionOptions.append(option);
+    });
+    conventionFieldset.append(conventionOptions);
+    const conventionHelp = element("p", "control-help");
+    conventionHelp.append(
+      buildKnowl("reduced-homology", "Reduced versus unreduced"),
+    );
+    conventionFieldset.append(conventionHelp);
+
+    controls.addEventListener("change", (event) => {
+      if (!(event.target instanceof HTMLInputElement)) return;
+      const current = homologyViewFor(space);
+      if (event.target.name === `coefficient-${space.slug}`) {
+        current.coefficient = event.target.value;
+      }
+      if (event.target.name === `convention-${space.slug}`) {
+        current.reduced = event.target.value === "true";
+      }
+      renderHomology(space, host);
+      announce(
+        `${space.name.plain}: ${current.reduced ? "reduced" : "unreduced"} homology with ${coefficientDisplay(current.coefficient)} coefficients.`,
+      );
+    });
+    controls.append(coefficientFieldset, conventionFieldset);
+    return controls;
+  }
+
+  function renderHomology(space, host) {
+    const dynamic = host.querySelector(".homology-dynamic");
+    const view = homologyViewFor(space);
+    const rows = homologyRows(space, view);
+    const content = element("div", "homology-rendered");
+    const formulaTex = `${
+      view.reduced ? "\\widetilde{H}" : "H"
+    }_{n}(${space.name.tex};${coefficientTex(view.coefficient)})`;
+    content.append(
+      renderTex(
+        formulaTex,
+        `${view.reduced ? "Reduced" : "Unreduced"} homology of ${space.name.plain} with ${coefficientDisplay(view.coefficient)} coefficients`,
+        "homology-formula",
+      ),
+    );
+    const convention = element(
+      "p",
+      "homology-convention",
+      `Ordinary homology · ${view.reduced ? "reduced" : "unreduced"} · ${coefficientDisplay(view.coefficient)} coefficients`,
+    );
+    const conventionNote = element("span", "convention-note");
+    conventionNote.append(
+      document.createTextNode(" Convention metadata: "),
+      document.createTextNode(
+        humanize(
+          rows[0]?.homology_convention
+            ?? rows[0]?.convention_state
+            ?? snapshot.homology_convention_state,
+        ),
+      ),
+      document.createTextNode(". "),
+      buildKnowl("ordinary-homology", "What is homology?"),
+    );
+    convention.append(conventionNote);
+    content.append(
+      convention,
+      buildCoverageBadge(space, rows, { withDefinitions: true }),
+    );
+    const notation = element("p", "table-note");
+    notation.append(
+      buildKnowl("direct-sum-notation", "How repeated summands are written"),
+    );
+    content.append(notation);
+
+    const tableWrap = element("div", "homology-table-wrap");
+    const table = element("table", "homology-table");
+    const caption = element(
+      "caption",
+      "visually-hidden",
+      `${view.reduced ? "Reduced" : "Unreduced"} ordinary homology groups for ${space.name.plain} with ${coefficientDisplay(view.coefficient)} coefficients`,
+    );
+    const head = element("thead");
+    const headerRow = element("tr");
+    const degreeHeader = element("th", "", "Degree");
+    degreeHeader.scope = "col";
+    degreeHeader.id = `table-${space.slug}-degree`;
+    const groupHeader = element("th", "", "Group");
+    groupHeader.scope = "col";
+    groupHeader.id = `table-${space.slug}-group`;
+    headerRow.append(degreeHeader, groupHeader);
+    head.append(headerRow);
+    const body = element("tbody");
     if (!rows.length) {
-      const tableRow = element("tr");
-      const cell = element("td", "state-nonexact", "No values are recorded for this coefficient and convention.");
-      cell.colSpan = 4;
-      tableRow.append(cell);
-      tableBody.append(tableRow);
-      return;
+      const row = element("tr");
+      const cell = element(
+        "td",
+        "state-nonexact",
+        "No values are recorded for this coefficient and convention.",
+      );
+      cell.colSpan = 2;
+      row.append(cell);
+      body.append(row);
+    } else {
+      rows.forEach((row) => {
+        const tableRow = element("tr");
+        const degree = element("th", "degree-cell");
+        degree.scope = "row";
+        degree.setAttribute("headers", degreeHeader.id);
+        degree.append(
+          renderTex(`H_{${row.degree}}`, `Homology degree ${row.degree}`),
+        );
+        const groupCell = element(
+          "td",
+          row.group?.state === "exact" ? "group-cell" : "state-nonexact",
+        );
+        groupCell.setAttribute("headers", groupHeader.id);
+        const presentation = groupPresentation(row);
+        if (presentation.exact) {
+          groupCell.append(
+            renderTex(presentation.tex, presentation.plain, "group-math"),
+          );
+        } else {
+          groupCell.textContent = presentation.plain;
+        }
+        const rowReview = element(
+          "dl",
+          "homology-row-review review-only",
+        );
+        appendDefinition(
+          rowReview,
+          "Knowledge state",
+          humanize(row.knowledge_state),
+        );
+        appendDefinition(rowReview, "Assertion", row.assertion_id);
+        appendDefinition(rowReview, "Evidence", row.evidence_ids);
+        appendDefinition(rowReview, "Computation", row.computation_ids);
+        appendDefinition(
+          rowReview,
+          "Value scope",
+          humanize(row.value_scope),
+        );
+        groupCell.append(rowReview);
+        tableRow.append(degree, groupCell);
+        body.append(tableRow);
+      });
     }
-    rows.forEach((row) => {
-      const tableRow = element("tr");
-      const degree = element("th", "degree-cell", `H${subscript(row.degree)}`);
-      degree.scope = "row";
-      const group = element("td", row.group.state === "exact" ? "" : "state-nonexact", groupDisplay(row));
-      const knowledge = element("td", "state-cell review-only", row.knowledge_state);
-      const assertion = element("td", "assertion-cell review-only", row.assertion_id);
-      group.setAttribute("headers", `table-${space.slug}-group`);
-      knowledge.setAttribute("headers", `table-${space.slug}-state`);
-      assertion.setAttribute("headers", `table-${space.slug}-assertion`);
-      tableRow.append(degree, group, knowledge, assertion);
-      tableBody.append(tableRow);
-    });
+    table.append(caption, head, body);
+    tableWrap.append(table);
+    content.append(tableWrap);
+    dynamic.replaceChildren(content);
+  }
+
+  function detailsBlock(title, count) {
+    const details = element("details", "detail-section");
+    const summary = element("summary");
+    summary.append(
+      element("span", "detail-title", title),
+      element("span", "detail-count", String(count)),
+    );
+    const content = element("div", "detail-content");
+    details.append(summary, content);
+    return { details, content };
   }
 
   function renderCellDescription(model) {
     const formula = firstRecorded(model.cell_formula, model.cells_formula);
     const degrees = firstRecorded(model.cell_degrees, model.cells);
-    const cells = asArray(degrees).map((cell) => {
-      if (!cell || typeof cell !== "object") return displayValue(cell);
-      const count = firstRecorded(cell.count, cell.rank, 1);
-      const degree = firstRecorded(cell.degree, cell.dimension);
-      return degree === undefined ? displayValue(cell) : `${count} cell${count === 1 ? "" : "s"} in degree ${degree}`;
-    }).join("; ");
+    const cells = asArray(degrees)
+      .map((cell) => {
+        if (!cell || typeof cell !== "object") return displayValue(cell);
+        const count = firstRecorded(cell.count, cell.rank, 1);
+        const degree = firstRecorded(cell.degree, cell.dimension);
+        return degree === undefined
+          ? displayValue(cell)
+          : `${count} cell${count === 1 ? "" : "s"} in degree ${degree}`;
+      })
+      .join("; ");
     if (formula && cells) return `${formula}; materialized cells: ${cells}`;
     return displayValue(firstRecorded(formula, cells || degrees));
   }
@@ -763,12 +1281,24 @@
   function renderModels(space, content) {
     const models = modelRecords(space);
     if (!models.length) {
-      content.append(element("p", "empty-state", "No qualified CW Model record is attached to this snapshot."));
+      content.append(
+        element(
+          "p",
+          "empty-state",
+          "No qualified Model record is attached to this snapshot.",
+        ),
+      );
       return;
     }
     models.forEach((model) => {
-      const card = element("section", "record-card model-card");
-      card.append(element("h5", "record-title", firstRecorded(model.name, model.model_id, model.id, "CW model")));
+      const card = element("section", "record-section");
+      card.append(
+        element(
+          "h3",
+          "record-title",
+          firstRecorded(model.name, model.model_id, model.id, "CW model"),
+        ),
+      );
       const list = element("dl", "record-list");
       appendDefinition(list, "Model ID", firstRecorded(model.model_id, model.id));
       appendDefinition(list, "Kind", humanize(model.kind));
@@ -778,9 +1308,17 @@
       appendDefinition(list, "Attaching map", model.attaching_map);
       appendDefinition(list, "Cellular boundary", model.boundary_formula);
       appendDefinition(list, "Scope", firstRecorded(model.model_scope, model.scope));
-      appendDefinition(list, "Checked artifact", firstRecorded(model.artifact_path, model.artifact));
+      appendDefinition(
+        list,
+        "Checked artifact",
+        firstRecorded(model.artifact_path, model.artifact),
+      );
       appendDefinition(list, "Artifact SHA-256", model.artifact_sha256);
-      appendDefinition(list, "Cellular-chain SHA-256", firstRecorded(model.input_sha256, model.chain_sha256));
+      appendDefinition(
+        list,
+        "Cellular-chain SHA-256",
+        firstRecorded(model.input_sha256, model.chain_sha256),
+      );
       card.append(list);
       content.append(card);
     });
@@ -789,21 +1327,38 @@
   function citationTitle(reference) {
     if (typeof reference === "string") return reference;
     if (!reference || typeof reference !== "object") return "Untitled source";
-    const authors = Array.isArray(reference.authors) ? reference.authors.join(", ") : reference.authors;
-    return [authors, reference.title, reference.year].filter(Boolean).join(". ");
+    const authors = Array.isArray(reference.authors)
+      ? reference.authors.join(", ")
+      : reference.authors;
+    return [authors, reference.title, reference.year]
+      .filter(Boolean)
+      .join(". ");
   }
 
   function renderCitation(reference) {
     const item = element("li", "citation-item");
-    const record = reference && typeof reference === "object" ? reference : {};
-    const title = citationTitle(reference) || firstRecorded(record.citation, record.reference_id, "Untitled source");
-    const link = outboundLink(`${title} ↗`, record.url, `Open source: ${title}`);
+    const record =
+      reference && typeof reference === "object" ? reference : {};
+    const title =
+      citationTitle(reference)
+      || firstRecorded(
+        record.citation,
+        record.reference_id,
+        "Untitled source",
+      );
+    const link = outboundLink(
+      `${title} ↗`,
+      record.url,
+      `Open source: ${title}`,
+    );
     item.append(link ?? element("span", "", title));
     const context = [
       record.source_kind && humanize(record.source_kind),
       record.role && humanize(record.role),
       record.locator,
-    ].filter(Boolean).join(" · ");
+    ]
+      .filter(Boolean)
+      .join(" · ");
     if (context) item.append(element("span", "citation-context", context));
     return item;
   }
@@ -811,42 +1366,79 @@
   function renderEvidence(space, content) {
     const records = evidenceRecords(space);
     if (!records.length) {
-      content.append(element("p", "empty-state", "No Evidence record is attached to this snapshot."));
+      content.append(
+        element(
+          "p",
+          "empty-state",
+          "No Evidence record is attached to this snapshot.",
+        ),
+      );
       return;
     }
     records.forEach((record) => {
-      const card = element("section", "record-card evidence-card");
-      card.append(element("h5", "record-title", firstRecorded(record.id, record.evidence_id, "Evidence record")));
+      const card = element("section", "record-section");
+      card.append(
+        element(
+          "h3",
+          "record-title",
+          firstRecorded(record.id, record.evidence_id, "Evidence record"),
+        ),
+      );
       const list = element("dl", "record-list");
       appendDefinition(list, "Kind", humanize(record.kind));
       appendDefinition(list, "Reliability", humanize(record.reliability));
-      appendDefinition(list, "Release status", humanize(record.release_status ?? snapshot.release_status));
+      appendDefinition(
+        list,
+        "Release status",
+        humanize(record.release_status ?? snapshot.release_status),
+      );
       appendDefinition(list, "Source locator", record.locator);
       appendDefinition(list, "Algorithm", record.algorithm_id);
-      appendDefinition(list, "Input SHA-256", firstRecorded(record.chain_sha256, record.input_sha256));
-      appendDefinition(list, "Representatives", humanize(record.representatives_state));
-      appendDefinition(list, "Induced maps", humanize(record.induced_maps_state));
+      appendDefinition(
+        list,
+        "Input SHA-256",
+        firstRecorded(record.chain_sha256, record.input_sha256),
+      );
+      appendDefinition(
+        list,
+        "Representatives",
+        humanize(record.representatives_state),
+      );
+      appendDefinition(
+        list,
+        "Induced maps",
+        humanize(record.induced_maps_state),
+      );
       card.append(list);
-
-      const sketch = firstRecorded(record.computation_sketch, record.sketch);
+      const sketch = firstRecorded(
+        record.computation_sketch,
+        record.sketch,
+      );
       if (sketch) {
         const sketchBlock = element("div", "computation-sketch");
         sketchBlock.append(
-          element("h6", "", "Computation sketch"),
+          element("h4", "", "Computation sketch"),
           element("p", "", sketch),
-          element("p", "sketch-note", "A mathematical sketch is evidence context; it is not itself a recorded software run."),
+          element(
+            "p",
+            "sketch-note",
+            "A mathematical sketch is evidence context; it is not itself a recorded software run.",
+          ),
         );
         card.append(sketchBlock);
       }
-
       const references = citationRecords(record);
       if (references.length) {
-        const citationHeading = element("h6", "citation-heading", "Sources and locators");
+        const citationHeading = element(
+          "h4",
+          "citation-heading",
+          "Sources and locators",
+        );
         const citations = element("ul", "citation-list");
-        references.forEach((reference) => citations.append(renderCitation(reference)));
+        references.forEach((reference) =>
+          citations.append(renderCitation(reference)),
+        );
         card.append(citationHeading, citations);
-      } else if (record.citation) {
-        card.append(element("p", "citation-fallback", `Citation: ${record.citation}`));
       }
       content.append(card);
     });
@@ -855,22 +1447,38 @@
   function renderComputations(space, content) {
     const computations = computationRecords(space);
     if (!computations.length) {
-      content.append(element(
-        "p",
-        "empty-state",
-        "No recorded Computation run is attached. Any computation sketch appears under Evidence and is not presented as an executed run.",
-      ));
+      content.append(
+        element(
+          "p",
+          "empty-state",
+          "No recorded Computation run is attached. Computation sketches, when present, remain under Evidence.",
+        ),
+      );
       return;
     }
     computations.forEach((record) => {
-      const card = element("section", "record-card computation-card");
-      card.append(element("h5", "record-title", firstRecorded(record.computation_id, record.id, "Recorded computation")));
+      const card = element("section", "record-section");
+      card.append(
+        element(
+          "h3",
+          "record-title",
+          firstRecorded(
+            record.computation_id,
+            record.id,
+            "Recorded computation",
+          ),
+        ),
+      );
       const list = element("dl", "record-list");
       appendDefinition(list, "Status", humanize(record.status));
       appendDefinition(list, "Algorithm", record.algorithm_id);
       appendDefinition(list, "Parameters", record.parameters);
       appendDefinition(list, "Output scope", record.output_scope);
-      appendDefinition(list, "Input SHA-256", firstRecorded(record.input_sha256, record.chain_sha256));
+      appendDefinition(
+        list,
+        "Input SHA-256",
+        firstRecorded(record.input_sha256, record.chain_sha256),
+      );
       card.append(list);
       content.append(card);
     });
@@ -879,640 +1487,581 @@
   function renderRelations(space, content) {
     const relations = asArray(space.relations);
     if (!relations.length) {
-      content.append(element("p", "empty-state", "No relationship records are attached to this snapshot."));
+      content.append(
+        element(
+          "p",
+          "empty-state",
+          "No relationship records are attached to this snapshot.",
+        ),
+      );
       return;
     }
     const list = element("ul", "relation-list");
     relations.forEach((relation) => {
-      const target = spacesById.get(relation.target_id);
       const item = element("li");
-      item.append(document.createTextNode(
-        `${mathematicalName(space.name.plain)} — ${humanize(relation.type)} → `,
-      ));
+      const target = spacesById.get(relation.target_id);
+      item.append(
+        element("span", "relation-kind", humanize(relation.type)),
+        document.createTextNode(" "),
+      );
       if (target) {
-        const link = element("a", "", mathematicalName(target.name.plain));
+        const link = element("a");
         link.href = `#space=${encodeURIComponent(target.slug)}`;
+        link.append(mathName(target, "relation-math"));
         item.append(link);
       } else {
-        item.append(document.createTextNode(relation.target_id ?? "unresolved target"));
+        item.append(
+          document.createTextNode(relation.target_id ?? "unresolved target"),
+        );
       }
       if (relation.detail) {
-        item.append(element("span", "relation-context", relation.detail));
-      }
-      const reviewContext = [
-        relation.id,
-        ...asArray(relation.evidence_ids),
-      ].filter(Boolean).join(" · ");
-      if (reviewContext) {
-        item.append(element("span", "relation-context review-only", reviewContext));
+        item.append(element("p", "relation-context", relation.detail));
       }
       list.append(item);
     });
     content.append(list);
   }
 
-  function buildEntry(space) {
-    const entry = element("article", "atlas-entry");
-    entry.id = `space-${space.slug}`;
-    entry.dataset.spaceId = space.id;
+  function buildProvenanceSummary(space) {
+    const evidence = evidenceRecords(space);
+    const firstEvidence = evidence[0];
+    const firstCitation = citationRecords(firstEvidence)[0];
+    const sourceTitle =
+      typeof firstCitation === "string"
+        ? firstCitation
+        : firstRecorded(
+          firstCitation?.title,
+          firstEvidence?.citation,
+          "Source not recorded",
+        );
+    const summary = element("aside", "provenance-summary");
+    summary.setAttribute("aria-label", "Provenance");
+    const copy = element("div");
+    copy.append(
+      element("p", "section-kicker", "Provenance"),
+      element("strong", "", sourceTitle),
+      element(
+        "span",
+        "",
+        humanize(firstEvidence?.reliability ?? "reliability not recorded"),
+      ),
+    );
+    summary.append(copy, buildKnowl("evidence", "What counts as evidence?"));
+    return summary;
+  }
 
-    const header = element("header", "entry-header");
-    const titleBlock = element("div");
-    titleBlock.append(element("h3", "entry-title", mathematicalName(space.name.plain)));
-    const actions = element("div", "permalink-actions");
-    const permalink = element("a", "permalink", "# permalink");
-    permalink.href = `#space=${encodeURIComponent(space.slug)}`;
-    const copyLink = element("button", "copy-link-button", "Copy link");
-    copyLink.type = "button";
-    copyLink.addEventListener("click", () => copyText(permalinkFor(space), copyLink));
+  function buildClassificationBlock(space) {
+    const block = detailsBlock("Classification & record", 1);
+    block.details.classList.add("classification-disclosure");
+    const list = element("dl", "record-list classification-record-list");
+    appendDefinition(list, "Stable ID", space.id);
+    appendDefinition(list, "Family", familyFor(space)?.label);
+    appendDefinition(list, "Parameters", space.parameters);
+    appendDefinition(
+      list,
+      "Tags",
+      asArray(space.taxonomy?.tags).map(humanize),
+    );
+    appendDefinition(list, "Kind", space.kind);
+    appendDefinition(list, "Data quality", space.data_quality?.state);
+    appendDefinition(
+      list,
+      "Missing required fields",
+      asArray(space.data_quality?.missing_required_fields),
+    );
+    block.content.append(list);
+    const rawActions = element("div", "raw-actions");
+    const copyJson = element("button", "text-button", "Copy JSON");
+    copyJson.type = "button";
+    copyJson.addEventListener("click", () =>
+      copyText(serializedSpaceRecord(space), copyJson),
+    );
+    const downloadJson = element("button", "text-button", "Download JSON");
+    downloadJson.type = "button";
+    downloadJson.addEventListener("click", () => downloadRecord(space));
+    rawActions.append(copyJson, downloadJson);
+    const rawPre = element("pre", "raw-record");
+    rawPre.setAttribute(
+      "aria-label",
+      `Raw JSON record for ${space.name.plain}`,
+    );
+    block.details.addEventListener("toggle", () => {
+      if (block.details.open && !rawPre.textContent) {
+        rawPre.textContent = serializedSpaceRecord(space);
+      }
+    });
+    block.content.append(rawActions, rawPre);
+    return block.details;
+  }
+
+  function buildSpaceView(space) {
+    const family = familyFor(space);
+    const view = element("article", "route-view space-view space-page");
+    view.dataset.spaceId = space.id;
+    view.append(
+      buildBreadcrumbs([
+        { label: "Home", href: "#home" },
+        { label: "Spaces", href: "#spaces" },
+        {
+          label: family?.label ?? "Family",
+          href: family ? `#family-${family.id}` : "#spaces",
+        },
+        { label: space.name.plain },
+      ]),
+    );
+
+    const header = element("header", "space-header");
+    const titleCopy = element("div", "space-title-copy");
+    titleCopy.append(element("p", "page-kicker", family?.label ?? "Space"));
+    const heading = element("h1", "space-title");
+    heading.append(mathName(space, "space-title-math"));
+    titleCopy.append(
+      heading,
+      element("p", "space-plain-name", space.name.plain),
+      element("p", "space-summary", space.summary),
+    );
+    const relevance = element("p", "space-relevance");
+    relevance.append(
+      element("strong", "", "Why it matters. "),
+      document.createTextNode(space.chromatic_relevance ?? ""),
+    );
+    titleCopy.append(relevance);
+    const actions = element("div", "space-actions permalink-actions");
     const feedback = outboundLink(
       "Correct or improve ↗",
       spaceFeedbackUrl(space),
-      `Give feedback on ${mathematicalName(space.name.plain)}`,
+      `Give feedback on ${space.name.plain}`,
     );
-    actions.append(permalink, copyLink);
     if (feedback) {
-      feedback.classList.add("feedback-link");
+      feedback.classList.add("primary-action");
       actions.append(feedback);
     }
-    header.append(titleBlock, actions);
-
-    const meta = element("p", "entry-meta");
-    if (asArray(space.aliases).length) meta.append(element("span", "", `Aliases: ${space.aliases.join(", ")}`));
-    const dimension = spaceDimension(space);
-    const dimensionLabel = isInfiniteFiniteType(space) ? "dimension ∞ · finite type" : `dimension ${dimension ?? "not recorded"}`;
-    meta.append(
-      element("span", "", dimensionLabel),
-      element("span", "review-only", space.id),
-      element("span", "review-only", space.kind),
+    const copyLink = element("button", "text-button", "Copy link");
+    copyLink.type = "button";
+    copyLink.addEventListener("click", () =>
+      copyText(permalinkFor(space), copyLink),
     );
+    const reviewToggle = element(
+      "button",
+      "text-button review-toggle",
+      "Review details",
+    );
+    reviewToggle.type = "button";
+    reviewToggle.setAttribute("aria-pressed", "false");
+    actions.append(copyLink, reviewToggle);
+    header.append(titleCopy, actions);
+    view.append(header);
 
-    const introduction = element("div", "entry-introduction");
-    const summaryText = firstRecorded(space.summary, "No summary is recorded for this space.");
-    introduction.append(element("p", "space-summary", summaryText));
-    const relevance = firstRecorded(space.chromatic_relevance, space.relevance);
-    if (relevance) {
-      const relevanceBlock = element("p", "space-relevance");
-      relevanceBlock.append(element("strong", "", "Why it matters. "), document.createTextNode(relevance));
-      introduction.append(relevanceBlock);
-    }
-    const tags = asArray(space.taxonomy?.tags);
-    if (tags.length) {
-      const tagList = element("ul", "tag-list");
-      tagList.setAttribute("aria-label", "Space tags");
-      tags.forEach((tag) => tagList.append(element("li", "tag", humanize(tag))));
-      introduction.append(tagList);
-    }
-
-    const homology = element("section", "homology-block");
-    const homologyHeading = element("div", "homology-heading");
-    homologyHeading.append(element("h4"), element("span", "homology-convention"));
-    const coverage = element("p", "coverage-note");
-    const table = element("table", "homology-table");
-    const caption = element("caption", "visually-hidden", `Homology groups for ${mathematicalName(space.name.plain)}`);
-    const tableHead = element("thead");
-    const headerRow = element("tr");
-    const headerIds = ["degree", "group", "state", "assertion"]
-      .map((kind) => `table-${space.slug}-${kind}`);
-    ["Degree", "Group", "State", "Assertion ID"].forEach((label, index) => {
-      const headerCell = element("th", index > 1 ? "review-only" : "", label);
-      headerCell.scope = "col";
-      headerCell.id = headerIds[index];
-      headerRow.append(headerCell);
+    const metadata = element("dl", "space-metadata");
+    const metadataItems = [
+      ["Family", family?.label ?? "Not recorded"],
+      ["Dimension", memberMeta(space)],
+      ["Aliases", asArray(space.aliases).join(", ") || "None recorded"],
+    ];
+    metadataItems.forEach(([term, description]) => {
+      const item = element("div");
+      item.append(
+        element("dt", "", term),
+        element("dd", "", description),
+      );
+      metadata.append(item);
     });
-    tableHead.append(headerRow);
-    table.append(caption, tableHead, element("tbody"));
-    homology.append(homologyHeading, coverage, table);
+    view.append(metadata);
 
-    const evidence = evidenceRecords(space);
-    const computations = computationRecords(space);
-    const evidenceSummary = element("p", "evidence-summary");
-    const firstEvidence = evidence[0];
-    const firstCitation = citationRecords(firstEvidence ?? {})[0];
-    const sourceTitle = typeof firstCitation === "string"
-      ? firstCitation
-      : firstRecorded(firstCitation?.title, firstEvidence?.citation, "source not recorded");
-    const reliability = firstEvidence?.reliability ?? "reliability not recorded";
-    const evidenceKind = humanize(firstEvidence?.kind ?? "source not recorded");
-    evidenceSummary.append(
-      element("strong", "", "Provenance"),
-      element("span", "", `Source: ${sourceTitle}`),
-      element("span", "", humanize(reliability)),
-      element("span", "review-only", evidenceKind),
-      element("span", "review-only", `${evidence.length} evidence record${evidence.length === 1 ? "" : "s"}`),
-      element("span", "review-only", `${computations.length} recorded computation run${computations.length === 1 ? "" : "s"}`),
-      element("span", "review-only review-warning", humanize(snapshot.release_status)),
+    const homology = element(
+      "section",
+      "homology-section space-section",
     );
+    const homologyHeading = element(
+      "div",
+      "section-heading homology-section-heading space-section-heading",
+    );
+    const headingCopy = element("div");
+    headingCopy.append(
+      element("p", "section-kicker", "Computed invariant"),
+      element("h2", "", "Homology"),
+    );
+    homologyHeading.append(
+      headingCopy,
+      buildKnowl("ordinary-homology", "Definition"),
+    );
+    homology.append(
+      homologyHeading,
+      buildHomologyControls(space, homology),
+      element("div", "homology-dynamic"),
+    );
+    view.append(homology);
+    renderHomology(space, homology);
 
-    const details = element("div", "entry-details");
+    view.append(buildProvenanceSummary(space));
+    const records = element(
+      "section",
+      "record-details entry-details evidence-details space-section",
+    );
+    records.append(element("h2", "", "Models, evidence, and records"));
+    records.append(
+      element(
+        "p",
+        "review-mode-note review-only",
+        "Review details are open: exact row states and IDs, provenance, computation metadata, data-quality fields, and the full atlas record are visible.",
+      ),
+    );
     const models = modelRecords(space);
     const modelBlock = detailsBlock("Models & constructions", models.length);
+    const modelDefinition = element("p", "detail-definition");
+    modelDefinition.append(buildKnowl("model", "What is a Model?"));
+    modelBlock.content.append(modelDefinition);
     renderModels(space, modelBlock.content);
-
     const relations = asArray(space.relations);
-    const relationBlock = detailsBlock("Relationships", relations.length, true);
+    const relationBlock = detailsBlock("Relationships", relations.length);
     renderRelations(space, relationBlock.content);
-
-    const evidenceBlock = detailsBlock("Evidence, sketches & citations", evidence.length, true);
-    renderEvidence(space, evidenceBlock.content);
-
-    const computationBlock = detailsBlock("Computation runs (recorded)", computations.length, true);
-    renderComputations(space, computationBlock.content);
-
-    const dataQuality = space.data_quality ?? {};
-    const missingFields = asArray(dataQuality.missing_required_fields);
-    const malformedFields = asArray(dataQuality.malformed_fields);
-    const qualityIssueCount = missingFields.length + malformedFields.length;
-    const qualityBlock = detailsBlock("Data quality", qualityIssueCount, true);
-    const qualityList = element("dl", "record-list");
-    appendDefinition(qualityList, "Exporter state", dataQuality.state);
-    appendDefinition(qualityList, "Missing required fields", missingFields.length ? missingFields : "None");
-    appendDefinition(qualityList, "Malformed fields", malformedFields.length ? malformedFields : "None");
-    qualityBlock.content.append(qualityList);
-
-    const rawBlock = detailsBlock("Raw record", 1, true);
-    const rawActions = element("div", "raw-actions");
-    const copyJson = element("button", "copy-button", "Copy JSON");
-    copyJson.type = "button";
-    copyJson.addEventListener("click", () => copyText(JSON.stringify(space.raw, null, 2), copyJson));
-    const downloadJson = element("button", "download-button", "Download JSON");
-    downloadJson.type = "button";
-    downloadJson.addEventListener("click", () => downloadRecord(space));
-    const report = outboundLink(
-      "Open structured feedback form ↗",
-      spaceFeedbackUrl(space),
-      `Give feedback on ${mathematicalName(space.name.plain)}`,
+    const evidence = evidenceRecords(space);
+    const evidenceBlock = detailsBlock(
+      "Evidence, sketches & citations",
+      evidence.length,
     );
-    rawActions.append(copyJson, downloadJson);
-    if (report) {
-      report.classList.add("download-button");
-      rawActions.append(report);
-    }
-    const rawPre = element("pre");
-    rawPre.setAttribute("aria-label", `Raw JSON record for ${mathematicalName(space.name.plain)}`);
-    rawBlock.details.addEventListener("toggle", () => {
-      if (rawBlock.details.open && !rawPre.textContent) rawPre.textContent = JSON.stringify(space.raw, null, 2);
-    });
-    rawBlock.content.append(rawActions, rawPre);
-
-    details.append(
+    renderEvidence(space, evidenceBlock.content);
+    const computations = computationRecords(space);
+    const computationBlock = detailsBlock(
+      "Computation runs",
+      computations.length,
+    );
+    renderComputations(space, computationBlock.content);
+    const qualityBlock = detailsBlock(
+      "Data quality",
+      asArray(space.data_quality?.missing_required_fields).length,
+    );
+    const qualityList = element("dl", "record-list");
+    appendDefinition(
+      qualityList,
+      "Exporter state",
+      space.data_quality?.state,
+    );
+    appendDefinition(
+      qualityList,
+      "Missing required fields",
+      asArray(space.data_quality?.missing_required_fields),
+    );
+    appendDefinition(
+      qualityList,
+      "Malformed fields",
+      asArray(space.data_quality?.malformed_fields),
+    );
+    qualityBlock.content.append(qualityList);
+    records.append(
       modelBlock.details,
       relationBlock.details,
       evidenceBlock.details,
       computationBlock.details,
       qualityBlock.details,
-      rawBlock.details,
+      buildClassificationBlock(space),
     );
-    entry.append(header, meta, introduction, homology, evidenceSummary, details);
-    renderHomology(space, entry);
-    return entry;
-  }
-
-  function buildSectionHeading(section) {
-    const heading = element("div", "section-heading");
-    const title = element("h2");
-    title.id = `family-heading-${section.id}`;
-    title.append(
-      element("span", "section-kicker", "Family"),
-      document.createTextNode(section.label),
-      element("span", "section-count", String(asArray(section.conceptual_space_ids).length)),
-    );
-    const feedback = outboundLink(
-      "Family feedback ↗",
-      familyFeedbackUrl(section),
-      `Give feedback on the ${section.label} family`,
-    );
-    heading.append(title);
-    if (feedback) {
-      feedback.classList.add("family-feedback-link");
-      heading.append(feedback);
-    }
-    return heading;
-  }
-
-  function buildAtlas() {
-    sections.forEach((section) => {
-      const sectionNode = element("section", "atlas-section");
-      sectionNode.id = `family-${section.id}`;
-      sectionNode.dataset.sectionId = section.id;
-      sectionNode.setAttribute("aria-labelledby", `family-heading-${section.id}`);
-      sectionNode.append(buildSectionHeading(section));
-      const narrative = element("div", "family-narrative");
-      appendFamilyNarratives(
-        narrative,
-        section,
-        "family-summary",
-        "family-relevance",
+    view.append(records);
+    reviewToggle.addEventListener("click", () => {
+      const enabled = reviewToggle.getAttribute("aria-pressed") !== "true";
+      reviewToggle.setAttribute("aria-pressed", String(enabled));
+      reviewToggle.textContent = enabled ? "Hide review details" : "Review details";
+      view.classList.toggle("review-mode", enabled);
+      records.querySelectorAll(":scope > details").forEach((details) => {
+        details.open = enabled;
+      });
+      announce(
+        enabled
+          ? `Review details opened for ${space.name.plain}.`
+          : `Review details closed for ${space.name.plain}.`,
       );
-      if (narrative.childElementCount) sectionNode.append(narrative);
-      const familyMembers = buildFamilyMembers(section);
-      if (familyMembers) sectionNode.append(familyMembers);
-      asArray(section.conceptual_space_ids).forEach((id) => {
-        const space = spacesById.get(id);
-        if (!space) return;
-        const entry = buildEntry(space);
-        entriesById.set(id, entry);
-        sectionNode.append(entry);
-      });
-      sectionsById.set(section.id, sectionNode);
-      atlasDocument.append(sectionNode);
     });
 
-    buildFamilyOutline();
-
-    if (!coefficientSwitcher.querySelector("legend")) {
-      coefficientSwitcher.prepend(element("legend", "visually-hidden", "Coefficients"));
-    }
-    supportedCoefficients.forEach((coefficient, index) => {
-      const label = element("label", "coefficient-option");
-      const input = element("input");
-      input.type = "radio";
-      input.name = "coefficient";
-      input.value = coefficient;
-      input.checked = index === 0;
-      label.append(input, element("span", "", coefficientDisplay(coefficient)));
-      coefficientSwitcher.append(label);
-    });
-    state.coefficient = supportedCoefficients[0];
-
-    const dimensions = [...new Set(conceptualSpaces.map(spaceDimension).filter(Number.isFinite))]
-      .sort((left, right) => left - right);
-    dimensions.forEach((dimension) => {
-      const option = element("option", "", String(dimension));
-      option.value = String(dimension);
-      dimensionFilter.append(option);
-    });
-    if (conceptualSpaces.some(isInfiniteFiniteType)) {
-      const option = element("option", "", "∞ / finite type");
-      option.value = "finite-type";
-      dimensionFilter.append(option);
-    }
-    const reliabilityStates = [...new Set(
-      conceptualSpaces.flatMap((space) => evidenceRecords(space).map((record) => record.reliability))
-        .filter((value) => typeof value === "string" && value),
-    )].sort((left, right) => humanize(left).localeCompare(humanize(right)));
-    reliabilityStates.forEach((reliability) => {
-      const option = element("option", "", humanize(reliability));
-      option.value = reliability;
-      reliabilityFilter.append(option);
-    });
-
-    document.getElementById("conceptual-space-count").textContent = String(snapshot.conceptual_space_count ?? conceptualSpaces.length);
-    conceptualFamilyCount.textContent = String(sections.length);
-    familyCount.textContent = String(sections.length);
-    familySpaceCount.textContent = String(conceptualSpaces.length);
-    document.getElementById("snapshot-name").textContent = snapshotReference();
-    const generatedAt = document.getElementById("generated-at");
-    if (snapshot.generated_at) {
-      generatedAt.dateTime = snapshot.generated_at;
-      generatedAt.textContent = snapshot.generated_at.replace("T", " ").replace("Z", " UTC");
-    } else {
-      generatedAt.textContent = "not recorded";
-    }
-    document.getElementById("release-status").textContent = humanize(snapshot.release_status);
-    const scopeNote = firstRecorded(snapshot.scope_note, snapshot.scope);
-    const eyebrow = document.getElementById("atlas-eyebrow");
-    eyebrow.textContent = `Homology DB · ${humanize(snapshot.release_status)}`;
-    requestSpace.href = issueUrl(
-      "space-request.yml",
-      `[Space request] requested from ${snapshotIssueReference()}`,
+    const feedbackBand = element(
+      "aside",
+      "feedback-band feedback-section",
     );
-    requestSpace.setAttribute("aria-label", "Request another space (opens in a new tab)");
-
-    const snapshotDetail = document.getElementById("snapshot-detail");
-    const detailList = element("dl");
-    appendDefinition(detailList, "Snapshot ID", snapshot.snapshot_id);
-    appendDefinition(detailList, "Scope", scopeNote);
-    appendDefinition(detailList, "Read model", snapshot.schema_version);
-    appendDefinition(detailList, "Generated", snapshot.generated_at);
-    appendDefinition(detailList, "Materialized through", snapshot.materialized_through_degree);
-    appendDefinition(detailList, "Database bytes", Number.isFinite(snapshot.source_database_bytes) ? snapshot.source_database_bytes.toLocaleString() : undefined);
-    appendDefinition(detailList, "Database SHA-256", snapshot.source_database_sha256);
-    appendDefinition(detailList, "Source commit", snapshot.source_commit);
-    appendDefinition(detailList, "Source input SHA-256", snapshot.source_inputs_sha256);
-    appendDefinition(detailList, "Source tree", snapshot.source_tree_state);
-    appendDefinition(detailList, "Release state", humanize(snapshot.release_status));
-    snapshotDetail.append(detailList);
-  }
-
-  function hasIntegralTorsion(space) {
-    return asArray(space.homology).some((row) =>
-      row.coefficient_ring === "Z" && !row.reduced && row.group.state === "exact" && row.group.torsion_orders?.length
+    const feedbackHeading = element(
+      "h2",
+      "",
+      `Know something better about ${space.name.plain}?`,
     );
-  }
-
-  function updateControlSummary() {
-    const count = [
-      state.family,
-      state.dimension,
-      state.reliability,
-      state.reduced,
-      state.torsion,
-    ].filter(Boolean).length;
-    activeFilterCount.textContent = String(count);
-    activeFilterCount.setAttribute(
-      "aria-label",
-      count === 0 ? "No active filters" : `${count} active filter${count === 1 ? "" : "s"}`,
+    feedbackHeading.id = `space-feedback-title-${space.slug}`;
+    feedbackBand.setAttribute("aria-labelledby", feedbackHeading.id);
+    feedbackBand.append(
+      feedbackHeading,
+      element(
+        "p",
+        "",
+        "Report a correctness issue, share a stronger computation or model, or request a related space.",
+      ),
     );
-    const defaultCoefficient = supportedCoefficients[0];
-    clearFilters.hidden = !(
-      state.query
-      || state.coefficient !== defaultCoefficient
-      || count > 0
+    const feedbackActions = element("div", "feedback-actions");
+    const spaceFeedback = outboundLink(
+      "Submit space feedback ↗",
+      spaceFeedbackUrl(space),
+      `Open feedback form for ${space.name.plain}`,
     );
-  }
-
-  function updateNavigationCurrent(familyId = currentFamilyId, spaceId = currentSpaceId) {
-    currentFamilyId = familyId;
-    currentSpaceId = spaceId;
-    familyNavigationLinks.forEach((links, id) => {
-      links.forEach((link) => {
-        if (id === familyId) link.setAttribute("aria-current", "location");
-        else link.removeAttribute("aria-current");
-      });
-    });
-    spaceNavigationLinks.forEach((links, id) => {
-      links.forEach((link) => {
-        if (id === spaceId) link.setAttribute("aria-current", "location");
-        else link.removeAttribute("aria-current");
-      });
-    });
-    familyOutlineNodes.forEach(({ group, summary }, id) => {
-      group.classList.toggle("is-current", id === familyId);
-      if (id === familyId) summary.setAttribute("aria-current", "location");
-      else summary.removeAttribute("aria-current");
-    });
-  }
-
-  function startNavigationObserver() {
-    if (!("IntersectionObserver" in window)) return;
-    const intersecting = new Set();
-    navigationObserver = new IntersectionObserver((records) => {
-      records.forEach((record) => {
-        if (record.isIntersecting) intersecting.add(record.target);
-        else intersecting.delete(record.target);
-      });
-      const targetLine = window.innerHeight * 0.22;
-      const nearest = (targets) => targets
-        .filter((target) => !target.hidden)
-        .sort((left, right) =>
-          Math.abs(left.getBoundingClientRect().top - targetLine)
-          - Math.abs(right.getBoundingClientRect().top - targetLine)
-        )[0];
-      const visibleEntries = [...intersecting].filter((target) => target.classList.contains("atlas-entry"));
-      const currentEntry = nearest(visibleEntries);
-      if (currentEntry) {
-        const space = spacesById.get(currentEntry.dataset.spaceId);
-        updateNavigationCurrent(space?.taxonomy?.family ?? null, space?.id ?? null);
-        return;
-      }
-      const visibleSections = [...intersecting].filter((target) => target.classList.contains("atlas-section"));
-      const currentSection = nearest(visibleSections);
-      if (currentSection) updateNavigationCurrent(currentSection.dataset.sectionId, null);
-    }, {
-      rootMargin: "-8% 0px -62% 0px",
-      threshold: 0,
-    });
-    sectionsById.forEach((section) => navigationObserver.observe(section));
-    entriesById.forEach((entry) => navigationObserver.observe(entry));
-  }
-
-  function renderIndex(visibleWithRank) {
-    const visibleIds = new Set(visibleWithRank.map(({ space }) => space.id));
-    const searchActive = Boolean(state.query.trim());
-    let visibleFamilyCount = 0;
-    familyOutlineNodes.forEach((nodes, familyId) => {
-      const section = sections.find((candidate) => candidate.id === familyId);
-      const visibleCount = asArray(section?.conceptual_space_ids)
-        .filter((id) => visibleIds.has(id)).length;
-      if (visibleCount > 0) visibleFamilyCount += 1;
-      nodes.count.textContent = `${visibleCount} / ${nodes.total}`;
-      nodes.count.setAttribute(
-        "aria-label",
-        `${visibleCount} of ${nodes.total} spaces visible`,
-      );
-      nodes.group.classList.toggle("is-empty", visibleCount === 0);
-      nodes.group.classList.toggle("is-focused", state.family === familyId);
-      nodes.focus.setAttribute("aria-pressed", String(state.family === familyId));
-      nodes.focus.textContent = state.family === familyId
-        ? "Show all families"
-        : "Show only this family";
-      nodes.memberItems.forEach((item, id) => {
-        item.hidden = !visibleIds.has(id);
-      });
-      if (searchActive) nodes.group.open = visibleCount > 0;
-      else if (state.family === familyId) nodes.group.open = true;
-    });
-    if (alphabeticalOutlineNodes) {
-      const visibleCount = visibleIds.size;
-      alphabeticalOutlineNodes.count.textContent = `${visibleCount} / ${alphabeticalOutlineNodes.total}`;
-      alphabeticalOutlineNodes.count.setAttribute(
-        "aria-label",
-        `${visibleCount} of ${alphabeticalOutlineNodes.total} spaces visible`,
-      );
-      alphabeticalOutlineNodes.memberItems.forEach((item, id) => {
-        item.hidden = !visibleIds.has(id);
-      });
-    }
-    familyCount.textContent = visibleFamilyCount === sections.length
-      ? String(sections.length)
-      : `${visibleFamilyCount} / ${sections.length}`;
-    familySpaceCount.textContent = visibleWithRank.length === conceptualSpaces.length
-      ? String(conceptualSpaces.length)
-      : `${visibleWithRank.length} / ${conceptualSpaces.length}`;
-    if (!currentFamilyId || sectionsById.get(currentFamilyId)?.hidden) {
-      currentFamilyId = sections.find((section) => !sectionsById.get(section.id)?.hidden)?.id ?? null;
-      currentSpaceId = null;
-    }
-    updateNavigationCurrent();
-  }
-
-  function updateAtlas() {
-    const eligibleWithRank = conceptualSpaces.map((space) => ({
-      space,
-      rank: searchRank(space, state.query),
-    })).filter(({ space, rank }) => {
-      if (!Number.isFinite(rank)) return false;
-      if (state.family && space.taxonomy.family !== state.family) return false;
-      if (state.dimension === "finite-type" && !isInfiniteFiniteType(space)) return false;
-      if (state.dimension !== "" && state.dimension !== "finite-type" && String(spaceDimension(space)) !== state.dimension) return false;
-      if (state.reliability && !evidenceRecords(space).some((record) => record.reliability === state.reliability)) return false;
-      if (state.torsion && !hasIntegralTorsion(space)) return false;
-      return true;
-    });
-    const bestRank = state.query.trim() && eligibleWithRank.length
-      ? Math.min(...eligibleWithRank.map(({ rank }) => rank))
+    const familyFeedback = family
+      ? outboundLink(
+        "Comment on the family ↗",
+        familyFeedbackUrl(family),
+        `Open feedback form for ${family.label}`,
+      )
       : null;
-    const visibleWithRank = bestRank === null
-      ? eligibleWithRank
-      : eligibleWithRank.filter(({ rank }) => rank === bestRank);
-    state.visible = visibleWithRank
-      .slice()
-      .sort((left, right) => left.rank - right.rank || left.space.name.plain.localeCompare(right.space.name.plain))
-      .map(({ space }) => space.id);
+    const request = outboundLink(
+      "Request another space ↗",
+      requestSpaceUrl(),
+      "Request another space",
+    );
+    [spaceFeedback, familyFeedback, request].filter(Boolean).forEach((link) => {
+      feedbackActions.append(link);
+    });
+    feedbackBand.append(feedbackActions);
+    view.append(feedbackBand);
+    return view;
+  }
 
-    const visibleIds = new Set(state.visible);
-    entriesById.forEach((entry, id) => {
-      entry.hidden = !visibleIds.has(id);
-      renderHomology(spacesById.get(id), entry);
+  function buildNotFoundView(route) {
+    const view = element("article", "route-view not-found-view");
+    view.append(
+      buildBreadcrumbs([
+        { label: "Home", href: "#home" },
+        { label: "Page not found" },
+      ]),
+      pageHeader(
+        "Page not found",
+        "Unknown atlas address",
+        `The atlas does not contain a page for “${route.requested ?? window.location.hash}”.`,
+      ),
+    );
+    const actions = element("div", "hero-actions");
+    const home = element("a", "primary-action", "Go home");
+    home.href = "#home";
+    const spaces = element("a", "secondary-action", "Browse spaces");
+    spaces.href = "#spaces";
+    actions.append(home, spaces);
+    view.append(actions);
+    return view;
+  }
+
+  function parseRoute(hash = window.location.hash) {
+    if (!hash || hash === "#" || hash === "#home") {
+      return { kind: "home" };
+    }
+    if (hash === "#spaces" || hash === "#atlas-document") {
+      return { kind: "spaces" };
+    }
+    const familyMatch = hash.match(/^#family-(.+)$/);
+    if (familyMatch) {
+      try {
+        const id = decodeURIComponent(familyMatch[1]);
+        const section = familiesById.get(id);
+        return section
+          ? { kind: "family", section }
+          : { kind: "not-found", requested: hash };
+      } catch (_error) {
+        return { kind: "not-found", requested: hash };
+      }
+    }
+    const spaceMatch = hash.match(/^#space=(.+)$/);
+    if (spaceMatch) {
+      try {
+        const slug = decodeURIComponent(spaceMatch[1]);
+        const space = spacesBySlug.get(slug);
+        return space
+          ? { kind: "space", space }
+          : { kind: "not-found", requested: hash };
+      } catch (_error) {
+        return { kind: "not-found", requested: hash };
+      }
+    }
+    return { kind: "not-found", requested: hash };
+  }
+
+  function routeTitle(route) {
+    if (route.kind === "home") return "Homology Atlas";
+    if (route.kind === "spaces") return "Spaces · Homology Atlas";
+    if (route.kind === "family") {
+      return `${route.section.label} · Homology Atlas`;
+    }
+    if (route.kind === "space") {
+      return `${route.space.name.plain} · Homology Atlas`;
+    }
+    return "Page not found · Homology Atlas";
+  }
+
+  function updateNavigationCurrent(route) {
+    [navHome, navSpaces, ...familyNavigationLinks.values()].forEach((link) => {
+      link.removeAttribute("aria-current");
     });
-    document.querySelectorAll(".family-chapter-member[data-space-id]").forEach((item) => {
-      item.hidden = !visibleIds.has(item.dataset.spaceId);
-    });
+    if (route.kind === "home") {
+      navHome.setAttribute("aria-current", "page");
+    }
+    if (route.kind === "spaces") {
+      navSpaces.setAttribute("aria-current", "page");
+    }
+    if (route.kind === "family") {
+      navSpaces.setAttribute("aria-current", "location");
+      familyNavigationLinks
+        .get(route.section.id)
+        ?.setAttribute("aria-current", "page");
+    }
+    if (route.kind === "space") {
+      navSpaces.setAttribute("aria-current", "location");
+      familyNavigationLinks
+        .get(route.space.taxonomy?.family)
+        ?.setAttribute("aria-current", "location");
+    }
+  }
+
+  function focusRouteHeading() {
+    const heading = atlasDocument.querySelector("h1");
+    if (!heading) {
+      atlasDocument.focus();
+      return;
+    }
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+  }
+
+  function renderRoute({ initial = false } = {}) {
+    const route = parseRoute();
+    state.route = route;
+    let view;
+    if (route.kind === "home") view = buildHomeView();
+    else if (route.kind === "spaces") view = buildSpacesView();
+    else if (route.kind === "family") view = buildFamilyView(route.section);
+    else if (route.kind === "space") view = buildSpaceView(route.space);
+    else view = buildNotFoundView(route);
+
+    atlasDocument.replaceChildren(view);
+    document.title = routeTitle(route);
+    updateNavigationCurrent(route);
+    closeIndex(false);
+    if (!initial) {
+      window.scrollTo(0, 0);
+      window.requestAnimationFrame(focusRouteHeading);
+      announce(
+        route.kind === "space"
+          ? `${route.space.name.plain} page`
+          : `${view.querySelector("h1")?.textContent ?? "Atlas"} page`,
+      );
+    }
+  }
+
+  function buildFamilyNavigation() {
+    familyOutline.replaceChildren();
+    const list = element("ol", "family-nav-list");
     sections.forEach((section) => {
-      const memberIds = asArray(section.conceptual_space_ids);
-      const visibleCount = memberIds.filter((id) => visibleIds.has(id)).length;
-      const sectionNode = sectionsById.get(section.id);
-      sectionNode.hidden = visibleCount === 0;
-      sectionNode.querySelector(".section-count").textContent = visibleCount === memberIds.length
-        ? String(memberIds.length)
-        : `${visibleCount} / ${memberIds.length}`;
+      const item = element("li");
+      const link = element("a", "family-nav-link");
+      link.href = `#family-${section.id}`;
+      link.append(
+        element("span", "family-nav-label", section.label),
+        element(
+          "span",
+          "family-nav-count",
+          String(asArray(section.conceptual_space_ids).length),
+        ),
+      );
+      familyNavigationLinks.set(section.id, link);
+      item.append(link);
+      list.append(item);
     });
-    document.querySelectorAll("details[data-review-detail]").forEach((details) => {
-      details.open = state.review && !details.closest("article").hidden;
+    familyOutline.append(list);
+  }
+
+  function buildSnapshotDetail() {
+    snapshotDetail.replaceChildren();
+    const summary = element(
+      "p",
+      "",
+      snapshot.scope_note ?? "No scope note is recorded.",
+    );
+    const facts = element("dl", "snapshot-facts");
+    [
+      ["Snapshot", snapshot.snapshot_name],
+      ["Snapshot ID", snapshot.snapshot_id],
+      ["Generated", snapshot.generated_at],
+      ["Status", humanize(snapshot.release_status)],
+      ["Spaces", snapshot.conceptual_space_count],
+      ["Models", snapshot.model_count],
+      ["Evidence records", snapshot.evidence_count],
+      ["Source commit", snapshot.source_commit],
+    ].forEach(([term, value]) => appendDefinition(facts, term, value));
+    snapshotDetail.append(summary, facts);
+  }
+
+  function focusableWithin(container) {
+    return [
+      ...container.querySelectorAll(
+        'a[href], button:not([disabled]), summary, input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ].filter((node) => {
+      if (node.closest("[hidden]") || node.closest("[inert]")) return false;
+      if (!node.getClientRects().length) return false;
+      const style = window.getComputedStyle(node);
+      return style.visibility !== "hidden" && style.display !== "none";
     });
-    resultStatus.textContent = `${state.visible.length} of ${snapshot.conceptual_space_count ?? conceptualSpaces.length}`;
-    updateControlSummary();
-    renderIndex(visibleWithRank);
-  }
-
-  function setSelected(id, shouldScroll = true) {
-    selectionTimers.forEach((timer) => window.clearTimeout(timer));
-    selectionTimers.clear();
-    entriesById.forEach((entry) => entry.classList.remove("is-selected"));
-    state.selectedId = id;
-    if (!id) {
-      updateNavigationCurrent(currentFamilyId, null);
-      return;
-    }
-    const entry = entriesById.get(id);
-    const space = spacesById.get(id);
-    updateNavigationCurrent(space?.taxonomy?.family ?? null, id);
-    if (entry && !entry.hidden) {
-      entry.classList.add("is-selected");
-      if (shouldScroll) entry.scrollIntoView({ block: "start" });
-      const timer = window.setTimeout(() => entry.classList.remove("is-selected"), 1800);
-      selectionTimers.set(id, timer);
-    }
-  }
-
-  function spaceFromHash() {
-    const match = window.location.hash.match(/^#space=(.+)$/);
-    if (!match) return null;
-    let slug;
-    try { slug = decodeURIComponent(match[1]); } catch (_error) { return null; }
-    return conceptualSpaces.find((space) => space.slug === slug) ?? null;
-  }
-
-  function familyFromHash() {
-    const match = window.location.hash.match(/^#family-(.+)$/);
-    if (!match) return null;
-    let id;
-    try { id = decodeURIComponent(match[1]); } catch (_error) { return null; }
-    return sections.find((section) => section.id === id) ?? null;
-  }
-
-  function clearVisibilityFilters({ refresh = true } = {}) {
-    searchInput.value = "";
-    dimensionFilter.value = "";
-    reliabilityFilter.value = "";
-    torsionFilter.checked = false;
-    Object.assign(state, {
-      query: "",
-      family: "",
-      dimension: "",
-      reliability: "",
-      torsion: false,
-    });
-    if (refresh) updateAtlas();
-  }
-
-  function handleHash() {
-    const space = spaceFromHash();
-    if (space) {
-      if (entriesById.get(space.id)?.hidden) clearVisibilityFilters();
-      window.requestAnimationFrame(() => setSelected(space.id));
-      return;
-    }
-    const family = familyFromHash();
-    if (!family) return;
-    if (sectionsById.get(family.id)?.hidden) clearVisibilityFilters();
-    familyOutlineNodes.get(family.id).group.open = true;
-    updateNavigationCurrent(family.id, null);
-    window.requestAnimationFrame(() => {
-      const destination = sectionsById.get(family.id);
-      destination?.scrollIntoView({ block: "start" });
-    });
-  }
-
-  function navigateTo(id) {
-    const space = spacesById.get(id);
-    if (!space) return;
-    window.location.hash = `space=${encodeURIComponent(space.slug)}`;
-    if (spaceFromHash()?.id === id) setSelected(id);
   }
 
   function syncIndexAccessibility() {
-    const focusWasInIndex = atlasIndex.contains(document.activeElement);
+    const open = atlasIndex.classList.contains("is-open");
     if (!narrowIndexMedia.matches) {
       atlasIndex.classList.remove("is-open");
-      atlasIndex.inert = false;
+      atlasIndex.removeAttribute("inert");
       atlasIndex.removeAttribute("aria-hidden");
       atlasIndex.removeAttribute("aria-modal");
       atlasIndex.removeAttribute("role");
-      backgroundInertTargets.forEach((target) => { target.inert = false; });
+      backgroundInertTargets.forEach((target) => {
+        target.removeAttribute("inert");
+      });
       indexBackdrop.hidden = true;
       document.body.classList.remove("index-open");
       familyToggle.setAttribute("aria-expanded", "false");
-      if (document.activeElement === indexClose) {
-        const currentSummary = familyOutlineNodes.get(currentFamilyId)?.summary;
-        (currentSummary ?? familyOutline.querySelector("summary"))?.focus();
-      }
       return;
     }
-    const open = atlasIndex.classList.contains("is-open");
-    atlasIndex.inert = !open;
+    if (!open && snapshotAbout.open) {
+      snapshotAbout.open = false;
+      aboutToggle.setAttribute("aria-expanded", "false");
+    }
+    if (open) {
+      atlasIndex.removeAttribute("inert");
+    } else {
+      atlasIndex.setAttribute("inert", "");
+    }
     atlasIndex.setAttribute("aria-hidden", String(!open));
     atlasIndex.setAttribute("role", "dialog");
     atlasIndex.setAttribute("aria-modal", String(open));
-    backgroundInertTargets.forEach((target) => { target.inert = open; });
+    backgroundInertTargets.forEach((target) => {
+      if (open) target.setAttribute("inert", "");
+      else target.removeAttribute("inert");
+    });
     indexBackdrop.hidden = !open;
     document.body.classList.toggle("index-open", open);
     familyToggle.setAttribute("aria-expanded", String(open));
-    if (!open && focusWasInIndex) familyToggle.focus();
   }
 
-  function openIndex({ focusClose = true, returnFocus = familyToggle } = {}) {
+  function openIndex({ returnFocus = familyToggle, focusClose = true } = {}) {
     if (!narrowIndexMedia.matches) return;
     indexReturnFocus = returnFocus;
     atlasIndex.classList.add("is-open");
     syncIndexAccessibility();
-    window.requestAnimationFrame(() => {
-      const activeFamily = state.family
-        || (state.query && sections.find((section) => !familyOutlineNodes.get(section.id)?.group.classList.contains("is-empty"))?.id)
-        || currentFamilyId;
-      const activeGroup = familyOutlineNodes.get(activeFamily)?.group;
-      if (activeGroup && (state.query || state.family)) {
-        const innerBox = indexInner.getBoundingClientRect();
-        const groupBox = activeGroup.getBoundingClientRect();
-        const headingHeight = atlasIndex.querySelector(".index-heading")?.getBoundingClientRect().height ?? 0;
-        indexInner.scrollTop += groupBox.top - innerBox.top - headingHeight - 8;
-      }
-      if (focusClose) indexClose.focus();
-    });
+    if (focusClose) window.requestAnimationFrame(() => indexClose.focus());
   }
 
   function closeIndex(returnFocus = false) {
+    const wasOpen = atlasIndex.classList.contains("is-open");
     atlasIndex.classList.remove("is-open");
-    if (narrowIndexMedia.matches) snapshotAbout.open = false;
+    if (narrowIndexMedia.matches && snapshotAbout.open) {
+      snapshotAbout.open = false;
+      aboutToggle.setAttribute("aria-expanded", "false");
+    }
     syncIndexAccessibility();
-    if (returnFocus && narrowIndexMedia.matches) indexReturnFocus.focus();
-  }
-
-  function focusableWithin(container) {
-    return [...container.querySelectorAll(
-      'a[href], button:not([disabled]), summary, input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    )].filter((node) => !node.closest("[hidden]") && !node.closest("[inert]"));
+    if (
+      returnFocus
+      && wasOpen
+      && narrowIndexMedia.matches
+      && indexReturnFocus?.isConnected
+    ) {
+      indexReturnFocus.focus();
+    }
   }
 
   function trapIndexFocus(event) {
@@ -1520,185 +2069,103 @@
       event.key !== "Tab"
       || !narrowIndexMedia.matches
       || !atlasIndex.classList.contains("is-open")
-    ) return;
+    ) {
+      return;
+    }
     const focusable = focusableWithin(atlasIndex);
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
-    if (event.shiftKey && (document.activeElement === first || !atlasIndex.contains(document.activeElement))) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && (document.activeElement === last || !atlasIndex.contains(document.activeElement))) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
-  function syncFilterAccessibility({ focusPanel = false } = {}) {
-    const modal = narrowFilterMedia.matches && filterDisclosure.open;
-    if (modal) {
-      filterPanel.setAttribute("role", "dialog");
-      filterPanel.setAttribute("aria-modal", "true");
-      filterPanel.setAttribute("aria-labelledby", "filter-panel-title");
-    } else {
-      filterPanel.removeAttribute("role");
-      filterPanel.removeAttribute("aria-modal");
-      filterPanel.removeAttribute("aria-labelledby");
-    }
-    filterBackgroundInertTargets.forEach((target) => { target.inert = modal; });
-    document.body.classList.toggle("filter-open", modal);
-    if (modal && focusPanel) {
-      window.requestAnimationFrame(() => filterClose.focus());
-    }
-  }
-
-  function closeFilter(returnFocus = false) {
-    const focusWasInPanel = filterPanel.contains(document.activeElement);
-    filterDisclosure.open = false;
-    syncFilterAccessibility();
-    if (returnFocus || focusWasInPanel) filterSummary.focus();
-  }
-
-  function trapFilterFocus(event) {
     if (
-      event.key !== "Tab"
-      || !narrowFilterMedia.matches
-      || !filterDisclosure.open
-    ) return;
-    const focusable = focusableWithin(filterPanel);
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && (document.activeElement === first || !filterPanel.contains(document.activeElement))) {
+      event.shiftKey
+      && (document.activeElement === first
+        || !atlasIndex.contains(document.activeElement))
+    ) {
       event.preventDefault();
       last.focus();
-    } else if (!event.shiftKey && (document.activeElement === last || !filterPanel.contains(document.activeElement))) {
+    } else if (
+      !event.shiftKey
+      && (document.activeElement === last
+        || !atlasIndex.contains(document.activeElement))
+    ) {
       event.preventDefault();
       first.focus();
     }
   }
 
-  function clearAllFilters() {
-    clearVisibilityFilters({ refresh: false });
-    const defaultCoefficient = supportedCoefficients[0];
-    coefficientSwitcher.querySelectorAll('input[name="coefficient"]').forEach((input) => {
-      input.checked = input.value === defaultCoefficient;
-    });
-    reducedFilter.checked = false;
-    Object.assign(state, {
-      coefficient: defaultCoefficient,
-      reduced: false,
-    });
-    closeFilter();
-    updateAtlas();
-    searchInput.focus();
-  }
-
-  atlasControls.addEventListener("submit", (event) => event.preventDefault());
-  searchInput.addEventListener("input", () => { state.query = searchInput.value; updateAtlas(); });
-  searchInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && state.visible.length) {
-      event.preventDefault();
-      navigateTo(state.visible[0]);
-    }
-  });
-  coefficientSwitcher.addEventListener("change", (event) => {
-    if (!event.target.matches('input[name="coefficient"]')) return;
-    state.coefficient = event.target.value;
-    updateAtlas();
-  });
-  reducedFilter.addEventListener("change", () => { state.reduced = reducedFilter.checked; updateAtlas(); });
-  dimensionFilter.addEventListener("change", () => { state.dimension = dimensionFilter.value; updateAtlas(); });
-  reliabilityFilter.addEventListener("change", () => { state.reliability = reliabilityFilter.value; updateAtlas(); });
-  torsionFilter.addEventListener("change", () => { state.torsion = torsionFilter.checked; updateAtlas(); });
-  themeMenu.addEventListener("change", (event) => {
-    if (!event.target.matches('input[name="theme-preference"]')) return;
-    applyThemePreference(event.target.value);
-    themeMenu.open = false;
-    themeSummary.focus();
-  });
-  clearFilters.addEventListener("click", clearAllFilters);
-  filterClose.addEventListener("click", () => closeFilter(true));
-  filterDisclosure.addEventListener("toggle", () => {
-    if (filterDisclosure.open) themeMenu.open = false;
-    syncFilterAccessibility({
-      focusPanel: filterDisclosure.open && narrowFilterMedia.matches,
-    });
-  });
-  familyToggle.addEventListener("click", () => {
-    if (atlasIndex.classList.contains("is-open")) closeIndex(true);
-    else openIndex();
-  });
-  indexClose.addEventListener("click", () => closeIndex(true));
-  indexBackdrop.addEventListener("click", () => closeIndex(true));
-  aboutToggle.addEventListener("click", () => {
-    snapshotAbout.open = !snapshotAbout.open;
-    aboutToggle.setAttribute("aria-expanded", String(snapshotAbout.open));
-    if (narrowIndexMedia.matches) {
-      openIndex({ focusClose: false, returnFocus: aboutToggle });
-      window.requestAnimationFrame(() => {
-        snapshotAbout.scrollIntoView({ block: "nearest" });
-        snapshotAbout.querySelector("summary").focus();
-      });
-    } else if (snapshotAbout.open) {
-      snapshotAbout.scrollIntoView({ block: "nearest" });
-    }
-  });
-  snapshotAbout.addEventListener("toggle", () => {
-    aboutToggle.setAttribute("aria-expanded", String(snapshotAbout.open));
-  });
-  reviewToggle.addEventListener("click", () => {
-    state.review = !state.review;
-    document.body.classList.toggle("review-mode", state.review);
-    reviewToggle.setAttribute("aria-pressed", String(state.review));
-    reviewToggle.textContent = state.review ? "Exit review" : "Review data";
-    document.querySelectorAll("details[data-review-detail]").forEach((details) => {
-      details.open = state.review && !details.closest("article").hidden;
-    });
-  });
-  window.addEventListener("hashchange", handleHash);
-  window.addEventListener("storage", (event) => {
-    if (event.key === themeStorageKey) applyThemePreference(event.newValue, false);
-  });
-  narrowIndexMedia.addEventListener("change", syncIndexAccessibility);
-  narrowFilterMedia.addEventListener("change", () => {
-    syncFilterAccessibility({
-      focusPanel: filterDisclosure.open && narrowFilterMedia.matches,
-    });
-  });
-  document.addEventListener("click", (event) => {
-    if (filterDisclosure.open && !filterDisclosure.contains(event.target)) {
-      closeFilter();
-    }
-    if (themeMenu.open && !themeMenu.contains(event.target)) {
-      themeMenu.open = false;
-    }
-  });
-  document.addEventListener("keydown", (event) => {
-    trapIndexFocus(event);
-    trapFilterFocus(event);
-    if (event.key === "Escape") {
+  function configureUtilities() {
+    requestSpace.href = requestSpaceUrl();
+    familyToggle.addEventListener("click", () => {
       if (atlasIndex.classList.contains("is-open")) closeIndex(true);
-      else if (themeMenu.open) {
+      else openIndex();
+    });
+    indexClose.addEventListener("click", () => closeIndex(true));
+    indexBackdrop.addEventListener("click", () => closeIndex(true));
+    atlasIndex.addEventListener("click", (event) => {
+      const link = event.target.closest('a[href^="#"]');
+      if (!link || !narrowIndexMedia.matches) return;
+      const sameRoute = link.hash === window.location.hash;
+      closeIndex(false);
+      if (sameRoute) window.requestAnimationFrame(focusRouteHeading);
+    });
+    aboutToggle.addEventListener("click", () => {
+      snapshotAbout.open = !snapshotAbout.open;
+      aboutToggle.setAttribute(
+        "aria-expanded",
+        String(snapshotAbout.open),
+      );
+      if (narrowIndexMedia.matches) {
+        openIndex({ returnFocus: aboutToggle, focusClose: false });
+      }
+      window.requestAnimationFrame(() => {
+        snapshotAbout.querySelector("summary")?.focus();
+      });
+    });
+    snapshotAbout.addEventListener("toggle", () => {
+      aboutToggle.setAttribute(
+        "aria-expanded",
+        String(snapshotAbout.open),
+      );
+    });
+    themeMenu.addEventListener("change", (event) => {
+      if (!event.target.matches('input[name="theme-preference"]')) return;
+      applyThemePreference(event.target.value);
+      themeMenu.open = false;
+      themeSummary.focus();
+    });
+    window.addEventListener("storage", (event) => {
+      if (event.key === themeStorageKey) {
+        applyThemePreference(event.newValue, false);
+      }
+    });
+    window.addEventListener("hashchange", () => renderRoute());
+    narrowIndexMedia.addEventListener("change", syncIndexAccessibility);
+    document.addEventListener("click", (event) => {
+      if (themeMenu.open && !themeMenu.contains(event.target)) {
+        themeMenu.open = false;
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      trapIndexFocus(event);
+      if (event.key !== "Escape") return;
+      if (atlasIndex.classList.contains("is-open")) {
+        closeIndex(true);
+      } else if (themeMenu.open) {
         themeMenu.open = false;
         themeSummary.focus();
       }
-      else if (filterDisclosure.open) {
-        closeFilter(true);
-      }
-      else if (searchInput.value) {
-        searchInput.value = "";
-        state.query = "";
-        updateAtlas();
-      }
-    }
-  });
+    });
+    document.querySelector(".skip-link")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      atlasDocument.focus();
+    });
+  }
 
   applyThemePreference(storedThemePreference(), false);
+  buildFamilyNavigation();
+  buildSnapshotDetail();
+  configureUtilities();
   syncIndexAccessibility();
-  syncFilterAccessibility();
-  buildAtlas();
-  updateAtlas();
-  handleHash();
-  startNavigationObserver();
+  renderRoute({ initial: isInitialRoute });
+  isInitialRoute = false;
 })();

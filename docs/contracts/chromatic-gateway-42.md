@@ -4,7 +4,7 @@ Status: implemented development corpus; not externally reviewed release evidence
 
 Machine source: [`corpus/chromatic-v1/manifest.json`](../../corpus/chromatic-v1/manifest.json)
 
-Public read model: `homology-db.static-atlas/2`
+Public read model: `homology-db.static-atlas/3`
 
 ## Purpose and boundary
 

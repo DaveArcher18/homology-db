@@ -2,7 +2,7 @@
 
 Status: development frontend over `chromatic-gateway-42`
 
-Read-model version: `homology-db.static-atlas/2`
+Read-model version: `homology-db.static-atlas/3`
 
 ## Source selection
 
@@ -42,14 +42,14 @@ record counts are embedded in the artifact. The one-file exporter enforces the
 ## Mapping
 
 Physical SQLite names stay inside the Python adapter. Browser JavaScript sees
-only the denormalized `/2` read model:
+only the denormalized `/3` read model:
 
 | Atlas field | Authoritative input |
 |---|---|
 | Snapshot identity, scope, count, degree bound, and release state | `ChromaticTools.corpus_summary()` plus the one Snapshot record |
 | Family label, summary, relevance, order, and membership | `family` records and each space's recorded family ID |
 | Stable Conceptual-space ID | `space.space_id` |
-| Name, aliases, parameters, tags, finite-type state, dimension, components, summary, and chromatic relevance | recorded `space` and `alias` fields |
+| English name, curated TeX display name, aliases, parameters, tags, finite-type state, dimension, components, summary, and chromatic relevance | recorded `space` and `alias` fields plus a deterministic family/parameter TeX projection |
 | Homology and Knowledge state | `ChromaticTools.read_homology()` for every supported coefficient and reduced choice |
 | Coverage | the tool response cross-checked against `homology_coverage` |
 | Model | `ChromaticTools.expand_evidence()`, including construction, cells or cell formula, attaching map, cellular boundary formula, scope, and optional pinned artifact |
@@ -58,6 +58,7 @@ only the denormalized `/2` read model:
 | Computation run | the nullable expanded run record; absent for the citation-backed Poincare calculation |
 | Relationship | recorded source, typed target, detail, and source-owned Evidence link from `space_relation` |
 | Raw record | stable tool responses and the database subject projection for review/download |
+| Definition knowls | atlas-editorial exposition identified by stable `id` plus integer `revision`, with `selected_for_snapshot_id` bound to this Snapshot; explicitly not assertion Evidence and not a substitute for missing homology-convention metadata |
 
 The adapter adds stable-ID-derived slugs, deterministic display ordering,
 display labels, source-file revision metadata, and static data-quality
@@ -67,7 +68,9 @@ unknown/not-computed state into zero.
 ## Coverage semantics
 
 Every finite CW space has `kind = complete_finite_cw`, a bound equal to its
-dimension, and `upper_vanishing_starts_at = dimension + 1`.
+dimension, and `upper_vanishing_starts_at = dimension + 1`. The frontend shows
+the green exhaustive state for a selected coefficient/convention only when
+every row through that bound is present and exact.
 
 Every infinite finite-type space has `kind = bounded_through_degree`, a null
 dimension, a current computation bound of 24, and a null upper-vanishing field.
@@ -78,6 +81,10 @@ above degree 24 is not a zero assertion.
 
 - Stable Conceptual-space, slug, Model, Evidence, Computation, and Relationship IDs are
   unique within the Snapshot.
+- Every Conceptual space has separate nonempty English and curated TeX display
+  names. Definition IDs are unique, every definition has the supported
+  editorial revision and is explicitly selected for the exported Snapshot,
+  and every definition is non-evidentiary exposition.
 - Every Conceptual space appears exactly once in a data-backed family section.
 - Every space has a qualified Model, Evidence, computation sketch, and at least
   one citation with an HTTPS URL, source role, and pinpoint locator.

@@ -615,3 +615,59 @@ factored and this recovery record is current.
 - The browser was restored to its 1280×720 default viewport, System theme,
   unfiltered 42/42 root document, and zero horizontal overflow, then left on
   the clean public atlas URL for user testing.
+
+## 2026-07-23 — Gabriel atlas information-architecture revision
+
+Scope: implement Gabriel Ong's seven accepted product-feedback points over the
+unchanged 42-space Snapshot: a real Home route, Spaces and family landing
+pages, one route per Conceptual space, object-local Homology controls, curated
+TeX names, definition knowls, restrained tags, compact repeated direct sums,
+and explicit exhaustive/bounded coverage. Preserve themes, provenance,
+uncertainty, keyboard access, and structured feedback links.
+
+### Red-green implementation checks
+
+- The exporter/read-model test first failed against `/2`, null TeX names, and
+  the missing definition catalog, then passed against
+  `homology-db.static-atlas/3`.
+- The routed UI contract first failed against the continuous-document
+  frontend, then passed for Home, Spaces, family, object, legacy, and
+  not-found routes with object-local coefficient/convention state.
+- The executable presentation contract first failed before
+  `static_atlas/presentation.js` existed, then passed for structured group
+  compaction, non-exact safety, guarded coverage, and the TeX allowlist.
+- A definition-selection regression first failed because records lacked
+  revision and Snapshot-selection fields, then passed with `revision = 1` and
+  `selected_for_snapshot_id` bound to the exported Snapshot.
+
+### Review closure before artifact generation
+
+- The mathematical-presentation audit confirmed all 42 names are supported,
+  the 168 stored `Z/2` factors remain intact while displaying as
+  `(\mathbb{Z}/2\mathbb{Z})^{\oplus 168}`, malformed exact records never
+  become zero, and current coverage presents 32 exhaustive plus 10 bounded
+  spaces.
+- The accessibility/runtime audit closed responsive About state, mobile
+  drawer scrolling/focus/inert behavior, same-route navigation, search and
+  landmark names, knowl labels, and isolated per-space coefficient state. Its
+  final 320×568 and desktop runs had no console errors or horizontal overflow.
+  A closure pass returned all 18 finite-ranked matches for `sphere` in rank
+  order, exercised ArrowUp/ArrowDown and focus-scoped `j`/`k`, opened and
+  closed object Review details, and confirmed exported JSON retains both
+  `name.tex` and nested `raw` data.
+- The two-axis formal review found and closed hidden lower-ranked search
+  matches, the missing validator-facing review view, omission of curated TeX
+  from copied JSON, duplicated presentation helpers, unversioned definitions,
+  and the missing append-only product-feedback record. Focus-scoped arrow and
+  `j`/`k` navigation is retained; global unmodified single-character
+  shortcuts remain omitted under the repository's WCAG 2.1.4 posture.
+- `python3 -m unittest discover -s tests -v` ran 65 tests: 64 passed and only
+  checked-in-artifact parity failed, as expected before regenerating
+  `dist/atlas.html`. The four focused exporter/routing/accessibility/pure-JS
+  tests pass.
+- `node --check` passes for both JavaScript sources,
+  `python3 -m py_compile` passes for the exporter and tests, and
+  `git diff --check` passes. Ruff is not installed in this environment.
+
+Final artifact measurements, parity, commit identity, Pages run, and live-byte
+verification are recorded below after publication.

@@ -60,7 +60,7 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertIsNotNone(embedded)
             atlas = json.loads(embedded.group(1))
             self.assertEqual(atlas["snapshot"]["snapshot_id"], snapshot_id)
-            self.assertEqual(atlas["snapshot"]["schema_version"], "homology-db.static-atlas/2")
+            self.assertEqual(atlas["snapshot"]["schema_version"], "homology-db.static-atlas/3")
             self.assertEqual(
                 atlas["snapshot"]["source_revision_inputs"],
                 [
@@ -73,6 +73,7 @@ class StaticAtlasTest(unittest.TestCase):
                     "static_atlas/atlas.css",
                     "static_atlas/atlas.js",
                     "static_atlas/index.template.html",
+                    "static_atlas/presentation.js",
                 ],
             )
             self.assertRegex(
@@ -87,6 +88,60 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertEqual(atlas["snapshot"]["relation_count"], 11)
             self.assertEqual(len(atlas["conceptual_spaces"]), 42)
             self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 42)
+            self.assertTrue(
+                all(
+                    isinstance(item["name"]["tex"], str)
+                    and bool(item["name"]["tex"].strip())
+                    for item in atlas["conceptual_spaces"]
+                )
+            )
+            names_by_id = {
+                item["id"]: item["name"]["tex"]
+                for item in atlas["conceptual_spaces"]
+            }
+            self.assertEqual(
+                names_by_id["classifying_space:elementary_abelian:2:2"],
+                r"B(C_{2}^{2})",
+            )
+            self.assertEqual(
+                names_by_id["moore:9:2"],
+                r"M(\mathbb{Z}/9,2)",
+            )
+            self.assertEqual(
+                names_by_id["universal_complex_thom:2"],
+                r"\operatorname{Th}(\gamma_{2}\to BU(2))",
+            )
+            definitions = atlas["definitions"]
+            self.assertEqual(
+                set(definitions[0]),
+                {
+                    "id",
+                    "revision",
+                    "selected_for_snapshot_id",
+                    "term",
+                    "body",
+                    "scope",
+                    "assertion_evidence",
+                },
+            )
+            self.assertEqual(
+                len({definition["id"] for definition in definitions}),
+                len(definitions),
+            )
+            self.assertTrue(
+                all(
+                    definition["scope"] == "exposition"
+                    and definition["assertion_evidence"] is False
+                    and definition["revision"] == 1
+                    and definition["selected_for_snapshot_id"]
+                    == atlas["snapshot"]["snapshot_id"]
+                    for definition in definitions
+                )
+            )
+            self.assertIn(
+                "ordinary-homology",
+                {definition["id"] for definition in definitions},
+            )
             self.assertIn("nonorientable surface genus 2", next(
                 item["aliases"] for item in atlas["conceptual_spaces"]
                 if item["id"] == "klein_bottle"
@@ -177,6 +232,106 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertIsNone(
                 cyclic_classifying_space["homology_coverage"]["upper_vanishing_starts_at"]
             )
+            self.assertEqual(
+                sum(
+                    item["homology_coverage"]["kind"] == "complete_finite_cw"
+                    for item in atlas["conceptual_spaces"]
+                ),
+                32,
+            )
+            self.assertEqual(
+                sum(
+                    item["homology_coverage"]["kind"] == "bounded_through_degree"
+                    for item in atlas["conceptual_spaces"]
+                ),
+                10,
+            )
+            elementary_abelian_rank_three = next(
+                item
+                for item in atlas["conceptual_spaces"]
+                if item["id"] == "classifying_space:elementary_abelian:2:3"
+            )
+            largest_repeated_sum = next(
+                row
+                for row in elementary_abelian_rank_three["homology"]
+                if row["coefficient_ring"] == "Z"
+                and row["reduced"] is False
+                and row["degree"] == 24
+            )
+            self.assertEqual(
+                largest_repeated_sum["group"]["torsion_orders"],
+                [2] * 168,
+            )
+            presentation_check = subprocess.run(
+                [
+                    "node",
+                    "-e",
+                    r"""
+const fs = require("fs");
+const presentation = require("./static_atlas/presentation.js");
+const atlas = JSON.parse(fs.readFileSync(0, "utf8"));
+const coverageCounts = {
+  "coverage-exhaustive": 0,
+  "coverage-bounded": 0,
+  "coverage-neutral": 0,
+};
+let malformedExactGroups = 0;
+for (const space of atlas.conceptual_spaces) {
+  const rows = space.homology.filter(
+    (row) => row.coefficient_ring === "Z" && row.reduced === false
+  );
+  const coverage = presentation.coveragePresentation(
+    space, rows, atlas.snapshot
+  );
+  coverageCounts[coverage.className] += 1;
+  malformedExactGroups += rows.filter(
+    (row) => row.group.state === "exact"
+      && !presentation.groupPresentation(row).exact
+  ).length;
+}
+const elementary = atlas.conceptual_spaces.find(
+  (space) => space.id === "classifying_space:elementary_abelian:2:3"
+);
+const largest = elementary.homology.find(
+  (row) => row.coefficient_ring === "Z"
+    && row.reduced === false
+    && row.degree === 24
+);
+console.log(JSON.stringify({
+  unsupportedNames: atlas.conceptual_spaces
+    .filter((space) => !presentation.isSupportedTex(space.name.tex))
+    .map((space) => space.id),
+  coverageCounts,
+  malformedExactGroups,
+  largestDisplay: presentation.groupPresentation(largest).tex,
+}));
+""",
+                ],
+                cwd=REPOSITORY_ROOT,
+                input=json.dumps(atlas),
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(
+                presentation_check.returncode,
+                0,
+                presentation_check.stderr,
+            )
+            presentation_result = json.loads(presentation_check.stdout)
+            self.assertEqual(presentation_result["unsupportedNames"], [])
+            self.assertEqual(
+                presentation_result["coverageCounts"],
+                {
+                    "coverage-exhaustive": 32,
+                    "coverage-bounded": 10,
+                    "coverage-neutral": 0,
+                },
+            )
+            self.assertEqual(presentation_result["malformedExactGroups"], 0)
+            self.assertEqual(
+                presentation_result["largestDisplay"],
+                r"(\mathbb{Z}/2\mathbb{Z})^{\oplus 168}",
+            )
 
             poincare_sphere = next(
                 item
@@ -200,7 +355,7 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertNotRegex(html, r'<link[^>]+rel=["\']stylesheet["\']')
             self.assertNotRegex(html, r"url\(\s*[\"']?https?://")
 
-    def test_generated_atlas_exposes_family_first_browse_and_review_controls(
+    def test_generated_atlas_exposes_routed_home_family_and_space_views(
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -224,44 +379,87 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
 
             html = output_path.read_text(encoding="utf-8")
-            for required_control in (
-                'id="atlas-search"',
-                'class="coefficient-switcher"',
-                'input.name = "coefficient"',
-                'id="reduced-filter"',
-                'id="reliability-filter"',
-                'id="review-toggle"',
+            for required_route_contract in (
+                'id="site-brand"',
+                'id="nav-home"',
+                'id="nav-spaces"',
                 'id="family-toggle"',
                 'id="about-toggle"',
                 'id="atlas-index"',
                 'id="family-outline"',
                 'id="atlas-document"',
-                'id="result-status"',
-                'id="generated-at"',
-                "family-outline-group",
-                "family-member-list",
-                "familySearchValues",
-                "alphabetical-space-list",
-                "All spaces A–Z",
-                "Show only this family",
-                "Members in this snapshot",
+                "function parseRoute",
+                "function renderRoute",
+                "function buildHomeView",
+                "function buildSpacesView",
+                "function buildFamilyView",
+                "function buildSpaceView",
+                'hash === "#atlas-document"',
+                'kind: "not-found"',
+                "buildBreadcrumbs",
+                "buildSpaceSearch",
+                "Search all spaces",
+                "Search this family",
                 'href = `#family-${section.id}`',
+                'href = `#space=${encodeURIComponent(space.slug)}`',
+                "document.title",
+                'setAttribute("aria-current"',
+            ):
+                self.assertIn(required_route_contract, html)
+            for required_space_contract in (
+                "homologyViewBySpace",
+                "buildHomologyControls",
+                "space-coefficients",
+                "`coefficient-${space.slug}`",
+                "`convention-${space.slug}`",
+                "renderHomology",
+                "renderTex",
+                "space.name?.tex",
+                "groupPresentation",
+                "torsion_orders",
+                r"\\oplus",
+                "coveragePresentation",
+                "coverage-exhaustive",
+                "coverage-bounded",
+                "buildKnowl",
+                "knowl-panel",
+                'setAttribute("aria-expanded"',
+                'buildKnowl("reduced-homology"',
+                'buildKnowl("direct-sum-notation"',
+                'buildKnowl("finite-cw-space"',
+                'buildKnowl("model"',
                 "Copy link",
+                "Review details",
+                "homology-row-review",
+                "Knowledge state",
+                "Assertion",
                 "Copy JSON",
                 "Download JSON",
                 "Computation runs",
                 "Data quality",
                 "Source locator",
-                "Source: ${sourceTitle}",
-                'detailsBlock("Evidence, sketches & citations", evidence.length, true)',
-                "JSON.stringify(space.raw",
+                "Evidence, sketches & citations",
+                "Classification & record",
+                "serializedSpaceRecord",
+                "JSON.stringify(space, null, 2)",
             ):
-                self.assertIn(required_control, html)
-            self.assertNotIn('id="family-filter"', html)
-            self.assertNotIn('id="space-index-disclosure"', html)
-            self.assertNotIn('id="browse-control"', html)
+                self.assertIn(required_space_contract, html)
+            self.assertNotIn("item.rank === best", html)
+            self.assertIn('event.key === "ArrowDown"', html)
+            self.assertIn('event.key === "ArrowUp"', html)
+            self.assertIn('event.key === "j"', html)
+            self.assertIn('event.key === "k"', html)
+            for removed_global_control in (
+                'id="atlas-search"',
+                'id="coefficient-switcher"',
+                'id="reduced-filter"',
+                'id="reliability-filter"',
+                'id="filter-disclosure"',
+                'id="review-toggle"',
+            ):
+                self.assertNotIn(removed_global_control, html)
 
-    def test_generated_atlas_supports_progressive_filters_and_theme_preferences(
+    def test_generated_atlas_supports_accessible_navigation_knowls_and_themes(
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -297,28 +495,147 @@ class StaticAtlasTest(unittest.TestCase):
                 'window.addEventListener("storage"',
             ):
                 self.assertIn(theme_contract, html)
-            for progressive_control in (
-                'id="filter-disclosure"',
-                'id="active-filter-count"',
+            for accessibility_contract in (
                 'id="index-close"',
                 'id="index-backdrop"',
-                'id="filter-close"',
-                'tabindex="-1" aria-label="Close family browser"',
+                'class="index-backdrop" aria-hidden="true"',
                 'aria-controls="snapshot-about"',
                 "backgroundInertTargets",
-                "filterBackgroundInertTargets",
                 "trapIndexFocus",
-                "trapFilterFocus",
+                "getClientRects",
                 'atlasIndex.setAttribute("aria-modal"',
-                'filterPanel.setAttribute("aria-modal"',
-                'summary.setAttribute("aria-current", "location")',
+                'setAttribute("inert", "")',
+                "focusRouteHeading",
+                "search-label-text",
+                'searchMark.setAttribute("aria-hidden", "true")',
+                'plainName.setAttribute("aria-hidden", "true")',
+                'atlasIndex.addEventListener("click"',
+                "if (!open && snapshotAbout.open)",
+                "snapshotAbout.open = false",
+                '"Coefficient-ring definition"',
+                '"Coverage definition"',
+                '"Evidence definition"',
+                'summary.setAttribute("aria-label", "Provenance")',
+                'feedbackBand.setAttribute("aria-labelledby"',
+                'role", "region"',
+                '"aria-labelledby"',
+                "definition.assertion_evidence",
                 "themeSummary.focus()",
                 "source_database_sha256",
-                "filterDisclosure.open = false",
-                '"h4", "details-heading"',
                 'setAttribute("headers"',
             ):
-                self.assertIn(progressive_control, html)
+                self.assertIn(accessibility_contract, html)
+
+    def test_presentation_contracts_execute_as_pure_javascript(self) -> None:
+        script = r"""
+const presentation = require("./static_atlas/presentation.js");
+const repeated = presentation.groupPresentation({
+  coefficient_ring: "Z",
+  knowledge_state: "exact",
+  group: {
+    state: "exact",
+    plain: "unused",
+    free_rank: 0,
+    torsion_orders: Array(168).fill(2),
+  },
+});
+const malformed = presentation.groupPresentation({
+  coefficient_ring: "Z",
+  knowledge_state: "exact",
+  group: { state: "exact", plain: "0" },
+});
+const nonexact = presentation.groupPresentation({
+  coefficient_ring: "Z",
+  knowledge_state: "not_computed",
+  group: { state: "not_computed", plain: "not computed" },
+});
+const completeSpace = {
+  homology_coverage: {
+    kind: "complete_finite_cw",
+    computed_through_degree: 1,
+    upper_vanishing_starts_at: 2,
+  },
+};
+const exactRows = [0, 1].map((degree) => ({
+  degree,
+  coefficient_ring: "Z",
+  knowledge_state: "exact",
+  group: {
+    state: "exact",
+    plain: "Z",
+    free_rank: 1,
+    torsion_orders: [],
+  },
+}));
+const incompleteRows = structuredClone(exactRows);
+incompleteRows[1] = {
+  degree: 1,
+  coefficient_ring: "Z",
+  knowledge_state: "not_computed",
+  group: { state: "not_computed", plain: "not computed" },
+};
+const missingUpper = structuredClone(completeSpace);
+missingUpper.homology_coverage.upper_vanishing_starts_at = null;
+const boundedSpace = {
+  homology_coverage: {
+    kind: "bounded_through_degree",
+    computed_through_degree: 24,
+    upper_vanishing_starts_at: null,
+  },
+};
+console.log(JSON.stringify({
+  repeated,
+  malformed,
+  nonexact,
+  exhaustive: presentation.coveragePresentation(
+    completeSpace, exactRows, { materialized_through_degree: 24 }
+  ),
+  incomplete: presentation.coveragePresentation(
+    completeSpace, incompleteRows, { materialized_through_degree: 24 }
+  ),
+  missingUpper: presentation.coveragePresentation(
+    missingUpper, exactRows, { materialized_through_degree: 24 }
+  ),
+  bounded: presentation.coveragePresentation(
+    boundedSpace, incompleteRows, { materialized_through_degree: 24 }
+  ),
+  supportedTex: presentation.isSupportedTex(
+    String.raw`\operatorname{Th}(\gamma_{2}\to BU(2))`
+  ),
+  unsafeTex: presentation.isSupportedTex(String.raw`\href{x}{y}`),
+}));
+"""
+        completed = subprocess.run(
+            ["node", "-e", script],
+            cwd=REPOSITORY_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        result = json.loads(completed.stdout)
+        self.assertEqual(
+            result["repeated"]["tex"],
+            r"(\mathbb{Z}/2\mathbb{Z})^{\oplus 168}",
+        )
+        self.assertTrue(result["repeated"]["exact"])
+        self.assertFalse(result["malformed"]["exact"])
+        self.assertEqual(result["nonexact"]["plain"], "not computed")
+        self.assertEqual(
+            result["exhaustive"]["className"],
+            "coverage-exhaustive",
+        )
+        self.assertEqual(
+            result["incomplete"]["className"],
+            "coverage-neutral",
+        )
+        self.assertEqual(
+            result["missingUpper"]["className"],
+            "coverage-neutral",
+        )
+        self.assertEqual(result["bounded"]["className"], "coverage-bounded")
+        self.assertIn("Recorded through degree 24", result["bounded"]["detail"])
+        self.assertTrue(result["supportedTex"])
+        self.assertFalse(result["unsafeTex"])
 
     def test_export_is_deterministic_for_one_database_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -442,6 +759,11 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertEqual(row["group"]["state"], "not_computed")
             self.assertEqual(row["group"]["plain"], "not computed")
             self.assertNotEqual(row["group"]["plain"], "0")
+            self.assertIn("Coverage incomplete", html)
+            self.assertIn(
+                "groupPresentation(row).exact",
+                html,
+            )
 
     def test_export_fails_when_homology_evidence_integrity_is_broken(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

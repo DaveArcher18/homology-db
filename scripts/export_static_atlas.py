@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import subprocess
 import sys
@@ -26,9 +27,114 @@ from homology_db.chromatic import COEFFICIENTS, ChromaticTools
 
 
 SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
-READ_MODEL_VERSION = "homology-db.static-atlas/2"
+READ_MODEL_VERSION = "homology-db.static-atlas/3"
 THEORY_ID = "ordinary_homology"
 MAX_HTML_BYTES = 5 * 1024 * 1024
+DEFINITION_REVISION = 1
+DEFINITIONS = (
+    {
+        "id": "conceptual-space",
+        "term": "Conceptual space",
+        "body": (
+            "The mathematical subject being studied, independently of any particular "
+            "presentation used to calculate it. Atlas editorial glossary v1; this "
+            "explanation is not Evidence for a database assertion."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "ordinary-homology",
+        "term": "Ordinary homology",
+        "body": (
+            "A sequence of abelian groups, or modules after choosing coefficients, that "
+            "records holes in each degree and is invariant under homotopy equivalence. "
+            "Atlas editorial glossary v1; this general explanation does not supply the "
+            "Snapshot's missing versioned homology-convention metadata and is not Evidence "
+            "for a database assertion."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "coefficient-ring",
+        "term": "Coefficient ring",
+        "body": (
+            "The ring used for the homology groups shown in a table, such as the integers "
+            "or a finite field. Atlas editorial glossary v1; this explanation is not "
+            "Evidence for a database assertion."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "reduced-homology",
+        "term": "Reduced homology",
+        "body": (
+            "The based normalization of ordinary homology that removes the distinguished "
+            "degree-zero free summand of a nonempty connected space. Atlas editorial "
+            "glossary v1; this explanation is not Evidence for a database assertion or a "
+            "replacement for versioned convention metadata."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "finite-cw-space",
+        "term": "Finite CW space",
+        "body": (
+            "A space presented by attaching finitely many cells in increasing dimensions. "
+            "Atlas editorial glossary v1; this explanation is not Evidence that a "
+            "particular recorded Model is finite or qualified."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "direct-sum-notation",
+        "term": "Direct-sum notation",
+        "body": (
+            "The superscript 'direct sum r' on a group or module A means the direct sum "
+            "of r copies of A. Atlas editorial glossary v1; this notation guide is not "
+            "Evidence for any displayed multiplicity."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "model",
+        "term": "Model",
+        "body": (
+            "A concrete CW, simplicial, or other qualified presentation used to calculate "
+            "properties of a Conceptual space. Atlas editorial glossary v1; this "
+            "explanation is not itself a qualified Model or Evidence for an assertion."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "evidence",
+        "term": "Evidence",
+        "body": (
+            "A provenance record that connects a database assertion to a qualified Model, "
+            "calculation, and citations. Atlas editorial glossary v1; this explanatory "
+            "definition is not itself Evidence for another assertion."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "coverage",
+        "term": "Homology coverage",
+        "body": (
+            "The degree range for which the Snapshot records homology, together with any "
+            "explicit upper-vanishing claim. Atlas editorial glossary v1; this explanation "
+            "is not Evidence for a particular exhaustive or bounded coverage record."
+        ),
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+)
 SOURCE_REVISION_INPUTS = (
     "corpus/chromatic-v1/manifest.json",
     "corpus/chromatic-v1/poincare-sphere-facets.json",
@@ -39,6 +145,7 @@ SOURCE_REVISION_INPUTS = (
     "static_atlas/atlas.css",
     "static_atlas/atlas.js",
     "static_atlas/index.template.html",
+    "static_atlas/presentation.js",
 )
 
 
@@ -141,6 +248,77 @@ def slug_from_id(stable_id: str) -> str:
     return "-".join(part for part in slug.casefold().split("-") if part)
 
 
+def conceptual_space_tex(space: dict[str, Any]) -> str:
+    """Return a deterministic TeX display name for a curated Conceptual space."""
+    family = space["family"]
+    parameters = space["parameters"]
+
+    if family == "point":
+        return r"\ast"
+    if family == "sphere":
+        return rf"S^{{{int(parameters['n'])}}}"
+    if family == "homology_sphere":
+        return r"\Sigma_{\mathrm{P}}^{3}"
+    if family == "wedge":
+        return rf"S^{{{int(parameters['a'])}}}\vee S^{{{int(parameters['b'])}}}"
+    if family == "surface":
+        if parameters["kind"] == "torus":
+            return r"T^{2}"
+        if parameters["kind"] == "klein_bottle":
+            return r"\mathrm{K}"
+    if family == "real_projective_space":
+        return rf"\mathbb{{R}}P^{{{int(parameters['n'])}}}"
+    if family == "hopf_projective_plane":
+        algebra = {
+            "complex": "C",
+            "quaternionic": "H",
+            "octonionic": "O",
+        }.get(parameters["division_algebra"])
+        if algebra is not None:
+            return rf"\mathbb{{{algebra}}}P^{{2}}"
+    if family == "moore_space":
+        return (
+            rf"M(\mathbb{{Z}}/{int(parameters['m'])},"
+            rf"{int(parameters['n'])})"
+        )
+    if family == "lens_space":
+        weights = ",".join(str(int(weight)) for weight in parameters["weights"])
+        return rf"L^{{{int(space['dimension'])}}}({int(parameters['p'])};{weights})"
+    if family == "stunted_projective_space":
+        field = "R" if parameters["kind"] == "real" else "C"
+        bottom = int(parameters["bottom"])
+        top = int(parameters["top"])
+        return (
+            rf"\mathbb{{{field}}}P^{{{top}}}/"
+            rf"\mathbb{{{field}}}P^{{{bottom - 1}}}"
+        )
+    if family == "compact_lie_group":
+        return rf"\mathrm{{{parameters['group']}}}({int(parameters['rank'])})"
+    if family == "schubert_space":
+        if parameters["kind"] == "complete_flag_c3":
+            return r"\mathrm{Fl}_{3}(\mathbb{C})"
+        if parameters["kind"] == "grassmannian_2_c4":
+            return r"\mathrm{Gr}_{2}(\mathbb{C}^{4})"
+    if family == "cyclic_classifying_space":
+        return rf"B(C_{{{int(parameters['p'])}}})"
+    if family == "elementary_abelian_classifying_space":
+        return (
+            rf"B(C_{{{int(parameters['p'])}}}"
+            rf"^{{{int(parameters['rank'])}}})"
+        )
+    if family == "infinite_projective_space":
+        field = "C" if parameters["division_algebra"] == "complex" else "H"
+        return rf"\mathbb{{{field}}}P^{{\infty}}"
+    if family == "unitary_classifying_space":
+        return rf"BU({int(parameters['n'])})"
+    if family == "thom_space":
+        rank = int(parameters["rank"])
+        return rf"\operatorname{{Th}}(\gamma_{{{rank}}}\to BU({rank}))"
+    raise ValueError(
+        f"no TeX display-name rule for Conceptual space {space['space_id']}"
+    )
+
+
 def group_projection(group: dict[str, Any], coefficient: str) -> dict[str, Any]:
     knowledge_state = group["knowledge_state"]
     if knowledge_state != "exact":
@@ -166,6 +344,51 @@ def group_projection(group: dict[str, Any], coefficient: str) -> dict[str, Any]:
 def validate_read_model(
     atlas: dict[str, Any], *, allow_malformed_for_review: bool = False
 ) -> None:
+    definitions = atlas.get("definitions")
+    if not isinstance(definitions, list) or not definitions:
+        raise ValueError("static atlas needs a nonempty definitions catalog")
+    required_definition_fields = {
+        "id",
+        "term",
+        "body",
+        "scope",
+        "assertion_evidence",
+        "revision",
+        "selected_for_snapshot_id",
+    }
+    definition_ids: list[str] = []
+    for definition in definitions:
+        if not isinstance(definition, dict) or set(definition) != required_definition_fields:
+            raise ValueError("static atlas contains a malformed definition")
+        definition_id = definition["id"]
+        if not isinstance(definition_id, str) or re.fullmatch(
+            r"[a-z0-9]+(?:-[a-z0-9]+)*", definition_id
+        ) is None:
+            raise ValueError("static atlas contains an invalid definition ID")
+        definition_ids.append(definition_id)
+        if not all(
+            isinstance(definition[field], str) and bool(definition[field].strip())
+            for field in ("term", "body")
+        ):
+            raise ValueError(f"definition {definition_id} is missing explanatory text")
+        if (
+            definition["scope"] != "exposition"
+            or definition["assertion_evidence"] is not False
+        ):
+            raise ValueError(
+                f"definition {definition_id} must remain non-evidentiary exposition"
+            )
+        if definition["revision"] != DEFINITION_REVISION:
+            raise ValueError(
+                f"definition {definition_id} has an unsupported editorial revision"
+            )
+        if definition["selected_for_snapshot_id"] != atlas["snapshot"]["snapshot_id"]:
+            raise ValueError(
+                f"definition {definition_id} is not selected for this Snapshot"
+            )
+    if len(definition_ids) != len(set(definition_ids)):
+        raise ValueError("static atlas contains duplicate definition IDs")
+
     conceptual_spaces = atlas["conceptual_spaces"]
     conceptual_space_ids = [item["id"] for item in conceptual_spaces]
     slugs = [item["slug"] for item in conceptual_spaces]
@@ -189,6 +412,14 @@ def validate_read_model(
         missing = [field for field in required_fields if not conceptual_space.get(field)]
         if missing:
             malformed_spaces.append(f"{conceptual_space.get('id', '<missing id>')}: {missing}")
+        name = conceptual_space.get("name")
+        if not isinstance(name, dict) or not all(
+            isinstance(name.get(field), str) and bool(name[field].strip())
+            for field in ("plain", "tex")
+        ):
+            malformed_spaces.append(
+                f"{conceptual_space.get('id', '<missing id>')}: invalid display name"
+            )
         if conceptual_space["data_quality"]["missing_required_fields"]:
             malformed_spaces.append(
                 f"{conceptual_space['id']}: "
@@ -283,6 +514,53 @@ def validate_read_model(
                 raise ValueError(
                     f"finite CW space {conceptual_space['id']} has incomplete degree coverage"
                 )
+
+        for row in conceptual_space["homology"]:
+            group = row.get("group")
+            if not isinstance(group, dict) or group.get("state") != row.get(
+                "knowledge_state"
+            ):
+                raise ValueError(
+                    f"Conceptual space {conceptual_space['id']} has a malformed "
+                    "Homology group projection"
+                )
+            if group["state"] != "exact":
+                if not isinstance(group.get("plain"), str) or not group["plain"]:
+                    raise ValueError(
+                        f"Conceptual space {conceptual_space['id']} has an invalid "
+                        "non-exact Homology state"
+                    )
+                continue
+            if row["coefficient_ring"] == "Z":
+                free_rank = group.get("free_rank")
+                torsion_orders = group.get("torsion_orders")
+                if (
+                    not isinstance(free_rank, int)
+                    or isinstance(free_rank, bool)
+                    or free_rank < 0
+                    or not isinstance(torsion_orders, list)
+                    or any(
+                        not isinstance(order, int)
+                        or isinstance(order, bool)
+                        or order < 2
+                        for order in torsion_orders
+                    )
+                ):
+                    raise ValueError(
+                        f"Conceptual space {conceptual_space['id']} has malformed "
+                        "exact integral Homology data"
+                    )
+            else:
+                field_dimension = group.get("dimension")
+                if (
+                    not isinstance(field_dimension, int)
+                    or isinstance(field_dimension, bool)
+                    or field_dimension < 0
+                ):
+                    raise ValueError(
+                        f"Conceptual space {conceptual_space['id']} has malformed "
+                        "exact field Homology data"
+                    )
 
         expected_degrees = set(range(computed_through_degree + 1))
         for coefficient in atlas["snapshot"]["supported_coefficients"]:
@@ -780,7 +1058,10 @@ def build_read_model(
                 "id": space_id,
                 "slug": slug_from_id(space_id),
                 "kind": "conceptual_space",
-                "name": {"plain": space["label"], "tex": None},
+                "name": {
+                    "plain": space["label"],
+                    "tex": conceptual_space_tex(space),
+                },
                 "aliases": aliases,
                 "summary": space["summary"],
                 "chromatic_relevance": space["chromatic_relevance"],
@@ -887,6 +1168,14 @@ def build_read_model(
             "homology_conventions": [],
             "homology_convention_state": "not_recorded_in_database_schema",
         },
+        "definitions": [
+            {
+                **definition,
+                "revision": DEFINITION_REVISION,
+                "selected_for_snapshot_id": snapshot_row["snapshot_id"],
+            }
+            for definition in DEFINITIONS
+        ],
         "sections": sections,
         "conceptual_spaces": conceptual_spaces,
     }
@@ -913,9 +1202,13 @@ def safe_embedded_json(value: Any) -> str:
 def render_atlas(atlas: dict[str, Any]) -> str:
     template = (SOURCE_DIRECTORY / "index.template.html").read_text(encoding="utf-8")
     css = (SOURCE_DIRECTORY / "atlas.css").read_text(encoding="utf-8")
+    presentation_javascript = (SOURCE_DIRECTORY / "presentation.js").read_text(
+        encoding="utf-8"
+    )
     javascript = (SOURCE_DIRECTORY / "atlas.js").read_text(encoding="utf-8")
     replacements = {
         "/*__ATLAS_CSS__*/": css,
+        "/*__ATLAS_PRESENTATION_JS__*/": presentation_javascript,
         "__ATLAS_JSON__": safe_embedded_json(atlas),
         "/*__ATLAS_JS__*/": javascript,
     }

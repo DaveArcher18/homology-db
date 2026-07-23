@@ -16,7 +16,7 @@ permalinks, print, themes, review records, and keyboard accessibility.
 
 The historical release map remains at `.scratch/named-atlas-review-v1/map.md`.
 The current vertical slice is implemented by `corpus/chromatic-v1/`,
-`homology_db/chromatic.py`, and the `homology-db.static-atlas/2` exporter.
+`homology_db/chromatic.py`, and the `homology-db.static-atlas/3` exporter.
 
 ## Control mode
 
@@ -36,6 +36,24 @@ and preparing the Gabriel-feedback iteration.
 
 ## Last checkpoint
 
+- The current source tree implements the accepted Gabriel Ong product-feedback
+  iteration as `homology-db.static-atlas/3`: Home, Spaces, family, and
+  Conceptual-space routes; per-space coefficient/convention state; curated
+  TeX names; Snapshot-selected revisioned knowls; compact structured direct
+  sums; restrained classification tags; guarded exhaustive/bounded coverage;
+  object-local Review details; and space/family/request feedback links.
+- Independent mathematical-presentation, specification, repository-standards,
+  and runtime/accessibility reviews have no remaining code/content blocker.
+  The last closure pass verified ranked search without hidden matches, scoped
+  keyboard result navigation, full atlas JSON including `name.tex`, uniquely
+  named landmarks, responsive drawer/About state, and isolated coefficient
+  choices at desktop and 320×568 with no console error or overflow.
+- The 65-test suite currently has 64 passes and exactly one intentional
+  pre-release failure: checked-in `dist/atlas.html` still represents `/2`.
+  Four focused exporter/routing/accessibility/pure-JavaScript tests,
+  JavaScript syntax, Python compilation, and `git diff --check` pass. The next
+  release step is the coherent source commit followed by deterministic
+  artifact regeneration and parity verification.
 - This iteration starts from clean, synchronized `main` at `d2b6399`. Gabriel
   Ong's seven accepted review points are the fixed product delta; the existing
   42-space Snapshot, Models, Evidence, Homology assertions, sources, and
@@ -273,12 +291,19 @@ and preparing the Gabriel-feedback iteration.
 
 ## Exact next action
 
-Inspect the current static-atlas view state, data shapes, formatting helpers,
-and tests; pin the smallest route/view model for Home, Spaces, family, and
-Conceptual-space pages; then implement the accepted feedback in vertical
-slices before rebuilding and running the full review gate.
+Commit the reviewed `/3` source and documentation scope, rebuild
+`dist/atlas.html` from that clean source commit, record its exact bytes/hash
+and embedded revision, run artifact parity plus the complete release checks,
+then push synchronized `main` and byte-verify the resulting GitHub Pages
+deployment.
 
 ## Verification state
+
+Gabriel-feedback source verification is complete before artifact generation.
+The runtime and two-axis closure reviews report no remaining code/content
+blocker. Current full-suite state is 64/65 with only the deliberately stale
+checked-in artifact failing parity; this must become 65/65 after the reviewed
+source commit and deterministic rebuild.
 
 Baseline `d2b6399` is clean and synchronized. Its 64-test suite, deterministic
 artifact, Pages run `29984104725`, and live byte comparison passed before this

@@ -22,116 +22,54 @@
   <style>/*__ATLAS_CSS__*/</style>
 </head>
 <body>
-  <a class="skip-link" href="#atlas-document">Skip to atlas entries</a>
+  <a class="skip-link" href="#atlas-document">Skip to main content</a>
 
   <header class="site-header">
     <div class="header-inner">
-      <div class="title-block">
-        <p class="eyebrow" id="atlas-eyebrow">Homology DB · atlas snapshot</p>
-        <h1>Homology Atlas</h1>
-        <p class="dek" id="snapshot-dek">A browsable snapshot of CW spaces, their ordinary homology, concrete models, and mathematical provenance.</p>
-      </div>
-      <div class="header-meta">
-        <dl class="snapshot-facts" aria-label="Snapshot summary">
-          <div><dt>Spaces</dt><dd id="conceptual-space-count">—</dd></div>
-          <div><dt>Families</dt><dd id="conceptual-family-count">—</dd></div>
-          <div><dt>Snapshot</dt><dd id="snapshot-name">—</dd></div>
-          <div><dt>Generated</dt><dd><time id="generated-at">—</time></dd></div>
-          <div><dt>Status</dt><dd id="release-status">—</dd></div>
-        </dl>
-        <nav class="header-actions" aria-label="Atlas utilities">
-          <a id="request-space" class="utility-link" href="https://github.com/DaveArcher18/homology-db/issues/new?template=space-request.yml" target="_blank" rel="noopener noreferrer">Request a space ↗</a>
-          <button id="about-toggle" class="utility-button" type="button" aria-expanded="false" aria-controls="snapshot-about">About</button>
-          <details id="theme-menu" class="theme-menu">
-            <summary aria-label="Theme: System"><span class="theme-label">Theme</span> <span class="theme-current">System</span></summary>
-            <fieldset class="theme-options">
-              <legend>Appearance</legend>
-              <label>
-                <input type="radio" name="theme-preference" value="system" checked>
-                <span><strong>System</strong><small>Match this device</small></span>
-              </label>
-              <label>
-                <input type="radio" name="theme-preference" value="light">
-                <span><strong>Light</strong><small>Paper and ink</small></span>
-              </label>
-              <label>
-                <input type="radio" name="theme-preference" value="dark">
-                <span><strong>Dark</strong><small>Low-light reading</small></span>
-              </label>
-            </fieldset>
-          </details>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <section class="toolbar" aria-label="Atlas controls">
-    <form id="atlas-controls" class="toolbar-inner" role="search">
-      <label class="search-control" for="atlas-search">
-        <span class="visually-hidden">Find a space</span>
-        <span class="search-wrap">
-          <span class="search-mark" aria-hidden="true"></span>
-          <input id="atlas-search" type="search" autocomplete="off"
-            placeholder="Names, families, tags, torsion…" aria-describedby="search-help result-status">
+      <a id="site-brand" class="site-brand" href="#home" aria-label="Homology Atlas home">
+        <span class="brand-mark" aria-hidden="true">H<sub>∗</sub></span>
+        <span class="brand-copy">
+          <strong>Homology Atlas</strong>
+          <small>Spaces and their invariants</small>
         </span>
-      </label>
+      </a>
 
-      <fieldset id="coefficient-switcher" class="coefficient-switcher">
-        <legend class="visually-hidden">Coefficient system</legend>
-      </fieldset>
-
-      <details id="filter-disclosure" class="filter-disclosure">
-        <summary>
-          <span>Refine</span>
-          <span id="active-filter-count" class="active-filter-count" aria-label="No active filters">0</span>
-        </summary>
-        <div class="filter-panel">
-          <div class="filter-panel-heading">
-            <div>
-              <strong id="filter-panel-title">Refine spaces</strong>
-              <span>Family focus is set from the family browser.</span>
-            </div>
-            <button id="filter-close" class="filter-close" type="button" aria-label="Close filters">
-              <span class="visually-hidden">Close filters</span>
-            </button>
-          </div>
-
-          <label class="compact-control" for="dimension-filter">
-            <span class="control-label">Dimension</span>
-            <select id="dimension-filter"><option value="">Any</option></select>
-          </label>
-
-          <label class="compact-control reliability-control" for="reliability-filter">
-            <span class="control-label">Reliability</span>
-            <select id="reliability-filter"><option value="">All states</option></select>
-          </label>
-
-          <fieldset class="toggle-stack">
-            <legend class="control-label">Display</legend>
-            <label class="check-control" for="reduced-filter">
-              <input id="reduced-filter" type="checkbox">
-              <span>Reduced homology</span>
+      <nav class="header-actions" aria-label="Atlas utilities">
+        <button id="family-toggle" class="utility-button browse-button mobile-only" type="button"
+          aria-expanded="false" aria-controls="atlas-index">
+          <span class="menu-mark" aria-hidden="true"></span>
+          Browse
+        </button>
+        <a id="request-space" class="utility-link request-link"
+          href="https://github.com/DaveArcher18/homology-db/issues/new?template=space-request.yml"
+          target="_blank" rel="noopener noreferrer">Request a space <span aria-hidden="true">↗</span></a>
+        <button id="about-toggle" class="utility-button" type="button"
+          aria-expanded="false" aria-controls="snapshot-about">About</button>
+        <details id="theme-menu" class="theme-menu">
+          <summary aria-label="Theme: System">
+            <span class="theme-symbol" aria-hidden="true"></span>
+            <span class="theme-label">Theme</span>
+            <span class="theme-current">System</span>
+          </summary>
+          <fieldset class="theme-options">
+            <legend>Appearance</legend>
+            <label>
+              <input type="radio" name="theme-preference" value="system" checked>
+              <span><strong>System</strong><small>Match this device</small></span>
             </label>
-            <label class="check-control" for="torsion-filter">
-              <input id="torsion-filter" type="checkbox">
-              <span>Has integral torsion</span>
+            <label>
+              <input type="radio" name="theme-preference" value="light">
+              <span><strong>Light</strong><small>Paper and ink</small></span>
+            </label>
+            <label>
+              <input type="radio" name="theme-preference" value="dark">
+              <span><strong>Dark</strong><small>Low-light reading</small></span>
             </label>
           </fieldset>
-
-        </div>
-      </details>
-
-      <output id="result-status" role="status" aria-live="polite">Preparing atlas…</output>
-
-      <div class="toolbar-actions">
-        <button id="clear-filters" class="command-button quiet reset-button" type="button" hidden>Clear</button>
-        <button id="review-toggle" class="command-button" type="button" aria-pressed="false">Review data</button>
-        <button id="family-toggle" class="command-button mobile-only" type="button" aria-expanded="false" aria-controls="atlas-index">Families</button>
-      </div>
-    </form>
-    <p id="search-help" class="visually-hidden">Search names, families, aliases, tags, models, computations, and citations. Press Enter to open the first matching space.</p>
-    <p id="action-status" class="visually-hidden" role="status" aria-live="polite"></p>
-  </section>
+        </details>
+      </nav>
+    </div>
+  </header>
 
   <div class="page-shell">
     <aside id="atlas-index" class="atlas-index" aria-labelledby="atlas-index-title">
@@ -139,21 +77,38 @@
         <div class="index-heading">
           <div class="index-title-row">
             <div>
-              <p class="index-eyebrow">Atlas directory</p>
-              <h2 id="atlas-index-title">Families</h2>
+              <p class="index-eyebrow">Explore the atlas</p>
+              <h2 id="atlas-index-title">Spaces</h2>
             </div>
-            <button id="index-close" class="index-close mobile-only" type="button" aria-label="Close family browser">Close</button>
+            <button id="index-close" class="index-close mobile-only" type="button"
+              aria-label="Close atlas navigation">Close</button>
           </div>
-          <p><span id="family-count">—</span> families · <span id="family-space-count">—</span> spaces</p>
         </div>
-        <nav id="family-outline" aria-label="Families and conceptual spaces"></nav>
+
+        <nav class="primary-nav" aria-label="Atlas">
+          <a id="nav-home" class="primary-nav-link" href="#home">
+            <span aria-hidden="true">⌂</span>
+            Home
+          </a>
+          <a id="nav-spaces" class="primary-nav-link" href="#spaces">
+            <span aria-hidden="true">𝒳</span>
+            All spaces
+          </a>
+        </nav>
+
+        <div class="family-navigation">
+          <p class="nav-label">Families</p>
+          <nav id="family-outline" aria-label="Families of spaces"></nav>
+        </div>
+
         <details id="snapshot-about" class="snapshot-about">
           <summary>About this snapshot</summary>
           <div id="snapshot-detail"></div>
         </details>
       </div>
     </aside>
-    <button id="index-backdrop" class="index-backdrop" type="button" tabindex="-1" aria-label="Close family browser" hidden></button>
+
+    <div id="index-backdrop" class="index-backdrop" aria-hidden="true" hidden></div>
 
     <main id="atlas-document" class="atlas-document" tabindex="-1">
       <noscript>This atlas requires JavaScript to render its embedded, offline snapshot.</noscript>
@@ -161,9 +116,18 @@
   </div>
 
   <footer class="site-footer">
-    <p>Unknown, missing, and not-computed states are never treated as zero. Corrections, stronger computations, and requests for more spaces are welcome.</p>
+    <div class="footer-inner">
+      <p>Unknown, missing, and not-computed states are never treated as zero.</p>
+      <nav aria-label="Footer">
+        <a href="#spaces">Browse spaces</a>
+        <a href="https://github.com/DaveArcher18/homology-db/issues/new/choose"
+          target="_blank" rel="noopener noreferrer">Submit a correction <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
   </footer>
 
+  <p id="action-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+  <script>/*__ATLAS_PRESENTATION_JS__*/</script>
   <script id="atlas-data" type="application/json">__ATLAS_JSON__</script>
   <script>/*__ATLAS_JS__*/</script>
 </body>

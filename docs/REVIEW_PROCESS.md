@@ -649,3 +649,22 @@ on_camera_prompts: coefficient-qualified RP^4/F2 lookup; Snapshot-bounded 5-prim
 fallback: one compression prompt preserves grounding and coverage while shortening an unexpectedly long Codex answer
 supersedes_or_corrects: implements review-2026-07-12-009; does not change the mathematical-review gate
 ```
+
+## Feedback `review-2026-07-23-001`: Gabriel Ong on atlas navigation and notation
+
+```text
+review_id: review-2026-07-23-001
+record_kind: product-feedback
+recorded_at: 2026-07-23T13:08:14+02:00
+reviewer: Gabriel Ong
+reviewer_role: incoming project collaborator and human product adviser; not a database reviewer in this entry
+repository_commit: 3220933e7711842a3f21d6787cca7b08e328ebd6 (implementation base)
+snapshot_id: chromatic-16e4f2be46edd93a
+source: private feedback quoted by the project owner in the active Codex task; original message timestamp not retained
+suggestions: add a real landing page, Spaces navigation, family/type landing pages with local search, and a focused page for every object; move coefficient selection onto each object page; use TeX-quality object labels; add definition knowls; reconsider or restrain tags; compact repeated finite direct sums; distinguish exhaustive computations with a green status from bounded computations
+owner_disposition: accepted in full; retain tags only as searchable and collapsed record metadata
+implementation_disposition: routed static-atlas read model v3 with Home, Spaces, family, and Conceptual-space views; object-local coefficient and convention controls; curated TeX; Snapshot-selected editorial knowls; compact structured group display; and guarded exhaustive/bounded coverage presentation
+mathematical_verdict: not-applicable (product feedback, not review of a Homology assertion, Model, Evidence record, or computation)
+follow_up: record deterministic verification and the public GitHub Pages deployment in WORKSTATE.md and TESTLOG.md
+supersedes_or_corrects: none
+```
