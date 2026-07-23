@@ -695,3 +695,22 @@ verification are recorded below after publication.
   note to metadata actually embedded in the HTML.
 
 The GitHub Pages run and public byte comparison are appended after deployment.
+
+### Live deployment verification
+
+- Synchronized `main` through
+  `1f12cfe6e40ef238e715534efebb0f0d005552ac` was pushed without force or
+  remote divergence.
+- GitHub Pages workflow
+  [30002770407](https://github.com/DaveArcher18/homology-db/actions/runs/30002770407)
+  completed successfully in 11 seconds. Its Node 20-to-24 action-runtime
+  deprecation annotation was non-blocking; checkout, preparation, upload, and
+  deployment all passed.
+- <https://davearcher18.github.io/homology-db/> returned HTTP 200 with
+  `text/html; charset=utf-8`, a 4,172,476-byte body, and SHA-256
+  `7ae2d0a8a1b1d94b2aa11294d345c1ba1079fb56af98d82196ea8e59eca1a178`.
+  `cmp` confirmed byte identity with `dist/atlas.html`.
+- The live body embeds read model `/3`, clean source commit
+  `f9fd94c24b4260d543e5e7961204ffe8079e5a2c`, source-input SHA-256
+  `b75af4d4e34d5f28a56680cee51d23cbc60a42785039d6daedb077a52eb7cf23`,
+  and `source_inputs_dirty = false`.
