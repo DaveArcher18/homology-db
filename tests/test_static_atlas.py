@@ -386,7 +386,6 @@ console.log(JSON.stringify({
                 'id="family-toggle"',
                 'id="about-toggle"',
                 'id="atlas-index"',
-                'id="family-outline"',
                 'id="atlas-document"',
                 "function parseRoute",
                 "function renderRoute",
@@ -438,7 +437,7 @@ console.log(JSON.stringify({
                 "Computation runs",
                 "Data quality",
                 "Source locator",
-                "Evidence, sketches & citations",
+                "Model & sources",
                 "Classification & record",
                 "serializedSpaceRecord",
                 "JSON.stringify(space, null, 2)",
@@ -512,11 +511,9 @@ console.log(JSON.stringify({
                 'atlasIndex.addEventListener("click"',
                 "if (!open && snapshotAbout.open)",
                 "snapshotAbout.open = false",
-                '"Coefficient-ring definition"',
-                '"Coverage definition"',
-                '"Evidence definition"',
+                'buildKnowl("ordinary-homology", "Definition")',
+                'buildKnowl("model", "What is a Model?")',
                 'summary.setAttribute("aria-label", "Provenance")',
-                'feedbackBand.setAttribute("aria-labelledby"',
                 'role", "region"',
                 '"aria-labelledby"',
                 "definition.assertion_evidence",
@@ -525,6 +522,56 @@ console.log(JSON.stringify({
                 'setAttribute("headers"',
             ):
                 self.assertIn(accessibility_contract, html)
+
+    def test_generated_atlas_limits_the_public_surface_to_finished_features(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            database_path = directory / "chromatic.sqlite3"
+            output_path = directory / "atlas.html"
+            ChromaticDatabase.build(database_path)
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--database",
+                    str(database_path),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+
+            html = output_path.read_text(encoding="utf-8")
+            for simplified_contract in (
+                "const reviewModeEnabled =",
+                "new URLSearchParams(window.location.search).get",
+                'window.location.search).get("review") === "1"',
+                "const familySearchThreshold = 8",
+                "if (members.length > familySearchThreshold)",
+                "showAllOnEmpty: false",
+                "const visibleMatches =",
+                "view.append(hero, familySection)",
+                "item.append(main)",
+                "if (relations.length) records.append(relationBlock.details)",
+                "if (qualityIssueCount) records.append(qualityBlock.details)",
+                "if (reviewModeEnabled)",
+                "route-view h1[tabindex=\"-1\"]:focus",
+            ):
+                self.assertIn(simplified_contract, html)
+            for removed_public_chrome in (
+                'id="family-outline"',
+                "view.append(feedbackBand)",
+                "home-stats snapshot-stats",
+                "atlas-principles home-section",
+                "snapshot-scope home-section",
+                '"space-result-summary"',
+            ):
+                self.assertNotIn(removed_public_chrome, html)
 
     def test_presentation_contracts_execute_as_pure_javascript(self) -> None:
         script = r"""

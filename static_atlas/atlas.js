@@ -32,6 +32,9 @@
 
   const issueEndpoint = "https://github.com/DaveArcher18/homology-db/issues/new";
   const themeStorageKey = "homology-atlas-theme-v1";
+  const reviewModeEnabled =
+    new URLSearchParams(window.location.search).get("review") === "1";
+  const familySearchThreshold = 8;
   const themeLabels = Object.freeze({
     system: "System",
     light: "Light",
@@ -55,6 +58,7 @@
 
   const siteBrand = document.getElementById("site-brand");
   const requestSpace = document.getElementById("request-space");
+  const requestSpaceIndex = document.getElementById("request-space-index");
   const aboutToggle = document.getElementById("about-toggle");
   const themeMenu = document.getElementById("theme-menu");
   const themeSummary = themeMenu.querySelector(":scope > summary");
@@ -119,6 +123,18 @@
       element("dt", "", term),
       element("dd", "", displayValue(description)),
     );
+  }
+
+  function appendRecordedDefinition(list, term, description) {
+    if (
+      description === undefined
+      || description === null
+      || description === ""
+      || (Array.isArray(description) && !description.length)
+    ) {
+      return;
+    }
+    appendDefinition(list, term, description);
   }
 
   function propertyValue(space, key) {
@@ -670,7 +686,7 @@
       : `Dimension ${dimension}`;
   }
 
-  function buildSpaceResultItem(space) {
+  function buildSpaceResultItem(space, { showFamily = true } = {}) {
     const family = familyFor(space);
     const item = element("li", "space-result space-list-item");
     const main = element("div", "space-list-main");
@@ -681,27 +697,14 @@
     plainName.setAttribute("aria-hidden", "true");
     primary.append(plainName);
     const meta = element("p", "space-result-meta");
-    if (family) {
+    if (family && showFamily) {
       const familyLink = element("a", "family-inline-link", family.label);
       familyLink.href = `#family-${family.id}`;
       meta.append(familyLink, document.createTextNode(" · "));
     }
     meta.append(document.createTextNode(memberMeta(space)));
-    const summary = element(
-      "p",
-      "space-result-summary",
-      space.summary ?? "No summary recorded.",
-    );
-    const defaultRows = homologyRows(space, {
-      coefficient: availableCoefficients(space).includes("Z")
-        ? "Z"
-        : availableCoefficients(space)[0],
-      reduced: false,
-    });
-    main.append(primary, meta, summary);
-    const aside = element("div", "space-list-meta compact-coverage");
-    aside.append(buildCoverageBadge(space, defaultRows));
-    item.append(main, aside);
+    main.append(primary, meta);
+    item.append(main);
     return item;
   }
 
@@ -725,7 +728,12 @@
       .map((item) => item.space);
   }
 
-  function buildSpaceSearch(spaces, scopeKey, label) {
+  function buildSpaceSearch(
+    spaces,
+    scopeKey,
+    label,
+    { showAllOnEmpty = true } = {},
+  ) {
     const section = element("section", "space-search-section");
     const form = element("form", "space-search directory-tools");
     form.setAttribute("role", "search");
@@ -759,12 +767,20 @@
       const query = input.value;
       state.queriesByScope.set(scopeKey, query);
       const matches = rankedSpaces(spaces, query);
+      const visibleMatches =
+        (query.trim() || showAllOnEmpty) ? matches : [];
       results.replaceChildren();
-      matches.forEach((space) => results.append(buildSpaceResultItem(space)));
+      visibleMatches.forEach((space) =>
+        results.append(buildSpaceResultItem(space)),
+      );
       status.textContent = query.trim()
         ? `${matches.length} match${matches.length === 1 ? "" : "es"}`
-        : `${matches.length} space${matches.length === 1 ? "" : "s"}`;
-      if (!matches.length) {
+        : (
+          showAllOnEmpty
+            ? `${matches.length} space${matches.length === 1 ? "" : "s"}`
+            : `Search ${matches.length} spaces by name, family, or alias.`
+        );
+      if (query.trim() && !matches.length) {
         results.append(
           element(
             "li",
@@ -827,10 +843,7 @@
           `${asArray(section.conceptual_space_ids).length}`,
         ),
       );
-      item.append(
-        heading,
-        element("p", "", section.summary),
-      );
+      item.append(heading);
       list.append(item);
     });
     return list;
@@ -849,41 +862,12 @@
         "Browse ordinary homology, concrete models, and provenance for a focused collection of familiar spaces.",
       ),
     );
-    const explanation = element("p", "home-explanation");
-    explanation.append(
-      document.createTextNode("Each "),
-      buildKnowl("conceptual-space", "conceptual space"),
-      document.createTextNode(
-        " has its own page, with coefficient choices and coverage stated where you use them.",
-      ),
-    );
-    heroCopy.append(explanation);
     const actions = element("div", "hero-actions");
     const explore = element("a", "primary-action", "Explore spaces");
     explore.href = "#spaces";
-    const request = outboundLink(
-      "Request a space ↗",
-      requestSpaceUrl(),
-      "Request a space",
-    );
     actions.append(explore);
-    if (request) {
-      request.classList.add("secondary-action");
-      actions.append(request);
-    }
     heroCopy.append(actions);
-    const stats = element("dl", "home-stats snapshot-stats");
-    [
-      ["Spaces", snapshot.conceptual_space_count ?? conceptualSpaces.length],
-      ["Families", sections.length],
-      ["Homology rows", snapshot.homology_row_count ?? "—"],
-      ["Cited sources", snapshot.citation_count ?? "—"],
-    ].forEach(([term, value]) => {
-      const item = element("div");
-      item.append(element("dt", "", term), element("dd", "", value));
-      stats.append(item);
-    });
-    hero.append(heroCopy, stats);
+    hero.append(heroCopy);
 
     const familySection = element("section", "home-families home-section");
     const familyHeading = element("div", "section-heading");
@@ -892,59 +876,13 @@
     );
     familyHeading.firstElementChild.append(
       element("p", "section-kicker", "Start with a family"),
-      element("h2", "", "From points to classifying spaces"),
+      element("h2", "", "Browse familiar families"),
     );
     const allFamilies = element("a", "text-link", "See every family");
     allFamilies.href = "#spaces";
     familyHeading.append(allFamilies);
     familySection.append(familyHeading, buildFamilyDirectory(6));
-
-    const principles = element("section", "atlas-principles home-section");
-    principles.append(element("h2", "", "How to read the atlas"));
-    const principleList = element("div", "principle-list");
-    const principlesData = [
-      [
-        "Choose locally",
-        "Coefficient rings and reduced or unreduced homology are selected on each space page—not across the collection.",
-        "coefficient-ring",
-        "Coefficient-ring definition",
-      ],
-      [
-        "Read the coverage",
-        "Green means the selected finite calculation is exhaustive; amber marks a bounded computation with no claim above the stated degree.",
-        "coverage",
-        "Coverage definition",
-      ],
-      [
-        "Follow the evidence",
-        "Models, computations, citations, and raw records remain attached to the mathematical subject they support.",
-        "evidence",
-        "Evidence definition",
-      ],
-    ];
-    principlesData.forEach(([title, body, knowl, knowlLabel]) => {
-      const item = element("section", "principle");
-      item.append(
-        element("h3", "", title),
-        element("p", "", body),
-        buildKnowl(knowl, knowlLabel),
-      );
-      principleList.append(item);
-    });
-    principles.append(principleList);
-
-    const scope = element("section", "snapshot-scope home-section");
-    scope.append(
-      element("p", "section-kicker", "Current snapshot"),
-      element("h2", "", snapshot.snapshot_name ?? "Development snapshot"),
-      element("p", "", snapshot.scope_note ?? "No scope note is recorded."),
-      element(
-        "p",
-        "snapshot-warning",
-        `Status: ${humanize(snapshot.release_status)}.`,
-      ),
-    );
-    view.append(hero, familySection, principles, scope);
+    view.append(hero, familySection);
     return view;
   }
 
@@ -962,22 +900,22 @@
       ),
     );
 
-    const directory = element("section", "directory-section");
-    directory.append(
-      element("h2", "", "Families"),
-      element(
-        "p",
-        "section-intro",
-        "Families collect related spaces and explain their shared construction or role.",
-      ),
-      buildFamilyDirectory(),
-    );
     const allSpaces = element("section", "all-spaces-section");
     allSpaces.append(
       element("h2", "", "All spaces"),
-      buildSpaceSearch(conceptualSpaces, "spaces", "Search all spaces"),
+      buildSpaceSearch(
+        conceptualSpaces,
+        "spaces",
+        "Search all spaces",
+        { showAllOnEmpty: false },
+      ),
     );
-    view.append(directory, allSpaces);
+    const directory = element("section", "directory-section");
+    directory.append(
+      element("h2", "", "Browse by family"),
+      buildFamilyDirectory(),
+    );
+    view.append(allSpaces, directory);
     return view;
   }
 
@@ -993,21 +931,15 @@
         { label: section.label },
       ]),
     );
+    const familyIntroduction = [
+      section.summary,
+      section.chromatic_relevance ?? section.relevance,
+    ].filter(Boolean).join(" ");
     const header = pageHeader(
       section.label,
       `${members.length} space${members.length === 1 ? "" : "s"} in this snapshot`,
-      section.summary,
+      familyIntroduction,
     );
-    const relevance = element("p", "family-relevance");
-    relevance.append(
-      element("strong", "", "Why this family matters. "),
-      document.createTextNode(
-        section.chromatic_relevance
-          ?? section.relevance
-          ?? "No family relevance note is recorded.",
-      ),
-    );
-    header.append(relevance);
     const feedback = outboundLink(
       "Correct or improve this family ↗",
       familyFeedbackUrl(section),
@@ -1020,33 +952,23 @@
     view.append(header);
 
     const browse = element("section", "family-members-section home-section");
-    browse.append(
-      element("h2", "", `Spaces in ${section.label}`),
-      buildSpaceSearch(
-        members,
-        `family-${section.id}`,
-        "Search this family",
-      ),
-    );
-    const footer = element("aside", "feedback-band feedback-section");
-    const footerHeading = element("h2", "", "Help improve this family");
-    footerHeading.id = `family-feedback-title-${section.id}`;
-    footer.setAttribute("aria-labelledby", footerHeading.id);
-    footer.append(
-      footerHeading,
-      element(
-        "p",
-        "",
-        "Report an incorrect member, suggest a better parameterization or computation, or ask for another example.",
-      ),
-    );
-    const footerFeedback = outboundLink(
-      "Open the family feedback form ↗",
-      familyFeedbackUrl(section),
-      `Open feedback form for ${section.label}`,
-    );
-    if (footerFeedback) footer.append(footerFeedback);
-    view.append(browse, footer);
+    browse.append(element("h2", "", `Spaces in ${section.label}`));
+    if (members.length > familySearchThreshold) {
+      browse.append(
+        buildSpaceSearch(
+          members,
+          `family-${section.id}`,
+          "Search this family",
+        ),
+      );
+    } else {
+      const memberList = element("ol", "space-results space-list");
+      members.forEach((space) =>
+        memberList.append(buildSpaceResultItem(space, { showFamily: false })),
+      );
+      browse.append(memberList);
+    }
+    view.append(browse);
     return view;
   }
 
@@ -1127,6 +1049,18 @@
     return controls;
   }
 
+  function hasRepeatedSummand(rows) {
+    return rows.some((row) => {
+      if ((row.group?.free_rank ?? 0) > 1) return true;
+      const counts = new Map();
+      return asArray(row.group?.torsion_orders).some((order) => {
+        const count = (counts.get(order) ?? 0) + 1;
+        counts.set(order, count);
+        return count > 1;
+      });
+    });
+  }
+
   function renderHomology(space, host) {
     const dynamic = host.querySelector(".homology-dynamic");
     const view = homologyViewFor(space);
@@ -1147,29 +1081,31 @@
       "homology-convention",
       `Ordinary homology · ${view.reduced ? "reduced" : "unreduced"} · ${coefficientDisplay(view.coefficient)} coefficients`,
     );
-    const conventionNote = element("span", "convention-note");
-    conventionNote.append(
-      document.createTextNode(" Convention metadata: "),
-      document.createTextNode(
-        humanize(
-          rows[0]?.homology_convention
-            ?? rows[0]?.convention_state
-            ?? snapshot.homology_convention_state,
-        ),
-      ),
-      document.createTextNode(". "),
-      buildKnowl("ordinary-homology", "What is homology?"),
-    );
-    convention.append(conventionNote);
     content.append(
       convention,
-      buildCoverageBadge(space, rows, { withDefinitions: true }),
+      buildCoverageBadge(space, rows),
     );
-    const notation = element("p", "table-note");
-    notation.append(
-      buildKnowl("direct-sum-notation", "How repeated summands are written"),
-    );
-    content.append(notation);
+    if (reviewModeEnabled) {
+      const conventionNote = element("p", "convention-note review-only");
+      conventionNote.append(
+        document.createTextNode("Convention metadata: "),
+        document.createTextNode(
+          humanize(
+            rows[0]?.homology_convention
+              ?? rows[0]?.convention_state
+              ?? snapshot.homology_convention_state,
+          ),
+        ),
+      );
+      content.append(conventionNote);
+    }
+    if (hasRepeatedSummand(rows)) {
+      const notation = element("p", "table-note");
+      notation.append(
+        buildKnowl("direct-sum-notation", "Direct-sum notation"),
+      );
+      content.append(notation);
+    }
 
     const tableWrap = element("div", "homology-table-wrap");
     const table = element("table", "homology-table");
@@ -1252,10 +1188,10 @@
   function detailsBlock(title, count) {
     const details = element("details", "detail-section");
     const summary = element("summary");
-    summary.append(
-      element("span", "detail-title", title),
-      element("span", "detail-count", String(count)),
-    );
+    summary.append(element("span", "detail-title", title));
+    if (count !== undefined) {
+      summary.append(element("span", "detail-count", String(count)));
+    }
     const content = element("div", "detail-content");
     details.append(summary, content);
     return { details, content };
@@ -1305,16 +1241,20 @@
       appendDefinition(list, "Status", humanize(model.status));
       appendDefinition(list, "Construction", model.construction);
       appendDefinition(list, "Cells", renderCellDescription(model));
-      appendDefinition(list, "Attaching map", model.attaching_map);
-      appendDefinition(list, "Cellular boundary", model.boundary_formula);
-      appendDefinition(list, "Scope", firstRecorded(model.model_scope, model.scope));
-      appendDefinition(
+      appendRecordedDefinition(list, "Attaching map", model.attaching_map);
+      appendRecordedDefinition(list, "Cellular boundary", model.boundary_formula);
+      appendRecordedDefinition(
+        list,
+        "Scope",
+        firstRecorded(model.model_scope, model.scope),
+      );
+      appendRecordedDefinition(
         list,
         "Checked artifact",
         firstRecorded(model.artifact_path, model.artifact),
       );
-      appendDefinition(list, "Artifact SHA-256", model.artifact_sha256);
-      appendDefinition(
+      appendRecordedDefinition(list, "Artifact SHA-256", model.artifact_sha256);
+      appendRecordedDefinition(
         list,
         "Cellular-chain SHA-256",
         firstRecorded(model.input_sha256, model.chain_sha256),
@@ -1537,16 +1477,23 @@
     const summary = element("aside", "provenance-summary");
     summary.setAttribute("aria-label", "Provenance");
     const copy = element("div");
+    const source =
+      outboundLink(
+        `${sourceTitle} ↗`,
+        typeof firstCitation === "object" ? firstCitation?.url : null,
+        `Open source: ${sourceTitle}`,
+      )
+      ?? element("strong", "", sourceTitle);
     copy.append(
-      element("p", "section-kicker", "Provenance"),
-      element("strong", "", sourceTitle),
+      element("span", "provenance-label", "Source"),
+      source,
       element(
         "span",
-        "",
+        "provenance-reliability",
         humanize(firstEvidence?.reliability ?? "reliability not recorded"),
       ),
     );
-    summary.append(copy, buildKnowl("evidence", "What counts as evidence?"));
+    summary.append(copy);
     return summary;
   }
 
@@ -1612,7 +1559,6 @@
 
     const header = element("header", "space-header");
     const titleCopy = element("div", "space-title-copy");
-    titleCopy.append(element("p", "page-kicker", family?.label ?? "Space"));
     const heading = element("h1", "space-title");
     heading.append(mathName(space, "space-title-math"));
     titleCopy.append(
@@ -1620,42 +1566,43 @@
       element("p", "space-plain-name", space.name.plain),
       element("p", "space-summary", space.summary),
     );
-    const relevance = element("p", "space-relevance");
-    relevance.append(
-      element("strong", "", "Why it matters. "),
-      document.createTextNode(space.chromatic_relevance ?? ""),
-    );
-    titleCopy.append(relevance);
-    const actions = element("div", "space-actions permalink-actions");
     const feedback = outboundLink(
       "Correct or improve ↗",
       spaceFeedbackUrl(space),
       `Give feedback on ${space.name.plain}`,
     );
     if (feedback) {
-      feedback.classList.add("primary-action");
-      actions.append(feedback);
+      feedback.classList.add("context-feedback-link");
+      titleCopy.append(feedback);
     }
-    const copyLink = element("button", "text-button", "Copy link");
-    copyLink.type = "button";
-    copyLink.addEventListener("click", () =>
-      copyText(permalinkFor(space), copyLink),
-    );
-    const reviewToggle = element(
-      "button",
-      "text-button review-toggle",
-      "Review details",
-    );
-    reviewToggle.type = "button";
-    reviewToggle.setAttribute("aria-pressed", "false");
-    actions.append(copyLink, reviewToggle);
-    header.append(titleCopy, actions);
+    let reviewToggle = null;
+    header.append(titleCopy);
+    if (reviewModeEnabled) {
+      const actions = element("div", "space-actions permalink-actions");
+      const copyLink = element("button", "text-button", "Copy link");
+      copyLink.type = "button";
+      copyLink.addEventListener("click", () =>
+        copyText(permalinkFor(space), copyLink),
+      );
+      reviewToggle = element(
+        "button",
+        "text-button review-toggle",
+        "Review details",
+      );
+      reviewToggle.type = "button";
+      reviewToggle.setAttribute("aria-pressed", "false");
+      actions.append(copyLink, reviewToggle);
+      header.append(actions);
+    }
     view.append(header);
 
     const metadata = element("dl", "space-metadata");
+    const dimension = spaceDimension(space);
+    const dimensionLabel = isInfiniteFiniteType(space)
+      ? "Infinite dimensional · finite type"
+      : (dimension ?? "Not recorded");
     const metadataItems = [
-      ["Family", family?.label ?? "Not recorded"],
-      ["Dimension", memberMeta(space)],
+      ["Dimension", dimensionLabel],
       ["Aliases", asArray(space.aliases).join(", ") || "None recorded"],
     ];
     metadataItems.forEach(([term, description]) => {
@@ -1698,66 +1645,62 @@
       "section",
       "record-details entry-details evidence-details space-section",
     );
-    records.append(element("h2", "", "Models, evidence, and records"));
-    records.append(
-      element(
-        "p",
-        "review-mode-note review-only",
-        "Review details are open: exact row states and IDs, provenance, computation metadata, data-quality fields, and the full atlas record are visible.",
-      ),
-    );
-    const models = modelRecords(space);
-    const modelBlock = detailsBlock("Models & constructions", models.length);
+    records.append(element("h2", "", "Further details"));
+    const modelBlock = detailsBlock("Model & sources");
     const modelDefinition = element("p", "detail-definition");
     modelDefinition.append(buildKnowl("model", "What is a Model?"));
     modelBlock.content.append(modelDefinition);
     renderModels(space, modelBlock.content);
+    renderEvidence(space, modelBlock.content);
+    records.append(modelBlock.details);
+
     const relations = asArray(space.relations);
     const relationBlock = detailsBlock("Relationships", relations.length);
     renderRelations(space, relationBlock.content);
-    const evidence = evidenceRecords(space);
-    const evidenceBlock = detailsBlock(
-      "Evidence, sketches & citations",
-      evidence.length,
-    );
-    renderEvidence(space, evidenceBlock.content);
-    const computations = computationRecords(space);
-    const computationBlock = detailsBlock(
-      "Computation runs",
-      computations.length,
-    );
-    renderComputations(space, computationBlock.content);
-    const qualityBlock = detailsBlock(
-      "Data quality",
-      asArray(space.data_quality?.missing_required_fields).length,
-    );
-    const qualityList = element("dl", "record-list");
-    appendDefinition(
-      qualityList,
-      "Exporter state",
-      space.data_quality?.state,
-    );
-    appendDefinition(
-      qualityList,
-      "Missing required fields",
-      asArray(space.data_quality?.missing_required_fields),
-    );
-    appendDefinition(
-      qualityList,
-      "Malformed fields",
-      asArray(space.data_quality?.malformed_fields),
-    );
-    qualityBlock.content.append(qualityList);
-    records.append(
-      modelBlock.details,
-      relationBlock.details,
-      evidenceBlock.details,
-      computationBlock.details,
-      qualityBlock.details,
-      buildClassificationBlock(space),
-    );
+    if (relations.length) records.append(relationBlock.details);
+
+    if (reviewModeEnabled) {
+      const reviewNote = element(
+        "p",
+        "review-mode-note review-only",
+        "Review details include exact row states and IDs, computation metadata, data-quality fields, and the full atlas record.",
+      );
+      records.insertBefore(reviewNote, records.children[1] ?? null);
+      const computations = computationRecords(space);
+      const computationBlock = detailsBlock(
+        "Computation runs",
+        computations.length,
+      );
+      renderComputations(space, computationBlock.content);
+      if (computations.length) records.append(computationBlock.details);
+
+      const missingFields =
+        asArray(space.data_quality?.missing_required_fields);
+      const malformedFields = asArray(space.data_quality?.malformed_fields);
+      const qualityIssueCount = missingFields.length + malformedFields.length;
+      const qualityBlock = detailsBlock("Data quality", qualityIssueCount);
+      const qualityList = element("dl", "record-list");
+      appendDefinition(
+        qualityList,
+        "Exporter state",
+        space.data_quality?.state,
+      );
+      appendRecordedDefinition(
+        qualityList,
+        "Missing required fields",
+        missingFields,
+      );
+      appendRecordedDefinition(
+        qualityList,
+        "Malformed fields",
+        malformedFields,
+      );
+      qualityBlock.content.append(qualityList);
+      if (qualityIssueCount) records.append(qualityBlock.details);
+      records.append(buildClassificationBlock(space));
+    }
     view.append(records);
-    reviewToggle.addEventListener("click", () => {
+    reviewToggle?.addEventListener("click", () => {
       const enabled = reviewToggle.getAttribute("aria-pressed") !== "true";
       reviewToggle.setAttribute("aria-pressed", String(enabled));
       reviewToggle.textContent = enabled ? "Hide review details" : "Review details";
@@ -1771,49 +1714,6 @@
           : `Review details closed for ${space.name.plain}.`,
       );
     });
-
-    const feedbackBand = element(
-      "aside",
-      "feedback-band feedback-section",
-    );
-    const feedbackHeading = element(
-      "h2",
-      "",
-      `Know something better about ${space.name.plain}?`,
-    );
-    feedbackHeading.id = `space-feedback-title-${space.slug}`;
-    feedbackBand.setAttribute("aria-labelledby", feedbackHeading.id);
-    feedbackBand.append(
-      feedbackHeading,
-      element(
-        "p",
-        "",
-        "Report a correctness issue, share a stronger computation or model, or request a related space.",
-      ),
-    );
-    const feedbackActions = element("div", "feedback-actions");
-    const spaceFeedback = outboundLink(
-      "Submit space feedback ↗",
-      spaceFeedbackUrl(space),
-      `Open feedback form for ${space.name.plain}`,
-    );
-    const familyFeedback = family
-      ? outboundLink(
-        "Comment on the family ↗",
-        familyFeedbackUrl(family),
-        `Open feedback form for ${family.label}`,
-      )
-      : null;
-    const request = outboundLink(
-      "Request another space ↗",
-      requestSpaceUrl(),
-      "Request another space",
-    );
-    [spaceFeedback, familyFeedback, request].filter(Boolean).forEach((link) => {
-      feedbackActions.append(link);
-    });
-    feedbackBand.append(feedbackActions);
-    view.append(feedbackBand);
     return view;
   }
 
@@ -1946,6 +1846,7 @@
   }
 
   function buildFamilyNavigation() {
+    if (!familyOutline) return;
     familyOutline.replaceChildren();
     const list = element("ol", "family-nav-list");
     sections.forEach((section) => {
@@ -2095,6 +1996,7 @@
 
   function configureUtilities() {
     requestSpace.href = requestSpaceUrl();
+    requestSpaceIndex.href = requestSpaceUrl();
     familyToggle.addEventListener("click", () => {
       if (atlasIndex.classList.contains("is-open")) closeIndex(true);
       else openIndex();
@@ -2130,8 +2032,10 @@
     themeMenu.addEventListener("change", (event) => {
       if (!event.target.matches('input[name="theme-preference"]')) return;
       applyThemePreference(event.target.value);
-      themeMenu.open = false;
-      themeSummary.focus();
+      window.setTimeout(() => {
+        themeMenu.open = false;
+        themeSummary.focus();
+      }, 0);
     });
     window.addEventListener("storage", (event) => {
       if (event.key === themeStorageKey) {

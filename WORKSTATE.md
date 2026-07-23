@@ -1,16 +1,14 @@
 # Work state
 
-Status: COMPLETE
+Status: ACTIVE
 
 ## Objective
 
-Implement Gabriel Ong's information-architecture and mathematical-display
-feedback for the 42-space Chromatic Homology Atlas: add a real landing page,
-Spaces and family landing views, focused Conceptual-space pages with local
-coefficient controls, TeX-quality names, compact repeated direct sums,
-definition knowls, restrained tags, and explicit exhaustive/bounded coverage
-badges. Preserve Snapshot identity, provenance, uncertainty, feedback,
-permalinks, print, themes, review records, and keyboard accessibility.
+Simplify the public 42-space Chromatic Homology Atlas to the routes and
+interactions that are complete and useful now. Correct desktop and mobile
+alignment, reduce repeated copy and control density, hide unfinished or empty
+record sections while preserving their data and renderers in the repository,
+and publish the visually reviewed result to the existing GitHub Pages URL.
 
 ## Active map
 
@@ -26,15 +24,42 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Implement Gabriel's atlas IA and mathematical-display review`, completed by
-`/root (interactive chat)` on 2026-07-23.
+`Production-surface simplification and visual QA`, claimed by `/root
+(interactive chat)` on 2026-07-23.
 
 ## Active run lease
 
-None — the Gabriel-feedback implementation and public deployment are complete.
+`/root (interactive chat)` holds the active implementation and release lease.
 
 ## Last checkpoint
 
+- The production-surface simplification now passes focused route, rendering,
+  theme, and accessibility contracts plus JavaScript/Python syntax and diff
+  checks. Browser QA at 1280×800 and 390×844 covers Home, Spaces, Spheres,
+  object pages, the reduced mobile drawer, search and keyboard result
+  navigation, local coefficient/convention changes, populated and unpopulated
+  record disclosures, `?review=1`, and both Light and Dark themes. There is no
+  horizontal overflow or console error. Normal object pages expose one
+  feedback link, Homology, provenance, one populated Model & sources
+  disclosure, and Relationships only when present; review-only computations,
+  record JSON, and quality diagnostics remain available only behind
+  `?review=1`. The full 66-test run has 65 passing tests; the sole expected
+  failure is checked-in-artifact parity because the previous public artifact
+  has deliberately not yet been regenerated. Exact next action: commit the
+  reviewed source surface, perform the fixed-point two-axis review, then build
+  and verify the deterministic release artifact from that clean source commit.
+- Live visual QA at 1280×800 and 390×844 found four public-surface defects:
+  the 17-family rail dominates every route; programmatic route focus draws a
+  giant box around page headings; family and space pages repeat summaries and
+  feedback actions; and object pages advertise zero-count or validator-only
+  disclosures alongside the finished homology result. There is no horizontal
+  overflow at 390 pixels, so the narrow-layout issue is density and hierarchy,
+  not clipping. The fixed release scope is now Home, browse/search, compact
+  family/member routes, local coefficient and convention controls, the
+  homology table and coverage statement, one concise provenance line, and one
+  feedback path. Dormant record data and helper functions remain in source.
+  Exact next action: express the reduced public contract in focused tests,
+  simplify the route builders, then tighten the shared responsive CSS.
 - Commits through `1f12cfe` were pushed to synchronized `main` without force or
   remote divergence. GitHub Pages run
   `30002770407` completed successfully in 11 seconds. The public URL returned
