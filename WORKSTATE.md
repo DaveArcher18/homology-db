@@ -1,17 +1,15 @@
 # Work state
 
-Status: COMPLETE
+Status: ACTIVE
 
 ## Objective
 
-Research, implement, deploy, and test a calmer UI/UX for the 42-space
-Chromatic Homology Atlas. Reduce box and border density, preserve the
-continuous mathematical document, add accessible light/dark/system themes,
-and retain every data, provenance, feedback, permalink, print, and review
-behavior from the deployed release. Global unmodified `/`, `j`, `k`, and Arrow
-shortcuts are the deliberate exception: the redesign removes them under WCAG
-2.1.4 while preserving keyboard operation through native controls, Enter,
-Escape, visible focus, and modal focus return.
+Redesign and redeploy the 42-space Chromatic Homology Atlas menus and family
+browsing after direct user feedback. Replace the form-like command area and
+flat family list with compact, coherent controls and a family-first outline
+that makes each family's narrative and members legible. Preserve the
+continuous mathematical document, data, provenance, themes, feedback,
+permalinks, print, review, and accessible keyboard behavior.
 
 ## Active map
 
@@ -27,16 +25,20 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Research and deploy atlas UI/UX redesign`, claimed by `/root (interactive
-chat)` on 2026-07-23.
+`Redesign menus and family browsing`, claimed by `/root (interactive chat)` on
+2026-07-23.
 
 ## Active run lease
 
-Released after the redesign, review, push, Pages deployment, and live
-verification completed on 2026-07-23.
+`/root (interactive chat)` — active while redesigning, reviewing, testing,
+pushing, and redeploying the menu/family iteration.
 
 ## Last checkpoint
 
+- This iteration starts from clean, synchronized `main` at `ccb6465`. The
+  deployed redesign is byte-verified and mathematically fixed; direct user
+  feedback identifies the remaining problem as menu quality and weak family
+  browsing, not data or theme correctness.
 - The redesign starts from clean, synchronized `main` at `980b498` and the
   byte-verified live Snapshot `chromatic-16e4f2be46edd93a`. Mathematical data
   and read-model semantics are fixed inputs; this ticket changes presentation
@@ -234,9 +236,10 @@ verification completed on 2026-07-23.
 
 ## Exact next action
 
-No implementation or deployment action remains. Collect task-based feedback
-from intended users through the visible space/family/request forms, especially
-on mathematical scanning and terminology, before another layout expansion.
+Replace the oversized form-like toolbar and flat 17-button family list with a
+compact command bar, hierarchical family/member outline, and family-level
+member navigation; then run focused/full tests and visual/accessibility review
+before rebuilding, pushing `main`, and verifying GitHub Pages byte-for-byte.
 
 ## Verification state
 

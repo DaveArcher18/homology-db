@@ -200,7 +200,9 @@ class StaticAtlasTest(unittest.TestCase):
             self.assertNotRegex(html, r'<link[^>]+rel=["\']stylesheet["\']')
             self.assertNotRegex(html, r"url\(\s*[\"']?https?://")
 
-    def test_generated_atlas_exposes_the_browse_and_review_controls(self) -> None:
+    def test_generated_atlas_exposes_family_first_browse_and_review_controls(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
             database_path = directory / "chromatic.sqlite3"
@@ -224,16 +226,23 @@ class StaticAtlasTest(unittest.TestCase):
             html = output_path.read_text(encoding="utf-8")
             for required_control in (
                 'id="atlas-search"',
-                'id="coefficient-filter"',
+                'class="coefficient-switcher"',
+                'input.name = "coefficient"',
                 'id="reduced-filter"',
                 'id="reliability-filter"',
                 'id="review-toggle"',
-                'id="browse-control"',
+                'id="family-toggle"',
                 'id="about-toggle"',
                 'id="atlas-index"',
+                'id="family-outline"',
                 'id="atlas-document"',
                 'id="result-status"',
                 'id="generated-at"',
+                "family-outline-group",
+                "family-member-list",
+                "Show only this family",
+                "Members in this snapshot",
+                'href = `#family-${section.id}`',
                 "Copy link",
                 "Copy JSON",
                 "Download JSON",
@@ -245,6 +254,9 @@ class StaticAtlasTest(unittest.TestCase):
                 "JSON.stringify(space.raw",
             ):
                 self.assertIn(required_control, html)
+            self.assertNotIn('id="family-filter"', html)
+            self.assertNotIn('id="space-index-disclosure"', html)
+            self.assertNotIn('id="browse-control"', html)
 
     def test_generated_atlas_supports_progressive_filters_and_theme_preferences(
         self,
@@ -272,10 +284,11 @@ class StaticAtlasTest(unittest.TestCase):
             html = output_path.read_text(encoding="utf-8")
             for theme_contract in (
                 '<meta name="color-scheme" content="light dark">',
-                'id="theme-select"',
-                '<option value="system">System</option>',
-                '<option value="light">Light</option>',
-                '<option value="dark">Dark</option>',
+                'id="theme-menu"',
+                'name="theme-preference"',
+                'value="system"',
+                'value="light"',
+                'value="dark"',
                 "homology-atlas-theme-v1",
                 "prefers-color-scheme: dark",
                 'window.addEventListener("storage"',
@@ -286,9 +299,11 @@ class StaticAtlasTest(unittest.TestCase):
                 'id="active-filter-count"',
                 'id="index-close"',
                 'id="index-backdrop"',
-                'tabindex="-1" aria-label="Close atlas index"',
+                'id="filter-close"',
+                'tabindex="-1" aria-label="Close family browser"',
                 'aria-controls="snapshot-about"',
                 "backgroundInertTargets",
+                "trapIndexFocus",
                 'atlasIndex.setAttribute("aria-modal"',
                 "filterDisclosure.open = false",
                 '"h4", "details-heading"',

@@ -5,6 +5,9 @@
   const snapshot = atlas.snapshot ?? {};
   const conceptualSpaces = Array.isArray(atlas.conceptual_spaces) ? atlas.conceptual_spaces : [];
   const sections = Array.isArray(atlas.sections) ? atlas.sections : [];
+  const supportedCoefficients = Array.isArray(snapshot.supported_coefficients) && snapshot.supported_coefficients.length
+    ? snapshot.supported_coefficients
+    : ["Z"];
   const issueEndpoint = "https://github.com/DaveArcher18/homology-db/issues/new";
   const themeStorageKey = "homology-atlas-theme-v1";
   const coefficientLabels = Object.freeze({
@@ -14,9 +17,17 @@
     F5: "𝔽₅",
     F7: "𝔽₇",
   });
+  const themeLabels = Object.freeze({
+    system: "System",
+    light: "Light",
+    dark: "Dark",
+  });
   const spacesById = new Map(conceptualSpaces.map((space) => [space.id, space]));
   const entriesById = new Map();
   const sectionsById = new Map();
+  const familyOutlineNodes = new Map();
+  const familyNavigationLinks = new Map();
+  const spaceNavigationLinks = new Map();
   const selectionTimers = new Map();
   const narrowIndexMedia = window.matchMedia("(max-width: 58rem)");
   const state = {
@@ -34,31 +45,35 @@
 
   const searchInput = document.getElementById("atlas-search");
   const atlasControls = document.getElementById("atlas-controls");
-  const coefficientFilter = document.getElementById("coefficient-filter");
+  const coefficientSwitcher = document.getElementById("coefficient-switcher");
   const reducedFilter = document.getElementById("reduced-filter");
-  const familyFilter = document.getElementById("family-filter");
   const dimensionFilter = document.getElementById("dimension-filter");
   const reliabilityFilter = document.getElementById("reliability-filter");
   const torsionFilter = document.getElementById("torsion-filter");
   const reviewToggle = document.getElementById("review-toggle");
   const aboutToggle = document.getElementById("about-toggle");
-  const themeSelect = document.getElementById("theme-select");
+  const themeMenu = document.getElementById("theme-menu");
+  const themeSummary = themeMenu.querySelector(":scope > summary");
+  const themeCurrent = themeMenu.querySelector(".theme-current");
+  const themeInputs = [...themeMenu.querySelectorAll('input[name="theme-preference"]')];
   const clearFilters = document.getElementById("clear-filters");
   const filterDisclosure = document.getElementById("filter-disclosure");
+  const filterClose = document.getElementById("filter-close");
   const activeFilterCount = document.getElementById("active-filter-count");
-  const indexToggle = document.getElementById("index-toggle");
+  const familyToggle = document.getElementById("family-toggle");
   const indexClose = document.getElementById("index-close");
   const indexBackdrop = document.getElementById("index-backdrop");
   const requestSpace = document.getElementById("request-space");
   const atlasIndex = document.getElementById("atlas-index");
-  const sectionIndex = document.getElementById("section-index");
-  const spaceIndex = document.getElementById("space-index");
-  const spaceIndexCount = document.getElementById("space-index-count");
-  const spaceIndexDisclosure = document.getElementById("space-index-disclosure");
+  const indexInner = atlasIndex.querySelector(".index-inner");
+  const familyOutline = document.getElementById("family-outline");
   const atlasDocument = document.getElementById("atlas-document");
   const snapshotAbout = document.getElementById("snapshot-about");
   const resultStatus = document.getElementById("result-status");
   const actionStatus = document.getElementById("action-status");
+  const conceptualFamilyCount = document.getElementById("conceptual-family-count");
+  const familyCount = document.getElementById("family-count");
+  const familySpaceCount = document.getElementById("family-space-count");
   const filterSummary = filterDisclosure.querySelector(":scope > summary");
   const backgroundInertTargets = [
     document.querySelector(".skip-link"),
@@ -67,7 +82,10 @@
     atlasDocument,
     document.querySelector(".site-footer"),
   ].filter(Boolean);
-  let indexReturnFocus = indexToggle;
+  let indexReturnFocus = familyToggle;
+  let currentFamilyId = null;
+  let currentSpaceId = null;
+  let navigationObserver = null;
 
   function element(tagName, className, text) {
     const node = document.createElement(tagName);
@@ -127,7 +145,11 @@
     } else {
       document.documentElement.dataset.theme = preference;
     }
-    themeSelect.value = preference;
+    themeInputs.forEach((input) => {
+      input.checked = input.value === preference;
+    });
+    themeCurrent.textContent = themeLabels[preference];
+    themeSummary.setAttribute("aria-label", `Theme: ${themeLabels[preference]}`);
     if (!persist) return;
     try {
       if (preference === "system") window.localStorage.removeItem(themeStorageKey);
@@ -282,6 +304,12 @@
     return String(value).split("").map((digit) => digits[digit] ?? digit).join("");
   }
 
+  function mathematicalName(value) {
+    return String(value ?? "")
+      .replace(/\^(?:infinity|\\infty)/gi, "∞")
+      .replace(/\^(-?\d+)/g, (_match, exponent) => superscript(exponent));
+  }
+
   function groupDisplay(row) {
     if (row.group.state !== "exact") return row.group.plain;
     if (row.coefficient_ring === "Z") {
@@ -398,6 +426,175 @@
     return Boolean(space.infinite_finite_type) || (spaceDimension(space) === null && coverageFor(space)?.kind === "bounded_through_degree");
   }
 
+  function explicitParameterText(space) {
+    const parameters = space.parameters;
+    if (parameters === undefined || parameters === null || parameters === "") return "";
+    if (Array.isArray(parameters)) return parameters.map(displayValue).join(", ");
+    if (typeof parameters !== "object") return displayValue(parameters);
+    return Object.entries(parameters)
+      .map(([key, value]) => `${humanize(key)} = ${displayValue(value)}`)
+      .join(", ");
+  }
+
+  function familyMemberMetadata(space) {
+    const metadata = [];
+    const parameters = explicitParameterText(space);
+    if (parameters) metadata.push(parameters);
+    const dimension = spaceDimension(space);
+    if (dimension !== undefined && dimension !== null) {
+      metadata.push(`dimension ${displayValue(dimension)}`);
+    } else if (space.infinite_finite_type) {
+      metadata.push("dimension ∞ · finite type");
+    }
+    return metadata.join(" · ");
+  }
+
+  function rememberNavigationLink(collection, id, link) {
+    const links = collection.get(id) ?? [];
+    links.push(link);
+    collection.set(id, links);
+  }
+
+  function appendFamilyNarratives(container, section, summaryClass, relevanceClass) {
+    if (section.summary) {
+      container.append(element("p", summaryClass, section.summary));
+    }
+    const relevance = firstRecorded(section.chromatic_relevance, section.relevance);
+    if (relevance) {
+      const paragraph = element("p", relevanceClass);
+      paragraph.append(
+        element("strong", "", "Why this family matters. "),
+        document.createTextNode(relevance),
+      );
+      container.append(paragraph);
+    }
+  }
+
+  function createFamilyMemberItem(space, className = "") {
+    const item = element("li", className);
+    item.dataset.spaceId = space.id;
+    const link = element("a", "family-member-link", mathematicalName(space.name.plain));
+    link.href = `#space=${encodeURIComponent(space.slug)}`;
+    rememberNavigationLink(spaceNavigationLinks, space.id, link);
+    link.addEventListener("click", () => {
+      closeIndex();
+      window.setTimeout(() => {
+        const heading = entriesById.get(space.id)?.querySelector(".entry-title");
+        if (heading) {
+          heading.tabIndex = -1;
+          heading.focus({ preventScroll: true });
+        }
+      }, 0);
+    });
+    item.append(link);
+    const metadata = familyMemberMetadata(space);
+    if (metadata) item.append(element("span", "family-member-meta", metadata));
+    return item;
+  }
+
+  function focusFamily(section) {
+    const focusing = state.family !== section.id;
+    state.family = focusing ? section.id : "";
+    updateAtlas();
+    if (focusing) {
+      closeIndex();
+      window.requestAnimationFrame(() => {
+        sectionsById.get(section.id)?.scrollIntoView({ block: "start" });
+      });
+      announce(`Showing only ${section.label}.`);
+    } else {
+      announce("Showing all families.");
+    }
+  }
+
+  function buildFamilyOutline() {
+    sections.forEach((section) => {
+      const memberIds = asArray(section.conceptual_space_ids);
+      const group = element("details", "family-outline-group");
+      group.dataset.familyId = section.id;
+
+      const summary = element("summary");
+      const label = element("span", "family-outline-title", section.label);
+      const count = element("span", "family-outline-count", `${memberIds.length} / ${memberIds.length}`);
+      count.setAttribute("aria-label", `${memberIds.length} of ${memberIds.length} spaces visible`);
+      summary.append(label, count);
+
+      const body = element("div", "family-outline-body");
+      appendFamilyNarratives(
+        body,
+        section,
+        "family-outline-summary",
+        "family-outline-relevance",
+      );
+
+      const actions = element("div", "family-outline-actions");
+      const jump = element("a", "family-jump-link", "Jump to family");
+      jump.href = `#family-${section.id}`;
+      rememberNavigationLink(familyNavigationLinks, section.id, jump);
+      jump.addEventListener("click", () => {
+        closeIndex();
+        window.setTimeout(() => {
+          const heading = sectionsById.get(section.id)?.querySelector("h2");
+          if (heading) {
+            heading.tabIndex = -1;
+            heading.focus({ preventScroll: true });
+          }
+        }, 0);
+      });
+
+      const focus = element("button", "family-focus-button", "Show only this family");
+      focus.type = "button";
+      focus.setAttribute("aria-pressed", "false");
+      focus.addEventListener("click", () => focusFamily(section));
+
+      const feedback = outboundLink(
+        "Family feedback ↗",
+        familyFeedbackUrl(section),
+        `Give feedback on the ${section.label} family`,
+      );
+      actions.append(jump, focus);
+      if (feedback) {
+        feedback.classList.add("family-outline-feedback");
+        actions.append(feedback);
+      }
+
+      const memberList = element("ol", "family-member-list");
+      const memberItems = new Map();
+      memberIds.forEach((id) => {
+        const space = spacesById.get(id);
+        if (!space) return;
+        const item = createFamilyMemberItem(space, "family-outline-member");
+        memberItems.set(id, item);
+        memberList.append(item);
+      });
+      body.append(actions, memberList);
+      group.append(summary, body);
+      familyOutlineNodes.set(section.id, {
+        group,
+        count,
+        focus,
+        memberItems,
+        total: memberIds.length,
+      });
+      familyOutline.append(group);
+    });
+  }
+
+  function buildFamilyMembers(section) {
+    const memberIds = asArray(section.conceptual_space_ids);
+    if (memberIds.length < 2) return null;
+    const memberNav = element("nav", "family-members");
+    memberNav.setAttribute("aria-label", `${section.label} members in this snapshot`);
+    memberNav.append(element("h3", "family-members-title", "Members in this snapshot"));
+    const memberList = element("ol", "family-member-list family-member-list-chapter");
+    memberIds.forEach((id) => {
+      const space = spacesById.get(id);
+      if (space) memberList.append(createFamilyMemberItem(space, "family-chapter-member"));
+    });
+    memberNav.append(memberList);
+    return memberNav;
+  }
+
   function coverageFor(space) {
     const directCoverage = firstRecorded(space.homology_coverage, space.coverage);
     if (directCoverage && typeof directCoverage === "object") return directCoverage;
@@ -435,7 +632,7 @@
     const rows = asArray(space.homology).filter((row) =>
       row.coefficient_ring === state.coefficient && row.reduced === state.reduced
     );
-    heading.textContent = `H${state.reduced ? "̃" : ""}ₙ(${space.name.plain}; ${coefficientDisplay(state.coefficient)})`;
+    heading.textContent = `H${state.reduced ? "̃" : ""}ₙ(${mathematicalName(space.name.plain)}; ${coefficientDisplay(state.coefficient)})`;
     convention.textContent = `ordinary homology · ${state.reduced ? "reduced" : "unreduced"} · ${humanize(rows[0]?.homology_convention ?? rows[0]?.convention_state ?? "convention not recorded")}`;
     convention.title = humanize(rows[0]?.convention_state ?? "No convention identity recorded");
     coverage.textContent = coverageMessage(space);
@@ -604,10 +801,10 @@
       const target = spacesById.get(relation.target_id);
       const item = element("li");
       item.append(document.createTextNode(
-        `${space.name.plain} — ${humanize(relation.type)} → `,
+        `${mathematicalName(space.name.plain)} — ${humanize(relation.type)} → `,
       ));
       if (target) {
-        const link = element("a", "", target.name.plain);
+        const link = element("a", "", mathematicalName(target.name.plain));
         link.href = `#space=${encodeURIComponent(target.slug)}`;
         item.append(link);
       } else {
@@ -635,10 +832,7 @@
 
     const header = element("header", "entry-header");
     const titleBlock = element("div");
-    titleBlock.append(
-      element("p", "entry-kicker", humanize(space.taxonomy?.family)),
-      element("h3", "entry-title", space.name.plain),
-    );
+    titleBlock.append(element("h3", "entry-title", mathematicalName(space.name.plain)));
     const actions = element("div", "permalink-actions");
     const permalink = element("a", "permalink", "# permalink");
     permalink.href = `#space=${encodeURIComponent(space.slug)}`;
@@ -648,7 +842,7 @@
     const feedback = outboundLink(
       "Correct or improve ↗",
       spaceFeedbackUrl(space),
-      `Give feedback on ${space.name.plain}`,
+      `Give feedback on ${mathematicalName(space.name.plain)}`,
     );
     actions.append(permalink, copyLink);
     if (feedback) {
@@ -689,7 +883,7 @@
     homologyHeading.append(element("h4"), element("span", "homology-convention"));
     const coverage = element("p", "coverage-note");
     const table = element("table", "homology-table");
-    const caption = element("caption", "visually-hidden", `Homology groups for ${space.name.plain}`);
+    const caption = element("caption", "visually-hidden", `Homology groups for ${mathematicalName(space.name.plain)}`);
     const tableHead = element("thead");
     const headerRow = element("tr");
     const headerIds = ["degree", "group", "state", "assertion"]
@@ -761,7 +955,7 @@
     const report = outboundLink(
       "Open structured feedback form ↗",
       spaceFeedbackUrl(space),
-      `Give feedback on ${space.name.plain}`,
+      `Give feedback on ${mathematicalName(space.name.plain)}`,
     );
     rawActions.append(copyJson, downloadJson);
     if (report) {
@@ -769,7 +963,7 @@
       rawActions.append(report);
     }
     const rawPre = element("pre");
-    rawPre.setAttribute("aria-label", `Raw JSON record for ${space.name.plain}`);
+    rawPre.setAttribute("aria-label", `Raw JSON record for ${mathematicalName(space.name.plain)}`);
     rawBlock.details.addEventListener("toggle", () => {
       if (rawBlock.details.open && !rawPre.textContent) rawPre.textContent = JSON.stringify(space.raw, null, 2);
     });
@@ -791,6 +985,7 @@
   function buildSectionHeading(section) {
     const heading = element("div", "section-heading");
     const title = element("h2");
+    title.id = `family-heading-${section.id}`;
     title.append(
       element("span", "section-kicker", "Family"),
       document.createTextNode(section.label),
@@ -814,9 +1009,18 @@
       const sectionNode = element("section", "atlas-section");
       sectionNode.id = `family-${section.id}`;
       sectionNode.dataset.sectionId = section.id;
+      sectionNode.setAttribute("aria-labelledby", `family-heading-${section.id}`);
       sectionNode.append(buildSectionHeading(section));
-      const summary = firstRecorded(section.summary, section.chromatic_relevance, section.relevance);
-      if (summary) sectionNode.append(element("p", "family-summary", summary));
+      const narrative = element("div", "family-narrative");
+      appendFamilyNarratives(
+        narrative,
+        section,
+        "family-summary",
+        "family-relevance",
+      );
+      if (narrative.childElementCount) sectionNode.append(narrative);
+      const familyMembers = buildFamilyMembers(section);
+      if (familyMembers) sectionNode.append(familyMembers);
       asArray(section.conceptual_space_ids).forEach((id) => {
         const space = spacesById.get(id);
         if (!space) return;
@@ -828,25 +1032,23 @@
       atlasDocument.append(sectionNode);
     });
 
-    asArray(snapshot.supported_coefficients).forEach((coefficient) => {
-      const option = element("option", "", coefficientDisplay(coefficient));
-      option.value = coefficient;
-      coefficientFilter.append(option);
-    });
-    if (!coefficientFilter.options.length) {
-      const option = element("option", "", coefficientDisplay("Z"));
-      option.value = "Z";
-      coefficientFilter.append(option);
-    }
-    state.coefficient = coefficientFilter.options[0]?.value ?? "Z";
-    coefficientFilter.value = state.coefficient;
+    buildFamilyOutline();
 
-    const families = [...sections].sort((left, right) => left.label.localeCompare(right.label));
-    families.forEach((section) => {
-      const option = element("option", "", section.label);
-      option.value = section.id;
-      familyFilter.append(option);
+    if (!coefficientSwitcher.querySelector("legend")) {
+      coefficientSwitcher.prepend(element("legend", "visually-hidden", "Coefficients"));
+    }
+    supportedCoefficients.forEach((coefficient, index) => {
+      const label = element("label", "coefficient-option");
+      const input = element("input");
+      input.type = "radio";
+      input.name = "coefficient";
+      input.value = coefficient;
+      input.checked = index === 0;
+      label.append(input, element("span", "", coefficientDisplay(coefficient)));
+      coefficientSwitcher.append(label);
     });
+    state.coefficient = supportedCoefficients[0];
+
     const dimensions = [...new Set(conceptualSpaces.map(spaceDimension).filter(Number.isFinite))]
       .sort((left, right) => left - right);
     dimensions.forEach((dimension) => {
@@ -870,6 +1072,9 @@
     });
 
     document.getElementById("conceptual-space-count").textContent = String(snapshot.conceptual_space_count ?? conceptualSpaces.length);
+    conceptualFamilyCount.textContent = String(sections.length);
+    familyCount.textContent = String(sections.length);
+    familySpaceCount.textContent = String(conceptualSpaces.length);
     document.getElementById("snapshot-name").textContent = snapshotReference();
     const generatedAt = document.getElementById("generated-at");
     if (snapshot.generated_at) {
@@ -879,9 +1084,7 @@
       generatedAt.textContent = "not recorded";
     }
     document.getElementById("release-status").textContent = humanize(snapshot.release_status);
-    const dek = document.getElementById("snapshot-dek");
     const scopeNote = firstRecorded(snapshot.scope_note, snapshot.scope);
-    if (scopeNote) dek.textContent = scopeNote;
     const eyebrow = document.getElementById("atlas-eyebrow");
     eyebrow.textContent = `Homology DB · ${humanize(snapshot.release_status)}`;
     requestSpace.href = issueUrl(
@@ -893,6 +1096,7 @@
     const snapshotDetail = document.getElementById("snapshot-detail");
     const detailList = element("dl");
     appendDefinition(detailList, "Snapshot ID", snapshot.snapshot_id);
+    appendDefinition(detailList, "Scope", scopeNote);
     appendDefinition(detailList, "Read model", snapshot.schema_version);
     appendDefinition(detailList, "Generated", snapshot.generated_at);
     appendDefinition(detailList, "Materialized through", snapshot.materialized_through_degree);
@@ -924,7 +1128,7 @@
       "aria-label",
       count === 0 ? "No active filters" : `${count} active filter${count === 1 ? "" : "s"}`,
     );
-    const defaultCoefficient = coefficientFilter.options[0]?.value ?? "Z";
+    const defaultCoefficient = supportedCoefficients[0];
     clearFilters.hidden = !(
       state.query
       || state.coefficient !== defaultCoefficient
@@ -932,52 +1136,96 @@
     );
   }
 
-  function renderIndex(visibleWithRank) {
-    const counts = new Map(sections.map((section) => [section.id, 0]));
-    visibleWithRank.forEach(({ space }) => counts.set(space.taxonomy.family, (counts.get(space.taxonomy.family) ?? 0) + 1));
-    spaceIndexCount.textContent = String(visibleWithRank.length);
-    if (state.query.trim()) spaceIndexDisclosure.open = true;
-    sectionIndex.replaceChildren();
-    sections.forEach((section) => {
-      const button = element("button", "index-link");
-      button.type = "button";
-      button.disabled = counts.get(section.id) === 0;
-      button.append(element("span", "", section.label), element("span", "", String(counts.get(section.id) ?? 0)));
-      button.addEventListener("click", () => {
-        const destination = sectionsById.get(section.id);
-        closeIndex();
-        destination?.scrollIntoView({ block: "start" });
-        const heading = destination?.querySelector("h2");
-        if (heading) {
-          heading.tabIndex = -1;
-          heading.focus({ preventScroll: true });
-        }
+  function updateNavigationCurrent(familyId = currentFamilyId, spaceId = currentSpaceId) {
+    currentFamilyId = familyId;
+    currentSpaceId = spaceId;
+    familyNavigationLinks.forEach((links, id) => {
+      links.forEach((link) => {
+        if (id === familyId) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
       });
-      sectionIndex.append(button);
     });
-
-    spaceIndex.replaceChildren();
-    visibleWithRank
-      .slice()
-      .sort((left, right) => left.rank - right.rank || left.space.name.plain.localeCompare(right.space.name.plain))
-      .forEach(({ space }) => {
-        const item = element("li");
-        const link = element("a", "", space.name.plain);
-        link.href = `#space=${encodeURIComponent(space.slug)}`;
-        if (state.selectedId === space.id) link.setAttribute("aria-current", "true");
-        link.addEventListener("click", () => {
-          closeIndex();
-          window.setTimeout(() => {
-            const heading = entriesById.get(space.id)?.querySelector(".entry-title");
-            if (heading) {
-              heading.tabIndex = -1;
-              heading.focus({ preventScroll: true });
-            }
-          }, 0);
-        });
-        item.append(link);
-        spaceIndex.append(item);
+    spaceNavigationLinks.forEach((links, id) => {
+      links.forEach((link) => {
+        if (id === spaceId) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
       });
+    });
+    familyOutlineNodes.forEach(({ group }, id) => {
+      group.classList.toggle("is-current", id === familyId);
+    });
+  }
+
+  function startNavigationObserver() {
+    if (!("IntersectionObserver" in window)) return;
+    const intersecting = new Set();
+    navigationObserver = new IntersectionObserver((records) => {
+      records.forEach((record) => {
+        if (record.isIntersecting) intersecting.add(record.target);
+        else intersecting.delete(record.target);
+      });
+      const targetLine = window.innerHeight * 0.22;
+      const nearest = (targets) => targets
+        .filter((target) => !target.hidden)
+        .sort((left, right) =>
+          Math.abs(left.getBoundingClientRect().top - targetLine)
+          - Math.abs(right.getBoundingClientRect().top - targetLine)
+        )[0];
+      const visibleEntries = [...intersecting].filter((target) => target.classList.contains("atlas-entry"));
+      const currentEntry = nearest(visibleEntries);
+      if (currentEntry) {
+        const space = spacesById.get(currentEntry.dataset.spaceId);
+        updateNavigationCurrent(space?.taxonomy?.family ?? null, space?.id ?? null);
+        return;
+      }
+      const visibleSections = [...intersecting].filter((target) => target.classList.contains("atlas-section"));
+      const currentSection = nearest(visibleSections);
+      if (currentSection) updateNavigationCurrent(currentSection.dataset.sectionId, null);
+    }, {
+      rootMargin: "-8% 0px -62% 0px",
+      threshold: 0,
+    });
+    sectionsById.forEach((section) => navigationObserver.observe(section));
+    entriesById.forEach((entry) => navigationObserver.observe(entry));
+  }
+
+  function renderIndex(visibleWithRank) {
+    const visibleIds = new Set(visibleWithRank.map(({ space }) => space.id));
+    const searchActive = Boolean(state.query.trim());
+    let visibleFamilyCount = 0;
+    familyOutlineNodes.forEach((nodes, familyId) => {
+      const section = sections.find((candidate) => candidate.id === familyId);
+      const visibleCount = asArray(section?.conceptual_space_ids)
+        .filter((id) => visibleIds.has(id)).length;
+      if (visibleCount > 0) visibleFamilyCount += 1;
+      nodes.count.textContent = `${visibleCount} / ${nodes.total}`;
+      nodes.count.setAttribute(
+        "aria-label",
+        `${visibleCount} of ${nodes.total} spaces visible`,
+      );
+      nodes.group.classList.toggle("is-empty", visibleCount === 0);
+      nodes.group.classList.toggle("is-focused", state.family === familyId);
+      nodes.focus.setAttribute("aria-pressed", String(state.family === familyId));
+      nodes.focus.textContent = state.family === familyId
+        ? "Show all families"
+        : "Show only this family";
+      nodes.memberItems.forEach((item, id) => {
+        item.hidden = !visibleIds.has(id);
+      });
+      if (searchActive) nodes.group.open = visibleCount > 0;
+      else if (state.family === familyId) nodes.group.open = true;
+    });
+    familyCount.textContent = visibleFamilyCount === sections.length
+      ? String(sections.length)
+      : `${visibleFamilyCount} / ${sections.length}`;
+    familySpaceCount.textContent = visibleWithRank.length === conceptualSpaces.length
+      ? String(conceptualSpaces.length)
+      : `${visibleWithRank.length} / ${conceptualSpaces.length}`;
+    if (!currentFamilyId || sectionsById.get(currentFamilyId)?.hidden) {
+      currentFamilyId = sections.find((section) => !sectionsById.get(section.id)?.hidden)?.id ?? null;
+      currentSpaceId = null;
+    }
+    updateNavigationCurrent();
   }
 
   function updateAtlas() {
@@ -1009,11 +1257,17 @@
       entry.hidden = !visibleIds.has(id);
       renderHomology(spacesById.get(id), entry);
     });
+    document.querySelectorAll(".family-chapter-member[data-space-id]").forEach((item) => {
+      item.hidden = !visibleIds.has(item.dataset.spaceId);
+    });
     sections.forEach((section) => {
-      const visibleCount = asArray(section.conceptual_space_ids).filter((id) => visibleIds.has(id)).length;
+      const memberIds = asArray(section.conceptual_space_ids);
+      const visibleCount = memberIds.filter((id) => visibleIds.has(id)).length;
       const sectionNode = sectionsById.get(section.id);
       sectionNode.hidden = visibleCount === 0;
-      sectionNode.querySelector(".section-count").textContent = String(visibleCount);
+      sectionNode.querySelector(".section-count").textContent = visibleCount === memberIds.length
+        ? String(memberIds.length)
+        : `${visibleCount} / ${memberIds.length}`;
     });
     document.querySelectorAll("details[data-review-detail]").forEach((details) => {
       details.open = state.review && !details.closest("article").hidden;
@@ -1028,15 +1282,19 @@
     selectionTimers.clear();
     entriesById.forEach((entry) => entry.classList.remove("is-selected"));
     state.selectedId = id;
-    if (!id) return;
+    if (!id) {
+      updateNavigationCurrent(currentFamilyId, null);
+      return;
+    }
     const entry = entriesById.get(id);
+    const space = spacesById.get(id);
+    updateNavigationCurrent(space?.taxonomy?.family ?? null, id);
     if (entry && !entry.hidden) {
       entry.classList.add("is-selected");
       if (shouldScroll) entry.scrollIntoView({ block: "start" });
       const timer = window.setTimeout(() => entry.classList.remove("is-selected"), 1800);
       selectionTimers.set(id, timer);
     }
-    renderIndex(state.visible.map((visibleId) => ({ space: spacesById.get(visibleId), rank: searchRank(spacesById.get(visibleId), state.query) })));
   }
 
   function spaceFromHash() {
@@ -1047,20 +1305,45 @@
     return conceptualSpaces.find((space) => space.slug === slug) ?? null;
   }
 
+  function familyFromHash() {
+    const match = window.location.hash.match(/^#family-(.+)$/);
+    if (!match) return null;
+    let id;
+    try { id = decodeURIComponent(match[1]); } catch (_error) { return null; }
+    return sections.find((section) => section.id === id) ?? null;
+  }
+
+  function clearVisibilityFilters() {
+    searchInput.value = "";
+    dimensionFilter.value = "";
+    reliabilityFilter.value = "";
+    torsionFilter.checked = false;
+    Object.assign(state, {
+      query: "",
+      family: "",
+      dimension: "",
+      reliability: "",
+      torsion: false,
+    });
+    updateAtlas();
+  }
+
   function handleHash() {
     const space = spaceFromHash();
-    if (!space) return;
-    if (entriesById.get(space.id)?.hidden) {
-      searchInput.value = "";
-      familyFilter.value = "";
-      dimensionFilter.value = "";
-      reliabilityFilter.value = "";
-      torsionFilter.checked = false;
-      state.query = state.family = state.dimension = state.reliability = "";
-      state.torsion = false;
-      updateAtlas();
+    if (space) {
+      if (entriesById.get(space.id)?.hidden) clearVisibilityFilters();
+      window.requestAnimationFrame(() => setSelected(space.id));
+      return;
     }
-    window.requestAnimationFrame(() => setSelected(space.id));
+    const family = familyFromHash();
+    if (!family) return;
+    if (sectionsById.get(family.id)?.hidden) clearVisibilityFilters();
+    familyOutlineNodes.get(family.id).group.open = true;
+    updateNavigationCurrent(family.id, null);
+    window.requestAnimationFrame(() => {
+      const destination = sectionsById.get(family.id);
+      destination?.scrollIntoView({ block: "start" });
+    });
   }
 
   function navigateTo(id) {
@@ -1080,7 +1363,7 @@
       backgroundInertTargets.forEach((target) => { target.inert = false; });
       indexBackdrop.hidden = true;
       document.body.classList.remove("index-open");
-      indexToggle.setAttribute("aria-expanded", "false");
+      familyToggle.setAttribute("aria-expanded", "false");
       return;
     }
     const open = atlasIndex.classList.contains("is-open");
@@ -1091,15 +1374,27 @@
     backgroundInertTargets.forEach((target) => { target.inert = open; });
     indexBackdrop.hidden = !open;
     document.body.classList.toggle("index-open", open);
-    indexToggle.setAttribute("aria-expanded", String(open));
+    familyToggle.setAttribute("aria-expanded", String(open));
   }
 
-  function openIndex({ focusClose = true, returnFocus = indexToggle } = {}) {
+  function openIndex({ focusClose = true, returnFocus = familyToggle } = {}) {
     if (!narrowIndexMedia.matches) return;
     indexReturnFocus = returnFocus;
     atlasIndex.classList.add("is-open");
     syncIndexAccessibility();
-    if (focusClose) window.requestAnimationFrame(() => indexClose.focus());
+    window.requestAnimationFrame(() => {
+      const activeFamily = state.family
+        || (state.query && sections.find((section) => !familyOutlineNodes.get(section.id)?.group.classList.contains("is-empty"))?.id)
+        || currentFamilyId;
+      const activeGroup = familyOutlineNodes.get(activeFamily)?.group;
+      if (activeGroup && (state.query || state.family)) {
+        const innerBox = indexInner.getBoundingClientRect();
+        const groupBox = activeGroup.getBoundingClientRect();
+        const headingHeight = atlasIndex.querySelector(".index-heading")?.getBoundingClientRect().height ?? 0;
+        indexInner.scrollTop += groupBox.top - innerBox.top - headingHeight - 8;
+      }
+      if (focusClose) indexClose.focus();
+    });
   }
 
   function closeIndex(returnFocus = false) {
@@ -1109,17 +1404,40 @@
     if (returnFocus && narrowIndexMedia.matches) indexReturnFocus.focus();
   }
 
+  function trapIndexFocus(event) {
+    if (
+      event.key !== "Tab"
+      || !narrowIndexMedia.matches
+      || !atlasIndex.classList.contains("is-open")
+    ) return;
+    const focusable = [...atlasIndex.querySelectorAll(
+      'a[href], button:not([disabled]), summary, input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    )].filter((node) => !node.closest("[hidden]"));
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (document.activeElement === first || !atlasIndex.contains(document.activeElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !atlasIndex.contains(document.activeElement))) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function clearAllFilters() {
     searchInput.value = "";
-    coefficientFilter.value = coefficientFilter.options[0]?.value ?? "Z";
+    const defaultCoefficient = supportedCoefficients[0];
+    coefficientSwitcher.querySelectorAll('input[name="coefficient"]').forEach((input) => {
+      input.checked = input.value === defaultCoefficient;
+    });
     reducedFilter.checked = false;
-    familyFilter.value = "";
     dimensionFilter.value = "";
     reliabilityFilter.value = "";
     torsionFilter.checked = false;
     Object.assign(state, {
       query: "",
-      coefficient: coefficientFilter.value,
+      coefficient: defaultCoefficient,
       reduced: false,
       family: "",
       dimension: "",
@@ -1139,15 +1457,26 @@
       navigateTo(state.visible[0]);
     }
   });
-  coefficientFilter.addEventListener("change", () => { state.coefficient = coefficientFilter.value; updateAtlas(); });
+  coefficientSwitcher.addEventListener("change", (event) => {
+    if (!event.target.matches('input[name="coefficient"]')) return;
+    state.coefficient = event.target.value;
+    updateAtlas();
+  });
   reducedFilter.addEventListener("change", () => { state.reduced = reducedFilter.checked; updateAtlas(); });
-  familyFilter.addEventListener("change", () => { state.family = familyFilter.value; updateAtlas(); });
   dimensionFilter.addEventListener("change", () => { state.dimension = dimensionFilter.value; updateAtlas(); });
   reliabilityFilter.addEventListener("change", () => { state.reliability = reliabilityFilter.value; updateAtlas(); });
   torsionFilter.addEventListener("change", () => { state.torsion = torsionFilter.checked; updateAtlas(); });
-  themeSelect.addEventListener("change", () => applyThemePreference(themeSelect.value));
+  themeMenu.addEventListener("change", (event) => {
+    if (!event.target.matches('input[name="theme-preference"]')) return;
+    applyThemePreference(event.target.value);
+    themeMenu.open = false;
+  });
   clearFilters.addEventListener("click", clearAllFilters);
-  indexToggle.addEventListener("click", () => {
+  filterClose.addEventListener("click", () => {
+    filterDisclosure.open = false;
+    filterSummary.focus();
+  });
+  familyToggle.addEventListener("click", () => {
     if (atlasIndex.classList.contains("is-open")) closeIndex(true);
     else openIndex();
   });
@@ -1173,7 +1502,7 @@
     state.review = !state.review;
     document.body.classList.toggle("review-mode", state.review);
     reviewToggle.setAttribute("aria-pressed", String(state.review));
-    reviewToggle.textContent = state.review ? "Hide review details" : "Review details";
+    reviewToggle.textContent = state.review ? "Exit review" : "Review data";
     document.querySelectorAll("details[data-review-detail]").forEach((details) => {
       details.open = state.review && !details.closest("article").hidden;
     });
@@ -1187,10 +1516,18 @@
     if (filterDisclosure.open && !filterDisclosure.contains(event.target)) {
       filterDisclosure.open = false;
     }
+    if (themeMenu.open && !themeMenu.contains(event.target)) {
+      themeMenu.open = false;
+    }
   });
   document.addEventListener("keydown", (event) => {
+    trapIndexFocus(event);
     if (event.key === "Escape") {
       if (atlasIndex.classList.contains("is-open")) closeIndex(true);
+      else if (themeMenu.open) {
+        themeMenu.open = false;
+        themeSummary.focus();
+      }
       else if (filterDisclosure.open) {
         filterDisclosure.open = false;
         filterSummary.focus();
@@ -1208,4 +1545,5 @@
   buildAtlas();
   updateAtlas();
   handleHash();
+  startNavigationObserver();
 })();

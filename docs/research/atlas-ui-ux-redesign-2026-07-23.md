@@ -24,6 +24,36 @@ and progressive disclosures. It directly addresses the current page's two main
 problems: every element competes for attention, and too many bordered
 controls/tags/details create visual “box soup.”
 
+## Family-browser iteration
+
+Direct review of the 42-space snapshot exposed a second structural problem:
+17 mathematical families were flattened into one jump list, while a separate
+family select and alphabetical space list gave “family” three conflicting
+meanings. Parameterized members such as spheres, Moore spaces, lens spaces,
+classifying spaces, and projective filtrations consequently looked unrelated.
+
+The revised interaction model treats the family as the atlas's primary
+navigation unit:
+
+- one persistent family outline replaces the jump list, family select, and
+  separate visible-space list;
+- native disclosures reveal each family's narrative, chromatic relevance,
+  members in curated order, and explicit parameters/dimensions;
+- fragment links navigate, while a separately labelled “Show only this
+  family” button filters, so those actions are never overloaded;
+- family chapters repeat the member outline before their full records, making
+  a parameterized family legible in the reading surface as well as the menu;
+- search updates visible/total counts and opens matching families without
+  deleting zero-result families from the conceptual map; and
+- the family outline is built once and updated in place, preserving keyboard
+  focus and assistive-technology position.
+
+This iteration also replaces the remaining native-looking control stack with a
+single command bar, coefficient radio group, compact refinement sheet, and
+three-state theme menu. At narrow widths, the same family outline becomes a
+focus-contained, full-height sheet rather than a different information
+architecture.
+
 ## Evidence that should govern the redesign
 
 ### Structure before decoration
