@@ -6,6 +6,7 @@
   const conceptualSpaces = Array.isArray(atlas.conceptual_spaces) ? atlas.conceptual_spaces : [];
   const sections = Array.isArray(atlas.sections) ? atlas.sections : [];
   const issueEndpoint = "https://github.com/DaveArcher18/homology-db/issues/new";
+  const themeStorageKey = "homology-atlas-theme-v1";
   const coefficientLabels = Object.freeze({
     Z: "ℤ",
     F2: "𝔽₂",
@@ -17,6 +18,7 @@
   const entriesById = new Map();
   const sectionsById = new Map();
   const selectionTimers = new Map();
+  const narrowIndexMedia = window.matchMedia("(max-width: 58rem)");
   const state = {
     query: "",
     coefficient: "Z",
@@ -31,6 +33,7 @@
   };
 
   const searchInput = document.getElementById("atlas-search");
+  const atlasControls = document.getElementById("atlas-controls");
   const coefficientFilter = document.getElementById("coefficient-filter");
   const reducedFilter = document.getElementById("reduced-filter");
   const familyFilter = document.getElementById("family-filter");
@@ -39,15 +42,32 @@
   const torsionFilter = document.getElementById("torsion-filter");
   const reviewToggle = document.getElementById("review-toggle");
   const aboutToggle = document.getElementById("about-toggle");
+  const themeSelect = document.getElementById("theme-select");
   const clearFilters = document.getElementById("clear-filters");
+  const filterDisclosure = document.getElementById("filter-disclosure");
+  const activeFilterCount = document.getElementById("active-filter-count");
   const indexToggle = document.getElementById("index-toggle");
+  const indexClose = document.getElementById("index-close");
+  const indexBackdrop = document.getElementById("index-backdrop");
   const requestSpace = document.getElementById("request-space");
   const atlasIndex = document.getElementById("atlas-index");
   const sectionIndex = document.getElementById("section-index");
   const spaceIndex = document.getElementById("space-index");
+  const spaceIndexCount = document.getElementById("space-index-count");
+  const spaceIndexDisclosure = document.getElementById("space-index-disclosure");
   const atlasDocument = document.getElementById("atlas-document");
   const snapshotAbout = document.getElementById("snapshot-about");
   const resultStatus = document.getElementById("result-status");
+  const actionStatus = document.getElementById("action-status");
+  const filterSummary = filterDisclosure.querySelector(":scope > summary");
+  const backgroundInertTargets = [
+    document.querySelector(".skip-link"),
+    document.querySelector(".site-header"),
+    document.querySelector(".toolbar"),
+    atlasDocument,
+    document.querySelector(".site-footer"),
+  ].filter(Boolean);
+  let indexReturnFocus = indexToggle;
 
   function element(tagName, className, text) {
     const node = document.createElement(tagName);
@@ -84,6 +104,44 @@
     const description = element("dd");
     description.append(descriptionNode);
     list.append(element("dt", "", term), description);
+  }
+
+  function normalizedThemePreference(value) {
+    return value === "light" || value === "dark" ? value : "system";
+  }
+
+  function storedThemePreference() {
+    const bootPreference = normalizedThemePreference(document.documentElement.dataset.theme);
+    if (bootPreference !== "system") return bootPreference;
+    try {
+      return normalizedThemePreference(window.localStorage.getItem(themeStorageKey));
+    } catch (_error) {
+      return "system";
+    }
+  }
+
+  function applyThemePreference(value, persist = true) {
+    const preference = normalizedThemePreference(value);
+    if (preference === "system") {
+      delete document.documentElement.dataset.theme;
+    } else {
+      document.documentElement.dataset.theme = preference;
+    }
+    themeSelect.value = preference;
+    if (!persist) return;
+    try {
+      if (preference === "system") window.localStorage.removeItem(themeStorageKey);
+      else window.localStorage.setItem(themeStorageKey, preference);
+    } catch (_error) {
+      // The atlas remains usable when storage is unavailable or file URL behavior varies.
+    }
+  }
+
+  function announce(message) {
+    actionStatus.textContent = "";
+    window.requestAnimationFrame(() => {
+      actionStatus.textContent = message;
+    });
   }
 
   function normalizedSearchSource(value) {
@@ -301,6 +359,7 @@
     }
     const previous = button.textContent;
     button.textContent = "Copied";
+    announce(`${previous} copied to the clipboard.`);
     window.setTimeout(() => { button.textContent = previous; }, 1200);
   }
 
@@ -320,7 +379,7 @@
     const details = element("details");
     if (reviewDetail) details.dataset.reviewDetail = "true";
     const summaryNode = element("summary");
-    summaryNode.append(element("span", "", title), element("span", "review-label", String(count)));
+    summaryNode.append(element("h4", "details-heading", title), element("span", "review-label", String(count)));
     const content = element("div", "detail-content");
     details.append(summaryNode, content);
     return { details, content };
@@ -369,7 +428,7 @@
   }
 
   function renderHomology(space, entry) {
-    const heading = entry.querySelector(".homology-heading h3");
+    const heading = entry.querySelector(".homology-heading h4");
     const convention = entry.querySelector(".homology-convention");
     const coverage = entry.querySelector(".coverage-note");
     const tableBody = entry.querySelector(".homology-table tbody");
@@ -392,10 +451,14 @@
     }
     rows.forEach((row) => {
       const tableRow = element("tr");
-      const degree = element("td", "", `H${subscript(row.degree)}`);
+      const degree = element("th", "degree-cell", `H${subscript(row.degree)}`);
+      degree.scope = "row";
       const group = element("td", row.group.state === "exact" ? "" : "state-nonexact", groupDisplay(row));
       const knowledge = element("td", "state-cell review-only", row.knowledge_state);
       const assertion = element("td", "assertion-cell review-only", row.assertion_id);
+      group.setAttribute("headers", `table-${space.slug}-group`);
+      knowledge.setAttribute("headers", `table-${space.slug}-state`);
+      assertion.setAttribute("headers", `table-${space.slug}-assertion`);
       tableRow.append(degree, group, knowledge, assertion);
       tableBody.append(tableRow);
     });
@@ -422,7 +485,7 @@
     }
     models.forEach((model) => {
       const card = element("section", "record-card model-card");
-      card.append(element("h4", "record-title", firstRecorded(model.name, model.model_id, model.id, "CW model")));
+      card.append(element("h5", "record-title", firstRecorded(model.name, model.model_id, model.id, "CW model")));
       const list = element("dl", "record-list");
       appendDefinition(list, "Model ID", firstRecorded(model.model_id, model.id));
       appendDefinition(list, "Kind", humanize(model.kind));
@@ -470,7 +533,7 @@
     }
     records.forEach((record) => {
       const card = element("section", "record-card evidence-card");
-      card.append(element("h4", "record-title", firstRecorded(record.id, record.evidence_id, "Evidence record")));
+      card.append(element("h5", "record-title", firstRecorded(record.id, record.evidence_id, "Evidence record")));
       const list = element("dl", "record-list");
       appendDefinition(list, "Kind", humanize(record.kind));
       appendDefinition(list, "Reliability", humanize(record.reliability));
@@ -486,7 +549,7 @@
       if (sketch) {
         const sketchBlock = element("div", "computation-sketch");
         sketchBlock.append(
-          element("h5", "", "Computation sketch"),
+          element("h6", "", "Computation sketch"),
           element("p", "", sketch),
           element("p", "sketch-note", "A mathematical sketch is evidence context; it is not itself a recorded software run."),
         );
@@ -495,7 +558,7 @@
 
       const references = citationRecords(record);
       if (references.length) {
-        const citationHeading = element("h5", "citation-heading", "Sources and locators");
+        const citationHeading = element("h6", "citation-heading", "Sources and locators");
         const citations = element("ul", "citation-list");
         references.forEach((reference) => citations.append(renderCitation(reference)));
         card.append(citationHeading, citations);
@@ -518,7 +581,7 @@
     }
     computations.forEach((record) => {
       const card = element("section", "record-card computation-card");
-      card.append(element("h4", "record-title", firstRecorded(record.computation_id, record.id, "Recorded computation")));
+      card.append(element("h5", "record-title", firstRecorded(record.computation_id, record.id, "Recorded computation")));
       const list = element("dl", "record-list");
       appendDefinition(list, "Status", humanize(record.status));
       appendDefinition(list, "Algorithm", record.algorithm_id);
@@ -574,7 +637,7 @@
     const titleBlock = element("div");
     titleBlock.append(
       element("p", "entry-kicker", humanize(space.taxonomy?.family)),
-      element("h2", "entry-title", space.name.plain),
+      element("h3", "entry-title", space.name.plain),
     );
     const actions = element("div", "permalink-actions");
     const permalink = element("a", "permalink", "# permalink");
@@ -623,14 +686,19 @@
 
     const homology = element("section", "homology-block");
     const homologyHeading = element("div", "homology-heading");
-    homologyHeading.append(element("h3"), element("span", "homology-convention"));
+    homologyHeading.append(element("h4"), element("span", "homology-convention"));
     const coverage = element("p", "coverage-note");
     const table = element("table", "homology-table");
     const caption = element("caption", "visually-hidden", `Homology groups for ${space.name.plain}`);
     const tableHead = element("thead");
     const headerRow = element("tr");
+    const headerIds = ["degree", "group", "state", "assertion"]
+      .map((kind) => `table-${space.slug}-${kind}`);
     ["Degree", "Group", "State", "Assertion ID"].forEach((label, index) => {
-      headerRow.append(element("th", index > 1 ? "review-only" : "", label));
+      const headerCell = element("th", index > 1 ? "review-only" : "", label);
+      headerCell.scope = "col";
+      headerCell.id = headerIds[index];
+      headerRow.append(headerCell);
     });
     tableHead.append(headerRow);
     table.append(caption, tableHead, element("tbody"));
@@ -649,10 +717,10 @@
     evidenceSummary.append(
       element("strong", "", "Provenance"),
       element("span", "", `Source: ${sourceTitle}`),
-      element("span", "", evidenceKind),
-      element("span", "", `${evidence.length} evidence record${evidence.length === 1 ? "" : "s"}`),
-      element("span", "", `${computations.length} recorded computation run${computations.length === 1 ? "" : "s"}`),
       element("span", "", humanize(reliability)),
+      element("span", "review-only", evidenceKind),
+      element("span", "review-only", `${evidence.length} evidence record${evidence.length === 1 ? "" : "s"}`),
+      element("span", "review-only", `${computations.length} recorded computation run${computations.length === 1 ? "" : "s"}`),
       element("span", "review-only review-warning", humanize(snapshot.release_status)),
     );
 
@@ -843,9 +911,32 @@
     );
   }
 
+  function updateControlSummary() {
+    const count = [
+      state.family,
+      state.dimension,
+      state.reliability,
+      state.reduced,
+      state.torsion,
+    ].filter(Boolean).length;
+    activeFilterCount.textContent = String(count);
+    activeFilterCount.setAttribute(
+      "aria-label",
+      count === 0 ? "No active filters" : `${count} active filter${count === 1 ? "" : "s"}`,
+    );
+    const defaultCoefficient = coefficientFilter.options[0]?.value ?? "Z";
+    clearFilters.hidden = !(
+      state.query
+      || state.coefficient !== defaultCoefficient
+      || count > 0
+    );
+  }
+
   function renderIndex(visibleWithRank) {
     const counts = new Map(sections.map((section) => [section.id, 0]));
     visibleWithRank.forEach(({ space }) => counts.set(space.taxonomy.family, (counts.get(space.taxonomy.family) ?? 0) + 1));
+    spaceIndexCount.textContent = String(visibleWithRank.length);
+    if (state.query.trim()) spaceIndexDisclosure.open = true;
     sectionIndex.replaceChildren();
     sections.forEach((section) => {
       const button = element("button", "index-link");
@@ -853,8 +944,14 @@
       button.disabled = counts.get(section.id) === 0;
       button.append(element("span", "", section.label), element("span", "", String(counts.get(section.id) ?? 0)));
       button.addEventListener("click", () => {
-        sectionsById.get(section.id)?.scrollIntoView({ block: "start" });
+        const destination = sectionsById.get(section.id);
         closeIndex();
+        destination?.scrollIntoView({ block: "start" });
+        const heading = destination?.querySelector("h2");
+        if (heading) {
+          heading.tabIndex = -1;
+          heading.focus({ preventScroll: true });
+        }
       });
       sectionIndex.append(button);
     });
@@ -868,7 +965,16 @@
         const link = element("a", "", space.name.plain);
         link.href = `#space=${encodeURIComponent(space.slug)}`;
         if (state.selectedId === space.id) link.setAttribute("aria-current", "true");
-        link.addEventListener("click", closeIndex);
+        link.addEventListener("click", () => {
+          closeIndex();
+          window.setTimeout(() => {
+            const heading = entriesById.get(space.id)?.querySelector(".entry-title");
+            if (heading) {
+              heading.tabIndex = -1;
+              heading.focus({ preventScroll: true });
+            }
+          }, 0);
+        });
         item.append(link);
         spaceIndex.append(item);
       });
@@ -913,6 +1019,7 @@
       details.open = state.review && !details.closest("article").hidden;
     });
     resultStatus.textContent = `${state.visible.length} of ${snapshot.conceptual_space_count ?? conceptualSpaces.length}`;
+    updateControlSummary();
     renderIndex(visibleWithRank);
   }
 
@@ -963,18 +1070,43 @@
     if (spaceFromHash()?.id === id) setSelected(id);
   }
 
-  function moveSelection(direction) {
-    if (!state.visible.length) return;
-    const currentIndex = state.visible.indexOf(state.selectedId);
-    const nextIndex = currentIndex < 0
-      ? (direction > 0 ? 0 : state.visible.length - 1)
-      : Math.max(0, Math.min(state.visible.length - 1, currentIndex + direction));
-    navigateTo(state.visible[nextIndex]);
+  function syncIndexAccessibility() {
+    if (!narrowIndexMedia.matches) {
+      atlasIndex.classList.remove("is-open");
+      atlasIndex.inert = false;
+      atlasIndex.removeAttribute("aria-hidden");
+      atlasIndex.removeAttribute("aria-modal");
+      atlasIndex.removeAttribute("role");
+      backgroundInertTargets.forEach((target) => { target.inert = false; });
+      indexBackdrop.hidden = true;
+      document.body.classList.remove("index-open");
+      indexToggle.setAttribute("aria-expanded", "false");
+      return;
+    }
+    const open = atlasIndex.classList.contains("is-open");
+    atlasIndex.inert = !open;
+    atlasIndex.setAttribute("aria-hidden", String(!open));
+    atlasIndex.setAttribute("role", "dialog");
+    atlasIndex.setAttribute("aria-modal", String(open));
+    backgroundInertTargets.forEach((target) => { target.inert = open; });
+    indexBackdrop.hidden = !open;
+    document.body.classList.toggle("index-open", open);
+    indexToggle.setAttribute("aria-expanded", String(open));
   }
 
-  function closeIndex() {
+  function openIndex({ focusClose = true, returnFocus = indexToggle } = {}) {
+    if (!narrowIndexMedia.matches) return;
+    indexReturnFocus = returnFocus;
+    atlasIndex.classList.add("is-open");
+    syncIndexAccessibility();
+    if (focusClose) window.requestAnimationFrame(() => indexClose.focus());
+  }
+
+  function closeIndex(returnFocus = false) {
     atlasIndex.classList.remove("is-open");
-    indexToggle.setAttribute("aria-expanded", "false");
+    if (narrowIndexMedia.matches) snapshotAbout.open = false;
+    syncIndexAccessibility();
+    if (returnFocus && narrowIndexMedia.matches) indexReturnFocus.focus();
   }
 
   function clearAllFilters() {
@@ -994,10 +1126,12 @@
       reliability: "",
       torsion: false,
     });
+    filterDisclosure.open = false;
     updateAtlas();
     searchInput.focus();
   }
 
+  atlasControls.addEventListener("submit", (event) => event.preventDefault());
   searchInput.addEventListener("input", () => { state.query = searchInput.value; updateAtlas(); });
   searchInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && state.visible.length) {
@@ -1011,20 +1145,26 @@
   dimensionFilter.addEventListener("change", () => { state.dimension = dimensionFilter.value; updateAtlas(); });
   reliabilityFilter.addEventListener("change", () => { state.reliability = reliabilityFilter.value; updateAtlas(); });
   torsionFilter.addEventListener("change", () => { state.torsion = torsionFilter.checked; updateAtlas(); });
+  themeSelect.addEventListener("change", () => applyThemePreference(themeSelect.value));
   clearFilters.addEventListener("click", clearAllFilters);
   indexToggle.addEventListener("click", () => {
-    const open = !atlasIndex.classList.contains("is-open");
-    atlasIndex.classList.toggle("is-open", open);
-    indexToggle.setAttribute("aria-expanded", String(open));
+    if (atlasIndex.classList.contains("is-open")) closeIndex(true);
+    else openIndex();
   });
+  indexClose.addEventListener("click", () => closeIndex(true));
+  indexBackdrop.addEventListener("click", () => closeIndex(true));
   aboutToggle.addEventListener("click", () => {
     snapshotAbout.open = !snapshotAbout.open;
     aboutToggle.setAttribute("aria-expanded", String(snapshotAbout.open));
-    if (window.matchMedia("(max-width: 58rem)").matches) {
-      atlasIndex.classList.add("is-open");
-      indexToggle.setAttribute("aria-expanded", "true");
+    if (narrowIndexMedia.matches) {
+      openIndex({ focusClose: false, returnFocus: aboutToggle });
+      window.requestAnimationFrame(() => {
+        snapshotAbout.scrollIntoView({ block: "nearest" });
+        snapshotAbout.querySelector("summary").focus();
+      });
+    } else if (snapshotAbout.open) {
+      snapshotAbout.scrollIntoView({ block: "nearest" });
     }
-    if (snapshotAbout.open) snapshotAbout.scrollIntoView({ block: "nearest" });
   });
   snapshotAbout.addEventListener("toggle", () => {
     aboutToggle.setAttribute("aria-expanded", String(snapshotAbout.open));
@@ -1039,32 +1179,32 @@
     });
   });
   window.addEventListener("hashchange", handleHash);
-  document.addEventListener("keydown", (event) => {
-    const interactive = event.target.matches("input, select, textarea, button, a, summary");
-    if (event.key === "/" && !interactive) {
-      event.preventDefault();
-      searchInput.focus();
-      return;
+  window.addEventListener("storage", (event) => {
+    if (event.key === themeStorageKey) applyThemePreference(event.newValue, false);
+  });
+  narrowIndexMedia.addEventListener("change", syncIndexAccessibility);
+  document.addEventListener("click", (event) => {
+    if (filterDisclosure.open && !filterDisclosure.contains(event.target)) {
+      filterDisclosure.open = false;
     }
+  });
+  document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      if (atlasIndex.classList.contains("is-open")) closeIndex();
+      if (atlasIndex.classList.contains("is-open")) closeIndex(true);
+      else if (filterDisclosure.open) {
+        filterDisclosure.open = false;
+        filterSummary.focus();
+      }
       else if (searchInput.value) {
         searchInput.value = "";
         state.query = "";
         updateAtlas();
       }
-      return;
-    }
-    if (!interactive && (event.key === "j" || event.key === "ArrowDown")) {
-      event.preventDefault();
-      moveSelection(1);
-    }
-    if (!interactive && (event.key === "k" || event.key === "ArrowUp")) {
-      event.preventDefault();
-      moveSelection(-1);
     }
   });
 
+  applyThemePreference(storedThemePreference(), false);
+  syncIndexAccessibility();
   buildAtlas();
   updateAtlas();
   handleHash();

@@ -246,6 +246,56 @@ class StaticAtlasTest(unittest.TestCase):
             ):
                 self.assertIn(required_control, html)
 
+    def test_generated_atlas_supports_progressive_filters_and_theme_preferences(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            database_path = directory / "chromatic.sqlite3"
+            output_path = directory / "atlas.html"
+            ChromaticDatabase.build(database_path)
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--database",
+                    str(database_path),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPOSITORY_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+
+            html = output_path.read_text(encoding="utf-8")
+            for theme_contract in (
+                '<meta name="color-scheme" content="light dark">',
+                'id="theme-select"',
+                '<option value="system">System</option>',
+                '<option value="light">Light</option>',
+                '<option value="dark">Dark</option>',
+                "homology-atlas-theme-v1",
+                "prefers-color-scheme: dark",
+                'window.addEventListener("storage"',
+            ):
+                self.assertIn(theme_contract, html)
+            for progressive_control in (
+                'id="filter-disclosure"',
+                'id="active-filter-count"',
+                'id="index-close"',
+                'id="index-backdrop"',
+                'tabindex="-1" aria-label="Close atlas index"',
+                'aria-controls="snapshot-about"',
+                "backgroundInertTargets",
+                'atlasIndex.setAttribute("aria-modal"',
+                "filterDisclosure.open = false",
+                '"h4", "details-heading"',
+                'setAttribute("headers"',
+            ):
+                self.assertIn(progressive_control, html)
+
     def test_export_is_deterministic_for_one_database_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)

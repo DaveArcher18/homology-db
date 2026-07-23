@@ -1,14 +1,14 @@
 # Work state
 
-Status: COMPLETE
+Status: ACTIVE
 
 ## Objective
 
-Deliver, deploy, and test a focused 42-space Chromatic Homology Atlas with
-parameterized torsion, concrete CW or simplicial Models, computation sketches,
-citations, honest bounded coverage for infinite finite-type spaces, and visible
-per-space/per-family feedback plus request-a-space forms. Preserve the audited
-60-space preview as a historical regression fixture.
+Research, implement, deploy, and test a calmer UI/UX for the 42-space
+Chromatic Homology Atlas. Reduce box and border density, preserve the
+continuous mathematical document, add accessible light/dark/system themes,
+and retain every data, provenance, feedback, permalink, keyboard, print, and
+review behavior from the deployed release.
 
 ## Active map
 
@@ -24,15 +24,20 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Build and deploy chromatic-gateway-42`, completed by `/root (interactive
-chat)` on 2026-07-22.
+`Research and deploy atlas UI/UX redesign`, claimed by `/root (interactive
+chat)` on 2026-07-23.
 
 ## Active run lease
 
-Released. No active mutation lease remains.
+`/root (interactive chat)` — active while researching, implementing, reviewing,
+testing, pushing, and redeploying the atlas redesign.
 
 ## Last checkpoint
 
+- The redesign starts from clean, synchronized `main` at `980b498` and the
+  byte-verified live Snapshot `chromatic-16e4f2be46edd93a`. Mathematical data
+  and read-model semantics are fixed inputs; this ticket changes presentation
+  and preference behavior only.
 - Commits `caeedc4` through `e1d9a4b` implement, independently review, test,
   and publish the 42-space vertical slice: 32 finite CW complexes and 10
   infinite finite-type CW complexes in 17 families.
@@ -204,9 +209,10 @@ Released. No active mutation lease remains.
 
 ## Exact next action
 
-No implementation action remains. Collect structured feedback from the live
-space, family, and request forms before expanding the corpus or adding richer
-submission workflows.
+Complete the primary-source UX research and source audit, record an
+implementation brief, redesign the static atlas with light/dark/system theme
+support, then run focused/full tests and independent review before rebuilding,
+pushing `main`, and verifying the new GitHub Pages artifact byte-for-byte.
 
 ## Verification state
 
