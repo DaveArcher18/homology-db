@@ -1,6 +1,6 @@
 # Work state
 
-Status: ACTIVE
+Status: COMPLETE
 
 ## Objective
 
@@ -25,16 +25,24 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Redesign menus and family browsing`, claimed by `/root (interactive chat)` on
-2026-07-23.
+`Redesign menus and family browsing`, completed by `/root (interactive chat)`
+on 2026-07-23.
 
 ## Active run lease
 
-`/root (interactive chat)` — active while redesigning, reviewing, testing,
-pushing, and redeploying the menu/family iteration.
+Released. No agent or automation holds a run lease.
 
 ## Last checkpoint
 
+- Main was pushed through `9108496` with no remote divergence. GitHub Pages run
+  `29984104725` completed successfully in 11 seconds. The public HTTP 200 body
+  is 4,149,026 bytes and byte-identical to `dist/atlas.html` at SHA-256
+  `b6efaad48b0d8382963592a540ed07ab77291c23c8f85ad4331efc92b8e6ee99`.
+- Live 320-pixel checks passed for the exact `Real projective spaces` family
+  search, automatic family-outline expansion, zero horizontal overflow, and
+  Refine dialog/inert/focus behavior. The final 1280-pixel System-theme render
+  has 42/42 spaces and zero overflow. The in-app browser was restored to its
+  default viewport and left on the clean public atlas URL.
 - Commits `3e957a2` and `7f31886` replaced the form-like controls and flat
   family menu with a compact command bar, persistent family/member outline,
   native family permalinks, family focus, parameterized member navigation,
@@ -259,19 +267,19 @@ pushing, and redeploying the menu/family iteration.
 
 ## Exact next action
 
-Fetch and confirm synchronized `origin/main`, push reviewed release commit
-`c4790fb` and its supporting commits to `main`, watch the GitHub Pages
-workflow, then verify the live HTTP response byte-for-byte and complete the
-desktop/narrow browser smoke test.
+No release action is pending. Await user testing and new feedback against
+<https://davearcher18.github.io/homology-db/>; do not resume the paused
+standalone automation without an explicit request in this chat.
 
 ## Verification state
 
 The current menu/family source is committed at `55f4952`, and its checked-in
 release artifact is committed at `c4790fb`. The full 64-test suite, artifact
 parity, two focused export tests, `node --check static_atlas/atlas.js`,
-`git diff --check`, local browser scenarios recorded in `TESTLOG.md`, and
-targeted specification/accessibility/standards closure re-reviews pass. Live
-publication is the only unverified release boundary for this iteration.
+`git diff --check`, local and live browser scenarios recorded in `TESTLOG.md`,
+targeted specification/accessibility/standards closure re-reviews, Pages run
+`29984104725`, and live byte comparison all pass. No release boundary remains
+unverified for this iteration.
 
 The release contract is documented and reviewed. Ticket 02's deterministic
 script exits successfully with 22/22 observations. Ticket 03's primary-source

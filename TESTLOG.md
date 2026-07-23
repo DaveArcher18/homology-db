@@ -594,5 +594,24 @@ specification and accessibility scenarios and found no remaining blocker. The
 repository-standards closure review confirms that shared reset logic is now
 factored and this recovery record is current.
 
-The Pages run, live byte comparison, and live browser smoke test remain the
-next release boundary and are not claimed here.
+### Live deployment verification
+
+- Six reviewed commits through
+  `910849600a4e471a6082d04ff2aed9258841cca6` were pushed to synchronized
+  `main` without force or remote divergence.
+- GitHub Pages workflow
+  [29984104725](https://github.com/DaveArcher18/homology-db/actions/runs/29984104725)
+  completed successfully in 11 seconds. The Node 20-to-24 action-runtime
+  deprecation annotation was non-blocking; checkout, preparation, upload, and
+  deployment all passed.
+- <https://davearcher18.github.io/homology-db/> returned HTTP 200 with
+  `text/html; charset=utf-8`, a 4,149,026-byte body, and SHA-256
+  `b6efaad48b0d8382963592a540ed07ab77291c23c8f85ad4331efc92b8e6ee99`.
+  `cmp` confirmed byte identity with `dist/atlas.html`.
+- The live 320-pixel browser rendered source commit `55f4952`, 42/42 spaces,
+  and zero horizontal overflow. Exact `Real projective spaces` search returned
+  its 3/42 members and opened only that family; Refine retained modal,
+  background-inert, and focus-entry behavior.
+- The browser was restored to its 1280×720 default viewport, System theme,
+  unfiltered 42/42 root document, and zero horizontal overflow, then left on
+  the clean public atlas URL for user testing.
