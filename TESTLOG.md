@@ -535,3 +535,56 @@ The exact checked-in artifact was served locally and exercised before push:
 - The final repository-standards re-review found no documented-standard
   blocker after the WCAG shortcut exception, work state, and test record were
   made explicit.
+
+## 2026-07-23 — family-first menu revision (pre-release checkpoint)
+
+Scope: respond to direct feedback that the menus remained visually poor and
+that families of spaces were not represented well. Keep the mathematical
+Snapshot fixed while replacing the flat/duplicated browse controls with a
+persistent family/member outline and compact command surface.
+
+### Source and review checkpoint
+
+- `3e957a2` implements the family-first navigation and menu redesign;
+  `7f31886` records its first deterministic artifact.
+- Independent specification, repository-standards, and accessibility reviews
+  found family-label search omissions, the missing A–Z fallback, narrow-screen
+  focus gaps, one prose-class styling mismatch, zero-result opacity, a stale
+  recovery checkpoint, and duplicated reset logic.
+- `55f4952` closes those findings and adds the Snapshot database SHA-256 to
+  space, family, and request issue titles. No mathematical data, Models,
+  Evidence, Homology assertions, coverage claims, or source records changed.
+
+### Verification at this boundary
+
+| Check | Result |
+| --- | --- |
+| two focused export/seam tests | expected red before implementation, then 2/2 passed |
+| `node --check static_atlas/atlas.js` | passed |
+| `git diff --check` | passed |
+| dirty-tree browser preview | 4,149,025 bytes; SHA-256 `71b02227dbc70f3b09c4ce458fa81caebd901b36864f15e4454adb0a129d2f81` |
+
+Local browser checks against that preview:
+
+- Exact family-label searches return the intended whole family:
+  `Surfaces` 2/42, `Real projective spaces` 3/42,
+  `Stunted projective spaces` 2/42,
+  `Elementary-abelian classifying spaces` 3/42, and
+  `Unitary classifying spaces` 1/42.
+- The collapsed `All spaces A–Z` fallback contains all 42 spaces in name order
+  and introduces no page-level overflow.
+- At 320 pixels, Refine exposes modal dialog semantics, makes the surrounding
+  controls/document inert, traps forward and reverse Tab, returns focus to its
+  summary, and clears the body scroll lock on close.
+- Narrow family focus closes the drawer, shows the intended five-sphere
+  family, and moves focus to `family-heading-sphere`. Resizing from a
+  desktop-focused family summary to the closed mobile drawer moves focus to
+  the Families trigger.
+- The visible closed-family summary carries `aria-current="location"`.
+  Choosing Dark closes the theme disclosure and returns focus to its renamed
+  `Theme: Dark` summary.
+- Feedback issue titles include the full database hash; the longest rendered
+  title is 211 characters. The 320-pixel layout has zero horizontal overflow.
+
+The exact checked-in artifact, full suite, Pages run, byte comparison, and live
+browser smoke test remain the next release boundary and are not claimed here.

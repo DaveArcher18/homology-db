@@ -35,6 +35,21 @@ pushing, and redeploying the menu/family iteration.
 
 ## Last checkpoint
 
+- Commits `3e957a2` and `7f31886` replaced the form-like controls and flat
+  family menu with a compact command bar, persistent family/member outline,
+  native family permalinks, family focus, parameterized member navigation,
+  responsive drawer, and light/dark/system themes. Commit `55f4952` closes the
+  independent review findings: family labels and narratives are searchable,
+  the directory has a collapsed A–Z fallback, narrow family filtering moves
+  focus into the document, Refine is a trapped/inert modal sheet on narrow
+  screens, theme selection returns focus, current-family semantics stay
+  exposed, zero-result controls retain contrast, and feedback titles include
+  the source-database SHA-256.
+- Focused export contracts, JavaScript syntax, and `git diff --check` pass.
+  Local browser checks pass for five exact family-label queries, the 42-entry
+  A–Z index, 320-pixel Refine trap/return/inert behavior, mobile family
+  filtering and heading focus, theme focus return, desktop-to-mobile sidebar
+  focus handoff, feedback-title length, and zero horizontal overflow.
 - This iteration starts from clean, synchronized `main` at `ccb6465`. The
   deployed redesign is byte-verified and mathematically fixed; direct user
   feedback identifies the remaining problem as menu quality and weak family
@@ -236,12 +251,19 @@ pushing, and redeploying the menu/family iteration.
 
 ## Exact next action
 
-Replace the oversized form-like toolbar and flat 17-button family list with a
-compact command bar, hierarchical family/member outline, and family-level
-member navigation; then run focused/full tests and visual/accessibility review
-before rebuilding, pushing `main`, and verifying GitHub Pages byte-for-byte.
+Regenerate `dist/atlas.html` from clean source commit `55f4952`, commit the
+deterministic artifact, run the full 64-test suite and final targeted review,
+then fetch/push synchronized `main`, watch the GitHub Pages workflow, and
+verify the live response byte-for-byte and in the browser.
 
 ## Verification state
+
+The current menu/family source is committed at `55f4952`. Two focused export
+tests, `node --check static_atlas/atlas.js`, `git diff --check`, and the local
+browser scenarios recorded in `TESTLOG.md` pass. The checked-in release
+artifact is intentionally still at `7f31886` until the next exact action;
+therefore artifact parity and live publication are not yet claimed for this
+iteration.
 
 The release contract is documented and reviewed. Ticket 02's deterministic
 script exits successfully with 22/22 observations. Ticket 03's primary-source
