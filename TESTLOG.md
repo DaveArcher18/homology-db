@@ -671,3 +671,27 @@ uncertainty, keyboard access, and structured feedback links.
 
 Final artifact measurements, parity, commit identity, Pages run, and live-byte
 verification are recorded below after publication.
+
+### Deterministic release artifact
+
+| Artifact | Measurement |
+| --- | --- |
+| Snapshot database | 2,535,424 bytes; SHA-256 `4c9791aba051dec8b0fe5643f710e0fb674426ff96a65b730eef46c469da820f` |
+| `dist/atlas.html` | 4,172,476 bytes; SHA-256 `7ae2d0a8a1b1d94b2aa11294d345c1ba1079fb56af98d82196ea8e59eca1a178` |
+| embedded source | clean commit `f9fd94c24b4260d543e5e7961204ffe8079e5a2c`; input SHA-256 `b75af4d4e34d5f28a56680cee51d23cbc60a42785039d6daedb077a52eb7cf23` |
+| size margin | 1,070,404 bytes below the 5 MiB cap |
+
+- `python3 -m unittest discover -s tests -v` passes 65/65, including
+  checked-in-artifact parity; the pre-existing shared-process SQLite
+  `ResourceWarning`s remain non-failing.
+- A second clean export to
+  `/tmp/homology-atlas-gabriel-release.html` is byte-identical to
+  `dist/atlas.html`.
+- `node --check` passes for `static_atlas/atlas.js` and
+  `static_atlas/presentation.js`; Python compilation and `git diff --check`
+  pass.
+- The final repository-standards re-review passes after labeling retained
+  `/2` and pre-iteration evidence as historical and narrowing the read-model
+  note to metadata actually embedded in the HTML.
+
+The GitHub Pages run and public byte comparison are appended after deployment.

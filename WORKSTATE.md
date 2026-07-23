@@ -48,12 +48,18 @@ and preparing the Gabriel-feedback iteration.
   keyboard result navigation, full atlas JSON including `name.tex`, uniquely
   named landmarks, responsive drawer/About state, and isolated coefficient
   choices at desktop and 320×568 with no console error or overflow.
-- The 65-test suite currently has 64 passes and exactly one intentional
-  pre-release failure: checked-in `dist/atlas.html` still represents `/2`.
-  Four focused exporter/routing/accessibility/pure-JavaScript tests,
-  JavaScript syntax, Python compilation, and `git diff --check` pass. The next
-  release step is the coherent source commit followed by deterministic
-  artifact regeneration and parity verification.
+- Source commit `f9fd94c` and deterministic artifact `dist/atlas.html` now
+  record the reviewed `/3` implementation. The artifact is 4,172,476 bytes,
+  SHA-256
+  `7ae2d0a8a1b1d94b2aa11294d345c1ba1079fb56af98d82196ea8e59eca1a178`,
+  embeds clean source `f9fd94c24b4260d543e5e7961204ffe8079e5a2c`
+  and source-input SHA-256
+  `b75af4d4e34d5f28a56680cee51d23cbc60a42785039d6daedb077a52eb7cf23`,
+  and is 1,070,404 bytes below the 5 MiB cap.
+- The full 65-test suite passes including checked-in-artifact parity. A second
+  clean rebuild is byte-identical. Four focused
+  exporter/routing/accessibility/pure-JavaScript tests, JavaScript syntax,
+  Python compilation, and `git diff --check` also pass.
 - This iteration starts from clean, synchronized `main` at `d2b6399`. Gabriel
   Ong's seven accepted review points are the fixed product delta; the existing
   42-space Snapshot, Models, Evidence, Homology assertions, sources, and
@@ -291,24 +297,23 @@ and preparing the Gabriel-feedback iteration.
 
 ## Exact next action
 
-Commit the reviewed `/3` source and documentation scope, rebuild
-`dist/atlas.html` from that clean source commit, record its exact bytes/hash
-and embedded revision, run artifact parity plus the complete release checks,
-then push synchronized `main` and byte-verify the resulting GitHub Pages
-deployment.
+Commit the final repository-standards-passing artifact and recovery checkpoint,
+push synchronized `main` without rewriting history, and byte-verify the
+resulting GitHub Pages deployment.
 
 ## Verification state
 
-Gabriel-feedback source verification is complete before artifact generation.
-The runtime and two-axis closure reviews report no remaining code/content
-blocker. Current full-suite state is 64/65 with only the deliberately stale
-checked-in artifact failing parity; this must become 65/65 after the reviewed
-source commit and deterministic rebuild.
+Gabriel-feedback source and artifact verification is complete. The runtime and
+two-axis closure reviews report no remaining code/content blocker. The full
+suite passes 65/65 including artifact parity; two release builds are
+byte-identical at SHA-256 `7ae2d0a8…eca1a178`, and the embedded source-input
+state is clean.
 
-Baseline `d2b6399` is clean and synchronized. Its 64-test suite, deterministic
-artifact, Pages run `29984104725`, and live byte comparison passed before this
-iteration. No Gabriel-feedback source or artifact change is yet claimed
-implemented or verified.
+### Historical verification checkpoints
+
+The pre-iteration baseline `d2b6399` was clean and synchronized. Its 64-test
+suite, deterministic artifact, Pages run `29984104725`, and live byte
+comparison passed before the Gabriel-feedback work began.
 
 The release contract is documented and reviewed. Ticket 02's deterministic
 script exits successfully with 22/22 observations. Ticket 03's primary-source
@@ -336,10 +341,11 @@ none of the new schema, corpus, Model-kind, definition, or QA gates is claimed
 complete. The review-hold documentation and ICERM/LMFDB research passed the
 scoped verification recorded in `TESTLOG.md`; the frozen preview rebuilt with
 the unchanged Snapshot ID `preview-5ea7db464f937061`.
-The current chromatic corpus and `/2` static exporter have 22 focused checks
-while retaining the frozen preview and schema replays; the complete suite
-passes 63 tests. The release candidate is a 4,097,121-byte self-contained
-HTML file with 42 spaces and zero unresolved relationship/evidence references.
+The historical first chromatic corpus and `/2` static exporter had 22 focused
+checks while retaining the frozen preview and schema replays; its complete
+suite passed 63 tests. That release candidate was a 4,097,121-byte
+self-contained HTML file with 42 spaces and zero unresolved
+relationship/evidence references.
 Browser-facing language preserves
 `development_corpus_not_externally_reviewed`. GitHub Pages run `29960163529`
 deployed release commit `e1d9a4b`; the live download matches the committed
