@@ -1,6 +1,6 @@
 # Work state
 
-Status: ACTIVE
+Status: COMPLETE
 
 ## Objective
 
@@ -32,8 +32,8 @@ chat)` on 2026-07-23.
 
 ## Active run lease
 
-`/root (interactive chat)` — active while researching, implementing, reviewing,
-testing, pushing, and redeploying the atlas redesign.
+Released after the redesign, review, push, Pages deployment, and live
+verification completed on 2026-07-23.
 
 ## Last checkpoint
 
@@ -57,6 +57,12 @@ testing, pushing, and redeploying the atlas redesign.
   mobile About, and zero-console-error browser checks. Final specification and
   release-security reviews found no code/content blocker; the standards review
   requested this checkpoint and `TESTLOG.md` update before publication.
+- Commit `15051ca` was pushed to synchronized `main`. GitHub Pages run
+  `29979578366` completed successfully in 12 seconds. The live HTTP 200 body is
+  4,113,332 bytes and byte-identical to `dist/atlas.html` at SHA-256
+  `59f32287…d5b8da40`; the live 390-pixel search/index smoke test passed with
+  no console warning/error. The browser was restored to its default viewport
+  and left on <https://davearcher18.github.io/homology-db/>.
 - Commits `caeedc4` through `e1d9a4b` implement, independently review, test,
   and publish the 42-space vertical slice: 32 finite CW complexes and 10
   infinite finite-type CW complexes in 17 families.
@@ -228,9 +234,9 @@ testing, pushing, and redeploying the atlas redesign.
 
 ## Exact next action
 
-Commit this completed verification checkpoint, push the redesign and artifact
-to `main`, monitor the GitHub Pages workflow, then compare the live response
-byte-for-byte with `dist/atlas.html` and complete one live browser smoke test.
+No implementation or deployment action remains. Collect task-based feedback
+from intended users through the visible space/family/request forms, especially
+on mathematical scanning and terminology, before another layout expansion.
 
 ## Verification state
 
@@ -273,8 +279,11 @@ The redesign adds one focused static-atlas contract test, bringing the full
 suite to 64 passing tests. `dist/atlas.html` is byte-identical to a clean
 rebuild at SHA-256 `59f32287…d5b8da40`; JavaScript syntax and diff checks pass.
 Local browser QA exercised the exact artifact at 1440×900, 390×844, and
-320×720 with no horizontal overflow or console warning/error. Deployment and
-live byte verification are the only remaining release actions.
+320×720 with no horizontal overflow or console warning/error. GitHub Pages run
+`29979578366` deployed synchronized `main`; the live HTTP response matches the
+committed artifact byte-for-byte and the live mobile interaction smoke test
+passed. Final standards, specification, and release-security reviews report no
+remaining blocker.
 
 ## Recovery notes
 

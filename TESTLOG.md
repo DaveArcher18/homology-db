@@ -513,3 +513,25 @@ The exact checked-in artifact was served locally and exercised before push:
   Sticky mobile controls, inline filters and Escape dismissal, index
   inert/focus behavior, About positioning, and focus return passed.
 - Browser console warnings/errors: zero.
+
+### Live deployment verification
+
+- Synchronized `main` at `15051ca8440bb4b5717c22c568c083dedce47780`
+  was pushed with no remote divergence.
+- GitHub Pages workflow
+  [29979578366](https://github.com/DaveArcher18/homology-db/actions/runs/29979578366)
+  completed successfully in 12 seconds. The Node 20-to-24 action-runtime
+  deprecation annotation was non-blocking; all checkout, preparation, upload,
+  and deploy steps passed.
+- <https://davearcher18.github.io/homology-db/> returned HTTP 200 with
+  `text/html; charset=utf-8`, a 4,113,332-byte body, and SHA-256
+  `59f32287e8534af13fc640c1500711dcb3abb16f7cb8b1c6f96418d4d5b8da40`.
+  `cmp` confirmed byte identity with `dist/atlas.html`.
+- The live 390×844 browser rendered Snapshot
+  `chromatic-16e4f2be46edd93a` and source commit `2008d56…b1a`; exact
+  `M(Z/9,2)` search, Reset, modal index inert/focus/Escape behavior, System
+  theme, and zero-console-error checks passed. The viewport was reset and the
+  browser was left on the clean public atlas URL.
+- The final repository-standards re-review found no documented-standard
+  blocker after the WCAG shortcut exception, work state, and test record were
+  made explicit.
