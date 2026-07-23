@@ -1,15 +1,16 @@
 # Work state
 
-Status: COMPLETE
+Status: ACTIVE
 
 ## Objective
 
-Redesign and redeploy the 42-space Chromatic Homology Atlas menus and family
-browsing after direct user feedback. Replace the form-like command area and
-flat family list with compact, coherent controls and a family-first outline
-that makes each family's narrative and members legible. Preserve the
-continuous mathematical document, data, provenance, themes, feedback,
-permalinks, print, review, and accessible keyboard behavior.
+Implement Gabriel Ong's information-architecture and mathematical-display
+feedback for the 42-space Chromatic Homology Atlas: add a real landing page,
+Spaces and family landing views, focused Conceptual-space pages with local
+coefficient controls, TeX-quality names, compact repeated direct sums,
+definition knowls, restrained tags, and explicit exhaustive/bounded coverage
+badges. Preserve Snapshot identity, provenance, uncertainty, feedback,
+permalinks, print, themes, review records, and keyboard accessibility.
 
 ## Active map
 
@@ -25,15 +26,20 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Redesign menus and family browsing`, completed by `/root (interactive chat)`
-on 2026-07-23.
+`Implement Gabriel's atlas IA and mathematical-display review`, claimed by
+`/root (interactive chat)` on 2026-07-23.
 
 ## Active run lease
 
-Released. No agent or automation holds a run lease.
+`/root (interactive chat)` — active while implementing, reviewing, testing,
+and preparing the Gabriel-feedback iteration.
 
 ## Last checkpoint
 
+- This iteration starts from clean, synchronized `main` at `d2b6399`. Gabriel
+  Ong's seven accepted review points are the fixed product delta; the existing
+  42-space Snapshot, Models, Evidence, Homology assertions, sources, and
+  deterministic one-file delivery remain fixed inputs.
 - Main was pushed through `9108496` with no remote divergence. GitHub Pages run
   `29984104725` completed successfully in 11 seconds. The public HTTP 200 body
   is 4,149,026 bytes and byte-identical to `dist/atlas.html` at SHA-256
@@ -267,19 +273,17 @@ Released. No agent or automation holds a run lease.
 
 ## Exact next action
 
-No release action is pending. Await user testing and new feedback against
-<https://davearcher18.github.io/homology-db/>; do not resume the paused
-standalone automation without an explicit request in this chat.
+Inspect the current static-atlas view state, data shapes, formatting helpers,
+and tests; pin the smallest route/view model for Home, Spaces, family, and
+Conceptual-space pages; then implement the accepted feedback in vertical
+slices before rebuilding and running the full review gate.
 
 ## Verification state
 
-The current menu/family source is committed at `55f4952`, and its checked-in
-release artifact is committed at `c4790fb`. The full 64-test suite, artifact
-parity, two focused export tests, `node --check static_atlas/atlas.js`,
-`git diff --check`, local and live browser scenarios recorded in `TESTLOG.md`,
-targeted specification/accessibility/standards closure re-reviews, Pages run
-`29984104725`, and live byte comparison all pass. No release boundary remains
-unverified for this iteration.
+Baseline `d2b6399` is clean and synchronized. Its 64-test suite, deterministic
+artifact, Pages run `29984104725`, and live byte comparison passed before this
+iteration. No Gabriel-feedback source or artifact change is yet claimed
+implemented or verified.
 
 The release contract is documented and reviewed. Ticket 02's deterministic
 script exits successfully with 22/22 observations. Ticket 03's primary-source
