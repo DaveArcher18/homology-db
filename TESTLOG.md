@@ -714,3 +714,29 @@ The GitHub Pages run and public byte comparison are appended after deployment.
   `f9fd94c24b4260d543e5e7961204ffe8079e5a2c`, source-input SHA-256
   `b75af4d4e34d5f28a56680cee51d23cbc60a42785039d6daedb077a52eb7cf23`,
   and `source_inputs_dirty = false`.
+
+## 2026-07-23 — production-surface simplification checkpoint
+
+Scope: visual QA and public-surface reduction over the unchanged 42-space
+Snapshot. The finished Home, Spaces, family, and object routes remain public;
+unfinished review, computation, quality, and raw-record renderers remain in
+source but are not addressable in the production UI.
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest tests.test_static_atlas.StaticAtlasTest.test_generated_atlas_exposes_routed_home_family_and_space_views tests.test_static_atlas.StaticAtlasTest.test_generated_atlas_supports_accessible_navigation_knowls_and_themes tests.test_static_atlas.StaticAtlasTest.test_generated_atlas_limits_the_public_surface_to_finished_features -v` | 3/3 focused static-atlas contracts passed |
+| `python3 -m unittest discover -s tests -v` | 66 tests ran: 65 passed; only checked-in-artifact parity failed as expected before regenerating `dist/atlas.html` |
+| `node --check static_atlas/atlas.js` | passed |
+| `node --check static_atlas/presentation.js` | passed |
+| `python3 -m compileall -q homology_db scripts tests` | passed |
+| `git diff --check` | passed |
+| local browser QA at 1280×800 and 390×844 | Home, Spaces, family, S², and CP² routes passed in Light and Dark themes with no console error or horizontal overflow |
+| search and object-control interaction QA | `sphere` returned 18 ranked matches with keyboard entry; S² updated correctly to reduced homology over `F2` |
+| fixed-point two-axis review | specification review found and closed public `?review=1` access; standards review found and closed this missing test log and a duplicate family-header selector |
+
+Two initial focused-test invocations used stale pluralized class and method
+names and failed in the unittest loader before exercising repository code. The
+corrected command and passing result are recorded in the table.
+
+The deterministic checked-in artifact, final 66/66 run, GitHub Pages workflow,
+and live byte comparison are recorded after the release boundary.

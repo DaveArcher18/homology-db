@@ -32,8 +32,9 @@
 
   const issueEndpoint = "https://github.com/DaveArcher18/homology-db/issues/new";
   const themeStorageKey = "homology-atlas-theme-v1";
-  const reviewModeEnabled =
-    new URLSearchParams(window.location.search).get("review") === "1";
+  // Reviewer-only renderers stay in source for later wiring, but unfinished
+  // controls and record diagnostics are not addressable in the public build.
+  const reviewModeEnabled = false;
   const familySearchThreshold = 8;
   const themeLabels = Object.freeze({
     system: "System",

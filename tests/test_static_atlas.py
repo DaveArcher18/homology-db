@@ -548,9 +548,8 @@ console.log(JSON.stringify({
 
             html = output_path.read_text(encoding="utf-8")
             for simplified_contract in (
-                "const reviewModeEnabled =",
-                "new URLSearchParams(window.location.search).get",
-                'window.location.search).get("review") === "1"',
+                "const reviewModeEnabled = false",
+                "Reviewer-only renderers stay in source for later wiring",
                 "const familySearchThreshold = 8",
                 "if (members.length > familySearchThreshold)",
                 "showAllOnEmpty: false",
@@ -563,6 +562,10 @@ console.log(JSON.stringify({
                 "route-view h1[tabindex=\"-1\"]:focus",
             ):
                 self.assertIn(simplified_contract, html)
+            self.assertNotIn(
+                'window.location.search).get("review")',
+                html,
+            )
             for removed_public_chrome in (
                 'id="family-outline"',
                 "view.append(feedbackBand)",

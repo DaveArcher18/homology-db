@@ -38,16 +38,20 @@ without an explicit user request here.
   checks. Browser QA at 1280×800 and 390×844 covers Home, Spaces, Spheres,
   object pages, the reduced mobile drawer, search and keyboard result
   navigation, local coefficient/convention changes, populated and unpopulated
-  record disclosures, `?review=1`, and both Light and Dark themes. There is no
+  record disclosures, and both Light and Dark themes. There is no
   horizontal overflow or console error. Normal object pages expose one
   feedback link, Homology, provenance, one populated Model & sources
   disclosure, and Relationships only when present; review-only computations,
-  record JSON, and quality diagnostics remain available only behind
-  `?review=1`. The full 66-test run has 65 passing tests; the sole expected
-  failure is checked-in-artifact parity because the previous public artifact
-  has deliberately not yet been regenerated. Exact next action: commit the
-  reviewed source surface, perform the fixed-point two-axis review, then build
-  and verify the deterministic release artifact from that clean source commit.
+  record JSON, and quality diagnostics remain dormant in source and are not
+  URL-addressable in the public build. The fixed-point two-axis review found
+  no other product-contract defect; its repository review also requested this
+  checkpoint's exact checks in `TESTLOG.md` and one duplicate CSS selector was
+  removed. The full 66-test run has 65 passing tests; the sole expected failure
+  is checked-in-artifact parity because the previous public artifact has
+  deliberately not yet been regenerated. Exact next action: rerun focused
+  checks after the review correction, commit the corrected source surface,
+  then build and verify the deterministic release artifact from that clean
+  source commit.
 - Live visual QA at 1280×800 and 390×844 found four public-surface defects:
   the 17-family rail dominates every route; programmatic route focus draws a
   giant box around page headings; family and space pages repeat summaries and
