@@ -33,6 +33,17 @@ without an explicit user request here.
 
 ## Last checkpoint
 
+- The review-corrected source is committed through `7f33ebc`. The deterministic
+  `dist/atlas.html` is 4,169,450 bytes at SHA-256
+  `99250df50129a70a3734944c3ce780909e0ce02e9dff49a2ca872c26ac4e43f9`,
+  is byte-identical to a second clean export, and embeds clean source
+  `7f33ebc58451a75f85a7c2f0274edd9057d43bfc` with source-input SHA-256
+  `97452364ee60b05cfa9d320afba95a5e716cafeb7d8494e7e0c9ffd4dbc69146`.
+  The full suite passes 66/66 including checked-in-artifact parity; the
+  pre-existing SQLite `ResourceWarning`s remain non-failing. Exact next
+  action: commit the release artifact and records, reconcile `origin/main`,
+  push without force, await the GitHub Pages workflow, then compare the live
+  body byte-for-byte and repeat the browser smoke test.
 - The production-surface simplification now passes focused route, rendering,
   theme, and accessibility contracts plus JavaScript/Python syntax and diff
   checks. Browser QA at 1280×800 and 390×844 covers Home, Spaces, Spheres,

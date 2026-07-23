@@ -33,11 +33,11 @@ The checked-in release candidate has Snapshot ID
 `chromatic-16e4f2be46edd93a`. Its disposable SQLite database is 2,535,424
 bytes with SHA-256
 `4c9791aba051dec8b0fe5643f710e0fb674426ff96a65b730eef46c469da820f`.
-The generated `dist/atlas.html` is 4,172,476 bytes with SHA-256
-`7ae2d0a8a1b1d94b2aa11294d345c1ba1079fb56af98d82196ea8e59eca1a178`.
+The generated `dist/atlas.html` is 4,169,450 bytes with SHA-256
+`99250df50129a70a3734944c3ce780909e0ce02e9dff49a2ca872c26ac4e43f9`.
 It embeds clean source commit
-`f9fd94c24b4260d543e5e7961204ffe8079e5a2c` and source-input SHA-256
-`b75af4d4e34d5f28a56680cee51d23cbc60a42785039d6daedb077a52eb7cf23`.
+`7f33ebc58451a75f85a7c2f0274edd9057d43bfc` and source-input SHA-256
+`97452364ee60b05cfa9d320afba95a5e716cafeb7d8494e7e0c9ffd4dbc69146`.
 The artifact embeds Snapshot identity, generation time, database measurements,
 record counts, source commit, source-input hash, and clean/dirty input state.
 The one-file exporter enforces the 5 MiB cap and rejects external script,

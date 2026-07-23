@@ -738,5 +738,14 @@ Two initial focused-test invocations used stale pluralized class and method
 names and failed in the unittest loader before exercising repository code. The
 corrected command and passing result are recorded in the table.
 
-The deterministic checked-in artifact, final 66/66 run, GitHub Pages workflow,
-and live byte comparison are recorded after the release boundary.
+### Deterministic artifact and release-candidate checks
+
+| Check | Result |
+| --- | --- |
+| `python3 scripts/export_static_atlas.py --snapshot current --output dist/atlas.html` | generated 4,169,450 bytes at SHA-256 `99250df50129a70a3734944c3ce780909e0ce02e9dff49a2ca872c26ac4e43f9` |
+| repeat export to `/tmp/homology-atlas-simplified-repeat.html` plus `cmp -s` | passed; the second build is byte-identical |
+| embedded source metadata | clean source `7f33ebc58451a75f85a7c2f0274edd9057d43bfc`, input SHA-256 `97452364ee60b05cfa9d320afba95a5e716cafeb7d8494e7e0c9ffd4dbc69146`, `source_inputs_dirty = false` |
+| `python3 -m unittest discover -s tests -v` | 66/66 passed, including checked-in-artifact parity; pre-existing shared-process SQLite `ResourceWarning`s remain non-failing |
+
+The GitHub Pages workflow and live byte comparison are recorded after
+publication.
