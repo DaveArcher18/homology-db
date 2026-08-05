@@ -766,3 +766,74 @@ corrected command and passing result are recorded in the table.
   S² shows one feedback link and only the populated `Model & sources`
   disclosure. Adding `review=1` exposes no reviewer toggle or review-only
   content.
+
+## 2026-08-05 — stable Steenrod cw49 implementation
+
+Scope: stable-first canonical module contract, cw49 normalization, three
+consumer adapters, production-schema extension, local spectrum atlas review
+candidate, and an external-review deployment gate. The checked-in public
+`dist/atlas.html` remains the previously reviewed 42-space artifact.
+
+| Check | Result |
+| --- | --- |
+| `python3 -m unittest tests.test_steenrod_release_gate` | 4/4 passed after the red missing-script tracer |
+| `python3 scripts/verify_steenrod_release.py --atlas dist/atlas.html --review docs/reviews/steenrod-cw49-v1-dan.json` | passed as `legacy_space_only`; no review record is required until spectra enter the public artifact |
+| official Bruner Ext 1.9.5 `A/Install` in a temporary directory | compiled the real `consistency` and `newconsistency` checkers successfully; legacy C warnings were non-failing |
+
+Further schema, corpus, consumer, static-atlas, deterministic-build, and full
+regression results are recorded below.
+
+### Final integration and compatibility evidence
+
+| Check | Result |
+| --- | --- |
+| real-consumer environment plus `python3 -m unittest discover -s tests -v` | 147/147 passed in 203.078 seconds; no consumer tests skipped |
+| pinned consumer checks | 22/22 passed against Bruner Ext 1.9.5 `newconsistency`, the pinned sseq parser, and the pinned SSeqCpp `Adams` parser |
+| focused migration/materializer suite | 28/28 passed, including append-only integrity, import evidence, rollback, duplicate safety, Snapshot projection, and logical-hash reproducibility |
+| corpus assertions | exactly 49 spectra: 48 finite Bruner-capable modules plus one typed `tmf` profile; 942 basis elements; 5,780 generator slots; 2,503 nonzero and 3,277 exact-zero images |
+| malformed and semantic validation | passed degree-shift, duplicate-target, Adem, completeness, stable/unstable, bool-as-integer, exact-zero, and unknown-slot rejection contracts |
+| `python3 -m compileall -q homology_db scripts tests` | passed |
+| `node --check` over extracted atlas JavaScript and `static_atlas/presentation.js` | passed |
+| `git diff --check` | passed |
+
+The full test run continued to emit pre-existing non-failing SQLite
+`ResourceWarning`s in older Chromatic Database test paths. New AtlasSchema and
+Steenrod test connections are explicitly closed.
+
+### Deterministic review candidate
+
+| Artifact | Measurement |
+| --- | --- |
+| `.scratch/steenrod-cw49-v1/artifacts/atlas.html` | 5,071,543 bytes; SHA-256 `17985da48b7f004deb19d36589f19095b3cd768873cb333a6ec68fd25e9968a7` |
+| `.scratch/steenrod-cw49-v1/artifacts/review-packet.json` | 70,646 bytes; SHA-256 `6d0b9125274cd79c8009ed9addaee5f7623e25bcd9ab64840b7413c20ffb750c` |
+| `.scratch/steenrod-cw49-v1/artifacts/coverage.md` | 4,732 bytes; SHA-256 `e1d06b8e7533c308a35523a83d13bd5c88546b8f51eb932b7d864c27a565cc7e` |
+| source identity | clean commit `6ed04e060cf9727e8efdd275169b6e9c15b561a9`; source-input SHA-256 `32add49eb05476ead6121a9fa790d068cfe42bdc33c7cbb7579231302794a155` |
+| repeat build | all three outputs byte-identical from `/tmp/homology-db-review-second-6ed04e0` |
+
+The packet records candidate SHA-256
+`ddfd52d05cf211953d62d4824ef235f3828f4de60dc0ab9dddf9e4ac1205a77b`,
+Snapshot `steenrod-cw49-v1-ddfd52d05cf21195`, 5,828 assertion reviews, and
+5,829 editorial admissions. Its state remains `imported_unreviewed` with
+`acceptance_recorded = false`.
+
+### Release-gate and exact-artifact QA
+
+- `python3 scripts/verify_steenrod_release.py --atlas dist/atlas.html --review
+  docs/reviews/steenrod-cw49-v1-dan.json --verify-rebuild` passed with status
+  `legacy_space_only`. No acceptance file exists.
+- Applying the same gate to the review atlas exited 1 as required with
+  `spectrum C2 is not accepted for release`. Synthetic accepted fixtures pass
+  the complete materialize/two-rebuild route; adversarial tests reject
+  incomplete, unreviewed, partially decoded, oversized, nondeterministic, and
+  tampered releases.
+- `dist/atlas.html` is unchanged at 4,169,450 bytes and SHA-256
+  `99250df50129a70a3734944c3ce780909e0ce02e9dff49a2ca872c26ac4e43f9`.
+- Exact review-artifact browser QA covered 49-spectrum browse/search, alias and
+  Arrow-key navigation, a long repeated-degree route, finite action tables,
+  profile-only `tmf`, typed Bruner unsupported state, all six download paths,
+  malformed slugs, and desktop/390/320-pixel layouts. There were no console
+  warnings or errors and no page-level horizontal overflow; wide operation
+  tables use their intentional internal scroller.
+- Independent implementation and release audits reported no P0/P1 finding and
+  confirmed that public Pages cannot admit the corpus before exact written
+  acceptance.

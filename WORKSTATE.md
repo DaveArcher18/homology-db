@@ -4,17 +4,14 @@ Status: COMPLETE
 
 ## Objective
 
-Simplify the public 42-space Chromatic Homology Atlas to the routes and
-interactions that are complete and useful now. Correct desktop and mobile
-alignment, reduce repeated copy and control density, hide unfinished or empty
-record sections while preserving their data and renderers in the repository,
-and publish the visually reviewed result to the existing GitHub Pages URL.
+Add a stable-first mod-2 Steenrod-module corpus for all 49 spectra on Wayne
+Lin's cw49 index, deterministic Bruner/sseq/SSeqCpp exports, and table-led
+stable-spectrum atlas routes. Preserve the existing 42-space atlas and keep
+the new public release gated until Dan Isaksen reviews the exact candidate.
 
 ## Active map
 
-The historical release map remains at `.scratch/named-atlas-review-v1/map.md`.
-The current vertical slice is implemented by `corpus/chromatic-v1/`,
-`homology_db/chromatic.py`, and the `homology-db.static-atlas/3` exporter.
+`.scratch/steenrod-cw49-v1/map.md`
 
 ## Control mode
 
@@ -24,14 +21,39 @@ without an explicit user request here.
 
 ## Current ticket
 
-`Production-surface simplification and visual QA`, completed by `/root
-(interactive chat)` on 2026-07-23.
+None. Tickets 01–05 are resolved. Dan's review is the next external human
+event; public release work must begin only after his written acceptance of the
+exact hashed packet.
 
 ## Active run lease
 
 None.
 
 ## Last checkpoint
+
+- Source commit `6ed04e060cf9727e8efdd275169b6e9c15b561a9` implements the
+  complete 49-spectrum stable-first corpus, append-only migration 0005,
+  canonical module contract, deterministic Bruner/sseq/SSeqCpp adapters,
+  production materializer, spectrum routes, and acceptance-aware release gate.
+  Source revision inputs are clean at SHA-256
+  `32add49eb05476ead6121a9fa790d068cfe42bdc33c7cbb7579231302794a155`.
+- The local review atlas is 5,071,543 bytes at SHA-256
+  `17985da48b7f004deb19d36589f19095b3cd768873cb333a6ec68fd25e9968a7`.
+  Its review packet is SHA-256
+  `6d0b9125274cd79c8009ed9addaee5f7623e25bcd9ab64840b7413c20ffb750c`
+  and coverage report is SHA-256
+  `e1d06b8e7533c308a35523a83d13bd5c88546b8f51eb932b7d864c27a565cc7e`.
+  A second clean build reproduced all three artifacts byte-for-byte.
+- The full 147-test suite passes with the pinned real Bruner 1.9.5, sseq, and
+  SSeqCpp consumers enabled. Independent code/release review and exact-artifact
+  desktop, 390-pixel, and 320-pixel browser QA found no release blocker.
+- No Dan acceptance has been fabricated. The candidate is correctly rejected
+  by the release gate, while the existing 42-space `dist/atlas.html` remains
+  unchanged at SHA-256
+  `99250df50129a70a3734944c3ce780909e0ce02e9dff49a2ca872c26ac4e43f9`
+  and passes the legacy-only gate. Exact next action after written acceptance:
+  add the documented acceptance record, materialize the finalized Snapshot,
+  rebuild `dist/atlas.html`, and run the two-build Pages gate before publishing.
 
 - Commits through release artifact `3438f08` were pushed to synchronized
   `main` without force or remote divergence. GitHub Pages workflow
