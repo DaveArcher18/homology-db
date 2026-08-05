@@ -1,0 +1,40 @@
+name: Request a stable spectrum
+description: Propose a stable spectrum and a sourced mod-2 Steenrod-module presentation.
+title: "[Spectrum request] "
+body:
+  - type: input
+    id: spectrum
+    attributes:
+      label: Requested spectrum or stable family
+      placeholder: Name, notation, and suspension convention
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Why would this be useful?
+      description: Explain its role in stable homotopy or an intended computation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: module
+    attributes:
+      label: Suggested mod-2 cohomology basis and Steenrod action
+      description: State degrees, Sq^(2^k) images, finite support or profile, and whether zeros are proved.
+
+  - type: input
+    id: source
+    attributes:
+      label: Supporting source
+      description: Link to a paper, author archive, or reproducible software definition.
+      placeholder: https://…
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: I stated whether the request is stable or unstable and did not use omission to assert zero.
+          required: true

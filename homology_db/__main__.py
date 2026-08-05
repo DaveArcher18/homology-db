@@ -12,6 +12,12 @@ def main() -> int:
 
         return chromatic_main()
 
+    if sys.argv[1:2] == ["steenrod"]:
+        del sys.argv[1]
+        from .steenrod import main as steenrod_main
+
+        return steenrod_main()
+
     from .preview import main as preview_main
 
     return preview_main()

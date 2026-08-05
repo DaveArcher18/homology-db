@@ -28,6 +28,13 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+      - name: Enforce the stable-spectrum review gate
+        run: >-
+          python3 scripts/verify_steenrod_release.py
+          --atlas dist/atlas.html
+          --review docs/reviews/steenrod-cw49-v1-dan.json
+          --verify-rebuild
+
       - name: Prepare the static site
         run: |
           mkdir -p _site

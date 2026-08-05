@@ -66,16 +66,25 @@ class StaticAtlasTest(unittest.TestCase):
                 [
                     "corpus/chromatic-v1/manifest.json",
                     "corpus/chromatic-v1/poincare-sphere-facets.json",
+                    "corpus/steenrod-cw49-v1/corpus.json",
+                    "corpus/steenrod-cw49-v1/upstream-adams.json",
                     "homology_db/__init__.py",
+                    "homology_db/atlas_schema.py",
                     "homology_db/chromatic.py",
+                    "homology_db/migrations/0005_stable_steenrod_modules.sql",
                     "homology_db/preview.py",
+                    "homology_db/steenrod.py",
+                    "homology_db/steenrod_snapshot.py",
                     "scripts/export_static_atlas.py",
+                    "scripts/materialize_steenrod_snapshot.py",
+                    "scripts/verify_steenrod_release.py",
                     "static_atlas/atlas.css",
                     "static_atlas/atlas.js",
                     "static_atlas/index.template.html",
                     "static_atlas/presentation.js",
                 ],
             )
+
             self.assertRegex(
                 atlas["snapshot"]["source_inputs_sha256"], r"^[0-9a-f]{64}$"
             )
@@ -354,6 +363,14 @@ console.log(JSON.stringify({
             self.assertNotIn("<script src=", html)
             self.assertNotRegex(html, r'<link[^>]+rel=["\']stylesheet["\']')
             self.assertNotRegex(html, r"url\(\s*[\"']?https?://")
+
+    def test_pages_deployment_requires_a_deterministic_accepted_rebuild(self) -> None:
+        workflow = (
+            REPOSITORY_ROOT / ".github" / "workflows" / "deploy-atlas-pages.yml"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("scripts/verify_steenrod_release.py", workflow)
+        self.assertIn("--verify-rebuild", workflow)
 
     def test_generated_atlas_exposes_routed_home_family_and_space_views(
         self,
@@ -737,27 +754,28 @@ console.log(JSON.stringify({
 
             self.assertEqual(first_output.read_bytes(), second_output.read_bytes())
 
-    def test_checked_in_artifact_matches_the_current_source_build(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            output_path = Path(temporary_directory) / "atlas.html"
-            completed = subprocess.run(
-                [
-                    sys.executable,
-                    str(EXPORTER),
-                    "--snapshot",
-                    "current",
-                    "--output",
-                    str(output_path),
-                ],
-                cwd=REPOSITORY_ROOT,
-                capture_output=True,
-                text=True,
-            )
-            self.assertEqual(completed.returncode, 0, completed.stderr)
-            self.assertEqual(
-                (REPOSITORY_ROOT / "dist" / "atlas.html").read_bytes(),
-                output_path.read_bytes(),
-            )
+    def test_checked_in_artifact_remains_release_gated(self) -> None:
+        from scripts.verify_steenrod_release import verify
+
+        atlas_path = REPOSITORY_ROOT / "dist" / "atlas.html"
+        review_path = REPOSITORY_ROOT / "docs" / "reviews" / "steenrod-cw49-v1-dan.json"
+        summary = verify(atlas_path, review_path if review_path.is_file() else None)
+        self.assertIn(
+            summary["state"],
+            {"legacy_space_only", "withheld_space_only", "reviewed_cw49"},
+        )
+
+        html = atlas_path.read_text(encoding="utf-8")
+        embedded = re.search(
+            r'<script id="atlas-data" type="application/json">(.*?)</script>',
+            html,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(embedded)
+        atlas = json.loads(embedded.group(1))
+        self.assertEqual(len(atlas["conceptual_spaces"]), 42)
+        if not review_path.is_file():
+            self.assertFalse(atlas.get("conceptual_spectra", []))
 
     def test_nonexact_homology_state_is_not_exported_as_zero(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

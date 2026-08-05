@@ -20,6 +20,167 @@
     })();
   </script>
   <style>/*__ATLAS_CSS__*/</style>
+  <style>
+    .spectrum-status {
+      display: inline-flex;
+      gap: 0.35rem;
+      align-items: center;
+      width: fit-content;
+      padding: 0.18rem 0.48rem;
+      border: 1px solid var(--warning);
+      border-radius: 999px;
+      color: var(--warning);
+      background: var(--warning-soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .spectrum-status.is-accepted {
+      border-color: var(--success);
+      color: var(--success);
+      background: var(--success-soft);
+    }
+
+    .spectrum-directory {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+      gap: 0.75rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .spectrum-directory li {
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .spectrum-directory a {
+      display: block;
+      font-family: var(--serif);
+      font-size: 1.08rem;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .spectrum-directory p,
+    .spectrum-note {
+      margin: 0.3rem 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .spectrum-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      gap: 0.65rem;
+      margin: 1.25rem 0;
+    }
+
+    .spectrum-meta div {
+      min-width: 0;
+      padding: 0.7rem 0.8rem;
+      border-left: 3px solid var(--border-strong);
+      background: var(--surface-muted);
+    }
+
+    .spectrum-meta dt {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .spectrum-meta dd {
+      margin: 0.15rem 0 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .spectrum-view .space-title {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .steenrod-table-wrap {
+      overflow-x: auto;
+      margin-block: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .steenrod-table {
+      width: 100%;
+      min-width: 34rem;
+      border-collapse: collapse;
+      background: var(--surface);
+    }
+
+    .steenrod-table th,
+    .steenrod-table td {
+      padding: 0.62rem 0.72rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .steenrod-table thead th {
+      background: var(--surface-muted);
+      white-space: nowrap;
+    }
+
+    .steenrod-state-zero {
+      color: var(--success);
+    }
+
+    .steenrod-state-unknown {
+      color: var(--warning);
+      font-style: italic;
+    }
+
+    .spectrum-state-key,
+    .spectrum-downloads {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      align-items: center;
+    }
+
+    .spectrum-state-key {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .spectrum-download-card {
+      padding: 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .spectrum-download-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+    }
+
+    .spectrum-download-card button {
+      margin: 0 0.4rem 0.35rem 0;
+    }
+
+    .spectrum-profile {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface-muted);
+    }
+
+    .spectrum-provenance {
+      margin-top: 1.4rem;
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#atlas-document">Skip to main content</a>
@@ -30,7 +191,7 @@
         <span class="brand-mark" aria-hidden="true">H<sub>∗</sub></span>
         <span class="brand-copy">
           <strong>Homology Atlas</strong>
-          <small>Spaces and their invariants</small>
+          <small id="brand-scope">Spaces and their invariants</small>
         </span>
       </a>
 
@@ -94,6 +255,10 @@
             <span aria-hidden="true">𝒳</span>
             All spaces
           </a>
+          <a id="nav-spectra" class="primary-nav-link" href="#spectra" hidden>
+            <span aria-hidden="true">𝕊</span>
+            Stable spectra
+          </a>
           <a id="request-space-index" class="primary-nav-link index-request mobile-only"
             href="https://github.com/DaveArcher18/homology-db/issues/new?template=space-request.yml"
             target="_blank" rel="noopener noreferrer">
@@ -121,6 +286,7 @@
       <p>Unknown, missing, and not-computed states are never treated as zero.</p>
       <nav aria-label="Footer">
         <a href="#spaces">Browse spaces</a>
+        <a id="footer-spectra" href="#spectra" hidden>Browse stable spectra</a>
       </nav>
     </div>
   </footer>
@@ -129,5 +295,723 @@
   <script>/*__ATLAS_PRESENTATION_JS__*/</script>
   <script id="atlas-data" type="application/json">__ATLAS_JSON__</script>
   <script>/*__ATLAS_JS__*/</script>
+  <script>
+    (() => {
+      "use strict";
+
+      const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
+      const conceptualSpectra = Array.isArray(atlas.conceptual_spectra)
+        ? atlas.conceptual_spectra
+        : [];
+      const spectrumReleaseAccepted =
+        atlas.snapshot?.spectrum_release_status === "accepted_finalized"
+        && conceptualSpectra.every(
+          (spectrum) => spectrum.review_state === "accepted",
+        );
+      const navSpectra = document.getElementById("nav-spectra");
+      const footerSpectra = document.getElementById("footer-spectra");
+      if (!conceptualSpectra.length) return;
+
+      const atlasDocument = document.getElementById("atlas-document");
+      const navHome = document.getElementById("nav-home");
+      const navSpaces = document.getElementById("nav-spaces");
+      const actionStatus = document.getElementById("action-status");
+      const spectraBySlug = new Map(
+        conceptualSpectra.map((spectrum) => [spectrum.slug, spectrum]),
+      );
+      navSpectra.hidden = false;
+      footerSpectra.hidden = false;
+      document.getElementById("brand-scope").textContent =
+        "Spaces, spectra, and invariants";
+      document.getElementById("atlas-index-title").textContent = "Atlas";
+
+      function element(tagName, className, text) {
+        const node = document.createElement(tagName);
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      }
+
+      function humanize(value) {
+        return String(value ?? "not recorded").replaceAll("_", " ");
+      }
+
+      function announce(message) {
+        actionStatus.textContent = "";
+        window.requestAnimationFrame(() => {
+          actionStatus.textContent = message;
+        });
+      }
+
+      function breadcrumbs(items) {
+        const navigation = element("nav", "breadcrumbs");
+        navigation.setAttribute("aria-label", "Breadcrumb");
+        const list = element("ol");
+        items.forEach((item) => {
+          const listItem = element("li");
+          if (item.href) {
+            const link = element("a", "", item.label);
+            link.href = item.href;
+            listItem.append(link);
+          } else {
+            listItem.textContent = item.label;
+            listItem.setAttribute("aria-current", "page");
+          }
+          list.append(listItem);
+        });
+        navigation.append(list);
+        return navigation;
+      }
+
+      function reviewLabel(reviewState) {
+        if (reviewState === "imported_unreviewed") {
+          return "Imported · awaiting review";
+        }
+        if (reviewState === "accepted") {
+          return "Accepted · finalized";
+        }
+        return humanize(reviewState);
+      }
+
+      function reviewStatusClass(reviewState) {
+        return reviewState === "accepted"
+          ? "spectrum-status is-accepted"
+          : "spectrum-status";
+      }
+
+      function spectrumSearchText(spectrum) {
+        return [
+          spectrum.id,
+          spectrum.slug,
+          spectrum.name?.plain,
+          spectrum.name?.tex,
+          spectrum.object_kind,
+          spectrum.module?.module_type,
+          ...(spectrum.search_aliases ?? []),
+          ...((spectrum.module?.basis ?? []).map((basis) => basis.name)),
+        ].filter(Boolean).join(" ").toLocaleLowerCase();
+      }
+
+      function spectrumListItem(spectrum) {
+        const item = element("li");
+        const link = element("a", "", spectrum.name?.plain ?? spectrum.id);
+        link.classList.add("spectrum-result-link");
+        link.href = "#spectrum=" + encodeURIComponent(spectrum.slug);
+        item.append(
+          link,
+          element(
+            "p",
+            "",
+            humanize(spectrum.object_kind)
+              + " · "
+              + humanize(spectrum.module?.module_type),
+          ),
+        );
+        return item;
+      }
+
+      function buildSpectraView() {
+        const view = element("article", "route-view spectra-view");
+        view.append(
+          breadcrumbs([
+            { label: "Home", href: "#home" },
+            { label: "Stable spectra" },
+          ]),
+        );
+        const header = element("header", "page-header");
+        header.append(
+          element(
+            "p",
+            "page-kicker",
+            spectrumReleaseAccepted
+              ? "Reviewed stable corpus"
+              : "Local mathematical review candidate",
+          ),
+          element("h1", "page-title", "Stable spectra"),
+          element(
+            "p",
+            "page-lede",
+            String(conceptualSpectra.length)
+              + (
+                spectrumReleaseAccepted
+                  ? " Conceptual spectra from the cw49 corpus, accepted and admitted in the finalized stable Snapshot."
+                  : " Conceptual spectra from the cw49 corpus. These imported operations are not part of the public release until mathematical review is recorded."
+              ),
+          ),
+          element(
+            "span",
+            spectrumReleaseAccepted
+              ? "spectrum-status is-accepted"
+              : "spectrum-status",
+            spectrumReleaseAccepted
+              ? "Accepted · finalized"
+              : "Imported · awaiting review",
+          ),
+        );
+        const requestSpectrum = element(
+          "a",
+          "secondary-action",
+          "Request a stable spectrum ↗",
+        );
+        requestSpectrum.href =
+          "https://github.com/DaveArcher18/homology-db/issues/new?template=spectrum-request.yml";
+        requestSpectrum.target = "_blank";
+        requestSpectrum.rel = "noopener noreferrer";
+        header.append(requestSpectrum);
+        view.append(header);
+
+        const search = element("section", "space-search-section");
+        const form = element("form", "space-search directory-tools");
+        form.setAttribute("role", "search");
+        const label = element("label", "search-label search-control");
+        label.htmlFor = "search-spectra";
+        label.append(element("span", "search-label-text", "Search all spectra"));
+        const input = element("input");
+        input.id = "search-spectra";
+        input.type = "search";
+        input.autocomplete = "off";
+        input.placeholder = "Try “tmf”, “projective”, or a basis name";
+        label.append(input);
+        const status = element("output", "search-status directory-status");
+        status.id = "search-status-spectra";
+        status.setAttribute("role", "status");
+        status.setAttribute("aria-live", "polite");
+        input.setAttribute("aria-describedby", status.id);
+        const results = element("ol", "spectrum-directory");
+
+        function renderResults() {
+          const query = input.value.trim().toLocaleLowerCase();
+          const matches = conceptualSpectra
+            .filter(
+              (spectrum) =>
+                !query || spectrumSearchText(spectrum).includes(query),
+            )
+            .sort(
+              (left, right) =>
+                left.name.plain.localeCompare(right.name.plain),
+            );
+          results.replaceChildren(
+            ...matches.map((spectrum) => spectrumListItem(spectrum)),
+          );
+          status.textContent =
+            matches.length === 1
+              ? "1 spectrum"
+              : String(matches.length) + " spectra";
+          if (!matches.length) {
+            results.append(
+              element(
+                "li",
+                "empty-state",
+                "No spectra match this search.",
+              ),
+            );
+          }
+        }
+
+        form.addEventListener("submit", (event) => event.preventDefault());
+        input.addEventListener("input", renderResults);
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && input.value) {
+            input.value = "";
+            renderResults();
+            return;
+          }
+          if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+          const links = [...results.querySelectorAll(".spectrum-result-link")];
+          if (!links.length) return;
+          event.preventDefault();
+          (event.key === "ArrowDown" ? links[0] : links.at(-1)).focus();
+        });
+        results.addEventListener("keydown", (event) => {
+          const active = event.target.closest(".spectrum-result-link");
+          if (!active) return;
+          const previous = event.key === "ArrowUp" || event.key === "k";
+          const next = event.key === "ArrowDown" || event.key === "j";
+          if (!previous && !next) return;
+          const links = [...results.querySelectorAll(".spectrum-result-link")];
+          const index = links.indexOf(active);
+          if (index < 0) return;
+          event.preventDefault();
+          links[
+            previous
+              ? Math.max(0, index - 1)
+              : Math.min(links.length - 1, index + 1)
+          ].focus();
+        });
+        form.append(label, status);
+        search.append(form, results);
+        view.append(search);
+        renderResults();
+        return view;
+      }
+
+      function metadataItem(term, value) {
+        const item = element("div");
+        item.append(
+          element("dt", "", term),
+          element("dd", "", String(value)),
+        );
+        return item;
+      }
+
+      function actionSlotKey(basisId, squareDegree) {
+        return String(basisId) + "::" + String(squareDegree);
+      }
+
+      function buildFiniteModuleTable(spectrum) {
+        const module = spectrum.module;
+        const basis = [...(module.basis ?? [])].sort(
+          (left, right) =>
+            left.degree - right.degree
+            || left.ordinal - right.ordinal
+            || left.basis_id.localeCompare(right.basis_id),
+        );
+        const basisById = new Map(
+          basis.map((basisElement) => [basisElement.basis_id, basisElement]),
+        );
+        const topDegree = Math.max(
+          ...basis.map((basisElement) => basisElement.degree),
+        );
+        const actionsBySlot = new Map(
+          (module.actions ?? []).map((action) => [
+            actionSlotKey(action.source_basis_id, action.square_degree),
+            action,
+          ]),
+        );
+        const coveredSlots = new Set(
+          (module.completeness?.slots ?? []).map((slot) =>
+            actionSlotKey(slot.source_basis_id, slot.square_degree),
+          ),
+        );
+        const squareDegrees = [
+          ...new Set([
+            ...(module.actions ?? []).map((action) => action.square_degree),
+            ...(module.completeness?.slots ?? []).map(
+              (slot) => slot.square_degree,
+            ),
+          ]),
+        ].sort((left, right) => left - right);
+
+        const section = element("section", "space-section");
+        section.append(
+          element("h2", "", "Steenrod operations"),
+          element(
+            "p",
+            "spectrum-note",
+            "The ordered F₂-cohomology basis is tabled by degree. Each Sq generator column distinguishes exact nonzero images, Exact zero, and Unknown slots.",
+          ),
+        );
+        const key = element("p", "spectrum-state-key");
+        key.append(
+          element("span", "", "Nonzero exact"),
+          document.createTextNode(" · "),
+          element("span", "steenrod-state-zero", "Exact zero"),
+          document.createTextNode(" · "),
+          element("span", "steenrod-state-unknown", "Unknown"),
+        );
+        section.append(key);
+
+        const wrapper = element("div", "steenrod-table-wrap");
+        const table = element("table", "steenrod-table");
+        const caption = element(
+          "caption",
+          "visually-hidden",
+          "Ordered mod-2 cohomology basis and Steenrod generator actions for "
+            + spectrum.name.plain,
+        );
+        const head = element("thead");
+        const headerRow = element("tr");
+        ["Degree", "Basis"].forEach((label) => {
+          const header = element("th", "", label);
+          header.scope = "col";
+          headerRow.append(header);
+        });
+        squareDegrees.forEach((squareDegree) => {
+          const header = element("th", "", "Sq^" + String(squareDegree));
+          header.scope = "col";
+          headerRow.append(header);
+        });
+        head.append(headerRow);
+        const body = element("tbody");
+        basis.forEach((basisElement) => {
+          const row = element("tr");
+          const degree = element("th", "", String(basisElement.degree));
+          degree.scope = "row";
+          row.append(degree, element("td", "", basisElement.name));
+          squareDegrees.forEach((squareDegree) => {
+            const slotKey = actionSlotKey(
+              basisElement.basis_id,
+              squareDegree,
+            );
+            const action = actionsBySlot.get(slotKey);
+            const cell = element("td");
+            const actionState =
+              action?.knowledge_state
+              ?? (
+                action
+                  ? module.action_knowledge_state_default
+                  : null
+              );
+            if (actionState === "exact") {
+              const targets = action.target_basis_ids ?? [];
+              if (targets.length) {
+                cell.textContent = targets
+                  .map(
+                    (targetId) =>
+                      basisById.get(targetId)?.name ?? targetId,
+                  )
+                  .join(" + ");
+                cell.title = "Exact nonzero action";
+              } else {
+                cell.textContent = "0";
+                cell.className = "steenrod-state-zero";
+                cell.title = "Exact zero";
+              }
+            } else if (!action && coveredSlots.has(slotKey)) {
+              cell.textContent = "0";
+              cell.className = "steenrod-state-zero";
+              cell.title = "Exact zero by completeness";
+            } else if (
+              !action
+              && module.completeness?.knowledge_state === "exact"
+              && basisElement.degree + squareDegree > topDegree
+            ) {
+              cell.textContent = "0";
+              cell.className = "steenrod-state-zero";
+              cell.title = "Exact zero outside finite support";
+            } else {
+              cell.textContent = action
+                ? humanize(actionState)
+                : "Unknown";
+              cell.className = "steenrod-state-unknown";
+            }
+            row.append(cell);
+          });
+          body.append(row);
+        });
+        table.append(caption, head, body);
+        wrapper.append(table);
+        section.append(wrapper);
+        if (!squareDegrees.length) {
+          section.append(
+            element(
+              "p",
+              "spectrum-note",
+              "No positive-degree Steenrod generator slots occur in this finite support.",
+            ),
+          );
+        }
+        section.append(
+          element(
+            "p",
+            "spectrum-note",
+            "Completeness: "
+              + humanize(module.completeness?.knowledge_state)
+              + " across "
+              + String(
+                module.completeness?.slot_count
+                  ?? module.completeness?.slots?.length
+                  ?? 0,
+              )
+              + " recorded slots.",
+          ),
+        );
+        return section;
+      }
+
+      function buildProfileView(spectrum) {
+        const profile = spectrum.module.profile ?? {};
+        const section = element("section", "space-section");
+        section.append(
+          element("h2", "", "Steenrod profile"),
+          element(
+            "p",
+            "spectrum-note",
+            "tmf is represented by its infinite Milnor-basis profile. No finite truncation is implied.",
+          ),
+        );
+        const profileBox = element("dl", "spectrum-profile");
+        const profileBasis =
+          profile.basis
+          ?? (
+            String(spectrum.module.completeness?.scope).includes("milnor")
+              ? "Milnor"
+              : "Not recorded"
+          );
+        profileBox.append(
+          element("dt", "", "Basis"),
+          element("dd", "", humanize(profileBasis)),
+          element("dt", "", "Truncated profile"),
+          element("dd", "", profile.truncated ? "Yes" : "No"),
+          element("dt", "", "p-part"),
+          element("dd", "", (profile.p_part ?? []).join(", ")),
+        );
+        section.append(profileBox);
+        return section;
+      }
+
+      function triggerDownload(filename, payload, mediaType) {
+        const blob = new Blob([payload], {
+          type: mediaType + ";charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.append(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function buildDownloads(spectrum) {
+        const section = element("section", "space-section");
+        section.append(
+          element("h2", "", "Machine-readable downloads"),
+          element(
+            "p",
+            "spectrum-note",
+            "Payloads and manifests were generated deterministically with this review artifact. External formats interpret omitted actions as zero, so incomplete modules are never offered.",
+          ),
+        );
+        const cards = element("div", "spectrum-downloads");
+        Object.entries(spectrum.downloads ?? {}).forEach(
+          ([formatName, download]) => {
+            const card = element("article", "spectrum-download-card");
+            card.append(element("h3", "", formatName));
+            if (download.status !== "ready") {
+              card.append(
+                element(
+                  "p",
+                  "spectrum-note",
+                  "Unsupported: " + humanize(download.reason),
+                ),
+              );
+              cards.append(card);
+              return;
+            }
+            const payloadButton = element(
+              "button",
+              "text-button",
+              "Download " + formatName,
+            );
+            payloadButton.type = "button";
+            payloadButton.addEventListener("click", () => {
+              triggerDownload(
+                download.filename,
+                download.payload,
+                download.media_type,
+              );
+              announce(formatName + " download prepared for " + spectrum.name.plain + ".");
+            });
+            const manifestButton = element(
+              "button",
+              "text-button",
+              "Download manifest",
+            );
+            manifestButton.type = "button";
+            manifestButton.addEventListener("click", () => {
+              triggerDownload(
+                download.filename + ".manifest.json",
+                JSON.stringify(download.manifest, null, 2) + "\n",
+                "application/json",
+              );
+              announce(formatName + " manifest prepared for " + spectrum.name.plain + ".");
+            });
+            card.append(payloadButton, manifestButton);
+            cards.append(card);
+          },
+        );
+        section.append(cards);
+        return section;
+      }
+
+      function spectrumFeedbackUrl(spectrum) {
+        const url = new URL(
+          "https://github.com/DaveArcher18/homology-db/issues/new",
+        );
+        url.searchParams.set("template", "spectrum-feedback.yml");
+        url.searchParams.set(
+          "title",
+          "[Spectrum feedback] "
+            + spectrum.name.plain
+            + " · "
+            + spectrum.id
+            + " · "
+            + spectrum.module.content_sha256.slice(0, 12)
+            + " · "
+            + spectrum.module.source_snapshot,
+        );
+        return url.toString();
+      }
+
+      function buildProvenance(spectrum) {
+        const details = element("details", "spectrum-provenance");
+        details.append(element("summary", "", "Provenance"));
+        const note = element(
+          "p",
+          "spectrum-note",
+          spectrum.review_state === "accepted"
+            ? "Imported source evidence accepted for this finalized stable Snapshot."
+            : "Imported source evidence; mathematical review has not yet been recorded.",
+        );
+        const exact = element("pre", "raw-record");
+        const provenance =
+          spectrum.provenance
+          ?? (
+            spectrum.provenance_ref === "cw49"
+              ? {
+                  corpus_source: atlas.snapshot?.spectrum_source,
+                  module_evidence: spectrum.module.evidence,
+                }
+              : null
+          );
+        exact.textContent = JSON.stringify(provenance, null, 2);
+        details.append(note, exact);
+        return details;
+      }
+
+      function buildSpectrumView(spectrum) {
+        const view = element("article", "route-view spectrum-view");
+        view.dataset.spectrumId = spectrum.id;
+        view.append(
+          breadcrumbs([
+            { label: "Home", href: "#home" },
+            { label: "Stable spectra", href: "#spectra" },
+            { label: spectrum.name.plain },
+          ]),
+        );
+        const header = element("header", "space-header");
+        const title = element("div", "space-title-copy");
+        title.append(
+          element("p", "page-kicker", "Conceptual spectrum · stable category"),
+          element("h1", "space-title", spectrum.name.plain),
+          element(
+            "span",
+            reviewStatusClass(spectrum.review_state),
+            reviewLabel(spectrum.review_state),
+          ),
+        );
+        const feedback = element(
+          "a",
+          "context-feedback-link",
+          "Correct or improve ↗",
+        );
+        feedback.href = spectrumFeedbackUrl(spectrum);
+        feedback.target = "_blank";
+        feedback.rel = "noopener noreferrer";
+        title.append(feedback);
+        header.append(title);
+        view.append(header);
+
+        const metadata = element("dl", "spectrum-meta");
+        metadata.append(
+          metadataItem("Category", spectrum.module.category),
+          metadataItem("Object kind", humanize(spectrum.object_kind)),
+          metadataItem("Module type", humanize(spectrum.module.module_type)),
+          metadataItem("Coefficients", spectrum.module.coefficient_field),
+          metadataItem(
+            "Cohomology convention",
+            spectrum.module.reduced ? "reduced" : "unreduced",
+          ),
+          metadataItem("Grading", spectrum.module.grading_convention),
+          metadataItem(
+            "Suspension normalization",
+            spectrum.module.suspension_shift,
+          ),
+          metadataItem("Basis version", spectrum.module.basis_version),
+          metadataItem("Review", reviewLabel(spectrum.review_state)),
+        );
+        view.append(metadata);
+        view.append(
+          spectrum.module.module_type === "profile"
+            ? buildProfileView(spectrum)
+            : buildFiniteModuleTable(spectrum),
+          buildDownloads(spectrum),
+          buildProvenance(spectrum),
+        );
+        return view;
+      }
+
+      function parseSpectrumRoute(hash = window.location.hash) {
+        if (hash === "#spectra") return { kind: "spectra" };
+        const spectrumMatch = hash.match(/^#spectrum=(.+)$/);
+        if (!spectrumMatch) return null;
+        try {
+          const slug = decodeURIComponent(spectrumMatch[1]);
+          const spectrum = spectraBySlug.get(slug);
+          return spectrum
+            ? { kind: "spectrum", spectrum }
+            : { kind: "spectrum-not-found", slug };
+        } catch (_error) {
+          return { kind: "spectrum-not-found", slug: spectrumMatch[1] };
+        }
+      }
+
+      function buildSpectrumNotFoundView(slug) {
+        const view = element("article", "route-view not-found-view");
+        view.append(
+          breadcrumbs([
+            { label: "Home", href: "#home" },
+            { label: "Stable spectra", href: "#spectra" },
+            { label: "Page not found" },
+          ]),
+          element("h1", "page-title", "Spectrum not found"),
+          element(
+            "p",
+            "page-lede",
+            "The review candidate does not contain a spectrum with slug “"
+              + slug
+              + "”.",
+          ),
+        );
+        return view;
+      }
+
+      function renderSpectrumRoute(initial = false) {
+        const route = parseSpectrumRoute();
+        navSpectra.removeAttribute("aria-current");
+        if (!route) return false;
+        navHome.removeAttribute("aria-current");
+        navSpaces.removeAttribute("aria-current");
+        navSpectra.setAttribute(
+          "aria-current",
+          route.kind === "spectra" ? "page" : "location",
+        );
+        const view =
+          route.kind === "spectra"
+            ? buildSpectraView()
+            : route.kind === "spectrum"
+              ? buildSpectrumView(route.spectrum)
+              : buildSpectrumNotFoundView(route.slug);
+        atlasDocument.replaceChildren(view);
+        document.title =
+          route.kind === "spectrum"
+            ? route.spectrum.name.plain + " · Homology Atlas"
+            : route.kind === "spectra"
+              ? "Stable spectra · Homology Atlas"
+              : "Spectrum not found · Homology Atlas";
+        if (!initial) {
+          window.scrollTo(0, 0);
+          const heading = view.querySelector("h1");
+          if (heading) {
+            heading.tabIndex = -1;
+            window.requestAnimationFrame(() =>
+              heading.focus({ preventScroll: true }),
+            );
+          }
+          announce(
+            route.kind === "spectrum"
+              ? route.spectrum.name.plain + " spectrum page"
+              : "Stable spectra page",
+          );
+        }
+        return true;
+      }
+
+      window.addEventListener("hashchange", () => renderSpectrumRoute(false));
+      renderSpectrumRoute(true);
+    })();
+  </script>
 </body>
 </html>

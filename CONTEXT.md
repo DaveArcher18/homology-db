@@ -8,6 +8,34 @@ Homology DB is a queryable, provenance-rich corpus of topological spaces, concre
 A named, citable mathematical space or homotopy type that may have multiple concrete models.
 _Avoid_: Object, canonical model
 
+**Conceptual spectrum**:
+A named, citable stable homotopy type represented independently of any particular unstable realization or suspension.
+_Avoid_: Stable space, implicitly suspended space, canonical unstable complex
+
+**Steenrod module**:
+A graded mod-2 cohomology module with an explicitly versioned homogeneous basis and Steenrod-algebra action convention.
+_Avoid_: Sq table, cell structure when only cohomology is known
+
+**Steenrod action slot**:
+The possible value of one generator operation `Sq^(2^k)` on one Steenrod-basis element under a fixed module version and grading convention.
+_Avoid_: Missing operation, implicit zero
+
+**Steenrod action completeness**:
+An evidence-bearing claim that every Steenrod action slot in a stated finite support region is resolved exactly; only such a claim permits omitted external-format actions to mean zero.
+_Avoid_: Highest recorded square, assumed vanishing
+
+**Steenrod module admission**:
+An append-only editorial decision admitting or retiring one immutable Steenrod-module version in a particular Snapshot; profile modules are admitted as module records, not invented finite assertions.
+_Avoid_: Reviewed flag, synthetic profile action
+
+**Steenrod import evidence**:
+Typed provenance linking one immutable Steenrod-module version to its pinned source Snapshot, exact source locator, and versioned normalization rule; it records what was imported without claiming independent mathematical verification.
+_Avoid_: Opaque source hash, reviewer verdict, independently verified action
+
+**Stabilization relation**:
+An evidence-bearing relation from a Conceptual space to a Conceptual spectrum with an explicit suspension normalization; it does not identify their records.
+_Avoid_: Stable alias, automatic suspension family
+
 **Model**:
 A concrete finite presentation of a space, such as a finite simplicial complex or CW complex. A model may remain unidentified.
 _Avoid_: Space representation, raw space

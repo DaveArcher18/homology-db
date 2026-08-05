@@ -34,6 +34,14 @@ not a substitute for a public-operation answer.
    A v3 database with populated legacy conflicts is rejected for explicit
    editorial migration because its final-state membership cannot recover exact
    event history.
+5. `0005_stable_steenrod_modules.sql` adds Conceptual spectra without merging
+   them with Conceptual spaces, finite-basis and profile Steenrod modules,
+   canonical ordered bases, sparse `Sq^(2^k)` assertions, structured exact
+   completeness regions, and Snapshot-scoped Current action/completeness
+   projections. It also adds queryable import evidence and typed append-only
+   module admission effects so an accepted infinite profile such as `tmf` is
+   admitted with its pinned source Snapshot and locator as an immutable module
+   record rather than disguised as a finite action assertion.
 
 The migration runner hashes every SQL migration and rejects a changed migration
 when reopening an existing database. Both the immutable migration ledger and a
@@ -66,6 +74,19 @@ failed upgrade rolls back every table change.
   export inserts are rejected;
 - every Snapshot record uses a recognized record kind and resolves to an
   existing record with the exact stored hash;
+- a Steenrod action subtype must match its parent assertion's canonical
+  module/basis/operation slot; sparse target terms are contiguous and ordered
+  by the module's canonical basis, and target degrees have the required shift;
+- stable modules belong only to Conceptual spectra, unstable modules belong
+  only to Conceptual spaces, and the instability condition is enforced only
+  for the latter;
+- an exact Steenrod-completeness projection requires Snapshot-member basis,
+  evidence, accepted reviews, admissions, and a selected exact Current action
+  for every in-support generator-power slot; absent and unresolved slots do
+  not become zeros;
+- later Snapshots may append assertion or module retirements without changing
+  earlier Snapshots; module admission events require their exact module and
+  subject records plus matching typed import evidence in the same Snapshot;
 - a selected Current Homology assertion must occupy the same slot and be a
   hash-matching member of the Snapshot closure, have a Homology subtype and
   exact value when exact, and carry Snapshot-member evidence, accepted review,
@@ -109,9 +130,10 @@ reason codes:
   constellation, rather than only the Model-scale workload; and
 - production versions of the four public operations over these projections.
 
-No named-space Homology assertion is admitted by these migrations. Mathematical
-coverage remains the responsibility of source pinning and corpus
-materialization tickets.
+The migrations alone admit no named-space Homology or stable-spectrum claim.
+Mathematical coverage remains the responsibility of source pinning and an
+acceptance-bound corpus materializer; migration 0005 supplies the integrity
+contract that such a materializer must satisfy.
 
 ## Question-driven acceptance input
 

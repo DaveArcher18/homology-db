@@ -3,6 +3,7 @@ from __future__ import annotations
 import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 from unittest import mock
 
@@ -61,7 +62,7 @@ class AtlasSchemaTests(unittest.TestCase):
         return entry_id, revision_id, review_id
 
     def test_migrations_separate_the_production_domain_layers(self) -> None:
-        self.assertEqual(self.schema_version, "homology-db.atlas-schema/4")
+        self.assertEqual(self.schema_version, "homology-db.atlas-schema/5")
         tables = {
             row[0]
             for row in self.connection.execute(
@@ -99,7 +100,7 @@ class AtlasSchemaTests(unittest.TestCase):
         applied = self.connection.execute(
             "SELECT version FROM schema_migration ORDER BY version"
         ).fetchall()
-        self.assertEqual(applied, [(1,), (2,), (3,), (4,)])
+        self.assertEqual(applied, [(1,), (2,), (3,), (4,), (5,)])
 
     def test_snapshot_knowledge_selection_requires_matching_review_and_entry(self) -> None:
         entry_a, revision_a, review_a = self.insert_knowledge("a")
@@ -356,16 +357,16 @@ class AtlasSchemaTests(unittest.TestCase):
                 AtlasSchema.migrate(database_path),
                 "homology-db.atlas-schema/3",
             )
-        with sqlite3.connect(database_path) as connection:
+        with closing(sqlite3.connect(database_path)) as connection:
             prior_hashes = connection.execute(
                 "SELECT version, sha256 FROM schema_migration ORDER BY version"
             ).fetchall()
         with mock.patch.object(atlas_schema, "_migration_files", return_value=copied_migrations):
             self.assertEqual(
                 AtlasSchema.migrate(database_path),
-                "homology-db.atlas-schema/4",
+                "homology-db.atlas-schema/5",
             )
-        with sqlite3.connect(database_path) as connection:
+        with closing(sqlite3.connect(database_path)) as connection:
             self.assertEqual(
                 connection.execute(
                     "SELECT version, sha256 FROM schema_migration WHERE version <= 3 "
@@ -396,7 +397,7 @@ class AtlasSchemaTests(unittest.TestCase):
             atlas_schema, "_migration_files", return_value=copied_migrations[:3]
         ):
             AtlasSchema.migrate(database_path)
-        with sqlite3.connect(database_path) as connection:
+        with closing(sqlite3.connect(database_path)) as connection:
             connection.execute("PRAGMA foreign_keys = ON")
             connection.execute(
                 "INSERT INTO conceptual_space VALUES (?, ?, ?)",
@@ -432,7 +433,7 @@ class AtlasSchemaTests(unittest.TestCase):
                 "populated_v3_conflict_requires_editorial_migration",
             ):
                 AtlasSchema.migrate(database_path)
-        with sqlite3.connect(database_path) as connection:
+        with closing(sqlite3.connect(database_path)) as connection:
             self.assertEqual(
                 connection.execute("SELECT MAX(version) FROM schema_migration").fetchone()[0],
                 3,
@@ -455,7 +456,7 @@ class AtlasSchemaTests(unittest.TestCase):
             atlas_schema, "_migration_files", return_value=copied_migrations[:3]
         ):
             AtlasSchema.migrate(database_path)
-        with sqlite3.connect(database_path) as connection:
+        with closing(sqlite3.connect(database_path)) as connection:
             connection.execute(
                 "INSERT INTO derived_artifact VALUES (?, NULL, 'chains', "
                 "'application/json', ?, ?)",
@@ -465,7 +466,7 @@ class AtlasSchemaTests(unittest.TestCase):
         with mock.patch.object(atlas_schema, "_migration_files", return_value=copied_migrations):
             with self.assertRaises(sqlite3.IntegrityError):
                 AtlasSchema.migrate(database_path)
-        with sqlite3.connect(database_path) as connection:
+        with closing(sqlite3.connect(database_path)) as connection:
             self.assertEqual(
                 connection.execute("SELECT MAX(version) FROM schema_migration").fetchone()[0],
                 3,

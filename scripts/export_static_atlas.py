@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -27,6 +28,7 @@ from homology_db.chromatic import COEFFICIENTS, ChromaticTools
 
 
 SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
+PUBLIC_ATLAS_PATH = REPOSITORY_ROOT / "dist" / "atlas.html"
 READ_MODEL_VERSION = "homology-db.static-atlas/3"
 THEORY_ID = "ordinary_homology"
 MAX_HTML_BYTES = 5 * 1024 * 1024
@@ -138,10 +140,18 @@ DEFINITIONS = (
 SOURCE_REVISION_INPUTS = (
     "corpus/chromatic-v1/manifest.json",
     "corpus/chromatic-v1/poincare-sphere-facets.json",
+    "corpus/steenrod-cw49-v1/corpus.json",
+    "corpus/steenrod-cw49-v1/upstream-adams.json",
     "homology_db/__init__.py",
+    "homology_db/atlas_schema.py",
     "homology_db/chromatic.py",
+    "homology_db/migrations/0005_stable_steenrod_modules.sql",
     "homology_db/preview.py",
+    "homology_db/steenrod.py",
+    "homology_db/steenrod_snapshot.py",
     "scripts/export_static_atlas.py",
+    "scripts/materialize_steenrod_snapshot.py",
+    "scripts/verify_steenrod_release.py",
     "static_atlas/atlas.css",
     "static_atlas/atlas.js",
     "static_atlas/index.template.html",
@@ -155,6 +165,99 @@ def file_sha256(path: Path) -> str:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
             hasher.update(chunk)
     return hasher.hexdigest()
+
+
+def _legacy_logical_database_sha256(path: Path) -> str:
+    """Hash ordered schema and row values, independent of SQLite page layout."""
+
+    def quoted(identifier: str) -> str:
+        return '"' + identifier.replace('"', '""') + '"'
+
+    def json_value(value: Any) -> Any:
+        if isinstance(value, bytes):
+            return {"sqlite_blob_hex": value.hex()}
+        return value
+
+    with closing(sqlite3.connect(path)) as connection:
+        schema_objects = [
+            {
+                "type": row[0],
+                "name": row[1],
+                "table": row[2],
+                "sql": row[3],
+            }
+            for row in connection.execute(
+                """
+                SELECT type, name, tbl_name, sql
+                FROM sqlite_master
+                WHERE name NOT LIKE 'sqlite_%' AND sql IS NOT NULL
+                ORDER BY type, name, tbl_name, sql
+                """
+            )
+        ]
+        tables: list[dict[str, Any]] = []
+        table_names = [
+            row[0]
+            for row in connection.execute(
+                """
+                SELECT name
+                FROM sqlite_master
+                WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
+                ORDER BY name
+                """
+            )
+        ]
+        for table_name in table_names:
+            columns = [
+                {
+                    "cid": row[0],
+                    "name": row[1],
+                    "type": row[2],
+                    "not_null": row[3],
+                    "default": row[4],
+                    "primary_key_order": row[5],
+                }
+                for row in connection.execute(
+                    f"PRAGMA table_info({quoted(table_name)})"
+                )
+            ]
+            column_names = [column["name"] for column in columns]
+            projection = ", ".join(quoted(name) for name in column_names)
+            order = ", ".join(quoted(name) for name in column_names)
+            rows = [
+                [json_value(value) for value in row]
+                for row in connection.execute(
+                    f"SELECT {projection} FROM {quoted(table_name)} ORDER BY {order}"
+                )
+            ]
+            tables.append(
+                {
+                    "name": table_name,
+                    "columns": columns,
+                    "rows": rows,
+                }
+            )
+    logical_bytes = json.dumps(
+        {
+            "schema_version": "homology-db.sqlite-logical/1",
+            "schema_objects": schema_objects,
+            "tables": tables,
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(logical_bytes).hexdigest()
+
+
+def logical_database_sha256(path: Path) -> str:
+    """Return the canonical v2 logical identity for a SQLite database."""
+
+    # Lazy by design: the stable-ledger materializer imports release-contract
+    # helpers from this script, so importing it at module load would form a cycle.
+    from homology_db.steenrod_snapshot import canonical_logical_database_sha256
+
+    return canonical_logical_database_sha256(path)
 
 
 def source_inputs_sha256() -> str:
@@ -246,6 +349,707 @@ def build_current_database(database_path: Path) -> None:
 def slug_from_id(stable_id: str) -> str:
     slug = "".join(character if character.isalnum() else "-" for character in stable_id)
     return "-".join(part for part in slug.casefold().split("-") if part)
+
+
+def _canonical_download_payload(value: Any) -> str:
+    if isinstance(value, str):
+        return value
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ) + "\n"
+
+
+def _spectrum_downloads(spectrum: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    from homology_db.steenrod import (
+        UnsupportedExportError,
+        export_bruner,
+        export_manifest,
+        export_sseq,
+        export_sseqcpp,
+    )
+
+    downloads: dict[str, dict[str, Any]] = {}
+    adapters = (
+        ("bruner", export_bruner, ".def", "text/plain"),
+        ("sseq", export_sseq, ".sseq.json", "application/json"),
+        ("sseqcpp", export_sseqcpp, ".adams.json", "application/json"),
+    )
+    for format_name, exporter, suffix, media_type in adapters:
+        try:
+            payload = _canonical_download_payload(exporter(spectrum))
+        except UnsupportedExportError as error:
+            downloads[format_name] = {
+                "status": "unsupported",
+                "reason": error.reason,
+            }
+            continue
+        manifest = export_manifest(spectrum, format_name, payload)
+        downloads[format_name] = {
+            "status": "ready",
+            "filename": f"{spectrum['slug']}{suffix}",
+            "media_type": media_type,
+            "payload": payload,
+            "manifest": manifest,
+        }
+    return downloads
+
+
+def _atlas_module_projection(module: dict[str, Any]) -> dict[str, Any]:
+    """Drop only completeness slots derivable from explicit canonical actions."""
+
+    if module["module_type"] != "finite_basis":
+        return module
+    completeness = module["completeness"]
+    slots = completeness["slots"]
+    if len(slots) != len(module["actions"]):
+        raise ValueError("finite Steenrod actions do not match their completeness slots")
+    if any(action["knowledge_state"] != "exact" for action in module["actions"]):
+        raise ValueError("finite Steenrod atlas projection requires exact action images")
+    return {
+        **module,
+        "actions": [
+            {
+                key: value
+                for key, value in action.items()
+                if key != "knowledge_state"
+            }
+            for action in module["actions"]
+        ],
+        "action_knowledge_state_default": "exact",
+        "completeness": {
+            "knowledge_state": completeness["knowledge_state"],
+            "slot_count": len(slots),
+        },
+    }
+
+
+def build_spectrum_read_model() -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    from homology_db.steenrod import load_cw49_corpus, validate_module
+
+    corpus = load_cw49_corpus()
+    if corpus.get("schema_version") != "homology-db.steenrod-corpus/1":
+        raise ValueError("unsupported Steenrod corpus schema")
+    source = corpus.get("source")
+    if not isinstance(source, dict) or source.get("review_state") != "imported_unreviewed":
+        raise ValueError("Steenrod review candidate must retain imported-unreviewed provenance")
+    raw_spectra = corpus.get("spectra")
+    if not isinstance(raw_spectra, list) or len(raw_spectra) != 49:
+        raise ValueError("Steenrod review candidate must contain all 49 cw49 spectra")
+
+    spectra: list[dict[str, Any]] = []
+    for raw_spectrum in raw_spectra:
+        if not isinstance(raw_spectrum, dict):
+            raise ValueError("Steenrod corpus contains a malformed spectrum")
+        validate_module(raw_spectrum["module"])
+        spectrum = {
+            "id": raw_spectrum["spectrum_id"],
+            "spectrum_id": raw_spectrum["spectrum_id"],
+            "slug": raw_spectrum["slug"],
+            "kind": "conceptual_spectrum",
+            "name": raw_spectrum["name"],
+            "object_kind": raw_spectrum["object_kind"],
+            "search_aliases": (
+                ["projective", "real projective space"]
+                if raw_spectrum["spectrum_id"].startswith("RP")
+                else []
+            ),
+            "source_decode_state": raw_spectrum["source_decode_state"],
+            "review_state": raw_spectrum["review_state"],
+            "module": _atlas_module_projection(raw_spectrum["module"]),
+            "provenance_ref": "cw49",
+            "downloads": _spectrum_downloads(raw_spectrum),
+        }
+        spectra.append(spectrum)
+
+    spectrum_ids = [spectrum["id"] for spectrum in spectra]
+    slugs = [spectrum["slug"] for spectrum in spectra]
+    if len(spectrum_ids) != len(set(spectrum_ids)):
+        raise ValueError("Steenrod corpus contains duplicate Conceptual-spectrum IDs")
+    if len(slugs) != len(set(slugs)):
+        raise ValueError("Steenrod corpus contains duplicate Conceptual-spectrum slugs")
+    spectra.sort(key=lambda spectrum: (spectrum["name"]["plain"].casefold(), spectrum["id"]))
+    return spectra, source
+
+
+def _without_review_metadata(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {
+            key: _without_review_metadata(item)
+            for key, item in value.items()
+            if key not in {"review", "review_state"}
+        }
+    if isinstance(value, list):
+        return [_without_review_metadata(item) for item in value]
+    return value
+
+
+def steenrod_candidate_sha256(spectra: list[dict[str, Any]]) -> str:
+    payload = json.dumps(
+        _without_review_metadata(spectra),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _canonical_sha256(value: Any) -> str:
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _steenrod_build_bindings(atlas: dict[str, Any]) -> dict[str, Any]:
+    snapshot = atlas["snapshot"]
+    source = snapshot["spectrum_source"]
+    return {
+        "source_commit": snapshot["source_commit"],
+        "source_inputs_sha256": snapshot["source_inputs_sha256"],
+        "source_database_hash_kind": snapshot["source_database_hash_kind"],
+        "source_database_sha256": snapshot["source_database_sha256"],
+        "spectrum_source_sha256": _canonical_sha256(source),
+    }
+
+
+def _steenrod_assertion_targets(
+    spectra: list[dict[str, Any]],
+) -> list[dict[str, str]]:
+    targets: list[dict[str, str]] = []
+    for spectrum in sorted(spectra, key=lambda item: item["spectrum_id"]):
+        spectrum_id = spectrum["spectrum_id"]
+        module = spectrum["module"]
+        module_hash = module["content_sha256"]
+        if module["module_type"] == "profile":
+            continue
+
+        for action in sorted(
+            module["actions"],
+            key=lambda item: (
+                item["source_basis_id"],
+                item["square_degree"],
+                tuple(item["target_basis_ids"]),
+            ),
+        ):
+            claim = {
+                "assertion_kind": "steenrod_action",
+                "spectrum_id": spectrum_id,
+                "module_content_sha256": module_hash,
+                "source_basis_id": action["source_basis_id"],
+                "square_degree": action["square_degree"],
+                "target_basis_ids": action["target_basis_ids"],
+                "knowledge_state": module["action_knowledge_state_default"],
+            }
+            targets.append(
+                {
+                    "assertion_id": (
+                        f"steenrod-action:{spectrum_id}:"
+                        f"{action['source_basis_id']}:Sq{action['square_degree']}"
+                    ),
+                    "assertion_kind": "steenrod_action",
+                    "claim_sha256": _canonical_sha256(claim),
+                }
+            )
+
+        completeness = module["completeness"]
+        completeness_claim = {
+            "assertion_kind": "steenrod_action_completeness",
+            "spectrum_id": spectrum_id,
+            "module_content_sha256": module_hash,
+            "basis_version": module["basis_version"],
+            "knowledge_state": completeness["knowledge_state"],
+            "slot_count": completeness["slot_count"],
+        }
+        targets.append(
+            {
+                "assertion_id": (
+                    f"steenrod-completeness:{spectrum_id}:{module['basis_version']}"
+                ),
+                "assertion_kind": "steenrod_action_completeness",
+                "claim_sha256": _canonical_sha256(completeness_claim),
+            }
+        )
+    targets.sort(key=lambda item: item["assertion_id"])
+    return targets
+
+
+def build_steenrod_release_projection(atlas: dict[str, Any]) -> dict[str, Any]:
+    spectra = atlas["conceptual_spectra"]
+    candidate_hash = steenrod_candidate_sha256(spectra)
+    assertion_targets = _steenrod_assertion_targets(spectra)
+    assertion_reviews = {
+        "schema_version": "homology-db.steenrod-assertion-review-manifest/1",
+        "count": len(assertion_targets),
+        "manifest_sha256": _canonical_sha256(
+            {
+                "schema_version": "homology-db.steenrod-assertion-review-manifest/1",
+                "targets": assertion_targets,
+            }
+        ),
+    }
+    profile_spectra = [
+        spectrum
+        for spectrum in spectra
+        if spectrum["module"]["module_type"] == "profile"
+    ]
+    if len(profile_spectra) != 1 or profile_spectra[0]["spectrum_id"] != "tmf":
+        raise ValueError("cw49 release projection requires exactly the tmf profile module")
+    tmf_module_hash = profile_spectra[0]["module"]["content_sha256"]
+    admission_targets = [
+        {
+            "record_kind": "assertion",
+            "record_id": target["assertion_id"],
+            "record_sha256": target["claim_sha256"],
+            "decision": "admit",
+        }
+        for target in assertion_targets
+    ]
+    admission_targets.append(
+        {
+            "record_kind": "steenrod_module",
+            "record_id": "steenrod-module:tmf:cw49-v126.3",
+            "record_sha256": tmf_module_hash,
+            "decision": "admit",
+        }
+    )
+    admission_targets.sort(key=lambda item: (item["record_kind"], item["record_id"]))
+    editorial_admissions = {
+        "schema_version": "homology-db.steenrod-editorial-admission-manifest/1",
+        "count": len(admission_targets),
+        "profile_module_content_sha256": tmf_module_hash,
+        "manifest_sha256": _canonical_sha256(
+            {
+                "schema_version": "homology-db.steenrod-editorial-admission-manifest/1",
+                "targets": admission_targets,
+            }
+        ),
+    }
+    record_counts = {
+        "spectrum_count": len(spectra),
+        "module_count": len(spectra),
+        "basis_element_count": sum(
+            len(spectrum["module"].get("basis", [])) for spectrum in spectra
+        ),
+        "action_assertion_count": sum(
+            len(spectrum["module"].get("actions", [])) for spectrum in spectra
+        ),
+        "completeness_assertion_count": sum(
+            spectrum["module"]["module_type"] == "finite_basis"
+            for spectrum in spectra
+        ),
+        "profile_module_admission_count": 1,
+        "assertion_review_count": assertion_reviews["count"],
+        "editorial_admission_count": editorial_admissions["count"],
+    }
+    snapshot_id = f"steenrod-cw49-v1-{candidate_hash[:16]}"
+    snapshot_manifest = {
+        "schema_version": "homology-db.steenrod-snapshot-manifest/1",
+        "snapshot_id": snapshot_id,
+        "candidate_sha256": candidate_hash,
+        "build": _steenrod_build_bindings(atlas),
+        "record_counts": record_counts,
+        "assertion_reviews": assertion_reviews,
+        "editorial_admissions": editorial_admissions,
+        "spectra": [
+            {
+                "spectrum_id": spectrum["spectrum_id"],
+                "slug": spectrum["slug"],
+                "module_type": spectrum["module"]["module_type"],
+                "module_content_sha256": spectrum["module"]["content_sha256"],
+            }
+            for spectrum in sorted(spectra, key=lambda item: item["spectrum_id"])
+        ],
+    }
+    spectrum_snapshot = {
+        "schema_version": snapshot_manifest["schema_version"],
+        "snapshot_id": snapshot_id,
+        "candidate_sha256": candidate_hash,
+        "record_counts": record_counts,
+        "manifest_sha256": _canonical_sha256(snapshot_manifest),
+    }
+    return {
+        "schema_version": "homology-db.steenrod-release-projection/1",
+        "spectrum_snapshot": spectrum_snapshot,
+        "assertion_reviews": assertion_reviews,
+        "editorial_admissions": editorial_admissions,
+    }
+
+
+def render_steenrod_review_packet(packet: dict[str, Any]) -> str:
+    return json.dumps(
+        packet,
+        ensure_ascii=False,
+        indent=2,
+        sort_keys=True,
+    ) + "\n"
+
+
+def materialize_accepted_steenrod_database(
+    database_path: Path,
+    packet: dict[str, Any],
+    coverage_report: str,
+    acceptance_record_path: Path,
+) -> dict[str, Any]:
+    """Build the separate finalized v5 spectrum ledger for an accepted release."""
+
+    # Lazy by design; see logical_database_sha256() for the dependency direction.
+    from homology_db.steenrod_snapshot import materialize_steenrod_snapshot
+
+    review_packet_path = database_path.with_suffix(".review.json")
+    coverage_report_path = database_path.with_suffix(".coverage.md")
+    review_packet_path.write_text(
+        render_steenrod_review_packet(packet),
+        encoding="utf-8",
+        newline="\n",
+    )
+    coverage_report_path.write_text(
+        coverage_report,
+        encoding="utf-8",
+        newline="\n",
+    )
+    return materialize_steenrod_snapshot(
+        database_path,
+        review_packet_path,
+        coverage_report_path,
+        acceptance_record_path,
+    )
+
+
+def expected_steenrod_acceptance_bindings(
+    packet: dict[str, Any], coverage_report: str
+) -> dict[str, Any]:
+    build = packet["build"]
+    projection = packet["release_projection"]
+    return {
+        "candidate_sha256": packet["candidate_sha256"],
+        "spectrum_source_sha256": build["spectrum_source_sha256"],
+        "source_commit": build["source_commit"],
+        "source_inputs_sha256": build["source_inputs_sha256"],
+        "source_database_hash_kind": build["source_database_hash_kind"],
+        "source_database_sha256": build["source_database_sha256"],
+        "review_packet_sha256": hashlib.sha256(
+            render_steenrod_review_packet(packet).encode("utf-8")
+        ).hexdigest(),
+        "coverage_report_sha256": hashlib.sha256(
+            coverage_report.encode("utf-8")
+        ).hexdigest(),
+        "spectrum_snapshot_id": projection["spectrum_snapshot"]["snapshot_id"],
+        "spectrum_snapshot_manifest_sha256": projection["spectrum_snapshot"][
+            "manifest_sha256"
+        ],
+        "spectrum_count": packet["coverage"]["spectrum_count"],
+        "assertion_review_count": projection["assertion_reviews"]["count"],
+        "assertion_review_manifest_sha256": projection["assertion_reviews"][
+            "manifest_sha256"
+        ],
+        "editorial_admission_count": projection["editorial_admissions"]["count"],
+        "editorial_admission_manifest_sha256": projection["editorial_admissions"][
+            "manifest_sha256"
+        ],
+        "tmf_profile_module_content_sha256": projection["editorial_admissions"][
+            "profile_module_content_sha256"
+        ],
+    }
+
+
+def _require_lower_hex(value: Any, length: int, label: str) -> None:
+    if not isinstance(value, str) or re.fullmatch(
+        rf"[0-9a-f]{{{length}}}", value
+    ) is None:
+        raise ValueError(f"{label} must be {length} lowercase hexadecimal characters")
+
+
+def validate_steenrod_acceptance_record(
+    acceptance: Any,
+    packet: dict[str, Any],
+    coverage_report: str,
+) -> dict[str, Any]:
+    if not isinstance(acceptance, dict):
+        raise ValueError("Steenrod acceptance record must be an object")
+    if acceptance.get("schema_version") != "homology-db.steenrod-acceptance/1":
+        raise ValueError("Steenrod acceptance record has an unsupported schema")
+    if (
+        acceptance.get("reviewer") != "Dan Isaksen"
+        or acceptance.get("verdict") != "accept"
+    ):
+        raise ValueError("Steenrod acceptance record is not Dan Isaksen's acceptance")
+    reviewed_at = acceptance.get("reviewed_at")
+    if not isinstance(reviewed_at, str):
+        raise ValueError("Steenrod acceptance record requires a review timestamp")
+    try:
+        parsed_reviewed_at = datetime.fromisoformat(reviewed_at.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise ValueError("Steenrod acceptance timestamp must be RFC 3339") from error
+    if parsed_reviewed_at.tzinfo is None:
+        raise ValueError("Steenrod acceptance timestamp must include a timezone")
+
+    evidence = acceptance.get("evidence")
+    if not isinstance(evidence, dict):
+        raise ValueError("Steenrod acceptance record requires structured evidence")
+    if evidence.get("kind") != "written_acceptance":
+        raise ValueError("Steenrod acceptance evidence must be written_acceptance")
+    if not isinstance(evidence.get("locator"), str) or not evidence["locator"].strip():
+        raise ValueError("Steenrod acceptance evidence requires a retained locator")
+    _require_lower_hex(evidence.get("sha256"), 64, "acceptance evidence SHA-256")
+    if not isinstance(acceptance.get("editorial_actor"), str) or not acceptance[
+        "editorial_actor"
+    ].strip():
+        raise ValueError("Steenrod acceptance record requires an editorial actor")
+
+    expected = expected_steenrod_acceptance_bindings(packet, coverage_report)
+    _require_lower_hex(expected["source_commit"], 40, "bound source commit")
+    for key in (
+        "candidate_sha256",
+        "spectrum_source_sha256",
+        "source_inputs_sha256",
+        "source_database_sha256",
+        "review_packet_sha256",
+        "coverage_report_sha256",
+        "spectrum_snapshot_manifest_sha256",
+        "assertion_review_manifest_sha256",
+        "editorial_admission_manifest_sha256",
+        "tmf_profile_module_content_sha256",
+    ):
+        _require_lower_hex(expected[key], 64, key)
+    bindings = acceptance.get("bindings")
+    if not isinstance(bindings, dict):
+        raise ValueError("Steenrod acceptance record requires structured bindings")
+    if set(bindings) != set(expected):
+        raise ValueError("Steenrod acceptance bindings have missing or unexpected fields")
+    for key, expected_value in expected.items():
+        if bindings[key] != expected_value:
+            raise ValueError(f"Steenrod acceptance binding mismatch for {key}")
+    return expected
+
+
+def _with_review_state(value: Any, review_state: str) -> Any:
+    if isinstance(value, dict):
+        return {
+            key: (
+                review_state
+                if key == "review_state"
+                else _with_review_state(item, review_state)
+            )
+            for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [_with_review_state(item, review_state) for item in value]
+    return value
+
+
+def finalize_steenrod_atlas(
+    atlas: dict[str, Any],
+    packet: dict[str, Any],
+    coverage_report: str,
+    acceptance: Any,
+    acceptance_record_sha256: str,
+) -> dict[str, Any]:
+    bindings = validate_steenrod_acceptance_record(
+        acceptance,
+        packet,
+        coverage_report,
+    )
+    candidate_hash = packet["candidate_sha256"]
+    original_content_hashes = {
+        spectrum["spectrum_id"]: spectrum["module"]["content_sha256"]
+        for spectrum in atlas["conceptual_spectra"]
+    }
+    accepted = copy.deepcopy(atlas)
+    accepted["conceptual_spectra"] = _with_review_state(
+        accepted["conceptual_spectra"],
+        "accepted",
+    )
+    snapshot = accepted["snapshot"]
+    snapshot["spectrum_source"] = _with_review_state(
+        snapshot["spectrum_source"],
+        "accepted",
+    )
+    snapshot["spectrum_review_candidate"] = False
+    snapshot["spectrum_release_status"] = "accepted_finalized"
+    projection = packet["release_projection"]
+    snapshot["spectrum_snapshot"] = {
+        **projection["spectrum_snapshot"],
+        "finalized_at": acceptance["reviewed_at"],
+        "assertion_reviews": projection["assertion_reviews"],
+        "editorial_admissions": projection["editorial_admissions"],
+    }
+    snapshot["spectrum_acceptance"] = {
+        "schema_version": acceptance["schema_version"],
+        "record_sha256": acceptance_record_sha256,
+        "reviewer": acceptance["reviewer"],
+        "verdict": acceptance["verdict"],
+        "reviewed_at": acceptance["reviewed_at"],
+        "evidence": acceptance["evidence"],
+        "editorial_actor": acceptance["editorial_actor"],
+        "bindings": bindings,
+    }
+    accepted_content_hashes = {
+        spectrum["spectrum_id"]: spectrum["module"]["content_sha256"]
+        for spectrum in accepted["conceptual_spectra"]
+    }
+    if accepted_content_hashes != original_content_hashes:
+        raise ValueError("Steenrod acceptance changed canonical module content hashes")
+    if steenrod_candidate_sha256(accepted["conceptual_spectra"]) != candidate_hash:
+        raise ValueError("Steenrod acceptance changed the reviewed candidate")
+    return accepted
+
+
+def build_steenrod_review_packet(
+    atlas: dict[str, Any], html: str
+) -> dict[str, Any]:
+    spectra = atlas["conceptual_spectra"]
+    decode_state_counts: dict[str, int] = defaultdict(int)
+    spectrum_summaries: list[dict[str, Any]] = []
+    basis_element_count = 0
+    action_slot_count = 0
+    exact_zero_action_count = 0
+    exact_nonzero_action_count = 0
+    finite_module_count = 0
+    profile_module_count = 0
+
+    for spectrum in spectra:
+        module = spectrum["module"]
+        decode_state_counts[spectrum["source_decode_state"]] += 1
+        basis = module.get("basis", [])
+        actions = module.get("actions", [])
+        zero_count = sum(not action["target_basis_ids"] for action in actions)
+        nonzero_count = len(actions) - zero_count
+        basis_element_count += len(basis)
+        action_slot_count += len(actions)
+        exact_zero_action_count += zero_count
+        exact_nonzero_action_count += nonzero_count
+        if module["module_type"] == "finite_basis":
+            finite_module_count += 1
+        else:
+            profile_module_count += 1
+
+        exports: dict[str, dict[str, Any]] = {}
+        for format_name, download in sorted(spectrum["downloads"].items()):
+            if download["status"] == "ready":
+                exports[format_name] = {
+                    "status": "ready",
+                    "payload_sha256": download["manifest"]["payload_sha256"],
+                }
+            else:
+                exports[format_name] = {
+                    "status": "unsupported",
+                    "reason": download["reason"],
+                }
+        spectrum_summaries.append(
+            {
+                "spectrum_id": spectrum["spectrum_id"],
+                "slug": spectrum["slug"],
+                "name": spectrum["name"],
+                "source_decode_state": spectrum["source_decode_state"],
+                "review_state": spectrum["review_state"],
+                "module_type": module["module_type"],
+                "basis_version": module["basis_version"],
+                "module_content_sha256": module["content_sha256"],
+                "evidence": module["evidence"],
+                "basis_element_count": len(basis),
+                "action_slot_count": len(actions),
+                "exact_zero_action_count": zero_count,
+                "exact_nonzero_action_count": nonzero_count,
+                "exports": exports,
+            }
+        )
+
+    coverage = {
+        "spectrum_count": len(spectra),
+        "finite_module_count": finite_module_count,
+        "profile_module_count": profile_module_count,
+        "basis_element_count": basis_element_count,
+        "action_slot_count": action_slot_count,
+        "exact_zero_action_count": exact_zero_action_count,
+        "exact_nonzero_action_count": exact_nonzero_action_count,
+        "decode_state_counts": dict(sorted(decode_state_counts.items())),
+    }
+    if coverage != {
+        "spectrum_count": 49,
+        "finite_module_count": 48,
+        "profile_module_count": 1,
+        "basis_element_count": 942,
+        "action_slot_count": 5780,
+        "exact_zero_action_count": 3277,
+        "exact_nonzero_action_count": 2503,
+        "decode_state_counts": {"complete": 49},
+    }:
+        raise ValueError("cw49 review coverage does not match the pinned candidate")
+    return {
+        "schema_version": "homology-db.steenrod-review-packet/1",
+        "candidate_sha256": steenrod_candidate_sha256(spectra),
+        "atlas_html_sha256": hashlib.sha256(html.encode("utf-8")).hexdigest(),
+        "review_state": "imported_unreviewed",
+        "acceptance_recorded": False,
+        "requested_reviewer": "Dan Isaksen",
+        "source": atlas["snapshot"]["spectrum_source"],
+        "build": _steenrod_build_bindings(atlas),
+        "release_projection": build_steenrod_release_projection(atlas),
+        "coverage": coverage,
+        "spectra": spectrum_summaries,
+    }
+
+
+def render_steenrod_coverage_report(packet: dict[str, Any]) -> str:
+    coverage = packet["coverage"]
+    source = packet["source"]
+    lines = [
+        "# cw49 Steenrod review coverage",
+        "",
+        f"Review state: `{packet['review_state']}`. No acceptance is recorded.",
+        "",
+        f"- Candidate SHA-256: `{packet['candidate_sha256']}`",
+        f"- Atlas HTML SHA-256: `{packet['atlas_html_sha256']}`",
+        (
+            f"- Spectra: {coverage['spectrum_count']} "
+            f"({coverage['finite_module_count']} finite basis; "
+            f"{coverage['profile_module_count']} profile)"
+        ),
+        f"- Basis elements: {coverage['basis_element_count']:,}",
+        (
+            f"- Exact actions: {coverage['action_slot_count']:,} "
+            f"({coverage['exact_nonzero_action_count']:,} nonzero; "
+            f"{coverage['exact_zero_action_count']:,} zero)"
+        ),
+        f"- cw49 index commit: `{source['index_commit']}`",
+        f"- SSeqCpp commit: `{source['sseqcpp_commit']}`",
+        f"- sseq commit: `{source['sseq_commit']}`",
+        f"- Zenodo source: `{source['zenodo_doi']}` / `{source['zenodo_version']}`",
+        f"- License: `{source['dataset_license']}`",
+        "",
+        "| Spectrum | Decode | Module | Basis | Actions | Nonzero | Zero | Bruner | sseq | SSeqCpp |",
+        "|---|---:|---:|---:|---:|---:|---:|---|---|---|",
+    ]
+    for spectrum in packet["spectra"]:
+        statuses = {
+            format_name: export["status"]
+            for format_name, export in spectrum["exports"].items()
+        }
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    spectrum["spectrum_id"].replace("|", "\\|"),
+                    spectrum["source_decode_state"],
+                    spectrum["module_type"],
+                    str(spectrum["basis_element_count"]),
+                    str(spectrum["action_slot_count"]),
+                    str(spectrum["exact_nonzero_action_count"]),
+                    str(spectrum["exact_zero_action_count"]),
+                    statuses["bruner"],
+                    statuses["sseq"],
+                    statuses["sseqcpp"],
+                ]
+            )
+            + " |"
+        )
+    return "\n".join(lines) + "\n"
 
 
 def conceptual_space_tex(space: dict[str, Any]) -> str:
@@ -788,7 +1592,10 @@ def _model_projection(model: dict[str, Any], space_id: str) -> dict[str, Any]:
 
 
 def build_read_model(
-    database_path: Path, *, allow_malformed_for_review: bool = False
+    database_path: Path,
+    *,
+    allow_malformed_for_review: bool = False,
+    steenrod_review_candidate: bool = False,
 ) -> dict[str, Any]:
     if not database_path.exists():
         raise FileNotFoundError(database_path)
@@ -1130,26 +1937,40 @@ def build_read_model(
         }
         for family in families
     ]
-    modified_at = datetime.fromtimestamp(database_path.stat().st_mtime, UTC).replace(
+    revision_timestamp = source_commit_timestamp()
+    generated_at = datetime.fromtimestamp(revision_timestamp or 0, UTC).replace(
         microsecond=0
     )
     tree_state = source_tree_state()
+    conceptual_spectra: list[dict[str, Any]] = []
+    spectrum_source: dict[str, Any] | None = None
+    if steenrod_review_candidate:
+        conceptual_spectra, spectrum_source = build_spectrum_read_model()
+
     atlas = {
         "snapshot": {
             "snapshot_id": snapshot_row["snapshot_id"],
             "snapshot_name": snapshot_row["snapshot_name"],
             "snapshot_version": snapshot_row["schema_version"],
             "schema_version": READ_MODEL_VERSION,
-            "generated_at": modified_at.isoformat().replace("+00:00", "Z"),
+            "generated_at": generated_at.isoformat().replace("+00:00", "Z"),
             "conceptual_space_count": len(conceptual_spaces),
+            "conceptual_spectrum_count": len(conceptual_spectra),
+            "spectrum_review_candidate": steenrod_review_candidate,
+            "spectrum_release_status": (
+                "imported_unreviewed_review_candidate"
+                if steenrod_review_candidate
+                else "withheld_pending_review"
+            ),
+            "spectrum_source": spectrum_source,
             "evidence_count": evidence_total,
             "model_count": model_total,
             "citation_count": citation_total,
             "relation_count": relation_total,
             "computation_count": computation_total,
             "homology_row_count": homology_total,
-            "source_database_bytes": database_path.stat().st_size,
-            "source_database_sha256": file_sha256(database_path),
+            "source_database_hash_kind": "homology-db.sqlite-logical/1",
+            "source_database_sha256": _legacy_logical_database_sha256(database_path),
             "source_commit": source_commit(),
             "source_revision_inputs": list(SOURCE_REVISION_INPUTS),
             "source_inputs_sha256": source_inputs_sha256(),
@@ -1178,6 +1999,7 @@ def build_read_model(
         ],
         "sections": sections,
         "conceptual_spaces": conceptual_spaces,
+        "conceptual_spectra": conceptual_spectra,
     }
     validate_read_model(atlas, allow_malformed_for_review=allow_malformed_for_review)
     return atlas
@@ -1224,11 +2046,79 @@ def export_atlas(
     output_path: Path,
     *,
     allow_malformed_for_review: bool = False,
+    steenrod_review_candidate: bool = False,
+    steenrod_review_packet_path: Path | None = None,
+    steenrod_coverage_report_path: Path | None = None,
+    steenrod_acceptance_record_path: Path | None = None,
 ) -> dict[str, Any]:
-    atlas = build_read_model(
-        database_path, allow_malformed_for_review=allow_malformed_for_review
+    if (
+        steenrod_review_candidate
+        and output_path.resolve() == PUBLIC_ATLAS_PATH.resolve()
+    ):
+        raise ValueError(
+            "an unreviewed Steenrod candidate cannot target dist/atlas.html"
+        )
+    if (
+        steenrod_review_packet_path is not None
+        or steenrod_coverage_report_path is not None
+    ) and not steenrod_review_candidate:
+        raise ValueError("Steenrod review materials require a review-candidate atlas")
+    if steenrod_review_candidate and steenrod_acceptance_record_path is not None:
+        raise ValueError(
+            "Steenrod review-candidate and accepted-release builds are mutually exclusive"
+        )
+    include_steenrod = (
+        steenrod_review_candidate or steenrod_acceptance_record_path is not None
     )
-    html = render_atlas(atlas)
+    atlas = build_read_model(
+        database_path,
+        allow_malformed_for_review=allow_malformed_for_review,
+        steenrod_review_candidate=include_steenrod,
+    )
+    candidate_html = render_atlas(atlas)
+    packet: dict[str, Any] | None = None
+    coverage_report: str | None = None
+    if include_steenrod:
+        packet = build_steenrod_review_packet(atlas, candidate_html)
+        coverage_report = render_steenrod_coverage_report(packet)
+    acceptance_record_sha256: str | None = None
+    if steenrod_acceptance_record_path is not None:
+        acceptance_bytes = steenrod_acceptance_record_path.read_bytes()
+        acceptance = json.loads(acceptance_bytes)
+        acceptance_record_sha256 = hashlib.sha256(acceptance_bytes).hexdigest()
+        if packet is None or coverage_report is None:
+            raise AssertionError("accepted Steenrod build lacks its candidate materials")
+        atlas = finalize_steenrod_atlas(
+            atlas,
+            packet,
+            coverage_report,
+            acceptance,
+            acceptance_record_sha256,
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            spectrum_database_path = (
+                Path(temporary_directory) / "steenrod-cw49-v1.sqlite3"
+            )
+            spectrum_materialization = materialize_accepted_steenrod_database(
+                spectrum_database_path,
+                packet,
+                coverage_report,
+                steenrod_acceptance_record_path,
+            )
+        atlas["snapshot"].update(
+            {
+                "spectrum_database_hash_kind": spectrum_materialization[
+                    "logical_database_hash_kind"
+                ],
+                "spectrum_database_sha256": spectrum_materialization[
+                    "logical_database_sha256"
+                ],
+                "spectrum_materialization": spectrum_materialization,
+            }
+        )
+        html = render_atlas(atlas)
+    else:
+        html = candidate_html
     html_bytes = len(html.encode("utf-8"))
     if html_bytes > MAX_HTML_BYTES:
         raise ValueError(
@@ -1236,8 +2126,9 @@ def export_atlas(
         )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8", newline="\n")
-    return {
+    summary = {
         "conceptual_space_count": atlas["snapshot"]["conceptual_space_count"],
+        "conceptual_spectrum_count": atlas["snapshot"]["conceptual_spectrum_count"],
         "evidence_count": atlas["snapshot"]["evidence_count"],
         "model_count": atlas["snapshot"]["model_count"],
         "citation_count": atlas["snapshot"]["citation_count"],
@@ -1246,9 +2137,72 @@ def export_atlas(
         "homology_row_count": atlas["snapshot"]["homology_row_count"],
         "unresolved_reference_count": atlas["snapshot"]["unresolved_reference_count"],
         "html_bytes": output_path.stat().st_size,
-        "source_database_bytes": atlas["snapshot"]["source_database_bytes"],
+        "source_database_bytes": database_path.stat().st_size,
+        "source_database_hash_kind": atlas["snapshot"]["source_database_hash_kind"],
         "source_database_sha256": atlas["snapshot"]["source_database_sha256"],
+        "source_database_physical_sha256": file_sha256(database_path),
     }
+    if (
+        steenrod_review_packet_path is not None
+        or steenrod_coverage_report_path is not None
+    ):
+        if packet is None or coverage_report is None:
+            raise AssertionError("Steenrod review materials lack a candidate packet")
+        if steenrod_review_packet_path is not None:
+            packet_text = render_steenrod_review_packet(packet)
+            steenrod_review_packet_path.parent.mkdir(parents=True, exist_ok=True)
+            steenrod_review_packet_path.write_text(
+                packet_text,
+                encoding="utf-8",
+                newline="\n",
+            )
+            summary["steenrod_review_packet_sha256"] = hashlib.sha256(
+                packet_text.encode("utf-8")
+            ).hexdigest()
+        if steenrod_coverage_report_path is not None:
+            steenrod_coverage_report_path.parent.mkdir(parents=True, exist_ok=True)
+            steenrod_coverage_report_path.write_text(
+                coverage_report,
+                encoding="utf-8",
+                newline="\n",
+            )
+            summary["steenrod_coverage_report_sha256"] = hashlib.sha256(
+                coverage_report.encode("utf-8")
+            ).hexdigest()
+    if acceptance_record_sha256 is not None:
+        spectrum_snapshot = atlas["snapshot"]["spectrum_snapshot"]
+        summary.update(
+            {
+                "steenrod_acceptance_record_sha256": acceptance_record_sha256,
+                "steenrod_candidate_sha256": packet["candidate_sha256"],
+                "steenrod_spectrum_snapshot_id": spectrum_snapshot["snapshot_id"],
+                "steenrod_spectrum_snapshot_sha256": spectrum_snapshot[
+                    "manifest_sha256"
+                ],
+                "steenrod_assertion_review_count": spectrum_snapshot[
+                    "assertion_reviews"
+                ]["count"],
+                "steenrod_assertion_review_manifest_sha256": spectrum_snapshot[
+                    "assertion_reviews"
+                ]["manifest_sha256"],
+                "steenrod_editorial_admission_count": spectrum_snapshot[
+                    "editorial_admissions"
+                ]["count"],
+                "steenrod_editorial_admission_manifest_sha256": spectrum_snapshot[
+                    "editorial_admissions"
+                ]["manifest_sha256"],
+                "spectrum_database_hash_kind": atlas["snapshot"][
+                    "spectrum_database_hash_kind"
+                ],
+                "spectrum_database_sha256": atlas["snapshot"][
+                    "spectrum_database_sha256"
+                ],
+                "steenrod_materialization_sha256": atlas["snapshot"][
+                    "spectrum_materialization"
+                ]["materialization_sha256"],
+            }
+        )
+    return summary
 
 
 def parse_args() -> argparse.Namespace:
@@ -1266,7 +2220,40 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="emit malformed records with diagnostics instead of failing the normal build",
     )
-    return parser.parse_args()
+    steenrod_release = parser.add_mutually_exclusive_group()
+    steenrod_release.add_argument(
+        "--steenrod-review-candidate",
+        action="store_true",
+        help=(
+            "include the imported-unreviewed cw49 spectrum corpus in a local "
+            "review artifact; ordinary exports keep it withheld"
+        ),
+    )
+    steenrod_release.add_argument(
+        "--steenrod-acceptance-record",
+        type=Path,
+        help=(
+            "build the accepted cw49 artifact only when the supplied structured "
+            "Dan Isaksen acceptance matches the exact candidate and release manifests"
+        ),
+    )
+    parser.add_argument(
+        "--steenrod-review-packet",
+        type=Path,
+        help="write the deterministic imported-unreviewed packet for Dan Isaksen",
+    )
+    parser.add_argument(
+        "--steenrod-coverage-report",
+        type=Path,
+        help="write a deterministic human-readable cw49 coverage report",
+    )
+    args = parser.parse_args()
+    if (
+        args.steenrod_review_packet is not None
+        or args.steenrod_coverage_report is not None
+    ) and not args.steenrod_review_candidate:
+        parser.error("Steenrod review outputs require --steenrod-review-candidate")
+    return args
 
 
 def main() -> int:
@@ -1276,6 +2263,22 @@ def main() -> int:
             args.database.resolve(),
             args.output.resolve(),
             allow_malformed_for_review=args.allow_malformed_for_review,
+            steenrod_review_candidate=args.steenrod_review_candidate,
+            steenrod_review_packet_path=(
+                args.steenrod_review_packet.resolve()
+                if args.steenrod_review_packet
+                else None
+            ),
+            steenrod_coverage_report_path=(
+                args.steenrod_coverage_report.resolve()
+                if args.steenrod_coverage_report
+                else None
+            ),
+            steenrod_acceptance_record_path=(
+                args.steenrod_acceptance_record.resolve()
+                if args.steenrod_acceptance_record
+                else None
+            ),
         )
     else:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -1288,6 +2291,22 @@ def main() -> int:
                 database_path,
                 args.output.resolve(),
                 allow_malformed_for_review=args.allow_malformed_for_review,
+                steenrod_review_candidate=args.steenrod_review_candidate,
+                steenrod_review_packet_path=(
+                    args.steenrod_review_packet.resolve()
+                    if args.steenrod_review_packet
+                    else None
+                ),
+                steenrod_coverage_report_path=(
+                    args.steenrod_coverage_report.resolve()
+                    if args.steenrod_coverage_report
+                    else None
+                ),
+                steenrod_acceptance_record_path=(
+                    args.steenrod_acceptance_record.resolve()
+                    if args.steenrod_acceptance_record
+                    else None
+                ),
             )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0
