@@ -10,10 +10,11 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 
-SCHEMA_VERSION = "homology-db.atlas-schema/4"
+SCHEMA_VERSION = "homology-db.atlas-schema/5"
 MIGRATION_DIRECTORY = Path(__file__).with_name("migrations")
 
 
@@ -27,7 +28,7 @@ class AtlasSchema:
     @staticmethod
     def migrate(path: Path) -> str:
         path.parent.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(path) as connection:
+        with closing(sqlite3.connect(path)) as connection:
             connection.execute("PRAGMA foreign_keys = ON")
             for migration_path in _migration_files():
                 version = int(migration_path.name.split("_", 1)[0])
@@ -87,7 +88,7 @@ class AtlasSchema:
         indices = list(range(model_count))
         if reverse:
             indices.reverse()
-        with sqlite3.connect(path) as connection:
+        with closing(sqlite3.connect(path)) as connection:
             connection.execute("PRAGMA foreign_keys = ON")
             for index in indices:
                 model_id = f"model:{index:04d}"

@@ -1,0 +1,62 @@
+name: Spectrum or Steenrod-module feedback
+description: Report a mathematical, interoperability, or provenance issue for one stable spectrum.
+title: "[Spectrum feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Links from a stable-spectrum entry include its spectrum ID, module hash, and Snapshot so feedback stays tied to the exact record reviewed. An omitted Steenrod action is not assumed to be zero.
+
+  - type: input
+    id: spectrum
+    attributes:
+      label: Spectrum name or stable ID
+      description: Preserve the prefilled identifiers in the title or paste the atlas permalink.
+      placeholder: e.g. Ceta or a spectrum permalink
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feedback_kind
+    attributes:
+      label: What kind of feedback is this?
+      options:
+        - Steenrod-operation correction
+        - Basis, degree, or suspension correction
+        - Stable versus unstable classification
+        - Bruner, sseq, or SSeqCpp interoperability
+        - Citation or provenance improvement
+        - Presentation or usability issue
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: observation
+    attributes:
+      label: What should be corrected or improved?
+      description: Name the basis element, square, target sum, grading convention, or export if applicable.
+      placeholder: Distinguish a known zero from an action that is unknown or not computed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification or supporting computation
+      description: Include exact software/version, input, output, and relation checks when available.
+
+  - type: input
+    id: source
+    attributes:
+      label: Supporting source
+      description: Link to a paper, author archive, software source, or reproducible computation.
+      placeholder: https://…
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission check
+      options:
+        - label: I preserved or supplied the spectrum ID, module hash, and Snapshot under review.
+          required: true

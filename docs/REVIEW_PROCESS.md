@@ -53,6 +53,28 @@ is a mathematical verdict. A `decision` records its owner, inputs, chosen
 policy and gates. These entry types do not invent database fields that do not
 apply to them.
 
+A stable Steenrod acceptance additionally binds the verdict to the canonical
+49-spectrum candidate after review metadata is removed; the pinned spectrum
+source; source commit and exact source inputs; logical database; review packet
+and coverage report; finalized spectrum Snapshot; 5,828 assertion-review
+targets; and 5,829 Editorial-admission targets, including the immutable `tmf`
+profile module. Its machine-readable record uses schema
+`homology-db.steenrod-acceptance/1`, names Dan Isaksen as reviewer, retains
+structured written evidence, and separately names the editorial actor. The
+accepted-release path admits the stable-spectrum artifact only when that
+external record says `accept` and every binding can be independently
+reconstructed from the artifact and pinned source. On acceptance, those
+reviews and admissions are
+materialized in a separate AtlasSchema v5 ledger. The 42-space Chromatic source
+retains its `/1` logical identity, while the finalized spectrum ledger receives
+a distinct `homology-db.sqlite-logical/2` identity that excludes only the
+physical migration-application timestamp. The deployment gate rematerializes
+that ledger and requires two fresh accepted atlas builds to match the checked
+artifact byte for byte. Development never manufactures the record. A separate,
+explicitly enabled public-preview path may publish the exact imported-unreviewed
+candidate for informal feedback. It preserves awaiting-review labels, carries
+no acceptance metadata, and remains distinct from the finalized release.
+
 For each substantive mathematical claim or proposed implication edge, a human
 reviewer records exactly one of:
 
