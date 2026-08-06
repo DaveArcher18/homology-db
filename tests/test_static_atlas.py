@@ -786,7 +786,18 @@ console.log(JSON.stringify({
         atlas = json.loads(embedded.group(1))
         self.assertEqual(len(atlas["conceptual_spaces"]), 42)
         if not review_path.is_file():
-            self.assertFalse(atlas.get("conceptual_spectra", []))
+            self.assertEqual(summary["state"], "public_review_preview")
+            self.assertEqual(len(atlas.get("conceptual_spectra", [])), 49)
+            self.assertEqual(
+                atlas["snapshot"]["spectrum_release_status"],
+                "public_review_preview",
+            )
+            self.assertTrue(
+                all(
+                    spectrum["review_state"] == "imported_unreviewed"
+                    for spectrum in atlas["conceptual_spectra"]
+                )
+            )
 
     def test_nonexact_homology_state_is_not_exported_as_zero(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
