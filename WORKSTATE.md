@@ -1,6 +1,6 @@
 # Work state
 
-Status: ACTIVE
+Status: COMPLETE
 
 ## Objective
 
@@ -22,15 +22,26 @@ without an explicit user request here.
 
 ## Current ticket
 
-Ticket 06, `Publish the open review preview`, claimed by `/root (interactive
-chat)` on 2026-08-06.
+None. Ticket 06, `Publish the open review preview`, is resolved.
 
 ## Active run lease
 
-Owner: `/root (interactive chat)`
-Heartbeat: `2026-08-06T19:06:42Z`
+None.
 
 ## Last checkpoint
+
+- The imported-unreviewed cw49 feedback preview is live at
+  <https://davearcher18.github.io/homology-db/>. GitHub Pages workflow
+  `31126911171` passed from `main` commit `e4a1dfb`; the public 5,071,504-byte
+  body is byte-identical to `dist/atlas.html` at SHA-256
+  `5562e0cada18cf2fa1c0d0e7a1761272cf7ecdd3bb2c8176a417cc12abb61c29`.
+  It exposes all 49 spectra while labeling the release
+  `public_review_preview` and every imported spectrum `imported_unreviewed`.
+- PR `#1` records the reviewed implementation. The 151-test suite and focused
+  release checks pass; all 48 finite modules pass the pinned Bruner and
+  SSeqCpp consumers, while 46 finite sseq modules plus the fixture pass and
+  three degree-256 parser resource limitations remain documented. No Dan
+  acceptance was manufactured, and the accepted-release path remains intact.
 
 - Source commit `6ed04e060cf9727e8efdd275169b6e9c15b561a9` implements the
   complete 49-spectrum stable-first corpus, append-only migration 0005,

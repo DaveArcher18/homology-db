@@ -54,6 +54,10 @@ Isaksen's eventual acceptance remains a separate finalized-release event.
 - [Build and gate the review candidate](issues/05-build-and-gate-review-candidate.md)
   — A byte-reproducible hashed review packet is ready locally; the public
   artifact remains the accepted 42-space atlas until Dan accepts that packet.
+- [Publish the open review preview](issues/06-publish-open-review-preview.md)
+  — The user superseded the prior publication hold for informal feedback. The
+  49-spectrum corpus is live as an explicit `public_review_preview`; imported
+  claims remain unreviewed and Dan acceptance still controls final admission.
 
 ## Out of scope
 

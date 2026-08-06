@@ -837,3 +837,44 @@ Snapshot `steenrod-cw49-v1-ddfd52d05cf21195`, 5,828 assertion reviews, and
 - Independent implementation and release audits reported no P0/P1 finding and
   confirmed that public Pages cannot admit the corpus before exact written
   acceptance.
+
+## 2026-08-06 — public cw49 feedback preview
+
+Scope: review the stable-spectrum implementation, correct release-facing
+findings, and deploy an openly labeled feedback preview without manufacturing
+editorial acceptance.
+
+| Check | Result |
+| --- | --- |
+| real-consumer environment plus `python3 -m unittest discover -s tests -v` | 151/151 passed in 344.871 seconds |
+| pinned Bruner 1.9.5 `newconsistency` | all 48 finite modules passed |
+| pinned SSeqCpp `Adams` parser | all 48 finite modules plus the interoperability fixture passed |
+| pinned sseq parser | 46 finite modules plus the fixture passed; `Fphi`, `RP1_256`, and `RP3_256` remain documented degree-256 resource limitations |
+| preview release gate with two fresh rebuilds | passed: 49 spectra, 48 finite modules, one `tmf` profile, candidate SHA-256 `544d075be8401dccc4423b0ac803dc8b0412424560b9c2b798e16db3637f4e83` |
+| checked-in artifact | 5,071,504 bytes; SHA-256 `5562e0cada18cf2fa1c0d0e7a1761272cf7ecdd3bb2c8176a417cc12abb61c29` |
+| focused Pages and artifact regressions | passed, including full-history provenance verification |
+
+Two-axis review found no P0/P1 release blocker after corrections. Standards
+review closed nested acceptance-metadata leakage and preserved the future
+accepted workflow path. Specification review closed the misleading `tmf`
+SSeqCpp readiness state and expanded real-consumer coverage. Remaining P2
+work is the multi-Python-runtime determinism matrix and exhaustive automated
+49-route browser coverage.
+
+PR [#1](https://github.com/DaveArcher18/homology-db/pull/1) was squash-merged.
+The app-mediated merge did not emit a workflow event, so deployment was
+manually dispatched. Run
+[31126894331](https://github.com/DaveArcher18/homology-db/actions/runs/31126894331)
+initially failed because checkout depth 1 hid the atlas source ancestor. After
+setting `fetch-depth: 0`, run
+[31126911171](https://github.com/DaveArcher18/homology-db/actions/runs/31126911171)
+completed successfully.
+
+The public response at <https://davearcher18.github.io/homology-db/> is HTTP
+200 and byte-identical to `dist/atlas.html`. Live browser checks confirmed the
+Stable spectra landing route, `Public feedback preview` and
+`Imported · awaiting review` labels, the `tmf` route, typed infinite-profile
+unsupported results, and the structured correction link. Exact local desktop
+and 320-pixel checks covered search, keyboard navigation, long operation
+tables, downloads, internal table scrolling, zero page overflow, and zero
+console warning/error.
