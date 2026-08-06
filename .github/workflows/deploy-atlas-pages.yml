@@ -18,6 +18,7 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+# Publishing an unreviewed feedback preview still requires the explicit gate below.
 jobs:
   deploy:
     environment:
