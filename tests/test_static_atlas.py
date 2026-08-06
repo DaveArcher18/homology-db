@@ -373,6 +373,7 @@ console.log(JSON.stringify({
         self.assertIn("--verify-rebuild", workflow)
         self.assertIn("--allow-public-review-preview", workflow)
         self.assertIn("--review docs/reviews/steenrod-cw49-v1-dan.json", workflow)
+        self.assertIn("fetch-depth: 0", workflow)
 
     def test_generated_atlas_exposes_routed_home_family_and_space_views(
         self,
