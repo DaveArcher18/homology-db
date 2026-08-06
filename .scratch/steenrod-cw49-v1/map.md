@@ -5,11 +5,11 @@ Status: active
 
 ## Destination
 
-Deliver a deterministic local review candidate containing all 49 stable
+Deliver a deterministic review candidate containing all 49 stable
 spectra from Wayne Lin's cw49 index, complete mod-2 Steenrod-module records,
-Bruner/sseq/SSeqCpp downloads, and table-led atlas routes. The existing public
-artifact remains unchanged until Dan Isaksen accepts the exact hashed review
-candidate.
+Bruner/sseq/SSeqCpp downloads, and table-led atlas routes. Publish it as an
+openly labeled imported-unreviewed preview for informal feedback; Dan
+Isaksen's eventual acceptance remains a separate finalized-release event.
 
 ## Fixed decisions
 
@@ -21,8 +21,8 @@ candidate.
   nonzero composite square through Adem closure.
 - The corpus contains 48 finite-basis records and one profile record (`tmf`).
   Bruner reports typed unsupported for `tmf`; no truncation is invented.
-- Atlas presentation is table-first. The review candidate is local; public
-  Pages deployment requires Dan's recorded acceptance.
+- Atlas presentation is table-first. Public preview is allowed only through an
+  explicit reproducible preview gate and never manufactures acceptance.
 
 ## Tickets
 
@@ -31,6 +31,7 @@ candidate.
 - [03 — Extend the production schema](issues/03-extend-production-schema.md)
 - [04 — Add spectrum atlas routes](issues/04-add-spectrum-atlas-routes.md)
 - [05 — Build and gate the review candidate](issues/05-build-and-gate-review-candidate.md)
+- [06 — Publish the open review preview](issues/06-publish-open-review-preview.md)
 
 ## Decisions so far
 

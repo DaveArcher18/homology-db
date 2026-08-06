@@ -364,13 +364,15 @@ console.log(JSON.stringify({
             self.assertNotRegex(html, r'<link[^>]+rel=["\']stylesheet["\']')
             self.assertNotRegex(html, r"url\(\s*[\"']?https?://")
 
-    def test_pages_deployment_requires_a_deterministic_accepted_rebuild(self) -> None:
+    def test_pages_deployment_selects_a_deterministic_release_gate(self) -> None:
         workflow = (
             REPOSITORY_ROOT / ".github" / "workflows" / "deploy-atlas-pages.yml"
         ).read_text(encoding="utf-8")
 
         self.assertIn("scripts/verify_steenrod_release.py", workflow)
         self.assertIn("--verify-rebuild", workflow)
+        self.assertIn("--allow-public-review-preview", workflow)
+        self.assertIn("--review docs/reviews/steenrod-cw49-v1-dan.json", workflow)
 
     def test_generated_atlas_exposes_routed_home_family_and_space_views(
         self,
@@ -759,10 +761,19 @@ console.log(JSON.stringify({
 
         atlas_path = REPOSITORY_ROOT / "dist" / "atlas.html"
         review_path = REPOSITORY_ROOT / "docs" / "reviews" / "steenrod-cw49-v1-dan.json"
-        summary = verify(atlas_path, review_path if review_path.is_file() else None)
+        summary = verify(
+            atlas_path,
+            review_path if review_path.is_file() else None,
+            allow_public_review_preview=True,
+        )
         self.assertIn(
             summary["state"],
-            {"legacy_space_only", "withheld_space_only", "reviewed_cw49"},
+            {
+                "legacy_space_only",
+                "withheld_space_only",
+                "public_review_preview",
+                "reviewed_cw49",
+            },
         )
 
         html = atlas_path.read_text(encoding="utf-8")

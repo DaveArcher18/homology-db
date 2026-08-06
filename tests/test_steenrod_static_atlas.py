@@ -58,6 +58,39 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                     )
             self.assertFalse(public_path.exists())
 
+    def test_explicit_public_preview_can_target_the_public_atlas(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            database_path = directory / "chromatic.sqlite3"
+            public_path = directory / "dist" / "atlas.html"
+            ChromaticDatabase.build(database_path)
+            with mock.patch.object(
+                export_static_atlas,
+                "PUBLIC_ATLAS_PATH",
+                public_path,
+                create=True,
+            ):
+                summary = export_static_atlas.export_atlas(
+                    database_path,
+                    public_path,
+                    steenrod_review_candidate=True,
+                    allow_public_review_preview=True,
+                )
+            _, atlas = embedded_atlas(public_path)
+            self.assertEqual(summary["conceptual_spectrum_count"], 49)
+            self.assertEqual(
+                atlas["snapshot"]["spectrum_release_status"],
+                "public_review_preview",
+            )
+            self.assertIn("Public feedback preview", public_path.read_text(encoding="utf-8"))
+            self.assertTrue(atlas["snapshot"]["spectrum_review_candidate"])
+            self.assertTrue(
+                all(
+                    spectrum["review_state"] == "imported_unreviewed"
+                    for spectrum in atlas["conceptual_spectra"]
+                )
+            )
+
     def test_structured_acceptance_build_is_deterministic_and_gate_ready(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
@@ -211,9 +244,14 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 all(
                     spectrum["review_state"] == "accepted"
                     and spectrum["module"]["review_state"] == "accepted"
-                    and spectrum["module"]["evidence"]["review_state"] == "accepted"
+                    and spectrum["module"]["evidence"]["review_state"]
+                    == "imported_unreviewed"
                     for spectrum in accepted_atlas["conceptual_spectra"]
                 )
+            )
+            self.assertEqual(
+                accepted_atlas["snapshot"]["spectrum_source"]["review_state"],
+                "imported_unreviewed",
             )
             candidate_hashes = {
                 spectrum["spectrum_id"]: spectrum["module"]["content_sha256"]
@@ -477,8 +515,8 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 {"reason": "infinite_profile", "status": "unsupported"},
             )
             self.assertEqual(
-                summaries["tmf"]["exports"]["sseqcpp"]["status"],
-                "ready",
+                summaries["tmf"]["exports"]["sseqcpp"],
+                {"reason": "infinite_profile", "status": "unsupported"},
             )
             self.assertTrue(
                 all(
@@ -726,7 +764,10 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 {"basis": "milnor", "p_part": [3, 2, 1], "truncated": True},
             )
             self.assertEqual(tmf["downloads"]["sseq"]["status"], "ready")
-            self.assertEqual(tmf["downloads"]["sseqcpp"]["status"], "ready")
+            self.assertEqual(
+                tmf["downloads"]["sseqcpp"],
+                {"reason": "infinite_profile", "status": "unsupported"},
+            )
             self.assertEqual(
                 tmf["downloads"]["bruner"],
                 {"reason": "infinite_profile", "status": "unsupported"},

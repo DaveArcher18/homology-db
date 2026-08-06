@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refuse publication of stable spectra without an exact cw49 review record."""
+"""Verify accepted releases or explicitly enabled public review previews."""
 
 from __future__ import annotations
 
@@ -121,7 +121,11 @@ def load_atlas(path: Path) -> dict[str, Any]:
     return value
 
 
-def validate_spectra(spectra: list[dict[str, Any]]) -> tuple[int, int]:
+def validate_spectra(
+    spectra: list[dict[str, Any]],
+    *,
+    expected_review_state: str = "accepted",
+) -> tuple[int, int]:
     if len(spectra) != 49:
         raise ReleaseGateError(
             f"a stable-spectrum release requires exactly 49 spectra, found {len(spectra)}"
@@ -148,16 +152,26 @@ def validate_spectra(spectra: list[dict[str, Any]]) -> tuple[int, int]:
             raise ReleaseGateError(
                 f"spectrum {spectrum['spectrum_id']} is not completely decoded"
             )
-        if spectrum.get("review_state") != "accepted":
+        if spectrum.get("review_state") != expected_review_state:
             raise ReleaseGateError(
-                f"spectrum {spectrum['spectrum_id']} is not accepted for release"
+                f"spectrum {spectrum['spectrum_id']} does not have review state "
+                f"{expected_review_state}"
             )
         module = spectrum.get("module")
         if not isinstance(module, dict):
             raise ReleaseGateError(f"spectrum {spectrum['spectrum_id']} has no module")
-        if module.get("review_state") != "accepted":
+        if module.get("review_state") != expected_review_state:
             raise ReleaseGateError(
-                f"module for {spectrum['spectrum_id']} is not accepted for release"
+                f"module for {spectrum['spectrum_id']} does not have review state "
+                f"{expected_review_state}"
+            )
+        evidence = module.get("evidence")
+        if not isinstance(evidence, dict) or evidence.get(
+            "review_state"
+        ) != "imported_unreviewed":
+            raise ReleaseGateError(
+                f"import evidence for {spectrum['spectrum_id']} must remain "
+                "imported_unreviewed"
             )
         content_hash = module.get("content_sha256")
         if not isinstance(content_hash, str) or re.fullmatch(r"[0-9a-f]{64}", content_hash) is None:
@@ -224,6 +238,42 @@ def verify_deterministic_rebuild(atlas_path: Path, review_path: Path) -> str:
     return hashlib.sha256(first_bytes).hexdigest()
 
 
+def verify_deterministic_preview_rebuild(atlas_path: Path) -> str:
+    """Require two fresh preview builds to equal each other and the artifact."""
+
+    try:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            output_paths: list[Path] = []
+            for ordinal in range(2):
+                database_path = directory / f"homology-db-{ordinal}.sqlite3"
+                output_path = directory / f"atlas-{ordinal}.html"
+                build_current_database(database_path)
+                export_atlas(
+                    database_path,
+                    output_path,
+                    steenrod_review_candidate=True,
+                    allow_public_review_preview=True,
+                )
+                output_paths.append(output_path)
+            first_bytes = output_paths[0].read_bytes()
+            second_bytes = output_paths[1].read_bytes()
+    except (OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        raise ReleaseGateError(
+            f"canonical public preview rebuild failed: {error}"
+        ) from error
+
+    if first_bytes != second_bytes:
+        raise ReleaseGateError(
+            "canonical public preview rebuild is non-deterministic across fresh databases"
+        )
+    if atlas_path.read_bytes() != first_bytes:
+        raise ReleaseGateError(
+            "published atlas does not match the canonical public preview rebuild"
+        )
+    return hashlib.sha256(first_bytes).hexdigest()
+
+
 def verify_spectrum_materialization(
     snapshot: dict[str, Any],
     packet: dict[str, Any],
@@ -277,6 +327,7 @@ def verify(
     review_path: Path | None,
     *,
     verify_rebuild: bool = False,
+    allow_public_review_preview: bool = False,
 ) -> dict[str, Any]:
     atlas_bytes = atlas_path.stat().st_size
     if atlas_bytes > MAX_ATLAS_BYTES:
@@ -316,17 +367,22 @@ def verify(
         raise ReleaseGateError(
             "stable-spectrum release requires a valid logical database SHA-256"
         )
-    finite_count, profile_count = validate_spectra(spectra)
-    if snapshot.get("spectrum_release_status") != "accepted_finalized" or snapshot.get(
-        "spectrum_review_candidate"
-    ) is not False:
+    public_preview = snapshot.get("spectrum_release_status") == "public_review_preview"
+    if public_preview and not allow_public_review_preview:
         raise ReleaseGateError(
-            "stable-spectrum release requires an accepted finalized spectrum Snapshot"
+            "public review preview is not enabled for this deployment"
         )
+    expected_review_state = "imported_unreviewed" if public_preview else "accepted"
+    finite_count, profile_count = validate_spectra(
+        spectra,
+        expected_review_state=expected_review_state,
+    )
     if snapshot.get("conceptual_spectrum_count") != 49:
         raise ReleaseGateError("stable-spectrum Snapshot must project exactly 49 spectra")
-    if spectrum_source.get("review_state") != "accepted":
-        raise ReleaseGateError("stable-spectrum source evidence is not accepted")
+    if spectrum_source.get("review_state") != "imported_unreviewed":
+        raise ReleaseGateError(
+            "stable-spectrum import evidence must remain imported_unreviewed"
+        )
 
     source_inputs_hash = snapshot.get("source_inputs_sha256")
     if re.fullmatch(r"[0-9a-f]{64}", str(source_inputs_hash or "")) is None:
@@ -357,6 +413,54 @@ def verify(
     ):
         raise ReleaseGateError(
             "stable-spectrum release does not match the exact pinned cw49 source projection"
+        )
+
+    if public_preview:
+        if snapshot.get("spectrum_review_candidate") is not True:
+            raise ReleaseGateError(
+                "public review preview must retain review-candidate Snapshot metadata"
+            )
+        if review_path is not None:
+            raise ReleaseGateError(
+                "public review preview must not claim an acceptance record"
+            )
+        forbidden_metadata = {
+            "spectrum_acceptance",
+            "spectrum_snapshot",
+            "spectrum_database_hash_kind",
+            "spectrum_database_sha256",
+            "spectrum_materialization",
+        }
+        embedded_forbidden = sorted(forbidden_metadata.intersection(snapshot))
+        if embedded_forbidden:
+            raise ReleaseGateError(
+                "public review preview must not embed acceptance or finalization "
+                "metadata: " + ", ".join(embedded_forbidden)
+            )
+        summary = {
+            "state": "public_review_preview",
+            "conceptual_spectrum_count": len(spectra),
+            "finite_module_count": finite_count,
+            "profile_module_count": profile_count,
+            "candidate_sha256": actual_hash,
+            "atlas_bytes": atlas_bytes,
+        }
+        if verify_rebuild:
+            summary.update(
+                {
+                    "deterministic_rebuild_verified": True,
+                    "canonical_atlas_sha256": verify_deterministic_preview_rebuild(
+                        atlas_path
+                    ),
+                }
+            )
+        return summary
+
+    if snapshot.get("spectrum_release_status") != "accepted_finalized" or snapshot.get(
+        "spectrum_review_candidate"
+    ) is not False:
+        raise ReleaseGateError(
+            "stable-spectrum release requires an accepted finalized spectrum Snapshot"
         )
 
     if review_path is None or not review_path.is_file():
@@ -449,6 +553,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--atlas", type=Path, required=True)
     parser.add_argument("--review", type=Path)
     parser.add_argument(
+        "--allow-public-review-preview",
+        action="store_true",
+        help=(
+            "allow an exact imported-unreviewed cw49 preview that remains visibly "
+            "awaiting review and carries no acceptance record"
+        ),
+    )
+    parser.add_argument(
         "--verify-rebuild",
         action="store_true",
         help=(
@@ -466,6 +578,7 @@ def main() -> int:
             args.atlas.resolve(),
             args.review.resolve() if args.review else None,
             verify_rebuild=args.verify_rebuild,
+            allow_public_review_preview=args.allow_public_review_preview,
         )
     except (OSError, json.JSONDecodeError, ReleaseGateError) as error:
         print(f"release gate failed: {error}", file=sys.stderr)

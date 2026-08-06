@@ -204,6 +204,27 @@ class SteenrodReleaseGateTest(unittest.TestCase):
         cls.valid_atlas = embedded_atlas(accepted_path)
         cls.valid_acceptance = acceptance
 
+        preview_path = directory / "preview.html"
+        preview = subprocess.run(
+            [
+                sys.executable,
+                str(EXPORTER),
+                "--database",
+                str(database_path),
+                "--output",
+                str(preview_path),
+                "--steenrod-review-candidate",
+                "--allow-public-review-preview",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if preview.returncode != 0:
+            raise AssertionError(preview.stderr)
+        cls.valid_preview_path = preview_path
+        cls.valid_preview = embedded_atlas(preview_path)
+
     @classmethod
     def tearDownClass(cls) -> None:
         cls.fixture_directory.cleanup()
@@ -217,6 +238,7 @@ class SteenrodReleaseGateTest(unittest.TestCase):
         review: dict | None = None,
         *,
         padding_bytes: int = 0,
+        allow_public_review_preview: bool = False,
     ):
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
@@ -226,6 +248,8 @@ class SteenrodReleaseGateTest(unittest.TestCase):
                 html_with_atlas(atlas) + (" " * padding_bytes), encoding="utf-8"
             )
             command = [sys.executable, str(GATE), "--atlas", str(atlas_path)]
+            if allow_public_review_preview:
+                command.append("--allow-public-review-preview")
             if review is not None:
                 review_path.write_text(acceptance_text(review), encoding="utf-8")
                 command.extend(["--review", str(review_path)])
@@ -284,6 +308,84 @@ class SteenrodReleaseGateTest(unittest.TestCase):
 
         self.assertNotEqual(completed.returncode, 0)
         self.assertIn("requires exactly 49 spectra", completed.stderr)
+
+    def test_public_review_preview_requires_explicit_gate_flag(self) -> None:
+        completed = self.run_gate(copy.deepcopy(self.valid_preview))
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("public review preview is not enabled", completed.stderr)
+
+    def test_exact_public_review_preview_passes_without_acceptance(self) -> None:
+        completed = self.run_gate(
+            copy.deepcopy(self.valid_preview),
+            allow_public_review_preview=True,
+        )
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        summary = json.loads(completed.stdout)
+        self.assertEqual(summary["state"], "public_review_preview")
+        self.assertEqual(summary["conceptual_spectrum_count"], 49)
+        self.assertEqual(summary["finite_module_count"], 48)
+        self.assertEqual(summary["profile_module_count"], 1)
+        self.assertNotIn("reviewer", summary)
+
+    def test_public_review_preview_rebuild_is_deterministic(self) -> None:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(GATE),
+                "--atlas",
+                str(self.valid_preview_path),
+                "--allow-public-review-preview",
+                "--verify-rebuild",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        summary = json.loads(completed.stdout)
+        self.assertTrue(summary["deterministic_rebuild_verified"])
+        self.assertRegex(summary["canonical_atlas_sha256"], r"^[0-9a-f]{64}$")
+
+    def test_public_review_preview_preserves_import_evidence_state(self) -> None:
+        atlas = copy.deepcopy(self.valid_preview)
+        atlas["conceptual_spectra"][0]["module"]["evidence"][
+            "review_state"
+        ] = "accepted"
+
+        completed = self.run_gate(
+            atlas,
+            allow_public_review_preview=True,
+        )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("import evidence", completed.stderr)
+        self.assertIn("must remain imported_unreviewed", completed.stderr)
+
+    def test_public_review_preview_rejects_finalization_metadata(self) -> None:
+        for key in (
+            "spectrum_acceptance",
+            "spectrum_snapshot",
+            "spectrum_database_hash_kind",
+            "spectrum_database_sha256",
+            "spectrum_materialization",
+        ):
+            with self.subTest(key=key):
+                atlas = copy.deepcopy(self.valid_preview)
+                atlas["snapshot"][key] = {"forged": True}
+
+                completed = self.run_gate(
+                    atlas,
+                    allow_public_review_preview=True,
+                )
+
+                self.assertNotEqual(completed.returncode, 0)
+                self.assertIn(
+                    "must not embed acceptance or finalization metadata",
+                    completed.stderr,
+                )
 
     def test_exact_reviewed_cw49_release_passes(self) -> None:
         atlas, review = self.accepted_fixture()

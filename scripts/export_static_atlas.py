@@ -828,19 +828,16 @@ def validate_steenrod_acceptance_record(
     return expected
 
 
-def _with_review_state(value: Any, review_state: str) -> Any:
-    if isinstance(value, dict):
-        return {
-            key: (
-                review_state
-                if key == "review_state"
-                else _with_review_state(item, review_state)
-            )
-            for key, item in value.items()
-        }
-    if isinstance(value, list):
-        return [_with_review_state(item, review_state) for item in value]
-    return value
+def _accept_spectrum_records(
+    spectra: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Accept spectrum/module assertions without rewriting import evidence."""
+
+    accepted = copy.deepcopy(spectra)
+    for spectrum in accepted:
+        spectrum["review_state"] = "accepted"
+        spectrum["module"]["review_state"] = "accepted"
+    return accepted
 
 
 def finalize_steenrod_atlas(
@@ -861,15 +858,10 @@ def finalize_steenrod_atlas(
         for spectrum in atlas["conceptual_spectra"]
     }
     accepted = copy.deepcopy(atlas)
-    accepted["conceptual_spectra"] = _with_review_state(
-        accepted["conceptual_spectra"],
-        "accepted",
+    accepted["conceptual_spectra"] = _accept_spectrum_records(
+        accepted["conceptual_spectra"]
     )
     snapshot = accepted["snapshot"]
-    snapshot["spectrum_source"] = _with_review_state(
-        snapshot["spectrum_source"],
-        "accepted",
-    )
     snapshot["spectrum_review_candidate"] = False
     snapshot["spectrum_release_status"] = "accepted_finalized"
     projection = packet["release_projection"]
@@ -2050,10 +2042,16 @@ def export_atlas(
     steenrod_review_packet_path: Path | None = None,
     steenrod_coverage_report_path: Path | None = None,
     steenrod_acceptance_record_path: Path | None = None,
+    allow_public_review_preview: bool = False,
 ) -> dict[str, Any]:
+    if allow_public_review_preview and not steenrod_review_candidate:
+        raise ValueError(
+            "public Steenrod preview requires --steenrod-review-candidate"
+        )
     if (
         steenrod_review_candidate
         and output_path.resolve() == PUBLIC_ATLAS_PATH.resolve()
+        and not allow_public_review_preview
     ):
         raise ValueError(
             "an unreviewed Steenrod candidate cannot target dist/atlas.html"
@@ -2075,6 +2073,8 @@ def export_atlas(
         allow_malformed_for_review=allow_malformed_for_review,
         steenrod_review_candidate=include_steenrod,
     )
+    if allow_public_review_preview:
+        atlas["snapshot"]["spectrum_release_status"] = "public_review_preview"
     candidate_html = render_atlas(atlas)
     packet: dict[str, Any] | None = None
     coverage_report: str | None = None
@@ -2238,6 +2238,14 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--allow-public-review-preview",
+        action="store_true",
+        help=(
+            "explicitly allow the imported-unreviewed review candidate to target "
+            "the public atlas; the UI keeps its awaiting-review labels"
+        ),
+    )
+    parser.add_argument(
         "--steenrod-review-packet",
         type=Path,
         help="write the deterministic imported-unreviewed packet for Dan Isaksen",
@@ -2253,6 +2261,10 @@ def parse_args() -> argparse.Namespace:
         or args.steenrod_coverage_report is not None
     ) and not args.steenrod_review_candidate:
         parser.error("Steenrod review outputs require --steenrod-review-candidate")
+    if args.allow_public_review_preview and not args.steenrod_review_candidate:
+        parser.error(
+            "--allow-public-review-preview requires --steenrod-review-candidate"
+        )
     return args
 
 
@@ -2279,6 +2291,7 @@ def main() -> int:
                 if args.steenrod_acceptance_record
                 else None
             ),
+            allow_public_review_preview=args.allow_public_review_preview,
         )
     else:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -2307,6 +2320,7 @@ def main() -> int:
                     if args.steenrod_acceptance_record
                     else None
                 ),
+                allow_public_review_preview=args.allow_public_review_preview,
             )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0

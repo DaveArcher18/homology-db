@@ -100,11 +100,13 @@ class SteenrodCorpusTests(unittest.TestCase):
     )
     def test_sseqcpp_fragments_pass_the_pinned_real_parser(self) -> None:
         executable = os.environ["SSEQCPP_ADAMS"]
-        spectra = {
-            spectrum["spectrum_id"]: spectrum
+        records = [
+            spectrum
             for spectrum in load_cw49_corpus()["spectra"]
-        }
-        records = [spectra["S0"], spectra["C2_C2"], sum_fixture_module()]
+            if spectrum["module"]["module_type"] == "finite_basis"
+        ]
+        records.append(sum_fixture_module())
+        self.assertEqual(len(records), 49)
         for record in records:
             spectrum_id = record["spectrum_id"]
             payload = export_sseqcpp(record)
@@ -137,23 +139,19 @@ class SteenrodCorpusTests(unittest.TestCase):
     )
     def test_sseq_exports_pass_the_pinned_real_parser(self) -> None:
         parser = os.environ["SSEQ_PARSER"]
-        spectra = {
-            spectrum["spectrum_id"]: spectrum
-            for spectrum in load_cw49_corpus()["spectra"]
-        }
+        # The pinned ext-rs parser is killed by its own degree-256 Adem-algebra
+        # expansion for these three records on the validation host. Their JSON
+        # remains deterministic and schema-identical to the records exercised
+        # here; retain the exact limitation instead of treating a SIGKILL as a
+        # successful consumer parse.
+        parser_resource_limits = {"Fphi", "RP1_256", "RP3_256"}
         records = [
-            spectra[spectrum_id]
-            for spectrum_id in (
-                "S0",
-                "C2",
-                "Ceta",
-                "C2_C2",
-                "Joker",
-                "RP1_4",
-                "tmf",
-            )
+            spectrum
+            for spectrum in load_cw49_corpus()["spectra"]
+            if spectrum["spectrum_id"] not in parser_resource_limits
         ]
         records.append(sum_fixture_module())
+        self.assertEqual(len(records), 47)
         for record in records:
             spectrum_id = record["spectrum_id"]
             with (
@@ -749,14 +747,10 @@ class SteenrodCorpusTests(unittest.TestCase):
                 "actions": [],
             },
         )
-        self.assertEqual(
-            export_sseqcpp(tmf),
-            {
-                "type": "sseqcpp_builtin",
-                "name": "tmf",
-                "consumer_commit": "23d12c973db2b294a6c00c15bd106e70b0af3fa6",
-            },
-        )
+        with self.assertRaises(UnsupportedExportError) as raised:
+            export_sseqcpp(tmf)
+        self.assertEqual(raised.exception.format_name, "sseqcpp")
+        self.assertEqual(raised.exception.reason, "infinite_profile")
         with self.assertRaises(UnsupportedExportError) as raised:
             export_bruner(tmf)
         self.assertEqual(raised.exception.format_name, "bruner")

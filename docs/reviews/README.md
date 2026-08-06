@@ -5,6 +5,20 @@ gate. A record is added only after the named human reviewer has evaluated the
 exact candidate and supplied a verdict; development work never manufactures
 one.
 
+## Open feedback preview
+
+An explicitly authorized public preview may carry the exact 49-spectrum
+candidate before acceptance. It must use `--allow-public-review-preview` in
+both the exporter and Pages gate, retain `spectrum_review_candidate = true`,
+label every spectrum and module `imported_unreviewed`, preserve import evidence
+as `imported_unreviewed`, and carry no acceptance record. The preview gate
+still validates the pinned identities, complete finite modules, content and
+source hashes, 5 MiB limit, and two byte-identical fresh rebuilds.
+
+This mode exists for informal inspection and GitHub feedback. It does not
+finalize the spectrum Snapshot, materialize assertion reviews or editorial
+admissions, or weaken the accepted-release contract below.
+
 The cw49 gate expects `steenrod-cw49-v1-dan.json` with this shape. Development
 may generate the candidate packet and coverage report, but it does not generate
 this acceptance record or populate any of its verdict fields:
@@ -64,5 +78,6 @@ build timestamp `schema_migration.applied_at`.
 
 The Pages gate independently rematerializes the ledger, validates both database
 identities, rebuilds the accepted atlas twice from fresh databases, and requires
-the checked artifact to match those canonical bytes. Until this succeeds,
-`dist/atlas.html` remains the last reviewed public release.
+the checked artifact to match those canonical bytes. Until this succeeds, a
+public preview may remain available for feedback, but it is never described as
+the reviewed or finalized release.

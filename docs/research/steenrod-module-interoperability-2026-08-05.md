@@ -102,13 +102,15 @@ canonical Steenrod action table.
 
 The interoperability checks validate encodings, not the imported mathematics.
 All 48 finite Bruner exports pass the compiled Ext 1.9.5 `newconsistency`
-checker. Representative `sseq` exports, including repeated-degree and
-sum-valued actions, pass the pinned commit's real module construction in both
-Adem and Milnor bases; the profile-shaped `tmf` export also passes its selected
-Milnor parser. Exact SSeqCpp fragments for `S0`, archive-ordered `C2_C2`, and a
-repeated-degree sum fixture pass the arm64 `Adams` executable from the pinned
-Zenodo programs archive. The profile-shaped `tmf` record is intentionally a
-built-in adapter rather than an `Adams.json` fragment; `Adams cellstructure
-tmf 20` also succeeds with that archived executable. Large modules remain covered by deterministic
-canonical validation rather than by computing their full Ext resolution as a
-unit test.
+checker, and all 48 finite SSeqCpp fragments plus the repeated-degree sum
+fixture pass the arm64 `Adams` executable from the pinned Zenodo archive.
+Forty-six of the 49 corpus `sseq` exports, plus the sum fixture, pass the pinned
+real module constructor; its own degree-256 Adem-algebra expansion is killed by
+the validation host for `Fphi`, `RP1_256`, and `RP3_256`. Those three outputs
+remain deterministically validated but are not claimed as real-parser passes.
+The profile-shaped `tmf` export passes the selected sseq Milnor parser.
+
+`tmf` has no SSeqCpp `Adams.json` fragment: the archived executable's built-in
+`tmf` command informed the profile import, but the atlas now reports the
+SSeqCpp download as typed unsupported with reason `infinite_profile` rather
+than presenting a custom descriptor as consumer-native input.

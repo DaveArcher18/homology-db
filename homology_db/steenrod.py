@@ -788,7 +788,10 @@ def _require_exportable(record: Mapping[str, Any], format_name: str) -> Mapping[
         )
     validate_module(module)
     _require_complete(module)
-    if module["module_type"] == "profile" and format_name == "bruner":
+    if module["module_type"] == "profile" and format_name in {
+        "bruner",
+        "sseqcpp",
+    }:
         raise UnsupportedExportError(format_name, "infinite_profile")
     return module
 
@@ -832,12 +835,6 @@ def export_sseqcpp(record: Mapping[str, Any]) -> dict[str, Any]:
 
     module = _require_exportable(record, "sseqcpp")
     spectrum_id = _spectrum_id(record)
-    if module["module_type"] == "profile":
-        return {
-            "type": "sseqcpp_builtin",
-            "name": spectrum_id,
-            "consumer_commit": "23d12c973db2b294a6c00c15bd106e70b0af3fa6",
-        }
     basis = module["basis"]
     cells = [element["degree"] for element in basis]
     counts: dict[int, int] = {}

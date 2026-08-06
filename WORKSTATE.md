@@ -1,13 +1,14 @@
 # Work state
 
-Status: COMPLETE
+Status: ACTIVE
 
 ## Objective
 
 Add a stable-first mod-2 Steenrod-module corpus for all 49 spectra on Wayne
 Lin's cw49 index, deterministic Bruner/sseq/SSeqCpp exports, and table-led
-stable-spectrum atlas routes. Preserve the existing 42-space atlas and keep
-the new public release gated until Dan Isaksen reviews the exact candidate.
+stable-spectrum atlas routes. Preserve the existing 42-space atlas, publish
+the corpus as an explicit imported-unreviewed feedback preview, and retain Dan
+Isaksen's acceptance as a separate finalized-release boundary.
 
 ## Active map
 
@@ -21,13 +22,13 @@ without an explicit user request here.
 
 ## Current ticket
 
-None. Tickets 01–05 are resolved. Dan's review is the next external human
-event; public release work must begin only after his written acceptance of the
-exact hashed packet.
+Ticket 06, `Publish the open review preview`, claimed by `/root (interactive
+chat)` on 2026-08-06.
 
 ## Active run lease
 
-None.
+Owner: `/root (interactive chat)`
+Heartbeat: `2026-08-06T19:06:42Z`
 
 ## Last checkpoint
 

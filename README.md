@@ -35,10 +35,11 @@ python3 scripts/export_static_atlas.py --snapshot current --output dist/atlas.ht
 
 ## Stable Steenrod review candidate
 
-The repository also contains a stable-first, mod-2 Steenrod-module corpus for
-all 49 spectra in Wayne Lin's cw49 index: 48 complete finite-basis modules and
-the infinite `tmf` profile. This corpus is deliberately absent from the public
-artifact until Dan Isaksen accepts its exact review packet. Inspect and export
+The public atlas currently carries an openly labeled review preview of the
+stable-first, mod-2 Steenrod-module corpus for all 49 spectra in Wayne Lin's
+cw49 index: 48 complete finite-basis modules and the infinite `tmf` profile.
+Every imported claim remains `imported_unreviewed`; this preview invites
+feedback and is not Dan Isaksen's mathematical acceptance. Inspect and export
 it locally with:
 
 ```bash
@@ -49,8 +50,7 @@ python3 -m homology_db steenrod export Ceta --format sseqcpp
 python3 -m homology_db steenrod export Ceta --format bruner
 ```
 
-Build the self-contained review atlas and its deterministic handoff files
-without changing `dist/atlas.html`:
+Build the self-contained review atlas and its deterministic handoff files:
 
 ```bash
 python3 scripts/export_static_atlas.py \
@@ -61,11 +61,21 @@ python3 scripts/export_static_atlas.py \
   --steenrod-coverage-report .scratch/steenrod-cw49-v1/artifacts/coverage.md
 ```
 
+The checked public preview is built explicitly with:
+
+```bash
+python3 scripts/export_static_atlas.py \
+  --snapshot current \
+  --output dist/atlas.html \
+  --steenrod-review-candidate \
+  --allow-public-review-preview
+```
+
 The [interoperability note](docs/research/steenrod-module-interoperability-2026-08-05.md)
 records the pinned source and consumer boundaries. The
-[review-record instructions](docs/reviews/README.md) describe the separate
-post-acceptance materialization and release gate; development does not create
-that acceptance record.
+[review-record instructions](docs/reviews/README.md) distinguish this public
+feedback preview from the separate accepted-release materialization; preview
+publication does not create or imply an acceptance record.
 
 The [static atlas read-model note](docs/static-atlas-read-model.md) records the
 schema mapping, measured database and HTML sizes, and validation boundaries.

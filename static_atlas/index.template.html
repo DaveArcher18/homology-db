@@ -308,6 +308,8 @@
         && conceptualSpectra.every(
           (spectrum) => spectrum.review_state === "accepted",
         );
+      const spectrumPublicPreview =
+        atlas.snapshot?.spectrum_release_status === "public_review_preview";
       const navSpectra = document.getElementById("nav-spectra");
       const footerSpectra = document.getElementById("footer-spectra");
       if (!conceptualSpectra.length) return;
@@ -425,7 +427,9 @@
             "page-kicker",
             spectrumReleaseAccepted
               ? "Reviewed stable corpus"
-              : "Local mathematical review candidate",
+              : spectrumPublicPreview
+                ? "Public feedback preview"
+                : "Local mathematical review candidate",
           ),
           element("h1", "page-title", "Stable spectra"),
           element(
@@ -435,7 +439,9 @@
               + (
                 spectrumReleaseAccepted
                   ? " Conceptual spectra from the cw49 corpus, accepted and admitted in the finalized stable Snapshot."
-                  : " Conceptual spectra from the cw49 corpus. These imported operations are not part of the public release until mathematical review is recorded."
+                  : spectrumPublicPreview
+                    ? " Conceptual spectra from the cw49 corpus, published for informal inspection and feedback. Every imported operation remains awaiting mathematical review."
+                    : " Conceptual spectra from the cw49 corpus. These imported operations remain local until a preview or finalized release is selected."
               ),
           ),
           element(
@@ -852,7 +858,7 @@
           "p",
           "spectrum-note",
           spectrum.review_state === "accepted"
-            ? "Imported source evidence accepted for this finalized stable Snapshot."
+            ? "Assertions are admitted to the finalized stable Snapshot; source evidence remains an imported record, not independent verification."
             : "Imported source evidence; mathematical review has not yet been recorded.",
         );
         const exact = element("pre", "raw-record");
