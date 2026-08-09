@@ -12,7 +12,11 @@
   const simpleTexCommands = Object.freeze({
     infinity: "∞",
     infty: "∞",
+    eta: "η",
     gamma: "γ",
+    nu: "ν",
+    sigma: "σ",
+    theta: "θ",
     Sigma: "Σ",
     vee: "∨",
     to: "→",
@@ -38,6 +42,54 @@
     ...Object.keys(simpleTexCommands),
     ...texGroupCommands,
   ]);
+  const spectrumNames = Object.freeze({
+    S0: Object.freeze({ tex: "S^0", spoken: "S zero" }),
+    tmf: Object.freeze({ tex: "\\mathrm{tmf}", spoken: "tmf" }),
+    C2: Object.freeze({ tex: "C2", spoken: "C 2" }),
+    Ceta: Object.freeze({ tex: "C\\eta", spoken: "C eta" }),
+    Cnu: Object.freeze({ tex: "C\\nu", spoken: "C nu" }),
+    Csigma: Object.freeze({ tex: "C\\sigma", spoken: "C sigma" }),
+    Csigmasq: Object.freeze({
+      tex: "C\\sigma^{2}",
+      spoken: "C sigma squared",
+    }),
+    Ctheta4: Object.freeze({ tex: "C\\theta_{4}", spoken: "C theta 4" }),
+    Ctheta5: Object.freeze({ tex: "C\\theta_{5}", spoken: "C theta 5" }),
+    C2sigma: Object.freeze({ tex: "C2\\sigma", spoken: "C 2 sigma" }),
+    Joker: Object.freeze({ tex: "\\mathrm{Joker}", spoken: "Joker" }),
+    RP3_6: Object.freeze({
+      tex: "\\mathbb{R}P^{6}_{3}",
+      spoken: "R P 3 through 6",
+    }),
+    RP1_4: Object.freeze({
+      tex: "\\mathbb{R}P^{4}_{1}",
+      spoken: "R P 1 through 4",
+    }),
+    RP1_6: Object.freeze({
+      tex: "\\mathbb{R}P^{6}_{1}",
+      spoken: "R P 1 through 6",
+    }),
+    RP1_8: Object.freeze({
+      tex: "\\mathbb{R}P^{8}_{1}",
+      spoken: "R P 1 through 8",
+    }),
+    RP1_10: Object.freeze({
+      tex: "\\mathbb{R}P^{10}_{1}",
+      spoken: "R P 1 through 10",
+    }),
+    RP1_12: Object.freeze({
+      tex: "\\mathbb{R}P^{12}_{1}",
+      spoken: "R P 1 through 12",
+    }),
+    RP1_256: Object.freeze({
+      tex: "\\mathbb{R}P^{256}_{1}",
+      spoken: "R P 1 through 256",
+    }),
+    RP3_256: Object.freeze({
+      tex: "\\mathbb{R}P^{256}_{3}",
+      spoken: "R P 3 through 256",
+    }),
+  });
 
   function firstRecorded(...values) {
     return values.find(
@@ -57,6 +109,71 @@
     return fieldMatch
       ? `\\mathbb{F}_{${fieldMatch[1]}}`
       : String(coefficient);
+  }
+
+  function spectrumNamePresentation(spectrumId) {
+    const exactId = String(spectrumId ?? "");
+    const curated = spectrumNames[exactId];
+    return curated
+      ? { tex: curated.tex, spoken: curated.spoken }
+      : { tex: "", spoken: exactId };
+  }
+
+  function spectrumNameTex(spectrumId) {
+    return spectrumNamePresentation(spectrumId).tex;
+  }
+
+  function basisNamePresentation(basisName) {
+    const exactName = String(basisName ?? "");
+    const match = exactName.match(/^x(\d+)(?:_(\d+))?$/);
+    if (!match) return { tex: "", spoken: exactName };
+    return match[2] === undefined
+      ? { tex: `x_{${match[1]}}`, spoken: `x sub ${match[1]}` }
+      : {
+          tex: `x_{${match[1]},${match[2]}}`,
+          spoken: `x sub ${match[1]} comma ${match[2]}`,
+        };
+  }
+
+  function basisNameTex(basisName) {
+    return basisNamePresentation(basisName).tex;
+  }
+
+  function basisNameSpoken(basisName) {
+    return basisNamePresentation(basisName).spoken;
+  }
+
+  function basisSumPresentation(basisNames) {
+    if (!Array.isArray(basisNames) || !basisNames.length) {
+      return { tex: "", spoken: "" };
+    }
+    const terms = basisNames.map(basisNamePresentation);
+    return {
+      tex: terms.every((term) => term.tex)
+        ? terms.map((term) => term.tex).join(" + ")
+        : "",
+      spoken: terms.map((term) => term.spoken).join(" plus "),
+    };
+  }
+
+  function basisSumTex(basisNames) {
+    return basisSumPresentation(basisNames).tex;
+  }
+
+  function basisSumSpoken(basisNames) {
+    return basisSumPresentation(basisNames).spoken;
+  }
+
+  function steenrodOperationTex(squareDegree) {
+    const degree = Number(squareDegree);
+    if (
+      !Number.isSafeInteger(degree)
+      || degree < 1
+      || !Number.isInteger(Math.log2(degree))
+    ) {
+      return "";
+    }
+    return `\\operatorname{Sq}^{${degree}}`;
   }
 
   function incompleteExactGroup(kind) {
@@ -211,31 +328,115 @@
     };
   }
 
-  function isSupportedTex(value) {
+  function parseTex(value) {
     const source = String(value ?? "");
     if (
       !source
       || source.length > 500
-      || /\\(?:href|html|include|input|write|def|newcommand|style)/i.test(
-        source,
-      )
+      || /[<>&\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/u.test(source)
     ) {
-      return false;
+      return null;
     }
-    let braceDepth = 0;
-    for (const character of source) {
-      if (character === "{") braceDepth += 1;
-      if (character === "}") braceDepth -= 1;
-      if (braceDepth < 0) return false;
+
+    function appendText(nodes, text) {
+      if (!text) return;
+      const previous = nodes.at(-1);
+      if (previous?.type === "text") previous.value += text;
+      else nodes.push({ type: "text", value: text });
     }
-    if (braceDepth !== 0) return false;
-    return [...source.matchAll(/\\([A-Za-z]+)/g)].every((match) =>
-      supportedTexCommands.has(match[1]),
-    );
+
+    function parseSequence(start, grouped) {
+      const nodes = [];
+      let index = start;
+      while (index < source.length) {
+        const character = source[index];
+        if (character === "}") {
+          if (!grouped) throw new Error("Unexpected TeX brace");
+          return { nodes, end: index + 1 };
+        }
+        if (character === "{") {
+          const group = parseSequence(index + 1, true);
+          nodes.push(...group.nodes);
+          index = group.end;
+          continue;
+        }
+        if (character === "\\") {
+          const commandMatch = source.slice(index + 1).match(/^[A-Za-z]+/);
+          if (!commandMatch) throw new Error("Malformed TeX command");
+          const command = commandMatch[0];
+          if (!supportedTexCommands.has(command)) {
+            throw new Error(`Unsupported TeX command: ${command}`);
+          }
+          index += command.length + 1;
+          if (simpleTexCommands[command]) {
+            appendText(nodes, simpleTexCommands[command]);
+            continue;
+          }
+          if (source[index] !== "{") {
+            throw new Error(`Missing group for TeX command: ${command}`);
+          }
+          const group = parseSequence(index + 1, true);
+          index = group.end;
+          if (command === "mathbb") {
+            if (group.nodes.some((node) => node.type !== "text")) {
+              throw new Error("mathbb accepts literal characters only");
+            }
+            const converted = [...group.nodes.map((node) => node.value).join("")]
+              .map((item) => blackboardCharacters[item] ?? item)
+              .join("");
+            appendText(nodes, converted);
+          } else {
+            nodes.push({ type: "group", command, children: group.nodes });
+          }
+          continue;
+        }
+        if (character === "^" || character === "_") {
+          index += 1;
+          if (index >= source.length) throw new Error("Missing TeX script");
+          let children;
+          if (source[index] === "{") {
+            const group = parseSequence(index + 1, true);
+            children = group.nodes;
+            index = group.end;
+          } else {
+            if (/[\\^_}]/.test(source[index])) {
+              throw new Error("Malformed TeX script");
+            }
+            children = [{ type: "text", value: source[index] }];
+            index += 1;
+          }
+          nodes.push({
+            type: character === "^" ? "sup" : "sub",
+            children,
+          });
+          continue;
+        }
+        appendText(nodes, character);
+        index += 1;
+      }
+      if (grouped) throw new Error("Unclosed TeX group");
+      return { nodes, end: index };
+    }
+
+    try {
+      return parseSequence(0, false).nodes;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function isSupportedTex(value) {
+    return parseTex(value) !== null;
   }
 
   return Object.freeze({
     blackboardCharacters,
+    basisNamePresentation,
+    basisNameSpoken,
+    basisNameTex,
+    basisSumPresentation,
+    basisSumSpoken,
+    basisSumTex,
     coefficientDisplay,
     coefficientTex,
     coverageFor,
@@ -243,7 +444,11 @@
     firstRecorded,
     groupPresentation,
     isSupportedTex,
+    parseTex,
     simpleTexCommands,
+    spectrumNamePresentation,
+    spectrumNameTex,
+    steenrodOperationTex,
     texGroupCommands,
   });
 }));

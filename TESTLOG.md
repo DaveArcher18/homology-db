@@ -878,3 +878,41 @@ unsupported results, and the structured correction link. Exact local desktop
 and 320-pixel checks covered search, keyboard navigation, long operation
 tables, downloads, internal table scrolling, zero page overflow, and zero
 console warning/error.
+
+## 2026-08-09 — stable-atlas presentation refinement
+
+Scope: implement the confirmed spaces-first update banner, semantic stable
+mathematics, conservative spectrum-name curation, raw cw49-ID fallbacks, and
+provisional stable-category language without changing the corpus or review
+state.
+
+| Check | Result |
+| --- | --- |
+| three initial focused presentation contracts | red as intended: missing curated-name policy, basis/operation helpers, and updated artifact source |
+| `python3 -m unittest tests.test_static_atlas.StaticAtlasTest.test_stable_math_helpers_are_semantic_and_reject_machine_keys tests.test_steenrod_static_atlas.SteenrodStaticAtlasTest.test_review_candidate_is_explicit_and_keeps_public_export_withheld -v` | 2/2 passed |
+| `python3 -m unittest tests.test_static_atlas -v` before artifact rebuild | 16 passed; only the expected stale checked-in-artifact gate errored |
+| `python3 -m unittest tests.test_steenrod_static_atlas` | 8/8 passed |
+| first full `python3 -m unittest discover -s tests` checkpoint | 154 run, 3 skipped; expected stale-artifact error plus a pre-existing synthetic accepted-spectrum fixture missing imported evidence |
+| corrected synthetic gate fixture | targeted partial-decode rejection passed; fixture now models the gate's required `imported_unreviewed` source evidence |
+| focused three-test closure after correction | 3/3 passed in 16.212 seconds |
+| JavaScript syntax and whitespace | `node --check` for `presentation.js` and `atlas.js`, plus `git diff --check`, passed |
+| dirty-source public preview export | passed; 49 spectra, 42 spaces, 5,083,615-byte self-contained HTML |
+| preview release gate with `--verify-rebuild` | passed; deterministic rebuild, 48 finite modules, one profile, state `public_review_preview`, candidate SHA-256 `544d075be8401dccc4423b0ac803dc8b0412424560b9c2b798e16db3637f4e83` |
+| local browser QA at 1280×720 | Home/banner, stable landing, About note, exact-ID search, curated `Ceta`, raw `C2_C2`, repeated-degree basis table, all 49 spectrum routes, and all 42 existing space routes passed with zero page overflow, zero unlabeled math, and zero console logs |
+| local browser QA at 390×844 | spaces-first Home/banner, raw-ID detail metadata, semantic table notation, and the intentional table-local horizontal scroller passed; `window.scrollX` remained zero and the body matched the viewport width |
+| keyboard search path | `ArrowDown` moved focus from the raw `C2_Ceta` result to curated `Ceta` presentation without losing the underlying exact-ID route |
+| post-review focused closure | 3/3 passed in 16.236 seconds, including spoken basis/sum notation, imported-evidence gate behavior, and partial-decode rejection |
+| safe renderer contract | malformed and HTML-bearing TeX are rejected; the literal fallback uses `createTextNode`, exposes `role=math` with a nonempty spoken label, and has no `innerHTML`/`insertAdjacentHTML` path |
+| exact checked-in artifact | 5,084,430 bytes; SHA-256 `0233958c69beeac7c75540d7bcd0d0ee11cc6e425e30a9100f7012783e4ecb7d`; embeds clean source commit `58c7e4e` |
+| exact preview gate with `--verify-rebuild` | passed: 42 spaces, 49 spectra, 48 finite modules, one profile, state `public_review_preview`, and deterministic rebuild verified |
+| independent second clean export | byte-identical to `dist/atlas.html` by `cmp` |
+| full exact-artifact suite | 154/154 passed in 220.354 seconds; three documented optional external-consumer tests skipped |
+| fixed-point re-reviews | specification and repository-standards reviewers reported no remaining actionable defect |
+
+The fixed-point standards review requested this log and identified repeated
+exact-zero DOM construction; both were corrected before the release build.
+Specification review additionally found machine-readable basis labels in the
+assistive path and a weak Home acceptance predicate; both were corrected. Its
+possible three-file presentation-seam smell is deferred because the separate
+stable router predates this reversible presentation pass, while the change
+already removes parser duplication by sharing one renderer.

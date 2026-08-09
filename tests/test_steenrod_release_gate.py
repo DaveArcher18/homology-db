@@ -53,6 +53,7 @@ def spectrum(index: int) -> dict:
         "suspension_shift": 0,
         "source_snapshot": "cw49-v126.3",
         "review_state": "accepted",
+        "evidence": {"review_state": "imported_unreviewed"},
         "content_sha256": f"{index:064x}",
     }
     if is_tmf:

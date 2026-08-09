@@ -6,16 +6,13 @@
     throw new Error("Homology Atlas presentation helpers did not load.");
   }
   const {
-    blackboardCharacters,
     coefficientDisplay,
     coefficientTex,
     coverageFor,
     coveragePresentation: pureCoveragePresentation,
     firstRecorded,
     groupPresentation,
-    isSupportedTex,
-    simpleTexCommands,
-    texGroupCommands,
+    parseTex,
   } = presentation;
   const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
   const snapshot = atlas.snapshot ?? {};
@@ -319,101 +316,49 @@
   function renderTex(tex, fallback, className = "math-display") {
     const math = element("span", className);
     math.dataset.tex = String(tex ?? "");
-    math.setAttribute("aria-label", fallback);
+    const spoken = String(fallback ?? "").trim() || "Mathematical expression";
+    math.setAttribute("aria-label", spoken);
+    math.setAttribute("role", "math");
     const visual = element("span", "math-visual");
     visual.setAttribute("aria-hidden", "true");
     math.append(visual);
 
-    function grouped(source, start) {
-      if (source[start] !== "{") throw new Error("Expected TeX group");
-      let depth = 0;
-      for (let index = start; index < source.length; index += 1) {
-        if (source[index] === "{") depth += 1;
-        if (source[index] === "}") {
-          depth -= 1;
-          if (depth === 0) {
-            return {
-              content: source.slice(start + 1, index),
-              end: index + 1,
-            };
-          }
+    function appendNodes(target, nodes) {
+      nodes.forEach((node) => {
+        if (node.type === "text") {
+          target.append(document.createTextNode(node.value));
+          return;
         }
-      }
-      throw new Error("Unclosed TeX group");
-    }
-
-    function appendSequence(target, source) {
-      let index = 0;
-      while (index < source.length) {
-        const character = source[index];
-        if (character === "\\") {
-          const commandMatch = source.slice(index + 1).match(/^[A-Za-z]+/);
-          if (!commandMatch) throw new Error("Malformed TeX command");
-          const command = commandMatch[0];
-          index += command.length + 1;
-          if (simpleTexCommands[command]) {
-            target.append(document.createTextNode(simpleTexCommands[command]));
-            continue;
-          }
-          if (!texGroupCommands.has(command)) {
-            throw new Error(`Unsupported TeX command: ${command}`);
-          }
-          const group = grouped(source, index);
-          index = group.end;
-          if (command === "mathbb") {
-            const converted = [...group.content]
-              .map((item) => blackboardCharacters[item] ?? item)
-              .join("");
-            target.append(document.createTextNode(converted));
-            continue;
-          }
+        if (node.type === "sup" || node.type === "sub") {
+          const script = element(node.type);
+          appendNodes(script, node.children);
+          target.append(script);
+          return;
+        }
+        if (node.type === "group") {
           const wrapper = element(
             "span",
-            command === "widetilde" ? "tex-widetilde" : `tex-${command}`,
+            node.command === "widetilde"
+              ? "tex-widetilde"
+              : `tex-${node.command}`,
           );
-          appendSequence(wrapper, group.content);
+          appendNodes(wrapper, node.children);
           target.append(wrapper);
-          continue;
         }
-        if (character === "^" || character === "_") {
-          const script = character === "^" ? element("sup") : element("sub");
-          index += 1;
-          if (source[index] === "{") {
-            const group = grouped(source, index);
-            appendSequence(script, group.content);
-            index = group.end;
-          } else {
-            if (index >= source.length) throw new Error("Missing TeX script");
-            script.textContent = source[index];
-            index += 1;
-          }
-          target.append(script);
-          continue;
-        }
-        if (character === "{") {
-          const group = grouped(source, index);
-          appendSequence(target, group.content);
-          index = group.end;
-          continue;
-        }
-        if (character === "}") throw new Error("Unexpected TeX brace");
-        target.append(document.createTextNode(character));
-        index += 1;
-      }
+      });
     }
 
-    try {
-      const source = String(tex ?? "");
-      if (!isSupportedTex(source)) {
-        throw new Error("Unsafe or empty TeX");
-      }
-      appendSequence(visual, source);
-    } catch (_error) {
-      visual.replaceChildren(document.createTextNode(fallback));
+    const parsed = parseTex(tex);
+    if (parsed) {
+      appendNodes(visual, parsed);
+    } else {
+      visual.replaceChildren(document.createTextNode(spoken));
       math.classList.add("math-fallback");
     }
     return math;
   }
+
+  window.HomologyAtlasMath = Object.freeze({ renderTex });
 
   function mathName(space, className = "math-display") {
     return renderTex(
@@ -870,6 +815,46 @@
     heroCopy.append(actions);
     hero.append(heroCopy);
 
+    let updateSection = null;
+    if (Number(snapshot.conceptual_spectrum_count) > 0) {
+      const accepted =
+        snapshot.spectrum_release_status === "accepted_finalized"
+        && Array.isArray(atlas.conceptual_spectra)
+        && atlas.conceptual_spectra.length
+          === Number(snapshot.conceptual_spectrum_count)
+        && atlas.conceptual_spectra.every(
+          (spectrum) => spectrum.review_state === "accepted",
+        );
+      updateSection = element("section", "home-update home-section");
+      const updateCopy = element("div", "home-update-copy");
+      const updateHeadingId = "home-stable-update-title";
+      updateSection.setAttribute("aria-labelledby", updateHeadingId);
+      const updateHeading = element(
+        "h2",
+        "",
+        "Steenrod operation tables are ready to explore",
+      );
+      updateHeading.id = updateHeadingId;
+      updateCopy.append(
+        element("p", "section-kicker", "What's new in the atlas"),
+        updateHeading,
+        element(
+          "p",
+          "",
+          accepted
+            ? "Alongside the familiar spaces, you can now explore reviewed Steenrod operation tables for stable spectra."
+            : "Alongside the familiar spaces, you can now explore Steenrod operation tables for stable spectra. The operations are imported and unreviewed, so this preview is open for friendly feedback.",
+        ),
+      );
+      const exploreOperations = element(
+        "a",
+        "secondary-action",
+        "Explore Steenrod operations",
+      );
+      exploreOperations.href = "#spectra";
+      updateSection.append(updateCopy, exploreOperations);
+    }
+
     const familySection = element("section", "home-families home-section");
     const familyHeading = element("div", "section-heading");
     familyHeading.append(
@@ -883,7 +868,9 @@
     allFamilies.href = "#spaces";
     familyHeading.append(allFamilies);
     familySection.append(familyHeading, buildFamilyDirectory(6));
-    view.append(hero, familySection);
+    view.append(hero);
+    if (updateSection) view.append(updateSection);
+    view.append(familySection);
     return view;
   }
 
@@ -1883,11 +1870,25 @@
       ["Generated", snapshot.generated_at],
       ["Status", humanize(snapshot.release_status)],
       ["Spaces", snapshot.conceptual_space_count],
+      ["Stable spectra", snapshot.conceptual_spectrum_count],
       ["Models", snapshot.model_count],
       ["Evidence records", snapshot.evidence_count],
       ["Source commit", snapshot.source_commit],
     ].forEach(([term, value]) => appendDefinition(facts, term, value));
     snapshotDetail.append(summary, facts);
+    if (Number(snapshot.conceptual_spectrum_count) > 0) {
+      const foundations = element("p", "snapshot-foundations-note");
+      foundations.append(
+        document.createTextNode(
+          "The stable-spectrum area currently uses the language of the stable homotopy category, written ",
+        ),
+        renderTex("\\mathrm{Sp}", "S p", "math-inline"),
+        document.createTextNode(
+          ". Its long-term infinity-categorical foundations and notation remain an editorial work in progress; this presentation note does not alter the imported operations' review status.",
+        ),
+      );
+      snapshotDetail.append(foundations);
+    }
   }
 
   function focusableWithin(container) {

@@ -1,14 +1,15 @@
 # Work state
 
-Status: COMPLETE
+Status: ACTIVE
 
 ## Objective
 
-Add a stable-first mod-2 Steenrod-module corpus for all 49 spectra on Wayne
-Lin's cw49 index, deterministic Bruner/sseq/SSeqCpp exports, and table-led
-stable-spectrum atlas routes. Preserve the existing 42-space atlas, publish
-the corpus as an explicit imported-unreviewed feedback preview, and retain Dan
-Isaksen's acceptance as a separate finalized-release boundary.
+Refine the public stable-spectrum preview from confirmed informal feedback:
+keep Home spaces-first and welcoming, add a secondary Steenrod update path,
+render stable mathematics semantically in TeX, use conservative curated
+spectrum names with raw fallbacks, and disclose provisional category language.
+Preserve all mathematical data, uncertainty, review state, deterministic
+exports, existing routes, and the separate Dan-acceptance boundary.
 
 ## Active map
 
@@ -22,13 +23,32 @@ without an explicit user request here.
 
 ## Current ticket
 
-None. Ticket 06, `Publish the open review preview`, is resolved.
+Ticket 07, `Refine the stable atlas presentation`, claimed by `/root
+(interactive chat)` on 2026-08-09.
 
 ## Active run lease
 
-None.
+Owner: `/root (interactive chat)`
+Heartbeat: `2026-08-09T09:22:00Z`
 
 ## Last checkpoint
+
+- Ticket 07 is locally resolved without changing the cw49 corpus or review
+  state. Reviewed source commit `58c7e4e` produces a 5,084,430-byte atlas at
+  SHA-256 `0233958c69beeac7c75540d7bcd0d0ee11cc6e425e30a9100f7012783e4ecb7d`;
+  an independent clean export is byte-identical. The exact preview gate passes
+  a fresh deterministic rebuild with 42 spaces, 49 spectra, 48 finite modules,
+  one `tmf` profile, and `public_review_preview` state. The full suite passes
+  154/154 with three documented optional external-consumer tests skipped.
+  Fixed-point specification and standards re-reviews report no actionable
+  defect. Desktop QA covers every spectrum and existing space route; narrow
+  and keyboard QA covers the friend-facing presentation paths. Exact next
+  action: commit the artifact and resolution record, publish the branch through
+  review to `main`, verify Pages, then record the live byte identity.
+- The worktree started from synchronized `origin/main` at `4f0626b`, with only
+  pre-existing untracked review artifacts plus the local Converge evidence.
+  The local `gh` CLI token is stale; Git transport and the connected GitHub app
+  remain the intended publishing path after local verification.
 
 - The imported-unreviewed cw49 feedback preview is live at
   <https://davearcher18.github.io/homology-db/>. GitHub Pages workflow

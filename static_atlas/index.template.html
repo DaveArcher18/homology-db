@@ -61,6 +61,9 @@
       font-family: var(--serif);
       font-size: 1.08rem;
       font-weight: 700;
+    }
+
+    .spectrum-name-raw {
       overflow-wrap: anywhere;
       word-break: break-word;
     }
@@ -100,9 +103,12 @@
       word-break: break-word;
     }
 
-    .spectrum-view .space-title {
-      overflow-wrap: anywhere;
-      word-break: break-word;
+    .spectrum-category-note {
+      max-width: var(--measure);
+      margin: 1rem 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
     }
 
     .steenrod-table-wrap {
@@ -110,6 +116,11 @@
       margin-block: 1rem;
       border: 1px solid var(--border);
       border-radius: var(--radius);
+    }
+
+    .steenrod-table-wrap:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
+      outline-offset: 2px;
     }
 
     .steenrod-table {
@@ -299,6 +310,21 @@
     (() => {
       "use strict";
 
+      const presentation = window.HomologyAtlasPresentation;
+      const math = window.HomologyAtlasMath;
+      if (!presentation || !math) {
+        throw new Error("Stable atlas presentation helpers did not load.");
+      }
+      const {
+        basisNameSpoken,
+        basisNameTex,
+        basisSumSpoken,
+        basisSumTex,
+        coefficientTex,
+        spectrumNamePresentation,
+        steenrodOperationTex,
+      } = presentation;
+      const { renderTex } = math;
       const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
       const conceptualSpectra = Array.isArray(atlas.conceptual_spectra)
         ? atlas.conceptual_spectra
@@ -323,8 +349,6 @@
       );
       navSpectra.hidden = false;
       footerSpectra.hidden = false;
-      document.getElementById("brand-scope").textContent =
-        "Spaces, spectra, and invariants";
       document.getElementById("atlas-index-title").textContent = "Atlas";
 
       function element(tagName, className, text) {
@@ -336,6 +360,28 @@
 
       function humanize(value) {
         return String(value ?? "not recorded").replaceAll("_", " ");
+      }
+
+      function spectrumPresentation(spectrum) {
+        return spectrumNamePresentation(spectrum.id);
+      }
+
+      function spectrumMathName(spectrum, className = "math-inline") {
+        const name = spectrumPresentation(spectrum);
+        if (name.tex) return renderTex(name.tex, name.spoken, className);
+        return element(
+          "span",
+          `${className} spectrum-name-raw`,
+          spectrum.id,
+        );
+      }
+
+      function appendBreadcrumbLabel(target, item) {
+        if (item.tex) {
+          target.append(renderTex(item.tex, item.label, "math-inline"));
+        } else {
+          target.append(document.createTextNode(item.label));
+        }
       }
 
       function announce(message) {
@@ -352,11 +398,12 @@
         items.forEach((item) => {
           const listItem = element("li");
           if (item.href) {
-            const link = element("a", "", item.label);
+            const link = element("a");
             link.href = item.href;
+            appendBreadcrumbLabel(link, item);
             listItem.append(link);
           } else {
-            listItem.textContent = item.label;
+            appendBreadcrumbLabel(listItem, item);
             listItem.setAttribute("aria-current", "page");
           }
           list.append(listItem);
@@ -396,9 +443,10 @@
 
       function spectrumListItem(spectrum) {
         const item = element("li");
-        const link = element("a", "", spectrum.name?.plain ?? spectrum.id);
+        const link = element("a");
         link.classList.add("spectrum-result-link");
         link.href = "#spectrum=" + encodeURIComponent(spectrum.slug);
+        link.append(spectrumMathName(spectrum, "math-inline spectrum-result-name"));
         item.append(
           link,
           element(
@@ -463,7 +511,17 @@
           "https://github.com/DaveArcher18/homology-db/issues/new?template=spectrum-request.yml";
         requestSpectrum.target = "_blank";
         requestSpectrum.rel = "noopener noreferrer";
-        header.append(requestSpectrum);
+        const categoryNote = element("p", "spectrum-category-note");
+        categoryNote.append(
+          document.createTextNode(
+            "This section uses the language of the stable homotopy category, written ",
+          ),
+          renderTex("\\mathrm{Sp}", "S p", "math-inline"),
+          document.createTextNode(
+            ". Its eventual infinity-categorical foundations and notation are still being worked out.",
+          ),
+        );
+        header.append(requestSpectrum, categoryNote);
         view.append(header);
 
         const search = element("section", "space-search-section");
@@ -553,15 +611,24 @@
 
       function metadataItem(term, value) {
         const item = element("div");
-        item.append(
-          element("dt", "", term),
-          element("dd", "", String(value)),
-        );
+        const description = element("dd");
+        if (value?.nodeType) description.append(value);
+        else description.textContent = String(value);
+        item.append(element("dt", "", term), description);
         return item;
       }
 
       function actionSlotKey(basisId, squareDegree) {
         return String(basisId) + "::" + String(squareDegree);
+      }
+
+      function appendExactZero(cell, title) {
+        cell.append(
+          element("span", "visually-hidden", "Exact zero: "),
+          renderTex("0", "zero", "math-inline"),
+        );
+        cell.className = "steenrod-state-zero";
+        cell.title = title;
       }
 
       function buildFiniteModuleTable(spectrum) {
@@ -599,14 +666,23 @@
         ].sort((left, right) => left - right);
 
         const section = element("section", "space-section");
-        section.append(
-          element("h2", "", "Steenrod operations"),
-          element(
-            "p",
-            "spectrum-note",
-            "The ordered F₂-cohomology basis is tabled by degree. Each Sq generator column distinguishes exact nonzero images, Exact zero, and Unknown slots.",
+        const introduction = element("p", "spectrum-note");
+        introduction.append(
+          document.createTextNode("The ordered "),
+          renderTex(
+            coefficientTex(module.coefficient_field),
+            "F 2",
+            "math-inline",
+          ),
+          document.createTextNode(
+            "-cohomology basis is tabled by degree. Each ",
+          ),
+          renderTex("\\operatorname{Sq}", "Steenrod square", "math-inline"),
+          document.createTextNode(
+            " generator column distinguishes exact nonzero images, exact zero, and unknown slots.",
           ),
         );
+        section.append(element("h2", "", "Steenrod operations"), introduction);
         const key = element("p", "spectrum-state-key");
         key.append(
           element("span", "", "Nonzero exact"),
@@ -618,12 +694,19 @@
         section.append(key);
 
         const wrapper = element("div", "steenrod-table-wrap");
+        const spectrumSpokenName = spectrumPresentation(spectrum).spoken;
+        wrapper.tabIndex = 0;
+        wrapper.setAttribute("role", "region");
+        wrapper.setAttribute(
+          "aria-label",
+          "Scrollable Steenrod operation table for " + spectrumSpokenName,
+        );
         const table = element("table", "steenrod-table");
         const caption = element(
           "caption",
           "visually-hidden",
           "Ordered mod-2 cohomology basis and Steenrod generator actions for "
-            + spectrum.name.plain,
+            + spectrumSpokenName,
         );
         const head = element("thead");
         const headerRow = element("tr");
@@ -633,17 +716,39 @@
           headerRow.append(header);
         });
         squareDegrees.forEach((squareDegree) => {
-          const header = element("th", "", "Sq^" + String(squareDegree));
+          const header = element("th");
           header.scope = "col";
+          header.append(
+            renderTex(
+              steenrodOperationTex(squareDegree),
+              "Steenrod square " + String(squareDegree),
+              "math-inline",
+            ),
+          );
           headerRow.append(header);
         });
         head.append(headerRow);
         const body = element("tbody");
         basis.forEach((basisElement) => {
           const row = element("tr");
-          const degree = element("th", "", String(basisElement.degree));
-          degree.scope = "row";
-          row.append(degree, element("td", "", basisElement.name));
+          const degree = element("td");
+          degree.append(
+            renderTex(
+              String(basisElement.degree),
+              "degree " + String(basisElement.degree),
+              "math-inline",
+            ),
+          );
+          const basisHeader = element("th");
+          basisHeader.scope = "row";
+          basisHeader.append(
+            renderTex(
+              basisNameTex(basisElement.name),
+              basisNameSpoken(basisElement.name),
+              "math-inline",
+            ),
+          );
+          row.append(degree, basisHeader);
           squareDegrees.forEach((squareDegree) => {
             const slotKey = actionSlotKey(
               basisElement.basis_id,
@@ -661,34 +766,36 @@
             if (actionState === "exact") {
               const targets = action.target_basis_ids ?? [];
               if (targets.length) {
-                cell.textContent = targets
-                  .map(
-                    (targetId) =>
-                      basisById.get(targetId)?.name ?? targetId,
-                  )
-                  .join(" + ");
+                const targetNames = targets.map(
+                  (targetId) => basisById.get(targetId)?.name ?? targetId,
+                );
+                cell.append(
+                  element("span", "visually-hidden", "Exact nonzero: "),
+                  renderTex(
+                    basisSumTex(targetNames),
+                    basisSumSpoken(targetNames),
+                    "math-inline",
+                  ),
+                );
                 cell.title = "Exact nonzero action";
               } else {
-                cell.textContent = "0";
-                cell.className = "steenrod-state-zero";
-                cell.title = "Exact zero";
+                appendExactZero(cell, "Exact zero");
               }
             } else if (!action && coveredSlots.has(slotKey)) {
-              cell.textContent = "0";
-              cell.className = "steenrod-state-zero";
-              cell.title = "Exact zero by completeness";
+              appendExactZero(cell, "Exact zero by completeness");
             } else if (
               !action
               && module.completeness?.knowledge_state === "exact"
               && basisElement.degree + squareDegree > topDegree
             ) {
-              cell.textContent = "0";
-              cell.className = "steenrod-state-zero";
-              cell.title = "Exact zero outside finite support";
+              appendExactZero(cell, "Exact zero outside finite support");
             } else {
-              cell.textContent = action
-                ? humanize(actionState)
-                : "Unknown";
+              cell.append(
+                element("span", "visually-hidden", "Knowledge state: "),
+                document.createTextNode(
+                  action ? humanize(actionState) : "Unknown",
+                ),
+              );
               cell.className = "steenrod-state-unknown";
             }
             row.append(cell);
@@ -728,14 +835,14 @@
       function buildProfileView(spectrum) {
         const profile = spectrum.module.profile ?? {};
         const section = element("section", "space-section");
-        section.append(
-          element("h2", "", "Steenrod profile"),
-          element(
-            "p",
-            "spectrum-note",
-            "tmf is represented by its infinite Milnor-basis profile. No finite truncation is implied.",
+        const profileNote = element("p", "spectrum-note");
+        profileNote.append(
+          spectrumMathName(spectrum),
+          document.createTextNode(
+            " is represented by its infinite Milnor-basis profile. No finite truncation is implied.",
           ),
         );
+        section.append(element("h2", "", "Steenrod profile"), profileNote);
         const profileBox = element("dl", "spectrum-profile");
         const profileBasis =
           profile.basis
@@ -744,13 +851,27 @@
               ? "Milnor"
               : "Not recorded"
           );
+        const pPartTerm = element("dt");
+        pPartTerm.append(
+          renderTex("p", "p", "math-inline"),
+          document.createTextNode("-part"),
+        );
+        const pPart = profile.p_part ?? [];
+        const pPartValue = element("dd");
+        pPartValue.append(
+          renderTex(
+            `(${pPart.join(",")})`,
+            pPart.join(", "),
+            "math-inline",
+          ),
+        );
         profileBox.append(
           element("dt", "", "Basis"),
           element("dd", "", humanize(profileBasis)),
           element("dt", "", "Truncated profile"),
           element("dd", "", profile.truncated ? "Yes" : "No"),
-          element("dt", "", "p-part"),
-          element("dd", "", (profile.p_part ?? []).join(", ")),
+          pPartTerm,
+          pPartValue,
         );
         section.append(profileBox);
         return section;
@@ -808,7 +929,12 @@
                 download.payload,
                 download.media_type,
               );
-              announce(formatName + " download prepared for " + spectrum.name.plain + ".");
+              announce(
+                formatName
+                  + " download prepared for "
+                  + spectrumPresentation(spectrum).spoken
+                  + ".",
+              );
             });
             const manifestButton = element(
               "button",
@@ -822,7 +948,12 @@
                 JSON.stringify(download.manifest, null, 2) + "\n",
                 "application/json",
               );
-              announce(formatName + " manifest prepared for " + spectrum.name.plain + ".");
+              announce(
+                formatName
+                  + " manifest prepared for "
+                  + spectrumPresentation(spectrum).spoken
+                  + ".",
+              );
             });
             card.append(payloadButton, manifestButton);
             cards.append(card);
@@ -878,20 +1009,31 @@
       }
 
       function buildSpectrumView(spectrum) {
+        const name = spectrumPresentation(spectrum);
         const view = element("article", "route-view spectrum-view");
         view.dataset.spectrumId = spectrum.id;
         view.append(
           breadcrumbs([
             { label: "Home", href: "#home" },
             { label: "Stable spectra", href: "#spectra" },
-            { label: spectrum.name.plain },
+            { label: name.spoken, tex: name.tex },
           ]),
         );
         const header = element("header", "space-header");
         const title = element("div", "space-title-copy");
+        const kicker = element("p", "page-kicker");
+        kicker.append(
+          document.createTextNode(
+            "Conceptual spectrum · stable homotopy category (",
+          ),
+          renderTex("\\mathrm{Sp}", "S p", "math-inline"),
+          document.createTextNode(")"),
+        );
+        const heading = element("h1", "space-title");
+        heading.append(spectrumMathName(spectrum, "math-display"));
         title.append(
-          element("p", "page-kicker", "Conceptual spectrum · stable category"),
-          element("h1", "space-title", spectrum.name.plain),
+          kicker,
+          heading,
           element(
             "span",
             reviewStatusClass(spectrum.review_state),
@@ -911,11 +1053,25 @@
         view.append(header);
 
         const metadata = element("dl", "spectrum-meta");
+        const category = element("span");
+        category.append(
+          document.createTextNode("stable homotopy category ("),
+          renderTex("\\mathrm{Sp}", "S p", "math-inline"),
+          document.createTextNode(")"),
+        );
         metadata.append(
-          metadataItem("Category", spectrum.module.category),
+          metadataItem("cw49 ID", spectrum.id),
+          metadataItem("Category", category),
           metadataItem("Object kind", humanize(spectrum.object_kind)),
           metadataItem("Module type", humanize(spectrum.module.module_type)),
-          metadataItem("Coefficients", spectrum.module.coefficient_field),
+          metadataItem(
+            "Coefficients",
+            renderTex(
+              coefficientTex(spectrum.module.coefficient_field),
+              spectrum.module.coefficient_field,
+              "math-inline",
+            ),
+          ),
           metadataItem(
             "Cohomology convention",
             spectrum.module.reduced ? "reduced" : "unreduced",
@@ -923,7 +1079,11 @@
           metadataItem("Grading", spectrum.module.grading_convention),
           metadataItem(
             "Suspension normalization",
-            spectrum.module.suspension_shift,
+            renderTex(
+              String(spectrum.module.suspension_shift),
+              String(spectrum.module.suspension_shift),
+              "math-inline",
+            ),
           ),
           metadataItem("Basis version", spectrum.module.basis_version),
           metadataItem("Review", reviewLabel(spectrum.review_state)),
@@ -993,7 +1153,7 @@
         atlasDocument.replaceChildren(view);
         document.title =
           route.kind === "spectrum"
-            ? route.spectrum.name.plain + " · Homology Atlas"
+            ? spectrumPresentation(route.spectrum).spoken + " · Homology Atlas"
             : route.kind === "spectra"
               ? "Stable spectra · Homology Atlas"
               : "Spectrum not found · Homology Atlas";
@@ -1008,7 +1168,7 @@
           }
           announce(
             route.kind === "spectrum"
-              ? route.spectrum.name.plain + " spectrum page"
+              ? spectrumPresentation(route.spectrum).spoken + " spectrum page"
               : "Stable spectra page",
           );
         }
