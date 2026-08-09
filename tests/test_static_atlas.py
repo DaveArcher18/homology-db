@@ -16,6 +16,54 @@ EXPORTER = REPOSITORY_ROOT / "scripts" / "export_static_atlas.py"
 
 
 class StaticAtlasTest(unittest.TestCase):
+    def test_stable_math_helpers_are_semantic_and_reject_machine_keys(self) -> None:
+        completed = subprocess.run(
+            [
+                "node",
+                "-e",
+                r"""
+const presentation = require("./static_atlas/presentation.js");
+console.log(JSON.stringify({
+  basis: ["x0", "x1_1", "x256"].map(presentation.basisNameTex),
+  sum: presentation.basisSumTex(["x1_0", "x1_1"]),
+  rejected: presentation.basisNameTex("basis:x0"),
+  square: presentation.steenrodOperationTex(4),
+  rejectedSquare: presentation.steenrodOperationTex(3),
+  spectrumNames: ["S0", "tmf", "Ceta", "RP1_4", "CW_eta_2"]
+    .map(presentation.spectrumNameTex),
+  supported: presentation.isSupportedTex(
+    presentation.steenrodOperationTex(4)
+  ),
+  malformed: ["\\%", "x^", "\\frac{1}{2}", "<b>x</b>"]
+    .map(presentation.isSupportedTex),
+}));
+""",
+            ],
+            cwd=REPOSITORY_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(
+            json.loads(completed.stdout),
+            {
+                "basis": [r"x_{0}", r"x_{1,1}", r"x_{256}"],
+                "sum": r"x_{1,0} + x_{1,1}",
+                "rejected": "",
+                "square": r"\operatorname{Sq}^{4}",
+                "rejectedSquare": "",
+                "spectrumNames": [
+                    r"S^0",
+                    r"\mathrm{tmf}",
+                    r"C\eta",
+                    r"\mathbb{R}P^{4}_{1}",
+                    "",
+                ],
+                "supported": True,
+                "malformed": [False, False, False, False],
+            },
+        )
+
     def test_pages_actions_are_pinned_to_full_commit_shas(self) -> None:
         workflow = (
             REPOSITORY_ROOT / ".github" / "workflows" / "deploy-atlas-pages.yml"
@@ -574,7 +622,7 @@ console.log(JSON.stringify({
                 "if (members.length > familySearchThreshold)",
                 "showAllOnEmpty: false",
                 "const visibleMatches =",
-                "view.append(hero, familySection)",
+                "if (updateSection) view.append(updateSection)",
                 "item.append(main)",
                 "if (relations.length) records.append(relationBlock.details)",
                 "if (qualityIssueCount) records.append(qualityBlock.details)",

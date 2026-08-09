@@ -32,6 +32,7 @@ Isaksen's eventual acceptance remains a separate finalized-release event.
 - [04 — Add spectrum atlas routes](issues/04-add-spectrum-atlas-routes.md)
 - [05 — Build and gate the review candidate](issues/05-build-and-gate-review-candidate.md)
 - [06 — Publish the open review preview](issues/06-publish-open-review-preview.md)
+- [07 — Refine the stable atlas presentation](issues/07-refine-stable-atlas-presentation.md)
 
 ## Decisions so far
 

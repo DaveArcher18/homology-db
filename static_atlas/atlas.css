@@ -1012,6 +1012,41 @@ svg {
   max-width: 50rem;
 }
 
+.home-update {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: clamp(2.75rem, 6vw, 4.5rem);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: clamp(1rem, 2.5vw, 1.45rem);
+  background: var(--surface-muted);
+}
+
+.home-update-copy {
+  max-width: 44rem;
+}
+
+.home-update h2 {
+  margin: 0 0 0.45rem;
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.home-update p:last-child {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.home-update .secondary-action {
+  flex: 0 0 auto;
+}
+
 .home-explanation {
   max-width: 61ch;
   margin: 1rem 0 0;
@@ -2771,6 +2806,15 @@ pre {
 @media (max-width: 45rem) {
   :root {
     --header-height: 3.85rem;
+  }
+
+  .home-update {
+    display: grid;
+    align-items: start;
+  }
+
+  .home-update .secondary-action {
+    justify-self: start;
   }
 
   .header-inner,

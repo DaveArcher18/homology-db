@@ -1,14 +1,15 @@
 # Work state
 
-Status: COMPLETE
+Status: ACTIVE
 
 ## Objective
 
-Add a stable-first mod-2 Steenrod-module corpus for all 49 spectra on Wayne
-Lin's cw49 index, deterministic Bruner/sseq/SSeqCpp exports, and table-led
-stable-spectrum atlas routes. Preserve the existing 42-space atlas, publish
-the corpus as an explicit imported-unreviewed feedback preview, and retain Dan
-Isaksen's acceptance as a separate finalized-release boundary.
+Refine the public stable-spectrum preview from confirmed informal feedback:
+keep Home spaces-first and welcoming, add a secondary Steenrod update path,
+render stable mathematics semantically in TeX, use conservative curated
+spectrum names with raw fallbacks, and disclose provisional category language.
+Preserve all mathematical data, uncertainty, review state, deterministic
+exports, existing routes, and the separate Dan-acceptance boundary.
 
 ## Active map
 
@@ -22,13 +23,34 @@ without an explicit user request here.
 
 ## Current ticket
 
-None. Ticket 06, `Publish the open review preview`, is resolved.
+Ticket 07, `Refine the stable atlas presentation`, claimed by `/root
+(interactive chat)` on 2026-08-09.
 
 ## Active run lease
 
-None.
+Owner: `/root (interactive chat)`
+Heartbeat: `2026-08-09T08:55:21Z`
 
 ## Last checkpoint
+
+- Ticket 07's presentation source is implemented without changing the cw49
+  corpus or review state: Home remains spaces-first with one feedback-preview
+  banner; stable routes share one strict dependency-free TeX parser/renderer;
+  19 conservative spectrum names are curated at runtime and 30 fall back to
+  exact IDs; Steenrod tables, coefficients, basis elements, sums, profiles,
+  and `Sp` are semantic and accessible; detail metadata exposes the cw49 ID.
+  A dirty-source preview is 5,083,615 bytes and passes the deterministic public
+  preview gate. Browser QA at 1280 pixels covered Home, search, About, curated
+  and raw names, repeated-degree tables, all 49 routes, overflow, accessible
+  math labels, and console logs with no defect. The full 154-test run has only
+  the expected stale checked-in-artifact failure plus one synthetic gate
+  fixture defect now corrected and passing in isolation. Exact next action:
+  commit the source, run the fixed-point two-axis review, rebuild the checked-in
+  artifact from the reviewed clean commit, then rerun the full release gate.
+- The worktree started from synchronized `origin/main` at `4f0626b`, with only
+  pre-existing untracked review artifacts plus the local Converge evidence.
+  The local `gh` CLI token is stale; Git transport and the connected GitHub app
+  remain the intended publishing path after local verification.
 
 - The imported-unreviewed cw49 feedback preview is live at
   <https://davearcher18.github.io/homology-db/>. GitHub Pages workflow

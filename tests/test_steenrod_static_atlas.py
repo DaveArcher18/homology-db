@@ -772,7 +772,6 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 tmf["downloads"]["bruner"],
                 {"reason": "infinite_profile", "status": "unsupported"},
             )
-
             for route_contract in (
                 'href="#spectra"',
                 "function buildSpectraView",
@@ -796,9 +795,26 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 "spectrum-feedback.yml",
                 "spectrum-request.yml",
                 "Request a stable spectrum",
-                "Spaces, spectra, and invariants",
+                "Explore Steenrod operations",
+                "What's new in the atlas",
+                "stable homotopy category",
+                "long-term infinity-categorical foundations",
+                "cw49 ID",
+                "HomologyAtlasMath",
+                "spectrumMathName",
+                "basisNameTex",
+                "basisSumTex",
+                "steenrodOperationTex",
             ):
                 self.assertIn(route_contract, review_html)
+            self.assertNotIn(
+                'element("h1", "space-title", spectrum.name.plain)',
+                review_html,
+            )
+            self.assertNotIn(
+                'element("th", "", "Sq^" + String(squareDegree))',
+                review_html,
+            )
             self.assertIn(
                 'if (reviewState === "accepted") {\n'
                 '          return "Accepted · finalized";',
