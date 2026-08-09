@@ -59,3 +59,9 @@ the accepted-release path is unchanged.
   has SHA-256 `0233958c69beeac7c75540d7bcd0d0ee11cc6e425e30a9100f7012783e4ecb7d`,
   passes the deterministic preview release gate, and passes all 154 local
   tests with three documented optional external-consumer tests skipped.
+- PR [#2](https://github.com/DaveArcher18/homology-db/pull/2) was merged with
+  source ancestry preserved. Pages run
+  [31305860160](https://github.com/DaveArcher18/homology-db/actions/runs/31305860160)
+  passed, and the public HTTP body at
+  <https://davearcher18.github.io/homology-db/> is byte-identical to the
+  reviewed artifact. Live Home, spectra, and `Ceta` route checks passed.

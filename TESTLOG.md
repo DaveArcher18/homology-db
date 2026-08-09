@@ -908,6 +908,9 @@ state.
 | independent second clean export | byte-identical to `dist/atlas.html` by `cmp` |
 | full exact-artifact suite | 154/154 passed in 220.354 seconds; three documented optional external-consumer tests skipped |
 | fixed-point re-reviews | specification and repository-standards reviewers reported no remaining actionable defect |
+| PR and Pages release | PR `#2` merged as `fbdae1d`; Pages run `31305860160` completed successfully |
+| live byte identity | public body is 5,084,430 bytes and byte-identical to `dist/atlas.html` at SHA-256 `0233958c69beeac7c75540d7bcd0d0ee11cc6e425e30a9100f7012783e4ecb7d` |
+| live route smoke check | Home, `#spectra`, and `#spectrum=ceta` expose the intended update copy, preview labels, category note, cw49 metadata, semantic TeX, spoken basis labels, and exact action states |
 
 The fixed-point standards review requested this log and identified repeated
 exact-zero DOM construction; both were corrected before the release build.

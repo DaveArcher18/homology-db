@@ -1,6 +1,6 @@
 # Work state
 
-Status: ACTIVE
+Status: COMPLETE
 
 ## Objective
 
@@ -23,13 +23,12 @@ without an explicit user request here.
 
 ## Current ticket
 
-Ticket 07, `Refine the stable atlas presentation`, claimed by `/root
-(interactive chat)` on 2026-08-09.
+None. Ticket 07, `Refine the stable atlas presentation`, is resolved and live.
 
 ## Active run lease
 
-Owner: `/root (interactive chat)`
-Heartbeat: `2026-08-09T09:22:00Z`
+Released by: `/root (interactive chat)`
+Released at: `2026-08-09T09:28:21Z`
 
 ## Last checkpoint
 
@@ -42,9 +41,15 @@ Heartbeat: `2026-08-09T09:22:00Z`
   154/154 with three documented optional external-consumer tests skipped.
   Fixed-point specification and standards re-reviews report no actionable
   defect. Desktop QA covers every spectrum and existing space route; narrow
-  and keyboard QA covers the friend-facing presentation paths. Exact next
-  action: commit the artifact and resolution record, publish the branch through
-  review to `main`, verify Pages, then record the live byte identity.
+  and keyboard QA covers the friend-facing presentation paths. PR #2 was
+  merge-committed as `fbdae1d` so source provenance remains in main history;
+  Pages run `31305860160` passed. The live HTTP body is byte-identical to the
+  reviewed artifact at the same size and SHA-256. Live Home, `#spectra`, and
+  curated `#spectrum=ceta` smoke checks confirm the update copy, provisional
+  foundations note, imported-unreviewed status, raw cw49 metadata, semantic
+  TeX, spoken basis notation, and exact-zero/nonzero table states. No
+  implementation or deployment work remains; the next iteration should start
+  from concrete friend feedback.
 - The worktree started from synchronized `origin/main` at `4f0626b`, with only
   pre-existing untracked review artifacts plus the local Converge evidence.
   The local `gh` CLI token is stale; Git transport and the connected GitHub app
