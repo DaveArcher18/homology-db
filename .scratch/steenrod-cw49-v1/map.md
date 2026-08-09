@@ -33,6 +33,7 @@ Isaksen's eventual acceptance remains a separate finalized-release event.
 - [05 — Build and gate the review candidate](issues/05-build-and-gate-review-candidate.md)
 - [06 — Publish the open review preview](issues/06-publish-open-review-preview.md)
 - [07 — Refine the stable atlas presentation](issues/07-refine-stable-atlas-presentation.md)
+- [08 — Explore nested mathematical knowls](issues/08-explore-nested-mathematical-knowls.md)
 
 ## Decisions so far
 
@@ -72,3 +73,9 @@ Isaksen's eventual acceptance remains a separate finalized-release event.
 - A graph-first Steenrod-operation visualization.
 - Implicit finite truncations of infinite profile modules.
 - Marking imported operations reviewed without Dan's explicit verdict.
+
+## Future exploration
+
+- Add reusable, accessible mathematical knowls to stable routes, beginning
+  with Steenrod operations, and support guarded nesting so definitions can
+  introduce further definitions without forcing readers away from the page.

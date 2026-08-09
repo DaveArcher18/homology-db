@@ -32,6 +32,13 @@ Released at: `2026-08-09T09:28:21Z`
 
 ## Last checkpoint
 
+- Follow-up friend feedback is captured as open ticket 08, `Explore nested
+  mathematical knowls`. A knowl is treated as reusable inline exposition, not
+  merely a tooltip; the future investigation explicitly covers definitions for
+  Steenrod operations and guarded nesting. Existing revisioned knowledge
+  records, knowledge-to-knowledge links, and the ordinary-space knowl UI are
+  the starting point. No implementation, mathematical content, review state,
+  or deployment changed in this checkpoint.
 - Ticket 07 is locally resolved without changing the cw49 corpus or review
   state. Reviewed source commit `58c7e4e` produces a 5,084,430-byte atlas at
   SHA-256 `0233958c69beeac7c75540d7bcd0d0ee11cc6e425e30a9100f7012783e4ecb7d`;
