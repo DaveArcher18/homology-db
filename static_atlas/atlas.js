@@ -818,7 +818,13 @@
     let updateSection = null;
     if (Number(snapshot.conceptual_spectrum_count) > 0) {
       const accepted =
-        snapshot.spectrum_release_status === "accepted_finalized";
+        snapshot.spectrum_release_status === "accepted_finalized"
+        && Array.isArray(atlas.conceptual_spectra)
+        && atlas.conceptual_spectra.length
+          === Number(snapshot.conceptual_spectrum_count)
+        && atlas.conceptual_spectra.every(
+          (spectrum) => spectrum.review_state === "accepted",
+        );
       updateSection = element("section", "home-update home-section");
       const updateCopy = element("div", "home-update-copy");
       const updateHeadingId = "home-stable-update-title";

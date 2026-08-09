@@ -802,9 +802,12 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 "cw49 ID",
                 "HomologyAtlasMath",
                 "spectrumMathName",
+                "basisNameSpoken",
                 "basisNameTex",
+                "basisSumSpoken",
                 "basisSumTex",
                 "steenrodOperationTex",
+                "atlas.conceptual_spectra.every",
             ):
                 self.assertIn(route_contract, review_html)
             self.assertNotIn(

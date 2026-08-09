@@ -316,7 +316,9 @@
         throw new Error("Stable atlas presentation helpers did not load.");
       }
       const {
+        basisNameSpoken,
         basisNameTex,
+        basisSumSpoken,
         basisSumTex,
         coefficientTex,
         spectrumNamePresentation,
@@ -620,6 +622,15 @@
         return String(basisId) + "::" + String(squareDegree);
       }
 
+      function appendExactZero(cell, title) {
+        cell.append(
+          element("span", "visually-hidden", "Exact zero: "),
+          renderTex("0", "zero", "math-inline"),
+        );
+        cell.className = "steenrod-state-zero";
+        cell.title = title;
+      }
+
       function buildFiniteModuleTable(spectrum) {
         const module = spectrum.module;
         const basis = [...(module.basis ?? [])].sort(
@@ -733,7 +744,7 @@
           basisHeader.append(
             renderTex(
               basisNameTex(basisElement.name),
-              basisElement.name,
+              basisNameSpoken(basisElement.name),
               "math-inline",
             ),
           );
@@ -762,37 +773,22 @@
                   element("span", "visually-hidden", "Exact nonzero: "),
                   renderTex(
                     basisSumTex(targetNames),
-                    targetNames.join(" plus "),
+                    basisSumSpoken(targetNames),
                     "math-inline",
                   ),
                 );
                 cell.title = "Exact nonzero action";
               } else {
-                cell.append(
-                  element("span", "visually-hidden", "Exact zero: "),
-                  renderTex("0", "zero", "math-inline"),
-                );
-                cell.className = "steenrod-state-zero";
-                cell.title = "Exact zero";
+                appendExactZero(cell, "Exact zero");
               }
             } else if (!action && coveredSlots.has(slotKey)) {
-              cell.append(
-                element("span", "visually-hidden", "Exact zero: "),
-                renderTex("0", "zero", "math-inline"),
-              );
-              cell.className = "steenrod-state-zero";
-              cell.title = "Exact zero by completeness";
+              appendExactZero(cell, "Exact zero by completeness");
             } else if (
               !action
               && module.completeness?.knowledge_state === "exact"
               && basisElement.degree + squareDegree > topDegree
             ) {
-              cell.append(
-                element("span", "visually-hidden", "Exact zero: "),
-                renderTex("0", "zero", "math-inline"),
-              );
-              cell.className = "steenrod-state-zero";
-              cell.title = "Exact zero outside finite support";
+              appendExactZero(cell, "Exact zero outside finite support");
             } else {
               cell.append(
                 element("span", "visually-hidden", "Knowledge state: "),

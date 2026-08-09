@@ -29,24 +29,25 @@ Ticket 07, `Refine the stable atlas presentation`, claimed by `/root
 ## Active run lease
 
 Owner: `/root (interactive chat)`
-Heartbeat: `2026-08-09T08:55:21Z`
+Heartbeat: `2026-08-09T09:16:36Z`
 
 ## Last checkpoint
 
-- Ticket 07's presentation source is implemented without changing the cw49
-  corpus or review state: Home remains spaces-first with one feedback-preview
-  banner; stable routes share one strict dependency-free TeX parser/renderer;
-  19 conservative spectrum names are curated at runtime and 30 fall back to
-  exact IDs; Steenrod tables, coefficients, basis elements, sums, profiles,
-  and `Sp` are semantic and accessible; detail metadata exposes the cw49 ID.
-  A dirty-source preview is 5,083,615 bytes and passes the deterministic public
-  preview gate. Browser QA at 1280 pixels covered Home, search, About, curated
-  and raw names, repeated-degree tables, all 49 routes, overflow, accessible
-  math labels, and console logs with no defect. The full 154-test run has only
-  the expected stale checked-in-artifact failure plus one synthetic gate
-  fixture defect now corrected and passing in isolation. Exact next action:
-  commit the source, run the fixed-point two-axis review, rebuild the checked-in
-  artifact from the reviewed clean commit, then rerun the full release gate.
+- Ticket 07's presentation source is implemented and its fixed-point two-axis
+  review findings are closed without changing the cw49 corpus or review state.
+  Home remains spaces-first with one feedback-preview banner; stable routes
+  share one strict dependency-free TeX parser/renderer; 19 conservative names
+  are curated at runtime and 30 fall back to exact IDs; Steenrod tables,
+  coefficients, basis elements, sums, profiles, and `Sp` are semantic and
+  accessible; spoken basis labels no longer expose machine spellings; Home's
+  accepted wording now requires status, count, and per-spectrum agreement.
+  Desktop QA covers all 49 spectrum and 42 space routes; 390-pixel and keyboard
+  checks cover banner reflow, exact-ID search, focus movement, raw metadata,
+  semantic table notation, and intentional local scrolling with no body-level
+  overflow. The post-review focused closure passes 3/3 plus JavaScript syntax
+  and diff checks. Exact next action: commit the reviewed source, rebuild the
+  checked-in artifact from that clean commit, and run the exact-artifact full
+  suite plus deterministic preview release gate before publication.
 - The worktree started from synchronized `origin/main` at `4f0626b`, with only
   pre-existing untracked review artifacts plus the local Converge evidence.
   The local `gh` CLI token is stale; Git transport and the connected GitHub app

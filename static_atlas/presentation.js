@@ -123,18 +123,45 @@
     return spectrumNamePresentation(spectrumId).tex;
   }
 
-  function basisNameTex(basisName) {
-    const match = String(basisName ?? "").match(/^x(\d+)(?:_(\d+))?$/);
-    if (!match) return "";
+  function basisNamePresentation(basisName) {
+    const exactName = String(basisName ?? "");
+    const match = exactName.match(/^x(\d+)(?:_(\d+))?$/);
+    if (!match) return { tex: "", spoken: exactName };
     return match[2] === undefined
-      ? `x_{${match[1]}}`
-      : `x_{${match[1]},${match[2]}}`;
+      ? { tex: `x_{${match[1]}}`, spoken: `x sub ${match[1]}` }
+      : {
+          tex: `x_{${match[1]},${match[2]}}`,
+          spoken: `x sub ${match[1]} comma ${match[2]}`,
+        };
+  }
+
+  function basisNameTex(basisName) {
+    return basisNamePresentation(basisName).tex;
+  }
+
+  function basisNameSpoken(basisName) {
+    return basisNamePresentation(basisName).spoken;
+  }
+
+  function basisSumPresentation(basisNames) {
+    if (!Array.isArray(basisNames) || !basisNames.length) {
+      return { tex: "", spoken: "" };
+    }
+    const terms = basisNames.map(basisNamePresentation);
+    return {
+      tex: terms.every((term) => term.tex)
+        ? terms.map((term) => term.tex).join(" + ")
+        : "",
+      spoken: terms.map((term) => term.spoken).join(" plus "),
+    };
   }
 
   function basisSumTex(basisNames) {
-    if (!Array.isArray(basisNames) || !basisNames.length) return "";
-    const terms = basisNames.map(basisNameTex);
-    return terms.every(Boolean) ? terms.join(" + ") : "";
+    return basisSumPresentation(basisNames).tex;
+  }
+
+  function basisSumSpoken(basisNames) {
+    return basisSumPresentation(basisNames).spoken;
   }
 
   function steenrodOperationTex(squareDegree) {
@@ -404,7 +431,11 @@
 
   return Object.freeze({
     blackboardCharacters,
+    basisNamePresentation,
+    basisNameSpoken,
     basisNameTex,
+    basisSumPresentation,
+    basisSumSpoken,
     basisSumTex,
     coefficientDisplay,
     coefficientTex,

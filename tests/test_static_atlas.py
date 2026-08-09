@@ -25,7 +25,9 @@ class StaticAtlasTest(unittest.TestCase):
 const presentation = require("./static_atlas/presentation.js");
 console.log(JSON.stringify({
   basis: ["x0", "x1_1", "x256"].map(presentation.basisNameTex),
+  basisSpoken: ["x0", "x1_1"].map(presentation.basisNameSpoken),
   sum: presentation.basisSumTex(["x1_0", "x1_1"]),
+  sumSpoken: presentation.basisSumSpoken(["x1_0", "x1_1"]),
   rejected: presentation.basisNameTex("basis:x0"),
   square: presentation.steenrodOperationTex(4),
   rejectedSquare: presentation.steenrodOperationTex(3),
@@ -48,7 +50,9 @@ console.log(JSON.stringify({
             json.loads(completed.stdout),
             {
                 "basis": [r"x_{0}", r"x_{1,1}", r"x_{256}"],
+                "basisSpoken": ["x sub 0", "x sub 1 comma 1"],
                 "sum": r"x_{1,0} + x_{1,1}",
+                "sumSpoken": "x sub 1 comma 0 plus x sub 1 comma 1",
                 "rejected": "",
                 "square": r"\operatorname{Sq}^{4}",
                 "rejectedSquare": "",
@@ -63,6 +67,15 @@ console.log(JSON.stringify({
                 "malformed": [False, False, False, False],
             },
         )
+
+        renderer_source = (
+            REPOSITORY_ROOT / "static_atlas" / "atlas.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn('math.setAttribute("role", "math")', renderer_source)
+        self.assertIn('math.setAttribute("aria-label", spoken)', renderer_source)
+        self.assertIn("document.createTextNode(spoken)", renderer_source)
+        self.assertNotIn(".innerHTML", renderer_source)
+        self.assertNotIn("insertAdjacentHTML", renderer_source)
 
     def test_pages_actions_are_pinned_to_full_commit_shas(self) -> None:
         workflow = (
