@@ -59,6 +59,11 @@ Isaksen's eventual acceptance remains a separate finalized-release event.
   — The user superseded the prior publication hold for informal feedback. The
   49-spectrum corpus is live as an explicit `public_review_preview`; imported
   claims remain unreviewed and Dan acceptance still controls final admission.
+- [Refine the stable atlas presentation](issues/07-refine-stable-atlas-presentation.md)
+  — Home remains spaces-first; stable mathematics uses one safe semantic TeX
+  path, obvious spectrum names are curated conservatively with exact-ID
+  fallbacks, and provisional categorical language is disclosed without
+  changing the corpus or review state.
 
 ## Out of scope
 

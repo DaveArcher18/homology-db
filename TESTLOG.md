@@ -903,6 +903,11 @@ state.
 | keyboard search path | `ArrowDown` moved focus from the raw `C2_Ceta` result to curated `Ceta` presentation without losing the underlying exact-ID route |
 | post-review focused closure | 3/3 passed in 16.236 seconds, including spoken basis/sum notation, imported-evidence gate behavior, and partial-decode rejection |
 | safe renderer contract | malformed and HTML-bearing TeX are rejected; the literal fallback uses `createTextNode`, exposes `role=math` with a nonempty spoken label, and has no `innerHTML`/`insertAdjacentHTML` path |
+| exact checked-in artifact | 5,084,430 bytes; SHA-256 `0233958c69beeac7c75540d7bcd0d0ee11cc6e425e30a9100f7012783e4ecb7d`; embeds clean source commit `58c7e4e` |
+| exact preview gate with `--verify-rebuild` | passed: 42 spaces, 49 spectra, 48 finite modules, one profile, state `public_review_preview`, and deterministic rebuild verified |
+| independent second clean export | byte-identical to `dist/atlas.html` by `cmp` |
+| full exact-artifact suite | 154/154 passed in 220.354 seconds; three documented optional external-consumer tests skipped |
+| fixed-point re-reviews | specification and repository-standards reviewers reported no remaining actionable defect |
 
 The fixed-point standards review requested this log and identified repeated
 exact-zero DOM construction; both were corrected before the release build.

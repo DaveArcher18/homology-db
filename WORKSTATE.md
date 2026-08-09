@@ -29,25 +29,22 @@ Ticket 07, `Refine the stable atlas presentation`, claimed by `/root
 ## Active run lease
 
 Owner: `/root (interactive chat)`
-Heartbeat: `2026-08-09T09:16:36Z`
+Heartbeat: `2026-08-09T09:22:00Z`
 
 ## Last checkpoint
 
-- Ticket 07's presentation source is implemented and its fixed-point two-axis
-  review findings are closed without changing the cw49 corpus or review state.
-  Home remains spaces-first with one feedback-preview banner; stable routes
-  share one strict dependency-free TeX parser/renderer; 19 conservative names
-  are curated at runtime and 30 fall back to exact IDs; Steenrod tables,
-  coefficients, basis elements, sums, profiles, and `Sp` are semantic and
-  accessible; spoken basis labels no longer expose machine spellings; Home's
-  accepted wording now requires status, count, and per-spectrum agreement.
-  Desktop QA covers all 49 spectrum and 42 space routes; 390-pixel and keyboard
-  checks cover banner reflow, exact-ID search, focus movement, raw metadata,
-  semantic table notation, and intentional local scrolling with no body-level
-  overflow. The post-review focused closure passes 3/3 plus JavaScript syntax
-  and diff checks. Exact next action: commit the reviewed source, rebuild the
-  checked-in artifact from that clean commit, and run the exact-artifact full
-  suite plus deterministic preview release gate before publication.
+- Ticket 07 is locally resolved without changing the cw49 corpus or review
+  state. Reviewed source commit `58c7e4e` produces a 5,084,430-byte atlas at
+  SHA-256 `0233958c69beeac7c75540d7bcd0d0ee11cc6e425e30a9100f7012783e4ecb7d`;
+  an independent clean export is byte-identical. The exact preview gate passes
+  a fresh deterministic rebuild with 42 spaces, 49 spectra, 48 finite modules,
+  one `tmf` profile, and `public_review_preview` state. The full suite passes
+  154/154 with three documented optional external-consumer tests skipped.
+  Fixed-point specification and standards re-reviews report no actionable
+  defect. Desktop QA covers every spectrum and existing space route; narrow
+  and keyboard QA covers the friend-facing presentation paths. Exact next
+  action: commit the artifact and resolution record, publish the branch through
+  review to `main`, verify Pages, then record the live byte identity.
 - The worktree started from synchronized `origin/main` at `4f0626b`, with only
   pre-existing untracked review artifacts plus the local Converge evidence.
   The local `gh` CLI token is stale; Git transport and the connected GitHub app
