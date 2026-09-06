@@ -33,13 +33,17 @@ from homology_db.classical import (
     classical_records,
     validate_classical_records,
 )
+from homology_db.families import family_catalog
+from homology_db.family_reviews import reviewed_family_catalog
 
 
 SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
 PUBLIC_ATLAS_PATH = REPOSITORY_ROOT / "dist" / "atlas.html"
-READ_MODEL_VERSION = "homology-db.static-atlas/4"
+READ_MODEL_VERSION = "homology-db.static-atlas/5"
 THEORY_ID = "ordinary_homology"
-MAX_HTML_BYTES = 5 * 1024 * 1024
+# Bounded symbolic family data adds little to the retained stable-spectrum corpus.
+# Keep direct-file/offline compatibility; the new workbench budget is 6 MiB.
+MAX_HTML_BYTES = 6 * 1024 * 1024
 DEFINITION_REVISION = 1
 DEFINITIONS = (
     {
@@ -66,14 +70,14 @@ DEFINITIONS = (
     {
         "id": "ring-relation",
         "term": "Ring relation",
-        "body": "Relations specify equations satisfied by ring generators. In R[x]/(x^3), powers of x generate the ring and x^3 is zero. The generator degree must also be given. A displayed zero relation is a recorded mathematical assertion; absent ring data is not a zero ring.",
+        "body": "Relations specify equations satisfied by ring generators. In $R[x]/(x^3)$, powers of $x$ generate the ring and $x^3$ is zero. The generator degree must also be given. A displayed zero relation is a recorded mathematical assertion; absent ring data is not a zero ring.",
         "scope": "exposition",
         "assertion_evidence": False,
     },
     {
         "id": "coefficient-field",
         "term": "Coefficient field",
-        "body": "Q is the field of rational numbers; F_p is the field with p elements for a prime p. Cohomology over a field has vector spaces as its additive groups. Changing the field can change both those groups and their products. Z denotes integral coefficients and is not a field.",
+        "body": "$\\mathbb{Q}$ is the field of rational numbers; $\\mathbb{F}_{p}$ is the field with p elements for a prime p. Cohomology over a field has vector spaces as its additive groups. Changing the field can change both those groups and their products. $\\mathbb{Z}$ denotes integral coefficients and is not a field.",
         "scope": "exposition",
         "assertion_evidence": False,
     },
@@ -189,6 +193,9 @@ SOURCE_REVISION_INPUTS = (
     "homology_db/atlas_schema.py",
     "homology_db/chromatic.py",
     "homology_db/classical.py",
+    "homology_db/families.py",
+    "homology_db/family_reviews.py",
+    "docs/reviews/family-reviews.json",
     "homology_db/migrations/0005_stable_steenrod_modules.sql",
     "homology_db/preview.py",
     "homology_db/steenrod.py",
@@ -200,6 +207,8 @@ SOURCE_REVISION_INPUTS = (
     "static_atlas/atlas.js",
     "static_atlas/index.template.html",
     "static_atlas/presentation.js",
+    "static_atlas/families.js",
+    "static_atlas/workbench.js",
 )
 
 
@@ -1231,6 +1240,11 @@ def classical_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> d
 def validate_read_model(
     atlas: dict[str, Any], *, allow_malformed_for_review: bool = False
 ) -> None:
+    if atlas.get("snapshot", {}).get("schema_version") == READ_MODEL_VERSION:
+        if atlas.get("family_rules") != reviewed_family_catalog(family_catalog()):
+            raise ValueError("family rules or human reviews differ from exact source-bound catalog")
+    elif "family_rules" in atlas:
+        raise ValueError("family rules require the version 5 read-model contract")
     definitions = atlas.get("definitions")
     if not isinstance(definitions, list) or not definitions:
         raise ValueError("static atlas needs a nonempty definitions catalog")
@@ -1278,7 +1292,7 @@ def validate_read_model(
 
     conceptual_spaces = atlas["conceptual_spaces"]
     conceptual_space_ids = [item["id"] for item in conceptual_spaces]
-    if atlas["snapshot"].get("schema_version") == READ_MODEL_VERSION:
+    if atlas["snapshot"].get("schema_version") in {"homology-db.static-atlas/4", READ_MODEL_VERSION}:
         projected_classical = {
             item["id"]: item["cohomology"]
             for item in conceptual_spaces
@@ -2117,6 +2131,7 @@ def build_read_model(
         "conceptual_spaces": conceptual_spaces,
         "conceptual_spectra": conceptual_spectra,
         "classical": {**classical_metadata, "sources": CLASSICAL_SOURCES},
+        "family_rules": reviewed_family_catalog(family_catalog()),
     }
     validate_read_model(atlas, allow_malformed_for_review=allow_malformed_for_review)
     return atlas
@@ -2148,6 +2163,8 @@ def render_atlas(atlas: dict[str, Any]) -> str:
     replacements = {
         "/*__ATLAS_CSS__*/": css,
         "/*__ATLAS_PRESENTATION_JS__*/": presentation_javascript,
+        "/*__FAMILIES_JS__*/": (SOURCE_DIRECTORY / "families.js").read_text(encoding="utf-8"),
+        "/*__WORKBENCH_JS__*/": (SOURCE_DIRECTORY / "workbench.js").read_text(encoding="utf-8"),
         "__ATLAS_JSON__": safe_embedded_json(atlas),
         "/*__ATLAS_JS__*/": javascript,
     }

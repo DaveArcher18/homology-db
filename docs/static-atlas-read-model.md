@@ -1,9 +1,36 @@
 # Static atlas read model
 
-Status: classical student frontend over `chromatic-gateway-42` with a sourced
-cohomology overlay
+Status: family workbench over retained `chromatic-gateway-42` and classical
+cohomology records, with independently source-bound symbolic family rules
 
-Read-model version: `homology-db.static-atlas/4`
+Read-model version: `homology-db.static-atlas/5`
+
+## Symbolic family rules
+
+`family_rules` is `homology-db.family-rules/1`: three rules for spheres, real
+projective spaces and complex projective spaces. Each has a stable ID/version,
+all-finite-n parameter scope, coefficients Z/Q/F2/F3/F5/F7/F11, explicit separate
+homology/cohomology/multiplication coverage, source locators and a derivation.
+The content SHA-256 binds its mathematical metadata and exact evaluator bytes.
+These sourced general claims do not fabricate Model calculations or change the
+legacy Snapshot's assertion counts. Human review is a separate projection of
+the append-only `docs/reviews/family-reviews.json` registry; old hashes remain
+in history and cannot approve changed rules.
+
+`AtlasFamilies.evaluate(family, n, coefficient, options)` evaluates bounded
+degree and additive-generator windows. Arbitrary-size n/degrees are decimal
+strings using exact BigInt arithmetic; callers must not round through Number.
+Options are `start`, `count` (1–100), `generatorStart`, `generatorCount` (1–12).
+Results include both groups in each row, general formulas, named additive
+generators with degrees/orders, product matrices, separate coverage and display
+metadata, rule identity and convention. A complete finite generating set of
+at most 12 entries is always shown in full; larger sets are windowed. Integral
+torsion generators are not described as a vector-space basis.
+
+The workbench's downloaded `homology-db.family-view/1` record packages selected
+parameters, window results, exact rule/provenance/review binding and the retained
+atlas snapshot context. Existing space downloads remain accessible. All rules
+start human-review-pending; publication is not human mathematical acceptance.
 
 ## Classical cohomology overlay
 
@@ -62,7 +89,7 @@ It embeds clean source commit
 `97452364ee60b05cfa9d320afba95a5e716cafeb7d8494e7e0c9ffd4dbc69146`.
 The artifact embeds Snapshot identity, generation time, database measurements,
 record counts, source commit, source-input hash, and clean/dirty input state.
-The one-file exporter enforces the 5 MiB cap and rejects external script,
+The one-file exporter enforces a 6 MiB cap and rejects external script,
 stylesheet, font, or image dependencies.
 
 ## Mapping

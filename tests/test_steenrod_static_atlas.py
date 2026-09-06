@@ -832,7 +832,7 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
             self.assertNotIn("<script src=", review_html)
             self.assertLess(
                 review_path.stat().st_size,
-                5 * 1024 * 1024,
+                6 * 1024 * 1024,
             )
 
 

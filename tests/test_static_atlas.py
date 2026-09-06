@@ -121,7 +121,7 @@ console.log(JSON.stringify({
             self.assertIsNotNone(embedded)
             atlas = json.loads(embedded.group(1))
             self.assertEqual(atlas["snapshot"]["snapshot_id"], snapshot_id)
-            self.assertEqual(atlas["snapshot"]["schema_version"], "homology-db.static-atlas/4")
+            self.assertEqual(atlas["snapshot"]["schema_version"], "homology-db.static-atlas/5")
             self.assertEqual(
                 atlas["snapshot"]["source_revision_inputs"],
                 [
@@ -133,6 +133,9 @@ console.log(JSON.stringify({
                     "homology_db/atlas_schema.py",
                     "homology_db/chromatic.py",
                     "homology_db/classical.py",
+                    "homology_db/families.py",
+                    "homology_db/family_reviews.py",
+                    "docs/reviews/family-reviews.json",
                     "homology_db/migrations/0005_stable_steenrod_modules.sql",
                     "homology_db/preview.py",
                     "homology_db/steenrod.py",
@@ -144,6 +147,8 @@ console.log(JSON.stringify({
                     "static_atlas/atlas.js",
                     "static_atlas/index.template.html",
                     "static_atlas/presentation.js",
+                    "static_atlas/families.js",
+                    "static_atlas/workbench.js",
                 ],
             )
 

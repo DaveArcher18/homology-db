@@ -1,3 +1,4 @@
+/* Family workbench layout is deliberately independent of the legacy record view. */
 :root {
   --page: #f7f6f2;
   --surface: #fffefa;
@@ -3263,4 +3264,67 @@ pre {
     color: black;
     text-decoration: none;
   }
+}
+
+@media screen {
+  .page-shell { display:block; width:min(100% - 3rem, 96rem); }
+  .atlas-index { position:static; width:100%; border:0; border-bottom:1px solid var(--border); transform:none; background:transparent; }
+  .index-inner { position:static; display:block; max-height:none; padding:.7rem 0; overflow:visible; }
+  .index-heading, #family-toggle, #index-close, #request-space-index { display:none !important; }
+  .primary-nav { display:flex; flex-wrap:wrap; gap:1.5rem; }
+  .primary-nav-link { width:auto; padding:.4rem 0; background:none; border:0; }
+  .snapshot-about { max-width:50rem; margin-top:.5rem; }
+  .snapshot-about:not([open]) { display:none; }
+  .atlas-document { width:100%; max-width:none; padding:2rem 0 4rem; }
+  .route-view { max-width:100%; }
+  .workbench-view { width:100%; }
+  .wb-intro .page-title { font-size:clamp(1.7rem,3vw,2.65rem); line-height:1.18; margin:.4rem 0 .65rem; letter-spacing:-.025em; }
+  .wb-muted { color:var(--text-muted); font-size:.85rem; }
+  .wb-controls { display:grid; grid-template-columns:minmax(15rem,2fr) minmax(8rem,1fr) minmax(9rem,1fr) auto; gap:1rem; align-items:end; padding:1.2rem; background:var(--surface); border:1px solid var(--border); border-radius:.7rem; margin-top:1.8rem; }
+  .wb-field { display:flex; flex-direction:column; gap:.35rem; color:var(--text-muted); font-size:.78rem; font-weight:600; min-width:0; }
+  .wb-field input { min-width:0; width:100%; padding:.6rem .7rem; border:1px solid var(--control-border); border-radius:.3rem; background:var(--page); color:var(--text); font-size:.95rem; }
+  .wb-primary { background:var(--accent); color:var(--page); border:0; border-radius:.3rem; padding:.65rem 1.25rem; font-weight:650; }
+  .wb-utilities,.wb-degree-bar,.wb-result-heading { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+  .wb-utilities { margin:.8rem 0 2rem; font-size:.82rem; }
+  .wb-reduced { margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+  .wb-result-heading h2 { margin:0; font-size:1.9rem; }
+  .wb-review-state { color:var(--warning); border:1px solid var(--warning); border-radius:2rem; padding:.2rem .6rem; font-size:.72rem; }
+  .wb-degree-bar { margin:.65rem 0 1rem; font-size:.8rem; }
+  .wb-degree-bar p { margin:0 auto 0 0; }
+  .wb-fields { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.85rem; }
+  .wb-coefficient { min-width:0; background:var(--surface); border:1px solid var(--border); border-radius:.5rem; padding:1rem; }
+  .wb-wide { grid-column:1 / -1; }
+  .wb-coefficient h3 { display:flex; gap:.6rem; align-items:center; margin:0 0 .8rem; font-size:1.25rem; }
+  .wb-wide .wb-panel-layout { display:grid; grid-template-columns:minmax(15rem,1fr) minmax(0,2fr); gap:2rem; }
+  .wb-groups { border-collapse:collapse; width:100%; font-size:.86rem; table-layout:fixed; }
+  .wb-groups td,.wb-groups th { text-align:left; padding:.25rem .3rem; border-bottom:1px solid var(--border); overflow-wrap:anywhere; }
+  .wb-groups th { color:var(--text-muted); font-size:.72rem; font-weight:600; }
+  .wb-facts { min-width:0; }
+  .wb-facts h4 { margin:1rem 0 .4rem; font:600 .74rem var(--sans); color:var(--text-muted); }
+  .wb-wide .wb-facts h4 { margin-top:0; }
+  .wb-facts > .math-display { display:block; overflow-x:auto; padding-bottom:.5rem; font-size:1.08rem; }
+  .wb-rules,.wb-products { border-top:1px solid var(--border); padding:.6rem 0; font-size:.8rem; }
+  .wb-rules summary,.wb-products summary { font-weight:600; }
+  .wb-rules p { overflow-wrap:anywhere; margin:.4rem 0 .8rem; }
+  .wb-rules > .math-display { display:block; overflow-x:auto; padding:.5rem 0; }
+  .wb-coverage { padding:.5rem 0; font-size:.7rem; color:var(--text-muted); }
+  .wb-coverage p { margin:.25rem 0; }
+  .wb-knowl { display:inline-block; position:relative; font-size:1rem; }
+  .wb-knowl summary { cursor:pointer; text-decoration:underline dotted; text-underline-offset:.2em; }
+  .wb-knowl-body { max-width:25rem; font-size:.82rem; font-weight:400; padding:.7rem; background:var(--accent-soft); border-radius:.3rem; }
+  .wb-generator-control { display:flex; gap:.5rem; flex-wrap:wrap; align-items:end; }
+  .wb-generator-list { padding-left:1.2rem; font-size:.75rem; }
+  .wb-table-scroll { position:relative; max-width:100%; overflow:auto; margin:.6rem 0; }
+  .wb-multiplication { border-collapse:collapse; width:max-content; min-width:100%; }
+  .wb-multiplication td,.wb-multiplication th { border:1px solid var(--border); padding:.35rem .5rem; text-align:center; white-space:nowrap; }
+  .wb-provenance { margin-top:1.5rem; padding:1rem; border:1px solid var(--border); border-radius:.5rem; overflow-wrap:anywhere; font-size:.84rem; }
+  .wb-provenance summary { font-weight:600; }
+  .wb-provenance p { margin:.7rem 0; }
+  .wb-provenance button { margin:1rem 1rem 0 0; }
+  .glossary-view { max-width:55rem; margin:auto; }
+  .glossary-card { padding:1.5rem 0; border-bottom:1px solid var(--border); scroll-margin-top:6rem; }
+  .glossary-card h2 { font-size:1.3rem; }
+  .glossary-card p { max-width:65ch; }
+  @media(max-width:70rem) { .wb-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } .wb-coefficient:last-child { grid-column:1/-1; } }
+  @media(max-width:40rem) { .page-shell { width:calc(100% - 1.5rem); } .wb-controls { grid-template-columns:1fr 1fr; padding:.8rem; gap:.7rem; } .wb-family-field { grid-column:1/-1; } .wb-primary { grid-column:1/-1; } .wb-fields { display:block; } .wb-coefficient { margin-bottom:.8rem; } .wb-wide .wb-panel-layout { display:block; } .wb-wide .wb-facts h4 { margin-top:1rem; } .wb-reduced { margin-left:0; } .wb-intro .page-title { font-size:1.75rem; } .primary-nav { gap:1rem; } }
 }

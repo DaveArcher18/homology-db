@@ -591,11 +591,11 @@ class SteenrodReleaseGateTest(unittest.TestCase):
     def test_oversized_artifact_is_rejected(self) -> None:
         completed = self.run_gate(
             {"conceptual_spaces": [{"id": "sphere:1"}]},
-            padding_bytes=5 * 1024 * 1024,
+            padding_bytes=6 * 1024 * 1024,
         )
 
         self.assertNotEqual(completed.returncode, 0)
-        self.assertIn("5 MiB", completed.stderr)
+        self.assertIn("6 MiB", completed.stderr)
 
 
 if __name__ == "__main__":

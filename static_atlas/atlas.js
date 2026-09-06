@@ -603,6 +603,8 @@
       label ?? definition.term,
     );
     trigger.type = "button";
+    const symbol = {"Q":"\\mathbb{Q}","Z":"\\mathbb{Z}","F_p":"\\mathbb{F}_{p}"}[label ?? definition.term];
+    if (symbol) trigger.replaceChildren(renderTex(symbol,label ?? definition.term,"math-inline"));
     trigger.id = `${instance}-trigger`;
     trigger.setAttribute("aria-expanded", "false");
     trigger.setAttribute("aria-controls", `${instance}-panel`);
@@ -613,7 +615,7 @@
     panel.setAttribute("aria-labelledby", trigger.id);
     panel.append(
       element("strong", "knowl-term", definition.term),
-      document.createTextNode(` ${definition.body} `),
+      (() => { const content=element("span"); if(window.HomologyWorkbench) window.HomologyWorkbench.mathText(content,` ${definition.body} `,renderTex); else content.textContent=` ${definition.body} `; return content; })(),
       element(
         "span",
         "knowl-status",
@@ -1172,6 +1174,27 @@
     tableWrap.append(table);
     const coverage = cohomologyCoveragePresentation(record);
     content.append(tableWrap, element("p", "cohomology-coverage table-note", `${coverage.label}. ${coverage.detail}`));
+    const products = element("details", "wb-products classical-products");
+    products.append(element("summary", "", "Cup-product table"));
+    const complete = algebra.multiplication?.complete === true;
+    products.append(element("p", "wb-muted", complete ? "Multiplication: complete for all additive basis pairs." : "Multiplication: not recorded completely. Missing products are not zero."));
+    const basis = asArray(algebra.basis);
+    const basisById = new Map(basis.map(item => [item.id,item]));
+    const basisTex = item => monomialTex(item.powers);
+    const list = element("ul", "wb-generator-list");
+    basis.forEach(item => {const row=element("li");row.append(renderTex(basisTex(item),item.id,"math-inline"),document.createTextNode(` · degree ${item.degree}`));list.append(row);});
+    products.append(list);
+    const wrap = element("div", "wb-table-scroll");wrap.tabIndex=0;wrap.setAttribute("role","region");wrap.setAttribute("aria-label","Cup-product table");
+    const productTable=element("table","wb-multiplication");const productHead=element("thead");const productHeader=element("tr");productHeader.append(element("th","","∪"));
+    basis.forEach(item=>{const cell=element("th");cell.scope="col";cell.append(renderTex(basisTex(item),item.id,"math-inline"));productHeader.append(cell);});productHead.append(productHeader);
+    const productBody=element("tbody");basis.forEach(left=>{const row=element("tr");const title=element("th");title.scope="row";title.append(renderTex(basisTex(left),left.id,"math-inline"));row.append(title);basis.forEach(right=>{
+      const recorded=asArray(algebra.products).find(product=>product.left===left.id&&product.right===right.id);
+      let tex;
+      if(left.id===algebra.unit)tex=basisTex(right);else if(right.id===algebra.unit)tex=basisTex(left);
+      else if(recorded)tex=recorded.result.map(term=>`${term.coefficient===1?"":term.coefficient===-1?"-":term.coefficient}${basisTex(basisById.get(term.basis))}`).join("+").replaceAll("+-","-") || "0";
+      else if(complete&&algebra.multiplication.omitted_products==="zero")tex="0";
+      const cell=element("td");cell.append(tex===undefined?document.createTextNode("Not recorded"):renderTex(tex,tex,"math-inline"));row.append(cell);
+    });productBody.append(row);});productTable.append(productHead,productBody);wrap.append(productTable);products.append(wrap);content.append(products);
 
     const sources = element("div", "cohomology-sources");
     sources.append(element("h3", "", "Sources & review"));
@@ -1923,6 +1946,8 @@
   }
 
   function parseRoute(hash = window.location.hash) {
+    const workbenchRoute = window.HomologyWorkbench?.route(hash);
+    if (workbenchRoute) return workbenchRoute;
     if (!hash || hash === "#" || hash === "#home") {
       return { kind: "home" };
     }
@@ -1947,7 +1972,7 @@
         const slug = decodeURIComponent(spaceMatch[1]);
         const space = spacesBySlug.get(slug);
         return space
-          ? { kind: "space", space }
+          ? (window.HomologyWorkbench?.legacy(space) || { kind: "space", space })
           : { kind: "not-found", requested: hash };
       } catch (_error) {
         return { kind: "not-found", requested: hash };
@@ -1957,6 +1982,8 @@
   }
 
   function routeTitle(route) {
+    if (route.kind === "workbench") return "Family workbench · Homology Atlas";
+    if (route.kind === "glossary") return "Glossary · Homology Atlas";
     if (route.kind === "home") return "Homology Atlas";
     if (route.kind === "spaces") return "Spaces · Homology Atlas";
     if (route.kind === "family") {
@@ -2006,7 +2033,10 @@
     const route = parseRoute();
     state.route = route;
     let view;
-    if (route.kind === "home") view = buildHomeView();
+    if (["home", "workbench", "glossary"].includes(route.kind) && window.HomologyWorkbench) {
+      view = window.HomologyWorkbench.create({atlas, renderTex, copyText, downloadRecord}, route);
+    }
+    else if (route.kind === "home") view = buildHomeView();
     else if (route.kind === "spaces") view = buildSpacesView();
     else if (route.kind === "family") view = buildFamilyView(route.section);
     else if (route.kind === "space") view = buildSpaceView(route.space);
@@ -2100,7 +2130,7 @@
 
   function syncIndexAccessibility() {
     const open = atlasIndex.classList.contains("is-open");
-    if (!narrowIndexMedia.matches) {
+    if (window.HomologyWorkbench || !narrowIndexMedia.matches) {
       atlasIndex.classList.remove("is-open");
       atlasIndex.removeAttribute("inert");
       atlasIndex.removeAttribute("aria-hidden");

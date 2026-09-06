@@ -1,0 +1,66 @@
+name: Mathematical family review
+description: Review the exact formulas, products and coverage of a versioned family rule.
+title: "[Family review] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reviewing! Your GitHub account identifies the submitter.
+        This form does not automatically mark mathematics as reviewed. A maintainer
+        checks authorship, scope and the exact rule hash before publishing your verdict.
+        Use ordinary family feedback instead if you have not reviewed the entire rule.
+  - type: input
+    id: rule-id
+    attributes:
+      label: Rule ID
+    validations:
+      required: true
+  - type: input
+    id: rule-version
+    attributes:
+      label: Rule version
+    validations:
+      required: true
+  - type: input
+    id: rule-hash
+    attributes:
+      label: Rule content SHA-256
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Parameter, degree and coefficient scope
+      description: Preserve the prefilled scope. If your review is narrower, explain that; it will not be published as a whole-rule acceptance.
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: Sources and rule link
+    validations:
+      required: true
+  - type: dropdown
+    id: verdict
+    attributes:
+      label: Mathematical verdict
+      options:
+        - accept
+        - needs-evidence
+        - reject
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Review reasoning
+      description: Explain what you checked, including boundary cases, integral torsion, cup products and all-degree completeness. Give corrections or further sources where needed.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Review confirmation
+      options:
+        - label: This is my human mathematical review of the identified rule, not an automated check or a report of another person's approval.
+          required: true

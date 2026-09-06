@@ -1,19 +1,19 @@
 # Work state
 
-Status: COMPLETE
+Status: IN_PROGRESS
 
 ## Objective
 
-Build and publish the classical student reference following the Gabriel/Dan meeting:
-retain homology, add sourced cohomology rings for a small textbook core, and
-simplify the spaces UX. The concrete 13-space scope and page sketch are recorded
-in `.scratch/classical-spaces-v1/spec.md`. User authorized autonomous implementation,
-specialist subagents, independent verification, commits, push/merge, and publication
-on the existing Pages site. No purchases or external outreach.
+Build and publish the approved family workbench in
+`.scratch/family-workbench-v1/spec.md`: all-finite-n RP/CP/spheres, seven
+coefficient comparisons, sourced rings/products, glossary and exact human-review
+intake. Preserve existing data and links. User authorized specialist subagents,
+independent verification, commits, push/merge and existing GitHub Pages publication.
+No purchases or outreach.
 
 ## Active map
 
-`.scratch/classical-spaces-v1/map.md`
+`.scratch/family-workbench-v1/map.md`
 
 ## Control mode
 
@@ -23,14 +23,27 @@ without an explicit user request here.
 
 ## Current ticket
 
-None. Classical-spaces tickets 01 and 02 are resolved and the iteration is live.
+`.scratch/family-workbench-v1/issues/01-build.md` — approved family workbench,
+glossary, multiplication tables and human-review intake. Prior iteration remains live.
 
 ## Active run lease
 
-Released by: `/root (interactive chat)`
-Released at: `2026-09-06T09:38:37Z`
+Claimed by: `/root (interactive chat)`
+Heartbeat: `2026-09-06T10:53:00Z`
 
 ## Last checkpoint
+
+- Family implementation frozen for browser/full regression. Twenty focused
+  family, independent cellular/product oracle and review/integration tests pass.
+  Independent math and source-bound integration reports are in active map dir.
+  Closed raw-TeX RP formula fallback, old /4 validation regression, ambiguous
+  reduced-download conventions. Current artifact still old release until clean
+  source commit/build; its expected stale-input gate failure is not waived.
+
+- Family-workbench next cycle explicitly authorized. Contract and claimed ticket
+  are in `.scratch/family-workbench-v1/`. Existing tracked baseline is clean;
+  pre-existing untracked stable-preview files preserved. Next: general family
+  engine, workbench UI, review intake, independent checks and publication.
 
 - Complete and live at https://davearcher18.github.io/homology-db/. PR #3 merged
   as `03d65e2`; final icon packaging source `a59e40a`, artifact `0cc3e66`.
@@ -458,8 +471,9 @@ Released at: `2026-09-06T09:38:37Z`
 
 ## Exact next action
 
-No automatic continuation. The classical reference is ready for use and informal
-feedback; start a new scoped iteration from actual feedback. No outreach was sent.
+Finish exact-candidate browser checks, commit scoped source, rebuild dist from
+clean source, run full tests and deterministic gate, publish and verify live.
+No automatic continuation outside this interactive chat; no outreach.
 
 ## Verification state
 

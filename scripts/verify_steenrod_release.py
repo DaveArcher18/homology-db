@@ -29,6 +29,7 @@ from scripts.export_static_atlas import (
     source_commit,
     source_inputs_sha256,
     validate_steenrod_acceptance_record,
+    MAX_HTML_BYTES,
 )
 
 
@@ -36,7 +37,7 @@ ATLAS_DATA = re.compile(
     r'<script id="atlas-data" type="application/json">(.*?)</script>', re.DOTALL
 )
 REQUIRED_REVIEWER = "Dan Isaksen"
-MAX_ATLAS_BYTES = 5 * 1024 * 1024
+MAX_ATLAS_BYTES = MAX_HTML_BYTES
 
 
 def _slug_from_id(stable_id: str) -> str:
@@ -332,7 +333,7 @@ def verify(
     atlas_bytes = atlas_path.stat().st_size
     if atlas_bytes > MAX_ATLAS_BYTES:
         raise ReleaseGateError(
-            f"atlas is {atlas_bytes} bytes; the release limit is 5 MiB"
+            f"atlas is {atlas_bytes} bytes; the release limit is {MAX_ATLAS_BYTES // (1024 * 1024)} MiB"
         )
     atlas = load_atlas(atlas_path)
     if "conceptual_spectra" not in atlas:

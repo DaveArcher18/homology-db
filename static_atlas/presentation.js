@@ -22,6 +22,10 @@
     to: "→",
     oplus: "⊕",
     cup: "∪",
+    smile: "∪",
+    quad: " ",
+    leq: "≤",
+    lt: "<",
     times: "×",
     cong: "≅",
     neq: "≠",
@@ -43,6 +47,7 @@
     "mathrm",
     "operatorname",
     "widetilde",
+    "text",
   ]);
   const supportedTexCommands = new Set([
     ...Object.keys(simpleTexCommands),
@@ -418,6 +423,11 @@
           continue;
         }
         if (character === "\\") {
+          if ([",", " ", ";", ":"].includes(source[index + 1])) {
+            appendText(nodes, " ");
+            index += 2;
+            continue;
+          }
           const commandMatch = source.slice(index + 1).match(/^[A-Za-z]+/);
           if (!commandMatch) throw new Error("Malformed TeX command");
           const command = commandMatch[0];
