@@ -1,6 +1,6 @@
 # Work state
 
-Status: IN_PROGRESS
+Status: COMPLETE
 
 ## Objective
 
@@ -23,15 +23,23 @@ without an explicit user request here.
 
 ## Current ticket
 
-`.scratch/family-workbench-v1/issues/01-build.md` — approved family workbench,
-glossary, multiplication tables and human-review intake. Prior iteration remains live.
+None. Family-workbench ticket 01 is resolved and the new iteration is live.
 
 ## Active run lease
 
-Claimed by: `/root (interactive chat)`
-Heartbeat: `2026-09-06T10:50:50Z`
+Released by: `/root (interactive chat)`
+Released at: `2026-09-06T10:56:41Z`
 
 ## Last checkpoint
+
+- COMPLETE: family workbench live at https://davearcher18.github.io/homology-db/.
+  Source `226154f`, release `58a37e4`, Pages run `34028730728` succeeded.
+  HTTP200 live bytes equal reviewed artifact (5,280,726 bytes; SHA-256
+  `b10946df9aa2af465f3b186c2ed9ad435cdfd8448f2bdcb8f34f7bd73907b1d9`).
+  Final live matrix passes 21 family views, 42 space routes, 49 spectra,
+  21 responsive cases and interactions with zero console errors. All189 tests
+  passed (three optional consumers skipped), independent reviews and clean
+  deterministic gate passed. Human math review remains pending. No outreach.
 
 - Full 189-test suite passed (three optional consumers skipped), independent
   math/integration review and browser matrix passed. Source `226154f`; candidate
@@ -477,15 +485,14 @@ Heartbeat: `2026-09-06T10:50:50Z`
 
 ## Exact next action
 
-Finish exact-candidate browser checks, commit scoped source, rebuild dist from
-clean source, run full tests and deterministic gate, publish and verify live.
-No automatic continuation outside this interactive chat; no outreach.
+No automatic continuation. Family workbench cycle is complete; resume from
+actual user or human-review feedback. See active map's TRY_IT.md for review tasks.
 
 ## Verification state
 
-Classical mathematical and integration reviews pass; browser acceptance passes.
-The 169-test implementation suite, final packaging checks, deterministic artifact
-gate, Pages deployment, and live byte/browser verification all pass.
+Family mathematical and integration reviews pass; browser acceptance passes.
+The 189-test suite, deterministic artifact gate, Pages deployment, and live
+byte/browser verification all pass. Human review remains pending.
 Historical verification below describes earlier releases, not this candidate.
 
 ### Historical verification checkpoints

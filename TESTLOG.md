@@ -2,6 +2,12 @@
 
 ## 2026-09-06 — family workbench release candidate
 
+- Final publication: release `58a37e435baac5c7ff8d1955bf4c410d06823001` pushed
+  to main without force. Pages run `34028730728` succeeded. Public HTTP200 body
+  is byte-identical to the candidate below; final live browser matrix repeats
+  all21 family views,42 space routes,49 spectrum routes and21 responsive cases
+  with zero console errors. Human review remains pending.
+
 - Source commit `226154ffa6a42040dfd2d0144a223e7957b7bad2`; source-input SHA-256
   `044aafea53ca555925af8491a576eeeaa9e98b444b57b6c488c9dbc84a8d1240`.
 - Full `python3 -m unittest discover -s tests -v`: **189 tests, OK**, 256.535s;
