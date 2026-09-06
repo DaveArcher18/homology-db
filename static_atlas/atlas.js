@@ -79,7 +79,6 @@
   const definitionsById = new Map(
     definitions.map((definition) => [definition.id, definition]),
   );
-  const familyNavigationLinks = new Map();
   const state = {
     route: { kind: "home" },
     queriesByScope: new Map(),
@@ -88,37 +87,33 @@
 
   const siteBrand = document.getElementById("site-brand");
   const requestSpace = document.getElementById("request-space");
-  const requestSpaceIndex = document.getElementById("request-space-index");
-  const aboutToggle = document.getElementById("about-toggle");
   const themeMenu = document.getElementById("theme-menu");
   const themeSummary = themeMenu.querySelector(":scope > summary");
   const themeCurrent = themeMenu.querySelector(".theme-current");
   const themeInputs = [
     ...themeMenu.querySelectorAll('input[name="theme-preference"]'),
   ];
-  const familyToggle = document.getElementById("family-toggle");
-  const indexClose = document.getElementById("index-close");
-  const indexBackdrop = document.getElementById("index-backdrop");
-  const atlasIndex = document.getElementById("atlas-index");
-  const familyOutline = document.getElementById("family-outline");
   const navHome = document.getElementById("nav-home");
   const navSpaces = document.getElementById("nav-spaces");
-  const snapshotAbout = document.getElementById("snapshot-about");
-  const snapshotDetail = document.getElementById("snapshot-detail");
   const atlasDocument = document.getElementById("atlas-document");
   const actionStatus = document.getElementById("action-status");
-  const narrowIndexMedia = window.matchMedia("(max-width: 60rem)");
-  const backgroundInertTargets = [
-    siteBrand,
-    requestSpace,
-    aboutToggle,
-    themeMenu,
-    atlasDocument,
-    document.querySelector(".site-footer"),
-  ].filter(Boolean);
 
   let knowlInstance = 0;
-  let indexReturnFocus = familyToggle;
+  let lastWorkbenchHash = "#home";
+  const workbenchStorageKey = "homology-atlas-workbench-v1";
+  function validWorkbenchHash(hash) {
+    if (hash === "#home") return true;
+    if (typeof hash !== "string" || !hash.startsWith("#")) return false;
+    const route = parseRoute(hash);
+    return route.kind === "workbench"
+      && ["sphere", "real_projective_space", "complex_projective_space"].includes(route.family)
+      && /^\d+$/.test(route.n) && /^\d+$/.test(route.start);
+  }
+  try {
+    const remembered = sessionStorage.getItem(workbenchStorageKey);
+    if (validWorkbenchHash(remembered)) lastWorkbenchHash = remembered;
+  } catch (_error) { /* Session storage is optional for local-file viewing. */ }
+  navHome.href = lastWorkbenchHash;
   let isInitialRoute = true;
 
   function element(tagName, className = "", text) {
@@ -1946,6 +1941,7 @@
   }
 
   function parseRoute(hash = window.location.hash) {
+    if (hash === "#about") return { kind: "about" };
     const workbenchRoute = window.HomologyWorkbench?.route(hash);
     if (workbenchRoute) return workbenchRoute;
     if (!hash || hash === "#" || hash === "#home") {
@@ -1982,6 +1978,7 @@
   }
 
   function routeTitle(route) {
+    if (route.kind === "about") return "About · Homology Atlas";
     if (route.kind === "workbench") return "Family workbench · Homology Atlas";
     if (route.kind === "glossary") return "Glossary · Homology Atlas";
     if (route.kind === "home") return "Homology Atlas";
@@ -1996,27 +1993,9 @@
   }
 
   function updateNavigationCurrent(route) {
-    [navHome, navSpaces, ...familyNavigationLinks.values()].forEach((link) => {
-      link.removeAttribute("aria-current");
-    });
-    if (route.kind === "home") {
-      navHome.setAttribute("aria-current", "page");
-    }
-    if (route.kind === "spaces") {
-      navSpaces.setAttribute("aria-current", "page");
-    }
-    if (route.kind === "family") {
-      navSpaces.setAttribute("aria-current", "location");
-      familyNavigationLinks
-        .get(route.section.id)
-        ?.setAttribute("aria-current", "page");
-    }
-    if (route.kind === "space") {
-      navSpaces.setAttribute("aria-current", "location");
-      familyNavigationLinks
-        .get(route.space.taxonomy?.family)
-        ?.setAttribute("aria-current", "location");
-    }
+    document.querySelectorAll(".primary-nav a, #nav-spectra").forEach(link => link.removeAttribute("aria-current"));
+    const current = { home: "nav-home", workbench: "nav-home", spaces: "nav-spaces", family: "nav-spaces", space: "nav-spaces", glossary: "nav-glossary", about: "nav-about" }[route.kind];
+    document.getElementById(current)?.setAttribute("aria-current", ["family", "space"].includes(route.kind) ? "location" : "page");
   }
 
   function focusRouteHeading() {
@@ -2032,11 +2011,17 @@
   function renderRoute({ initial = false } = {}) {
     const route = parseRoute();
     state.route = route;
+    if (["home", "workbench"].includes(route.kind) && validWorkbenchHash(window.location.hash || "#home")) {
+      lastWorkbenchHash = window.location.hash || "#home";
+      navHome.href = lastWorkbenchHash;
+      try { sessionStorage.setItem(workbenchStorageKey, lastWorkbenchHash); } catch (_error) { /* Optional persistence. */ }
+    }
     let view;
     if (["home", "workbench", "glossary"].includes(route.kind) && window.HomologyWorkbench) {
       view = window.HomologyWorkbench.create({atlas, renderTex, copyText, downloadRecord}, route);
     }
     else if (route.kind === "home") view = buildHomeView();
+    else if (route.kind === "about") view = buildAboutView();
     else if (route.kind === "spaces") view = buildSpacesView();
     else if (route.kind === "family") view = buildFamilyView(route.section);
     else if (route.kind === "space") view = buildSpaceView(route.space);
@@ -2045,7 +2030,6 @@
     atlasDocument.replaceChildren(view);
     document.title = routeTitle(route);
     updateNavigationCurrent(route);
-    closeIndex(false);
     if (!initial) {
       window.scrollTo(0, 0);
       window.requestAnimationFrame(focusRouteHeading);
@@ -2057,31 +2041,8 @@
     }
   }
 
-  function buildFamilyNavigation() {
-    if (!familyOutline) return;
-    familyOutline.replaceChildren();
-    const list = element("ol", "family-nav-list");
-    sections.forEach((section) => {
-      const item = element("li");
-      const link = element("a", "family-nav-link");
-      link.href = `#family-${section.id}`;
-      link.append(
-        element("span", "family-nav-label", section.label),
-        element(
-          "span",
-          "family-nav-count",
-          String(asArray(section.conceptual_space_ids).length),
-        ),
-      );
-      familyNavigationLinks.set(section.id, link);
-      item.append(link);
-      list.append(item);
-    });
-    familyOutline.append(list);
-  }
-
   function buildSnapshotDetail() {
-    snapshotDetail.replaceChildren();
+    const snapshotDetail = element("div", "snapshot-detail");
     const summary = element(
       "p",
       "",
@@ -2113,148 +2074,35 @@
       );
       snapshotDetail.append(foundations);
     }
+    return snapshotDetail;
   }
 
-  function focusableWithin(container) {
-    return [
-      ...container.querySelectorAll(
-        'a[href], button:not([disabled]), summary, input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      ),
-    ].filter((node) => {
-      if (node.closest("[hidden]") || node.closest("[inert]")) return false;
-      if (!node.getClientRects().length) return false;
-      const style = window.getComputedStyle(node);
-      return style.visibility !== "hidden" && style.display !== "none";
+  function buildAboutView() {
+    const view = element("article", "route-view about-view");
+    view.append(element("p", "page-kicker", "A reference, with its workings visible"), element("h1", "page-title", "About Homology Atlas"));
+    view.append(element("p", "page-lede", "Explore ordinary homology and cohomology rings of familiar spaces, compare coefficients, and follow each result back to its sources."));
+    view.append(element("h2", "", "What is covered"), element("p", "", "The family workbench evaluates sourced rules for spheres, real projective spaces, and complex projective spaces at every finite nonnegative dimension parameter. Its degree window limits the display, not the mathematical coverage."));
+    view.append(element("p", "", "All spaces retains the earlier catalogue. Coverage and coefficient availability vary by record; missing information is labelled, never treated as zero. Stable spectra remain a separate, secondary resource."));
+    view.append(element("h2", "", "Review and provenance"), element("p", "", "Coverage, automated checks, agent review, and human review are distinct. A completeness label is not a human sign-off. Human reviews bind an exact rule version and scope, and changes require fresh review."));
+    const rules = atlas.family_rules?.rules || [];
+    const list = element("ul", "about-review-list");
+    rules.forEach(rule => {
+      const label = rule.human_review_state === "human_reviewed" ? "Human reviewed" : rule.human_review_state === "human_concern" ? "Human concern recorded" : "Human review pending";
+      list.append(element("li", "", `${rule.name || humanize(rule.family)}: ${label}`));
     });
-  }
-
-  function syncIndexAccessibility() {
-    const open = atlasIndex.classList.contains("is-open");
-    if (window.HomologyWorkbench || !narrowIndexMedia.matches) {
-      atlasIndex.classList.remove("is-open");
-      atlasIndex.removeAttribute("inert");
-      atlasIndex.removeAttribute("aria-hidden");
-      atlasIndex.removeAttribute("aria-modal");
-      atlasIndex.removeAttribute("role");
-      backgroundInertTargets.forEach((target) => {
-        target.removeAttribute("inert");
-      });
-      indexBackdrop.hidden = true;
-      document.body.classList.remove("index-open");
-      familyToggle.setAttribute("aria-expanded", "false");
-      return;
-    }
-    if (!open && snapshotAbout.open) {
-      snapshotAbout.open = false;
-      aboutToggle.setAttribute("aria-expanded", "false");
-    }
-    if (open) {
-      atlasIndex.removeAttribute("inert");
-    } else {
-      atlasIndex.setAttribute("inert", "");
-    }
-    atlasIndex.setAttribute("aria-hidden", String(!open));
-    atlasIndex.setAttribute("role", "dialog");
-    atlasIndex.setAttribute("aria-modal", String(open));
-    backgroundInertTargets.forEach((target) => {
-      if (open) target.setAttribute("inert", "");
-      else target.removeAttribute("inert");
-    });
-    indexBackdrop.hidden = !open;
-    document.body.classList.toggle("index-open", open);
-    familyToggle.setAttribute("aria-expanded", String(open));
-  }
-
-  function openIndex({ returnFocus = familyToggle, focusClose = true } = {}) {
-    if (!narrowIndexMedia.matches) return;
-    indexReturnFocus = returnFocus;
-    atlasIndex.classList.add("is-open");
-    syncIndexAccessibility();
-    if (focusClose) window.requestAnimationFrame(() => indexClose.focus());
-  }
-
-  function closeIndex(returnFocus = false) {
-    const wasOpen = atlasIndex.classList.contains("is-open");
-    atlasIndex.classList.remove("is-open");
-    if (narrowIndexMedia.matches && snapshotAbout.open) {
-      snapshotAbout.open = false;
-      aboutToggle.setAttribute("aria-expanded", "false");
-    }
-    syncIndexAccessibility();
-    if (
-      returnFocus
-      && wasOpen
-      && narrowIndexMedia.matches
-      && indexReturnFocus?.isConnected
-    ) {
-      indexReturnFocus.focus();
-    }
-  }
-
-  function trapIndexFocus(event) {
-    if (
-      event.key !== "Tab"
-      || !narrowIndexMedia.matches
-      || !atlasIndex.classList.contains("is-open")
-    ) {
-      return;
-    }
-    const focusable = focusableWithin(atlasIndex);
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (
-      event.shiftKey
-      && (document.activeElement === first
-        || !atlasIndex.contains(document.activeElement))
-    ) {
-      event.preventDefault();
-      last.focus();
-    } else if (
-      !event.shiftKey
-      && (document.activeElement === last
-        || !atlasIndex.contains(document.activeElement))
-    ) {
-      event.preventDefault();
-      first.focus();
-    }
+    if (!rules.length) list.append(element("li", "", "Family human-review state not recorded."));
+    view.append(list, element("p", "", "Use “Review this family” in a workbench’s source details to submit a version-bound review through GitHub. A maintainer validates submissions before publishing them as mathematical review."));
+    const back = element("a", "", "Return to your workbench →"); back.href = lastWorkbenchHash; view.append(back);
+    const request = element("a", "about-request-link", "Request a space ↗");
+    request.href = requestSpaceUrl(); request.target = "_blank"; request.rel = "noopener noreferrer";
+    view.append(element("h2", "", "Contribute an example"), request);
+    view.append(element("h2", "", "Snapshot details"), buildSnapshotDetail());
+    if (Number(snapshot.conceptual_spectrum_count) > 0) { const spectra = element("a", "secondary-resource-link", "Stable spectra preview →"); spectra.href = "#spectra"; view.append(spectra); }
+    return view;
   }
 
   function configureUtilities() {
     requestSpace.href = requestSpaceUrl();
-    requestSpaceIndex.href = requestSpaceUrl();
-    familyToggle.addEventListener("click", () => {
-      if (atlasIndex.classList.contains("is-open")) closeIndex(true);
-      else openIndex();
-    });
-    indexClose.addEventListener("click", () => closeIndex(true));
-    indexBackdrop.addEventListener("click", () => closeIndex(true));
-    atlasIndex.addEventListener("click", (event) => {
-      const link = event.target.closest('a[href^="#"]');
-      if (!link || !narrowIndexMedia.matches) return;
-      const sameRoute = link.hash === window.location.hash;
-      closeIndex(false);
-      if (sameRoute) window.requestAnimationFrame(focusRouteHeading);
-    });
-    aboutToggle.addEventListener("click", () => {
-      snapshotAbout.open = !snapshotAbout.open;
-      aboutToggle.setAttribute(
-        "aria-expanded",
-        String(snapshotAbout.open),
-      );
-      if (narrowIndexMedia.matches) {
-        openIndex({ returnFocus: aboutToggle, focusClose: false });
-      }
-      window.requestAnimationFrame(() => {
-        snapshotAbout.querySelector("summary")?.focus();
-      });
-    });
-    snapshotAbout.addEventListener("toggle", () => {
-      aboutToggle.setAttribute(
-        "aria-expanded",
-        String(snapshotAbout.open),
-      );
-    });
     themeMenu.addEventListener("change", (event) => {
       if (!event.target.matches('input[name="theme-preference"]')) return;
       applyThemePreference(event.target.value);
@@ -2269,18 +2117,14 @@
       }
     });
     window.addEventListener("hashchange", () => renderRoute());
-    narrowIndexMedia.addEventListener("change", syncIndexAccessibility);
     document.addEventListener("click", (event) => {
       if (themeMenu.open && !themeMenu.contains(event.target)) {
         themeMenu.open = false;
       }
     });
     document.addEventListener("keydown", (event) => {
-      trapIndexFocus(event);
       if (event.key !== "Escape") return;
-      if (atlasIndex.classList.contains("is-open")) {
-        closeIndex(true);
-      } else if (themeMenu.open) {
+      if (themeMenu.open) {
         themeMenu.open = false;
         themeSummary.focus();
       }
@@ -2292,10 +2136,7 @@
   }
 
   applyThemePreference(storedThemePreference(), false);
-  buildFamilyNavigation();
-  buildSnapshotDetail();
   configureUtilities();
-  syncIndexAccessibility();
   renderRoute({ initial: isInitialRoute });
   isInitialRoute = false;
 })();

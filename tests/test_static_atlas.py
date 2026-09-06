@@ -470,9 +470,9 @@ console.log(JSON.stringify({
                 'id="site-brand"',
                 'id="nav-home"',
                 'id="nav-spaces"',
-                'id="family-toggle"',
-                'id="about-toggle"',
-                'id="atlas-index"',
+                'id="nav-glossary"',
+                'id="nav-about"',
+                'href="#about"',
                 'id="atlas-document"',
                 "function parseRoute",
                 "function renderRoute",
@@ -583,22 +583,12 @@ console.log(JSON.stringify({
             ):
                 self.assertIn(theme_contract, html)
             for accessibility_contract in (
-                'id="index-close"',
-                'id="index-backdrop"',
-                'class="index-backdrop" aria-hidden="true"',
-                'aria-controls="snapshot-about"',
-                "backgroundInertTargets",
-                "trapIndexFocus",
-                "getClientRects",
-                'atlasIndex.setAttribute("aria-modal"',
-                'setAttribute("inert", "")',
+                "function buildAboutView",
+                'hash === "#about"',
                 "focusRouteHeading",
                 "search-label-text",
                 'searchMark.setAttribute("aria-hidden", "true")',
                 'plainName.setAttribute("aria-hidden", "true")',
-                'atlasIndex.addEventListener("click"',
-                "if (!open && snapshotAbout.open)",
-                "snapshotAbout.open = false",
                 'buildKnowl("ordinary-homology", "Definition")',
                 'buildKnowl("model", "What is a Model?")',
                 'summary.setAttribute("aria-label", "Provenance")',
@@ -610,6 +600,10 @@ console.log(JSON.stringify({
                 'setAttribute("headers"',
             ):
                 self.assertIn(accessibility_contract, html)
+            for obsolete in ('id="index-close"', 'id="index-backdrop"',
+                             'id="about-toggle"', 'id="family-toggle"',
+                             "trapIndexFocus", "backgroundInertTargets", "function openIndex"):
+                self.assertNotIn(obsolete, html)
 
     def test_generated_atlas_limits_the_public_surface_to_finished_features(
         self,

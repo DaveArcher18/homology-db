@@ -22,7 +22,7 @@ async function main() {
       for(const n of ['0','1','2','3','4','13','100000000000000000001']) {
         await page.goto(base+'#workbench?'+new URLSearchParams({family,n,start:'0'}));
         await page.locator('.workbench-view').waitFor();
-        await page.waitForFunction(({family,n})=>document.querySelector('.workbench-view')?.dataset.family===family && document.querySelectorAll('.wb-controls input')[1]?.value===n,{family,n});
+        await page.waitForFunction(({family,n})=>document.querySelector('.workbench-view')?.dataset.family===family && document.querySelectorAll('.wb-controls input')[0]?.value===n,{family,n});
         assert.equal(await page.locator('.wb-groups').count(),7);
         assert.equal(await page.locator('.wb-groups tbody tr').count(),63);
         assert.match(await page.locator('.wb-review-state').innerText(),/Human review pending/);

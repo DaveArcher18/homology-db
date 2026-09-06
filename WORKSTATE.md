@@ -1,19 +1,19 @@
 # Work state
 
-Status: COMPLETE
+Status: IN_PROGRESS
 
 ## Objective
 
-Build and publish the approved family workbench in
-`.scratch/family-workbench-v1/spec.md`: all-finite-n RP/CP/spheres, seven
-coefficient comparisons, sourced rings/products, glossary and exact human-review
-intake. Preserve existing data and links. User authorized specialist subagents,
-independent verification, commits, push/merge and existing GitHub Pages publication.
+Implement and publish the approved navigation repair in
+`.scratch/navigation-repair-v1/spec.md`: discoverable native family selector,
+dedicated About route, visible wrapping navigation and responsive controls.
+Preserve mathematics, review bindings, data, downloads and existing links.
+User authorized specialist review, commits, push and existing Pages publication.
 No purchases or outreach.
 
 ## Active map
 
-`.scratch/family-workbench-v1/map.md`
+`.scratch/navigation-repair-v1/map.md`
 
 ## Control mode
 
@@ -23,14 +23,18 @@ without an explicit user request here.
 
 ## Current ticket
 
-None. Family-workbench ticket 01 is resolved and the new iteration is live.
+`.scratch/navigation-repair-v1/issues/01-repair.md` — native picker, About and responsive navigation.
 
 ## Active run lease
 
-Released by: `/root (interactive chat)`
-Released at: `2026-09-06T10:56:41Z`
+Claimed by: `/root (interactive chat)`
+Heartbeat: `2026-09-06T11:51:26Z`
 
 ## Last checkpoint
+
+- Approved navigation repair started. No mathematical content or review bindings
+  may change. Root picker/tests/release; UI agent routing/template/CSS. Next
+  real control/About checks at all diagnostic widths and in-app browser.
 
 - COMPLETE: family workbench live at https://davearcher18.github.io/homology-db/.
   Source `226154f`, release `58a37e4`, Pages run `34028730728` succeeded.
@@ -485,14 +489,17 @@ Released at: `2026-09-06T10:56:41Z`
 
 ## Exact next action
 
-No automatic continuation. Family workbench cycle is complete; resume from
-actual user or human-review feedback. See active map's TRY_IT.md for review tasks.
+Freeze the repaired sources, commit, rebuild the source-bound artifact, run the
+full suite and deterministic release gate, then publish and verify live bytes
+and browser interactions. Close the navigation map only after those checks pass.
 
 ## Verification state
 
-Family mathematical and integration reviews pass; browser acceptance passes.
-The 189-test suite, deterministic artifact gate, Pages deployment, and live
-byte/browser verification all pass. Human review remains pending.
+Navigation source review passes. Preview Chrome checks pass 11 widths, 33 picker
+selections, keyboard and About history/reload/resize. Codex in-app interactions
+confirm all families, About visibility and preserved return state. Existing
+family/legacy browser suite passes. Final artifact/full suite/publication pending.
+Mathematical sources and review bindings are unchanged; human review stays pending.
 Historical verification below describes earlier releases, not this candidate.
 
 ### Historical verification checkpoints

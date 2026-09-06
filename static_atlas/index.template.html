@@ -209,16 +209,9 @@
       </a>
 
       <nav class="header-actions" aria-label="Atlas utilities">
-        <button id="family-toggle" class="utility-button browse-button mobile-only" type="button"
-          aria-expanded="false" aria-controls="atlas-index">
-          <span class="menu-mark" aria-hidden="true"></span>
-          Browse
-        </button>
         <a id="request-space" class="utility-link request-link"
           href="https://github.com/DaveArcher18/homology-db/issues/new?template=space-request.yml"
           target="_blank" rel="noopener noreferrer">Request a space <span aria-hidden="true">↗</span></a>
-        <button id="about-toggle" class="utility-button" type="button"
-          aria-expanded="false" aria-controls="snapshot-about">About</button>
         <details id="theme-menu" class="theme-menu">
           <summary aria-label="Theme: System">
             <span class="theme-symbol" aria-hidden="true"></span>
@@ -246,46 +239,12 @@
   </header>
 
   <div class="page-shell">
-    <aside id="atlas-index" class="atlas-index" aria-labelledby="atlas-index-title">
-      <div class="index-inner">
-        <div class="index-heading">
-          <div class="index-title-row">
-            <div>
-              <p class="index-eyebrow">Explore the atlas</p>
-              <h2 id="atlas-index-title">Spaces</h2>
-            </div>
-            <button id="index-close" class="index-close mobile-only" type="button"
-              aria-label="Close atlas navigation">Close</button>
-          </div>
-        </div>
-
-        <nav class="primary-nav" aria-label="Atlas">
-          <a id="nav-home" class="primary-nav-link" href="#home">
-            <span aria-hidden="true">⌂</span>
-            Workbench
-          </a>
-          <a id="nav-spaces" class="primary-nav-link" href="#spaces">
-            <span aria-hidden="true">𝒳</span>
-            All spaces
-          </a>
-          <a class="primary-nav-link" href="#glossary">Glossary</a>
-          <a id="request-space-index" class="primary-nav-link index-request mobile-only"
-            href="https://github.com/DaveArcher18/homology-db/issues/new?template=space-request.yml"
-            target="_blank" rel="noopener noreferrer">
-            <span aria-hidden="true">＋</span>
-            Request a space
-          </a>
-        </nav>
-
-        <details id="snapshot-about" class="snapshot-about">
-          <summary>About this snapshot</summary>
-          <a id="nav-spectra" class="secondary-resource-link" href="#spectra" hidden>Stable spectra preview →</a>
-          <div id="snapshot-detail"></div>
-        </details>
-      </div>
-    </aside>
-
-    <div id="index-backdrop" class="index-backdrop" aria-hidden="true" hidden></div>
+    <nav class="primary-nav" aria-label="Atlas">
+      <a id="nav-home" class="primary-nav-link" href="#home">Workbench</a>
+      <a id="nav-spaces" class="primary-nav-link" href="#spaces">All spaces</a>
+      <a id="nav-glossary" class="primary-nav-link" href="#glossary">Glossary</a>
+      <a id="nav-about" class="primary-nav-link" href="#about">About</a>
+    </nav>
 
     <main id="atlas-document" class="atlas-document" tabindex="-1">
       <noscript>This atlas requires JavaScript to render its embedded, offline snapshot.</noscript>
@@ -297,7 +256,7 @@
       <p>Unknown, missing, and not-computed states are never treated as zero.</p>
       <nav aria-label="Footer">
         <a href="#spaces">Browse spaces</a>
-        <a id="footer-spectra" href="#spectra" hidden>Stable spectra preview</a>
+        <a id="nav-spectra" href="#spectra" hidden>Stable spectra preview</a>
       </nav>
     </div>
   </footer>
@@ -339,7 +298,6 @@
       const spectrumPublicPreview =
         atlas.snapshot?.spectrum_release_status === "public_review_preview";
       const navSpectra = document.getElementById("nav-spectra");
-      const footerSpectra = document.getElementById("footer-spectra");
       if (!conceptualSpectra.length) return;
 
       const atlasDocument = document.getElementById("atlas-document");
@@ -350,7 +308,6 @@
         conceptualSpectra.map((spectrum) => [spectrum.slug, spectrum]),
       );
       navSpectra.hidden = false;
-      footerSpectra.hidden = false;
 
       function element(tagName, className, text) {
         const node = document.createElement(tagName);
@@ -1139,8 +1096,7 @@
         const route = parseSpectrumRoute();
         navSpectra.removeAttribute("aria-current");
         if (!route) return false;
-        navHome.removeAttribute("aria-current");
-        navSpaces.removeAttribute("aria-current");
+        document.querySelectorAll(".primary-nav a").forEach(link => link.removeAttribute("aria-current"));
         navSpectra.setAttribute(
           "aria-current",
           route.kind === "spectra" ? "page" : "location",
