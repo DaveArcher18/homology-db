@@ -975,89 +975,27 @@ svg {
 
 .home-hero {
   position: relative;
-  margin-bottom: clamp(2.5rem, 5vw, 3.75rem);
-  border-bottom: 1px solid var(--border);
-  padding: clamp(0.25rem, 1vw, 0.75rem) 0 clamp(2.25rem, 4vw, 3rem);
-}
-
-.home-hero::after {
-  position: absolute;
-  right: clamp(0rem, 4vw, 3rem);
-  bottom: -0.5px;
-  width: clamp(5rem, 16vw, 12rem);
-  border-bottom: 2px solid var(--accent);
-  content: "";
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0 0;
 }
 
 .home-hero .page-title {
-  max-width: 13ch;
-  font-size: clamp(3rem, 6vw, 4.8rem);
+  max-width: 19ch;
+  font-size: clamp(2.5rem, 5vw, 4.1rem);
 }
 
 .home-hero h1 {
-  max-width: 13ch;
+  max-width: 19ch;
   margin: 0 0 0.8rem;
   font-family: var(--serif);
-  font-size: clamp(3rem, 6vw, 4.8rem);
+  font-size: clamp(2.5rem, 5vw, 4.1rem);
   font-weight: 500;
   letter-spacing: -0.055em;
-  line-height: 0.98;
+  line-height: 1.06;
 }
 
 .home-hero .page-lede {
   max-width: 58ch;
-}
-
-.home-hero-copy {
-  max-width: 50rem;
-}
-
-.home-update {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  margin-bottom: clamp(2.75rem, 6vw, 4.5rem);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius);
-  padding: clamp(1rem, 2.5vw, 1.45rem);
-  background: var(--surface-muted);
-}
-
-.home-update-copy {
-  max-width: 44rem;
-}
-
-.home-update h2 {
-  margin: 0 0 0.45rem;
-  font-family: var(--serif);
-  font-size: clamp(1.25rem, 2.4vw, 1.65rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.home-update p:last-child {
-  margin: 0;
-  color: var(--text-muted);
-  line-height: 1.55;
-}
-
-.home-update .secondary-action {
-  flex: 0 0 auto;
-}
-
-.home-explanation {
-  max-width: 61ch;
-  margin: 1rem 0 0;
-  color: var(--text-muted);
-  font-size: 0.83rem;
-}
-
-.home-sections,
-.editorial-sections {
-  display: grid;
-  gap: clamp(3rem, 7vw, 5.5rem);
 }
 
 .home-section,
@@ -2377,41 +2315,11 @@ svg {
   content: "·";
 }
 
-.feedback-section {
-  border-top: 1px solid var(--border-strong);
-  padding-top: 1rem;
-}
-
-.feedback-section h2,
-.feedback-section h3 {
-  margin-bottom: 0.35rem;
-  font-family: var(--serif);
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.feedback-section p {
-  max-width: 62ch;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-}
-
 /* Routed atlas compatibility layer. These selectors describe the intentionally
    small DOM vocabulary emitted by atlas.js rather than adding visual panels. */
 
 .home-hero-copy {
   max-width: 58rem;
-}
-
-.home-explanation {
-  max-width: 62ch;
-  margin: 1.1rem 0 0;
-  color: var(--text-muted);
-  font-size: 0.86rem;
-}
-
-.home-section + .home-section {
-  margin-top: clamp(3.2rem, 7vw, 5.5rem);
 }
 
 .text-link {
@@ -2421,26 +2329,11 @@ svg {
   text-decoration: none;
 }
 
-.snapshot-warning {
-  border-left: 2px solid var(--warning);
-  padding-left: 0.8rem;
-  color: var(--warning) !important;
-}
-
 .space-result-meta a {
   color: var(--accent);
   font-family: var(--sans);
   font-size: inherit;
   font-weight: 680;
-}
-
-.compact-coverage {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.compact-coverage .coverage-detail {
-  display: none;
 }
 
 .space-header .space-summary {
@@ -2669,6 +2562,240 @@ pre {
   margin: 0;
 }
 
+.textbook-examples {
+  margin-top: 2.25rem;
+}
+
+.textbook-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 2rem;
+}
+
+.textbook-group {
+  min-width: 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.textbook-group h3 {
+  margin-bottom: 0.15rem;
+  font-family: var(--serif);
+  font-size: 1.13rem;
+  font-weight: 600;
+}
+
+.textbook-group p {
+  margin-bottom: 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.textbook-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.textbook-space-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  padding: 0.3rem 0.65rem;
+  background: var(--surface);
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.textbook-space-link:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.classical-coverage-note {
+  max-width: var(--measure);
+  margin: 1.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.shared-coefficient-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.8rem 1.4rem;
+  margin: 1.75rem 0 0;
+  border-block: 1px solid var(--border);
+  padding: 0.9rem 0;
+}
+
+.shared-coefficient-controls .control-help {
+  margin: 0 0 0.3rem;
+}
+
+.cohomology-section {
+  margin-top: 1.5rem;
+}
+
+.cohomology-section > .space-section-heading {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ring-presentation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  margin: 1.15rem 0 0.65rem;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.ring-convention,
+.ring-definitions {
+  margin: 0.4rem 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.ring-structure {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 0.65rem 1rem;
+  margin: 1.25rem 0;
+  font-size: 0.94rem;
+}
+
+.ring-structure dt {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.ring-structure dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ring-meaning {
+  max-width: var(--measure);
+  margin: 1.1rem 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+
+.ring-meaning p {
+  margin-bottom: 0.6rem;
+}
+
+.cohomology-groups-heading,
+.cohomology-sources h3 {
+  margin: 1.4rem 0 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.cohomology-sources {
+  border-top: 1px solid var(--border);
+  margin-top: 1.25rem;
+}
+
+.cohomology-sources .citation-list {
+  margin-bottom: 0.6rem;
+}
+
+.human-review-note {
+  margin: 0.6rem 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.cohomology-sources .detail-section {
+  margin-top: 0.75rem;
+}
+
+.cohomology-sources .detail-content {
+  font-size: 0.82rem;
+}
+
+.space-page .homology-table {
+  min-width: 0;
+}
+
+.cohomology-table th:first-child,
+.cohomology-table td:first-child {
+  width: 5rem;
+}
+
+.cohomology-basis {
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+
+.homology-section .provenance-summary {
+  margin-top: 1.25rem;
+  border-top: 0;
+}
+
+.ring-comparison {
+  border-left: 3px solid var(--accent);
+  padding: 0.4rem 0 0.4rem 1.15rem;
+}
+
+.ring-comparison h2 {
+  margin-bottom: 0.5rem;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.ring-comparison p {
+  max-width: var(--measure);
+  margin-bottom: 0.65rem;
+  font-size: 0.94rem;
+}
+
+.space-page > .context-feedback-link {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.secondary-resource-link {
+  display: inline-block;
+  margin: 0.6rem 0;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 38rem) {
+  .textbook-groups {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .ring-structure {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
+
+  .ring-structure dd + dt {
+    margin-top: 0.7rem;
+  }
+
+  .textbook-examples > .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+}
+
 .site-footer {
   border-top: 1px solid var(--border);
   color: var(--text-muted);
@@ -2806,15 +2933,6 @@ pre {
 @media (max-width: 45rem) {
   :root {
     --header-height: 3.85rem;
-  }
-
-  .home-update {
-    display: grid;
-    align-items: start;
-  }
-
-  .home-update .secondary-action {
-    justify-self: start;
   }
 
   .header-inner,

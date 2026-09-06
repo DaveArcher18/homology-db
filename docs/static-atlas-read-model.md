@@ -1,8 +1,30 @@
 # Static atlas read model
 
-Status: development frontend over `chromatic-gateway-42`
+Status: classical student frontend over `chromatic-gateway-42` with a sourced
+cohomology overlay
 
-Read-model version: `homology-db.static-atlas/3`
+Read-model version: `homology-db.static-atlas/4`
+
+## Classical cohomology overlay
+
+Every space has `classical_core` and `cohomology` fields. The 13 core spaces each
+contain five ordinary unreduced field-cohomology records. An empty array on
+other spaces means no ring has been recorded, not that the ring is zero. Existing
+homology records, CLI interfaces, conceptual IDs, and source database are unchanged.
+
+`classical` holds the versioned source catalog and coverage metadata;
+`snapshot.classical_cohomology` binds the record count, core IDs, coefficients,
+review state, and canonical record content hash. The cohomology claims are sourced
+literature records and deductions, not computations performed by the underlying
+cellular homology database. Their Python source participates in the source-input
+hash. All claims retain `human_review_pending`.
+
+Each record contains explicit additive dimensions, homogeneous generators,
+polynomial relations with structured terms, a graded-commutative convention,
+an ordered basis, and a complete multiplication table represented sparsely.
+Omission means zero only within that table's explicitly complete scope. The
+unit is recorded; S0 uses a nontrivial degree-zero idempotent. A local homology
+reduction setting never changes these unreduced ring records.
 
 ## Source selection
 
@@ -29,7 +51,7 @@ The current database contains:
 | Homology assertions | 4,190 |
 | Primary-summand rows | 252 |
 
-The checked-in release candidate has Snapshot ID
+The historical spaces-only release described below has Snapshot ID
 `chromatic-16e4f2be46edd93a`. Its disposable SQLite database is 2,535,424
 bytes with SHA-256
 `4c9791aba051dec8b0fe5643f710e0fb674426ff96a65b730eef46c469da820f`.
@@ -46,7 +68,8 @@ stylesheet, font, or image dependencies.
 ## Mapping
 
 Physical SQLite names stay inside the Python adapter. Browser JavaScript sees
-only the denormalized `/3` read model:
+only the denormalized read model (the table below describes the preserved
+homology projection):
 
 | Atlas field | Authoritative input |
 |---|---|

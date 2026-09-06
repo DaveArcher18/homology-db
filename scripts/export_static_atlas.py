@@ -25,15 +25,58 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from homology_db.chromatic import COEFFICIENTS, ChromaticTools
+from homology_db.classical import (
+    CLASSICAL_COEFFICIENTS,
+    CLASSICAL_SCHEMA_VERSION,
+    CLASSICAL_SOURCES,
+    CLASSICAL_SPACE_IDS,
+    classical_records,
+    validate_classical_records,
+)
 
 
 SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
 PUBLIC_ATLAS_PATH = REPOSITORY_ROOT / "dist" / "atlas.html"
-READ_MODEL_VERSION = "homology-db.static-atlas/3"
+READ_MODEL_VERSION = "homology-db.static-atlas/4"
 THEORY_ID = "ordinary_homology"
 MAX_HTML_BYTES = 5 * 1024 * 1024
 DEFINITION_REVISION = 1
 DEFINITIONS = (
+    {
+        "id": "ordinary-cohomology",
+        "term": "Ordinary cohomology",
+        "body": "Cohomology assigns groups H^n(X; R) to a space and coefficient ring. The cup product combines them into a graded ring H*(X; R). This atlas shows ordinary unreduced cohomology rings, including the unit in degree zero.",
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "cup-product",
+        "term": "Cup product",
+        "body": "The cup product multiplies a class of degree p and a class of degree q to give one of degree p+q. It records information beyond the additive groups. For ordinary cohomology with commutative coefficients, swapping the factors multiplies the answer by (-1)^(pq).",
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "generator-degree",
+        "term": "Generator degree",
+        "body": "A homogeneous ring generator is a class in one cohomological degree from which other classes can be built by sums, scalar multiples, and products, together with the unit. Its degree is not its multiplicity. Degrees add under multiplication.",
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "ring-relation",
+        "term": "Ring relation",
+        "body": "Relations specify equations satisfied by ring generators. In R[x]/(x^3), powers of x generate the ring and x^3 is zero. The generator degree must also be given. A displayed zero relation is a recorded mathematical assertion; absent ring data is not a zero ring.",
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
+    {
+        "id": "coefficient-field",
+        "term": "Coefficient field",
+        "body": "Q is the field of rational numbers; F_p is the field with p elements for a prime p. Cohomology over a field has vector spaces as its additive groups. Changing the field can change both those groups and their products. Z denotes integral coefficients and is not a field.",
+        "scope": "exposition",
+        "assertion_evidence": False,
+    },
     {
         "id": "conceptual-space",
         "term": "Conceptual space",
@@ -145,6 +188,7 @@ SOURCE_REVISION_INPUTS = (
     "homology_db/__init__.py",
     "homology_db/atlas_schema.py",
     "homology_db/chromatic.py",
+    "homology_db/classical.py",
     "homology_db/migrations/0005_stable_steenrod_modules.sql",
     "homology_db/preview.py",
     "homology_db/steenrod.py",
@@ -1137,6 +1181,53 @@ def group_projection(group: dict[str, Any], coefficient: str) -> dict[str, Any]:
     }
 
 
+def rational_homology_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Extend integral homology to Q without changing the historical database."""
+    derived = []
+    for row in rows:
+        if row["coefficient_ring"] != "Z":
+            continue
+        group = row["group"]
+        if group["state"] == "exact":
+            rank = group["free_rank"]
+            projected = {"state": "exact", "dimension": rank,
+                         "plain": "0" if rank == 0 else "Q" if rank == 1 else f"Q^{rank}"}
+        else:
+            projected = {"state": group["state"], "plain": group["plain"]}
+        derived.append({
+            **row,
+            "coefficient_ring": "Q",
+            "coefficient_system": "constant:Q",
+            "group": projected,
+            "assertion_id": row["assertion_id"].replace(
+                "chromatic:assertion:", "classical:assertion:", 1
+            ).replace(":Z:", ":Q:"),
+            "computation_ids": [],
+            "derivation": {"rule": "rational-extension-of-scalars/1",
+                           "input_assertion_id": row["assertion_id"]},
+        })
+    return derived
+
+
+def classical_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    return {
+        "schema_version": CLASSICAL_SCHEMA_VERSION,
+        "space_ids": list(CLASSICAL_SPACE_IDS),
+        "coefficients": list(CLASSICAL_COEFFICIENTS),
+        "space_count": len(records),
+        "record_count": sum(len(items) for items in records.values()),
+        "content_sha256": _canonical_sha256(records),
+        "review_state": "human_review_pending",
+        "rational_homology_derivation": {
+            "id": "rational-extension-of-scalars/1",
+            "kind": "derived_from_integral_homology",
+            "statement": "Tensor integral homology with Q; torsion vanishes and free rank becomes dimension.",
+            "source_url": "https://pi.math.cornell.edu/~hatcher/AT/AT.pdf#page=275",
+            "locator": "Corollary 3A.6(a), p. 266: rational homology and integral rank",
+        },
+    }
+
+
 def validate_read_model(
     atlas: dict[str, Any], *, allow_malformed_for_review: bool = False
 ) -> None:
@@ -1187,6 +1278,29 @@ def validate_read_model(
 
     conceptual_spaces = atlas["conceptual_spaces"]
     conceptual_space_ids = [item["id"] for item in conceptual_spaces]
+    if atlas["snapshot"].get("schema_version") == READ_MODEL_VERSION:
+        projected_classical = {
+            item["id"]: item["cohomology"]
+            for item in conceptual_spaces
+            if item.get("cohomology")
+        }
+        validate_classical_records(projected_classical)
+        if any(
+            item.get("classical_core") != (item["id"] in projected_classical)
+            for item in conceptual_spaces
+        ):
+            raise ValueError("classical core labels disagree with cohomology coverage")
+        classical = atlas.get("classical", {})
+        expected_metadata = classical_projection_metadata(projected_classical)
+        if classical != {**expected_metadata, "sources": CLASSICAL_SOURCES}:
+            raise ValueError("classical metadata or sources disagree with the validated corpus")
+        if expected_metadata != atlas["snapshot"].get("classical_cohomology"):
+            raise ValueError("classical cohomology snapshot metadata mismatch")
+        for space in conceptual_spaces:
+            actual_q = [row for row in space["homology"] if row["coefficient_ring"] == "Q"]
+            expected_q = rational_homology_rows(space["homology"]) if space["classical_core"] else []
+            if actual_q != expected_q:
+                raise ValueError(f"rational homology does not match integral inputs: {space['id']}")
     slugs = [item["slug"] for item in conceptual_spaces]
     if len(conceptual_space_ids) != len(set(conceptual_space_ids)):
         raise ValueError("static atlas contains duplicate stable Conceptual-space IDs")
@@ -1591,6 +1705,8 @@ def build_read_model(
 ) -> dict[str, Any]:
     if not database_path.exists():
         raise FileNotFoundError(database_path)
+    cohomology_records = classical_records()
+    validate_classical_records(cohomology_records)
     with closing(sqlite3.connect(database_path)) as connection:
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys = ON")
@@ -1841,6 +1957,9 @@ def build_read_model(
                     }
                 )
 
+            if space_id in cohomology_records:
+                homology.extend(rational_homology_rows(homology))
+
             missing_required_fields = [
                 field
                 for field in (
@@ -1889,6 +2008,8 @@ def build_read_model(
                 ],
                 "homology_coverage": coverage,
                 "homology": homology,
+                "classical_core": space_id in cohomology_records,
+                "cohomology": cohomology_records.get(space_id, []),
                 "models": models,
                 "relations": relations_by_space[space_id],
                 "evidence": evidence,
@@ -1939,6 +2060,8 @@ def build_read_model(
     if steenrod_review_candidate:
         conceptual_spectra, spectrum_source = build_spectrum_read_model()
 
+    classical_metadata = classical_projection_metadata(cohomology_records)
+
     atlas = {
         "snapshot": {
             "snapshot_id": snapshot_row["snapshot_id"],
@@ -1980,6 +2103,7 @@ def build_read_model(
             "homology_theory": THEORY_ID,
             "homology_conventions": [],
             "homology_convention_state": "not_recorded_in_database_schema",
+            "classical_cohomology": classical_metadata,
         },
         "definitions": [
             {
@@ -1992,6 +2116,7 @@ def build_read_model(
         "sections": sections,
         "conceptual_spaces": conceptual_spaces,
         "conceptual_spectra": conceptual_spectra,
+        "classical": {**classical_metadata, "sources": CLASSICAL_SOURCES},
     }
     validate_read_model(atlas, allow_malformed_for_review=allow_malformed_for_review)
     return atlas

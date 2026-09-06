@@ -1,19 +1,19 @@
 # Work state
 
-Status: COMPLETE
+Status: IN_PROGRESS
 
 ## Objective
 
-Refine the public stable-spectrum preview from confirmed informal feedback:
-keep Home spaces-first and welcoming, add a secondary Steenrod update path,
-render stable mathematics semantically in TeX, use conservative curated
-spectrum names with raw fallbacks, and disclose provisional category language.
-Preserve all mathematical data, uncertainty, review state, deterministic
-exports, existing routes, and the separate Dan-acceptance boundary.
+Build and publish the classical student reference following the Gabriel/Dan meeting:
+retain homology, add sourced cohomology rings for a small textbook core, and
+simplify the spaces UX. The concrete 13-space scope and page sketch are recorded
+in `.scratch/classical-spaces-v1/spec.md`. User authorized autonomous implementation,
+specialist subagents, independent verification, commits, push/merge, and publication
+on the existing Pages site. No purchases or external outreach.
 
 ## Active map
 
-`.scratch/steenrod-cw49-v1/map.md`
+`.scratch/classical-spaces-v1/map.md`
 
 ## Control mode
 
@@ -23,14 +23,37 @@ without an explicit user request here.
 
 ## Current ticket
 
-None. Ticket 07, `Refine the stable atlas presentation`, is resolved and live.
+Classical-spaces ticket 01 is active alongside implementation of the bounded
+record and student-interface components. Parent owns integration and release.
 
 ## Active run lease
 
-Released by: `/root (interactive chat)`
-Released at: `2026-08-09T09:28:21Z`
+Claimed by: `/root (interactive chat)`
+Claimed at: `2026-09-06T09:01:41Z`
+Ownership: math_review — sources/review; cohomology_data — classical.py and its
+tests; student_ui — static_atlas sources; parent — export, integration, release.
 
 ## Last checkpoint
+
+- Implementation complete on `agent/classical-spaces-v1`: 65 sourced ring records,
+  88 rational homology derivations, the student UI, contextual JSON downloads,
+  and read-model `/4`. Independent mathematical and integration review passed;
+  exact implementation input hash `8234c3794ca3d18070a9eb50161ba251da30dff75b6d55469ac4c2c714676388`.
+  All 15 classical tests and the accepted-spectrum deterministic release check
+  pass. Browser checks passed 65 field views, 42 space routes, 49 spectrum routes,
+  reduced-state isolation, keyboard/search/history/knowl/download interactions,
+  and desktop/390/320-pixel layouts. Files are now frozen for the final source
+  commit, source-bound artifact build, full regression run and Pages publication.
+  The final full suite must run after the freeze: an earlier concurrent run
+  correctly rejected fixtures bound to pre-repair source hashes.
+
+- 2026-09-06: Read the planning-meeting transcript and grounded the next iteration
+  in the existing corpus/exporter/UI. David selected both theories with rings
+  central, a small textbook core, and fields first retaining Z. Recorded the
+  proposed 13 existing spaces, page reading order, coverage/provenance contract,
+  source-qualification frontier, and acceptance scenarios. This is planning only;
+  no data, runtime, artifact, or deployment changes were made. Existing untracked
+  stable-preview artifacts and presentation-feedback files remain untouched.
 
 - Follow-up friend feedback is captured as open ticket 08, `Explore nested
   mathematical knowls`. A knowl is treated as reusable inline exposition, not
@@ -418,18 +441,15 @@ Released at: `2026-08-09T09:28:21Z`
 
 ## Exact next action
 
-No automatic continuation. The reviewed atlas is ready for Gabriel and other
-testers at <https://davearcher18.github.io/homology-db/>. New feedback should
-start a fresh scoped ticket.
+Commit reviewed source, build the public-preview artifact from that clean source,
+verify the full regression suite and deterministic rebuild, then publish and
+verify Pages against committed bytes. No external outreach or purchases.
 
 ## Verification state
 
-Gabriel-feedback source and artifact verification is complete. The runtime and
-two-axis closure reviews report no remaining code/content blocker. The full
-suite passes 65/65 including artifact parity; two release builds are
-byte-identical at SHA-256 `7ae2d0a8…eca1a178`, and the embedded source-input
-state is clean. GitHub Pages run `30002770407` succeeded, and the live HTTP
-body is byte-identical to the committed artifact.
+Classical mathematical and integration reviews pass; browser acceptance passes.
+Final source-bound regression, artifact verification, and deployment are pending.
+Historical verification below describes earlier releases, not this candidate.
 
 ### Historical verification checkpoints
 

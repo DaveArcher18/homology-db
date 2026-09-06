@@ -21,11 +21,17 @@
     vee: "∨",
     to: "→",
     oplus: "⊕",
+    cup: "∪",
+    times: "×",
+    cong: "≅",
+    neq: "≠",
+    Lambda: "Λ",
     ast: "∗",
     ldots: "…",
   });
   const blackboardCharacters = Object.freeze({
     Z: "ℤ",
+    Q: "ℚ",
     R: "ℝ",
     C: "ℂ",
     H: "ℍ",
@@ -99,12 +105,14 @@
 
   function coefficientDisplay(coefficient) {
     if (coefficient === "Z") return "ℤ";
+    if (coefficient === "Q") return "ℚ";
     const fieldMatch = String(coefficient).match(/^F(\d+)$/);
     return fieldMatch ? `𝔽${fieldMatch[1]}` : String(coefficient);
   }
 
   function coefficientTex(coefficient) {
     if (coefficient === "Z") return "\\mathbb{Z}";
+    if (coefficient === "Q") return "\\mathbb{Q}";
     const fieldMatch = String(coefficient).match(/^F(\d+)$/);
     return fieldMatch
       ? `\\mathbb{F}_{${fieldMatch[1]}}`
@@ -257,6 +265,55 @@
         group.dimension === 1
           ? coefficientDisplay(row.coefficient_ring)
           : `${group.dimension} copies of ${coefficientDisplay(row.coefficient_ring)}`,
+    };
+  }
+
+  function monomialTex(powers) {
+    return Object.entries(powers ?? {})
+      .filter(([, power]) => power !== 0)
+      .map(([generator, power]) => power === 1
+        ? generator : `${generator}^{${power}}`)
+      .join(" ") || "1";
+  }
+
+  function relationTex(relation) {
+    const terms = Array.isArray(relation?.terms) ? relation.terms : [];
+    if (!terms.length) return "";
+    return terms.map((term, index) => {
+      const value = term.coefficient;
+      const monomial = monomialTex(term.powers);
+      const magnitude = Math.abs(value);
+      const coefficient = magnitude === 1 && monomial !== "1"
+        ? "" : String(magnitude);
+      const sign = value < 0 ? (index ? " - " : "-") : (index ? " + " : "");
+      return `${sign}${coefficient}${monomial === "1" ? "" : monomial}`;
+    }).join("") + " = 0";
+  }
+
+  function cohomologyCoveragePresentation(record) {
+    const coverage = record?.coverage ?? {};
+    const groups = Array.isArray(record?.groups) ? record.groups : [];
+    const through = coverage.through_degree;
+    const rowsByDegree = new Map(groups.map((row) => [row.degree, row]));
+    const exactThrough = record?.knowledge_state === "exact"
+      && Number.isInteger(through) && through >= 0
+      && Array.from({ length: through + 1 }, (_, degree) => {
+        const row = rowsByDegree.get(degree);
+        return Number.isInteger(row?.dimension) && row.dimension >= 0;
+      }).every(Boolean);
+    if (coverage.kind === "complete_finite" && exactThrough
+      && Number.isInteger(coverage.upper_vanishing_starts_at)
+      && coverage.upper_vanishing_starts_at === through + 1) {
+      return {
+        complete: true,
+        label: "All degrees",
+        detail: `Groups vanish in every degree above ${through}.`,
+      };
+    }
+    return {
+      complete: false,
+      label: "Recorded degrees only",
+      detail: "No vanishing claim is made for unrecorded degrees.",
     };
   }
 
@@ -439,12 +496,15 @@
     basisSumTex,
     coefficientDisplay,
     coefficientTex,
+    cohomologyCoveragePresentation,
     coverageFor,
     coveragePresentation,
     firstRecorded,
     groupPresentation,
     isSupportedTex,
+    monomialTex,
     parseTex,
+    relationTex,
     simpleTexCommands,
     spectrumNamePresentation,
     spectrumNameTex,

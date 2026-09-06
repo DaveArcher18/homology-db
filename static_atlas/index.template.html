@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>Homology Atlas</title>
-  <meta name="description" content="A browsable development snapshot of spaces and their ordinary homology">
+  <meta name="description" content="A classical topology reference: ordinary homology and cohomology rings of familiar spaces, with coefficients, cup products, and sources.">
   <script>
     (() => {
       const key = "homology-atlas-theme-v1";
@@ -112,6 +112,7 @@
     }
 
     .steenrod-table-wrap {
+      position: relative;
       overflow-x: auto;
       margin-block: 1rem;
       border: 1px solid var(--border);
@@ -266,10 +267,6 @@
             <span aria-hidden="true">𝒳</span>
             All spaces
           </a>
-          <a id="nav-spectra" class="primary-nav-link" href="#spectra" hidden>
-            <span aria-hidden="true">𝕊</span>
-            Stable spectra
-          </a>
           <a id="request-space-index" class="primary-nav-link index-request mobile-only"
             href="https://github.com/DaveArcher18/homology-db/issues/new?template=space-request.yml"
             target="_blank" rel="noopener noreferrer">
@@ -280,6 +277,7 @@
 
         <details id="snapshot-about" class="snapshot-about">
           <summary>About this snapshot</summary>
+          <a id="nav-spectra" class="secondary-resource-link" href="#spectra" hidden>Stable spectra preview →</a>
           <div id="snapshot-detail"></div>
         </details>
       </div>
@@ -297,7 +295,7 @@
       <p>Unknown, missing, and not-computed states are never treated as zero.</p>
       <nav aria-label="Footer">
         <a href="#spaces">Browse spaces</a>
-        <a id="footer-spectra" href="#spectra" hidden>Browse stable spectra</a>
+        <a id="footer-spectra" href="#spectra" hidden>Stable spectra preview</a>
       </nav>
     </div>
   </footer>
@@ -349,7 +347,6 @@
       );
       navSpectra.hidden = false;
       footerSpectra.hidden = false;
-      document.getElementById("atlas-index-title").textContent = "Atlas";
 
       function element(tagName, className, text) {
         const node = document.createElement(tagName);
