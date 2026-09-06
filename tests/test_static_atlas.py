@@ -524,7 +524,7 @@ console.log(JSON.stringify({
                 "Computation runs",
                 "Data quality",
                 "Source locator",
-                "Model & sources",
+            "Technical model and evidence records",
                 "Classification & record",
                 "serializedSpaceRecord",
                 "export_context:",

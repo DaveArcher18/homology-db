@@ -3025,3 +3025,76 @@ pre {
 .tex-text { font-family:var(--sans); font-style:normal; }
 @media (min-width:60rem) { .wb-controls { grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) auto; } }
 @media (min-width:40.01rem) and (max-width:59.99rem) { .wb-family-field { grid-column:1/-1; } .wb-primary { grid-column:1/-1; } }
+
+/* Reading-first space pages: results stay visible, detail remains available. */
+.space-page { max-width:76rem; margin-inline:auto; }
+.space-page .breadcrumbs { margin-bottom:1.25rem; }
+.space-title-facts,.wb-title-row { display:flex; flex-wrap:wrap; align-items:center; gap:.55rem 1rem; }
+.space-title-facts { margin:.6rem 0 0; font:500 .8rem var(--sans); color:var(--text-muted); }
+.space-review-state { color:var(--warning); }
+.space-page .space-summary { font-size:1.05rem; line-height:1.6; max-width:68ch; }
+.space-page .shared-coefficient-controls { margin-top:1.2rem; }
+.space-theory-results { display:grid; grid-template-columns:minmax(0,1fr); gap:1.2rem; }
+.space-theory-results > .space-section { min-width:0; max-width:none; margin-top:1.1rem; }
+.space-theory-results .space-section-heading { border-top:0; padding-top:0; }
+.space-theory-results .cohomology-unrecorded { margin-top:0; padding:.8rem 1rem; border-left:3px solid var(--border-strong); background:var(--surface-muted); }
+.cohomology-unrecorded .space-section-heading { margin-bottom:.3rem; }
+.cohomology-unrecorded .space-section-heading h2 { font:600 .9rem var(--sans); }
+.cohomology-missing { margin:.3rem 0; font-size:.86rem; line-height:1.6; }
+.space-theory-results .ring-presentation { font-size:1.4rem; }
+.space-theory-results .homology-section { max-width:56rem; }
+.space-page .provenance-summary { display:flex; flex-wrap:wrap; align-items:baseline; gap:.35rem .65rem; margin:1rem 0 0; padding:.75rem 0; }
+.provenance-locator { display:block; flex-basis:100%; font-size:.78rem; line-height:1.5; color:var(--text-muted); }
+.space-readable-sources { margin-bottom:1.25rem; }
+.space-readable-sources h3 { font:600 .95rem var(--sans); }
+.space-page .record-details { margin-top:2rem; max-width:none; }
+.space-readable-sources .citation-list { max-width:70ch; }
+.show-recorded-degrees { min-height:2.5rem; padding:.45rem 0; }
+.additional-homology-degree[hidden] { display:none; }
+.wb-intro .page-title { margin:0; line-height:1.25; }
+.wb-title-row { margin:.4rem 0; }
+.wb-intro .page-kicker { margin-top:0; }
+.wb-intro > p:last-child { margin:.35rem 0 0; }
+.wb-controls { margin-top:1.1rem; }
+.wb-control-note { margin:.45rem 0; }
+.wb-utilities { margin:.5rem 0; }
+.wb-reading-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem 1.25rem; padding:.4rem 0 .7rem; font-size:.8rem; }
+.wb-reading-actions button { font-size:inherit; }
+.wb-reading-actions a,.wb-reading-actions button { min-height:2.25rem; display:inline-flex; align-items:center; }
+.wb-section-title { margin:1.1rem 0 .5rem; font:600 1.2rem var(--serif); }
+.wb-wide .wb-panel-layout { align-items:start; grid-template-columns:minmax(13rem,1fr) minmax(0,1.4fr); gap:1.5rem; }
+.wb-groups { align-self:start; }
+.wb-groups td,.wb-groups th { padding:.35rem .4rem; height:2.1rem; }
+.wb-groups th { font-size:.78rem; }
+.wb-groups .wb-different-groups { background:var(--accent-soft); }
+.wb-difference-note { color:var(--text-muted); font-size:.76rem; line-height:1.5; }
+.wb-coverage { padding:.45rem 0; font-size:.75rem; line-height:1.5; }
+.wb-rules summary,.wb-products summary { min-height:2rem; display:list-item; line-height:1.6; cursor:pointer; }
+.wb-rules[open],.wb-products[open] { padding-top:.8rem; }
+.wb-rule-identity { margin:1rem 0; }
+.wb-provenance { scroll-margin-top:calc(var(--header-height) + 1rem); }
+.wb-finite-section { grid-column:1/-1; min-width:0; }
+.wb-finite-scroll { position:relative; max-width:100%; overflow-x:auto; padding:.2rem .2rem .8rem; overscroll-behavior-x:contain; }
+.wb-finite-grid { display:grid; grid-template-columns:repeat(5,minmax(15rem,1fr)); gap:.85rem; }
+.wb-finite-grid .wb-coefficient { grid-column:auto; margin:0; }
+.wb-finite-section > .wb-muted { margin:.3rem 0 .7rem; }
+@media (min-width:60rem) {
+  .space-theory-results.has-cohomology-ring { grid-template-columns:repeat(2,minmax(0,1fr)); gap:2.5rem; }
+  .space-theory-results.has-cohomology-ring > .cohomology-section { border-left:1px solid var(--border); padding-left:2rem; }
+}
+@media (max-width:40rem) {
+  .space-page .space-header { grid-template-columns:minmax(0,1fr); gap:.3rem; }
+  .space-page .space-actions { justify-content:flex-start; flex-wrap:wrap; }
+  .space-title-facts { font-size:.76rem; }
+  .wb-title-row .page-title { font-size:2rem; }
+  .wb-reading-actions { gap:.2rem 1rem; }
+  .wb-reading-actions a,.wb-reading-actions button { min-height:2.75rem; }
+  .wb-wide .wb-panel-layout { display:block; }
+  .wb-section-title { margin-top:.75rem; }
+}
+@media print {
+  .additional-homology-degree[hidden] { display:table-row !important; }
+  .show-recorded-degrees,.degree-display-note,.wb-reading-actions { display:none; }
+  .wb-finite-scroll { overflow:visible; }
+  .wb-finite-grid { display:block; }
+}

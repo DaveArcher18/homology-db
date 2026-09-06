@@ -1,19 +1,17 @@
 # Work state
 
-Status: COMPLETE
+Status: IN_PROGRESS
 
 ## Objective
 
-Implement and publish the approved navigation repair in
-`.scratch/navigation-repair-v1/spec.md`: discoverable native family selector,
-dedicated About route, visible wrapping navigation and responsive controls.
-Preserve mathematics, review bindings, data, downloads and existing links.
-User authorized specialist review, commits, push and existing Pages publication.
-No purchases or outreach.
+Critically audit and improve every static space page using the user's Notion UX
+guidance. Improve reading hierarchy, clarity and access while preserving formulas,
+citations, review bindings, downloads and links. No settings agent, backend or
+mathematical expansion. Existing autonomous verification/publication authority.
 
 ## Active map
 
-`.scratch/navigation-repair-v1/map.md`
+`.scratch/space-reading-v1/map.md`
 
 ## Control mode
 
@@ -23,15 +21,20 @@ without an explicit user request here.
 
 ## Current ticket
 
-`.scratch/navigation-repair-v1/issues/01-repair.md` — native picker, About and responsive navigation.
+`.scratch/space-reading-v1/issues/01-reading.md` — audit and improve static space pages.
 
 ## Active run lease
 
 Claimed by: `/root (interactive chat)`
-Heartbeat: `2026-09-06T12:28:04Z` — completed, lease released.
+Heartbeat: `2026-09-06` — active interactive audit.
 
 ## Last checkpoint
 
+- Space reading implementation complete for final review/release. All 42 pages
+  visually audited; 169 coefficient views pass the new browser reading suite.
+  Existing family/navigation suites pass, including 11 widths and browser zoom.
+  Mathematical inputs are unchanged. Codex CUA remains unavailable while the Mac
+  is locked; isolated Chrome checks are not represented as in-app verification.
 - COMPLETE: navigation repair live. Source346af91, release8e5f3a6,
   Pages run34033019164 succeeded; HTTP200 live bytes match5,270,111-byte
   artifact SHA-256`912776cb004a7312a0272ccc4e42170140b95fa3a154bd0a6f59abfd2136a98e`.
@@ -503,17 +506,18 @@ Heartbeat: `2026-09-06T12:28:04Z` — completed, lease released.
 
 ## Exact next action
 
-No automatic continuation. Navigation repair complete; await actual user feedback.
-Active map's TESTLOG.md records exact source, artifact, deployment and live checks.
+Finish independent review, freeze source, build the exact release artifact, run
+the full regression and deterministic gate, then publish and verify live bytes
+and browser interactions under the user's existing authorization.
 
 ## Verification state
 
-Navigation source review and189-test suite pass (three optional skips). Both
-final-artifact Chrome suites pass, including11 widths,33 picker selections,
-keyboard, About history/reload/resize, and real125%/200% zoom. Codex in-app checks
-confirm all families, About visibility and preserved return state. Deterministic
-rebuild gate passes. Pages publication and exact-byte/live browser checks pass.
-Mathematical sources and review bindings are unchanged; human review stays pending.
+Current reading preview: all 42 routes, 169 coefficient views, degree disclosures,
+print, copied state/reload/history, keyboard field scrolling, source focus and
+dark theme pass. Existing navigation and family browser suites pass. Full frozen
+source regression and publication are pending. Mathematical sources and review
+bindings are unchanged; human review stays pending. Mac lock prevents current
+Codex in-app browser verification; Chrome results are recorded separately.
 Historical verification below describes earlier releases, not this candidate.
 
 ### Historical verification checkpoints

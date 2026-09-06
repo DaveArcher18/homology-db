@@ -536,8 +536,15 @@
 
   function permalinkFor(space) {
     const url = new URL(window.location.href);
-    url.hash = `space=${encodeURIComponent(space.slug)}`;
+    const view = homologyViewFor(space);
+    url.hash = `space=${encodeURIComponent(space.slug)}?${new URLSearchParams({coefficient:view.coefficient,reduced:view.reduced ? "1" : "0"})}`;
     return url.href;
+  }
+
+  function rememberSpaceView(space) {
+    if (state.route.kind === "space" && state.route.space.id === space.id) {
+      window.history.replaceState(null, "", permalinkFor(space));
+    }
   }
 
   function serializedSpaceRecord(space) {
@@ -997,7 +1004,7 @@
       input.checked = coefficient === view.coefficient;
       option.append(
         input,
-        element("span", "", coefficientDisplay(coefficient)),
+        renderTex(coefficientTex(coefficient), coefficientDisplay(coefficient), "math-inline"),
       );
       coefficientOptions.append(option);
     });
@@ -1012,6 +1019,7 @@
       current.coefficient = event.target.value;
       renderCohomology(space, cohomology);
       renderHomology(space, homology);
+      rememberSpaceView(space);
       announce(`${space.name.plain}: cohomology and homology with ${coefficientDisplay(current.coefficient)} coefficients.`);
     });
     return controls;
@@ -1057,6 +1065,7 @@
         current.reduced = event.target.value === "true";
       }
       renderHomology(space, host);
+      rememberSpaceView(space);
       announce(
         `${space.name.plain}: ${current.reduced ? "reduced" : "unreduced"} homology with ${coefficientDisplay(current.coefficient)} coefficients.`,
       );
@@ -1071,14 +1080,14 @@
     const records = asArray(space.cohomology)
       .filter((record) => record.coefficient === coefficient);
     const record = records.length === 1 ? records[0] : null;
+    const hasRing = Boolean(record?.knowledge_state === "exact" && record.presentation?.tex && Array.isArray(record.groups));
+    host.classList.toggle("cohomology-unrecorded", !hasRing);
+    host.closest(".space-theory-results")?.classList.toggle("has-cohomology-ring", hasRing);
     const content = element("div", "cohomology-rendered");
     if (!record || record.knowledge_state !== "exact"
       || !record.presentation?.tex || !Array.isArray(record.groups)) {
       content.append(
-        element("p", "cohomology-missing empty-state", `Not recorded with ${coefficientDisplay(coefficient)} coefficients.`),
-        element("p", "table-note", coefficient === "Z"
-          ? "Integral homology is available below. An integral cohomology ring is not inferred from the field results."
-          : "This snapshot does not supply a cohomology-ring presentation for this selection. Missing data does not mean the ring is zero."),
+        element("p", "cohomology-missing", `Cohomology is not recorded with ${coefficientDisplay(coefficient)} coefficients. This does not mean it is zero.`),
       );
       dynamic.replaceChildren(content);
       return;
@@ -1308,13 +1317,14 @@
       row.append(cell);
       body.append(row);
     } else {
-      rows.forEach((row) => {
+      rows.forEach((row, index) => {
         const tableRow = element("tr");
+        if (index >= 9) { tableRow.hidden = true; tableRow.classList.add("additional-homology-degree"); }
         const degree = element("th", "degree-cell");
         degree.scope = "row";
         degree.setAttribute("headers", degreeHeader.id);
         degree.append(
-          renderTex(`H_{${row.degree}}`, `Homology degree ${row.degree}`),
+          renderTex(`${view.reduced ? "\\widetilde{H}" : "H"}_{${row.degree}}`, `${view.reduced ? "Reduced h" : "H"}omology degree ${row.degree}`),
         );
         const groupCell = element(
           "td",
@@ -1354,6 +1364,19 @@
     table.append(caption, head, body);
     tableWrap.append(table);
     content.append(tableWrap);
+    if (rows.length > 9) {
+      const scope = element("p", "table-note degree-display-note", `Showing the first 9 of ${rows.length} recorded degrees. This is a display limit, not a coverage limit.`);
+      const expand = element("button", "text-button show-recorded-degrees", "Show all recorded degrees");
+      expand.type = "button"; expand.setAttribute("aria-expanded", "false");
+      expand.addEventListener("click", () => {
+        const open = expand.getAttribute("aria-expanded") !== "true";
+        body.querySelectorAll(".additional-homology-degree").forEach(row => { row.hidden = !open; });
+        expand.setAttribute("aria-expanded", String(open));
+        expand.textContent = open ? "Show first 9 recorded degrees" : "Show all recorded degrees";
+        scope.textContent = open ? `Showing all ${rows.length} recorded degrees. Coverage is stated above.` : `Showing the first 9 of ${rows.length} recorded degrees. This is a display limit, not a coverage limit.`;
+      });
+      content.append(scope, expand);
+    }
     dynamic.replaceChildren(content);
   }
 
@@ -1634,38 +1657,29 @@
     content.append(list);
   }
 
+  function supportingCitations(space) {
+    const references = evidenceRecords(space).flatMap(record => citationRecords(record));
+    const seen = new Set();
+    return references.filter(reference => {
+      if (!reference || typeof reference !== "object" || !String(reference.role ?? "").split("_").includes("homology")) return false;
+      const key = JSON.stringify([reference.url, reference.title, reference.locator, reference.role]);
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+  }
+
   function buildProvenanceSummary(space) {
-    const evidence = evidenceRecords(space);
-    const firstEvidence = evidence[0];
-    const firstCitation = citationRecords(firstEvidence)[0];
-    const sourceTitle =
-      typeof firstCitation === "string"
-        ? firstCitation
-        : firstRecorded(
-          firstCitation?.title,
-          firstEvidence?.citation,
-          "Source not recorded",
-        );
+    const citation = supportingCitations(space)[0];
     const summary = element("aside", "provenance-summary");
     summary.setAttribute("aria-label", "Provenance");
-    const copy = element("div");
-    const source =
-      outboundLink(
-        `${sourceTitle} ↗`,
-        typeof firstCitation === "object" ? firstCitation?.url : null,
-        `Open source: ${sourceTitle}`,
-      )
-      ?? element("strong", "", sourceTitle);
-    copy.append(
-      element("span", "provenance-label", "Source"),
-      source,
-      element(
-        "span",
-        "provenance-reliability",
-        humanize(firstEvidence?.reliability ?? "reliability not recorded"),
-      ),
-    );
-    summary.append(copy);
+    if (!citation) {
+      summary.append(element("p", "", "A supporting homology source is not recorded."));
+      return summary;
+    }
+    const title = citationTitle(citation);
+    summary.append(element("span", "provenance-label", "Homology source"),
+      outboundLink(title + " ↗", citation.url, "Open supporting homology source: " + title) ?? element("strong", "", title));
+    if (citation.locator) summary.append(element("span", "provenance-locator", citation.locator));
     return summary;
   }
 
@@ -1752,7 +1766,9 @@
     const copyLink = element("button", "text-button", "Copy link");
     copyLink.type = "button";
     copyLink.addEventListener("click", () => copyText(permalinkFor(space), copyLink));
-    actions.append(copyLink);
+    const headerDownload = element("button", "text-button", "Download space JSON");
+    headerDownload.type = "button"; headerDownload.addEventListener("click", () => downloadRecord(space));
+    actions.append(copyLink, headerDownload);
     header.append(actions);
     if (reviewModeEnabled) {
       reviewToggle = element(
@@ -1771,6 +1787,12 @@
     const dimensionLabel = isInfiniteFiniteType(space)
       ? "Infinite dimensional · finite type"
       : (dimension ?? "Not recorded");
+    const titleFacts = element("p", "space-title-facts");
+    titleFacts.append(element("span", "space-dimension", `Dimension: ${dimensionLabel}`));
+    const reviewPending = evidenceRecords(space).some(record => record.release_status === "development_corpus_not_externally_reviewed")
+      || asArray(space.cohomology).some(record => record.provenance?.review_state === "human_review_pending");
+    titleFacts.append(document.createTextNode(" · "), element("span", "space-review-state", reviewPending ? "Human review pending" : "Human review not recorded"));
+    titleCopy.append(titleFacts);
     const metadataItems = [
       ["Dimension", dimensionLabel],
       ["Aliases", asArray(space.aliases).join(", ") || "None recorded"],
@@ -1809,7 +1831,9 @@
       buildHomologyControls(space, homology),
       element("div", "homology-dynamic"),
     );
-    view.append(buildCoefficientControls(space, cohomology, homology), cohomology, homology);
+    const results = element("div", "space-theory-results");
+    results.append(homology, cohomology);
+    view.append(buildCoefficientControls(space, cohomology, homology), results);
     renderCohomology(space, cohomology);
     renderHomology(space, homology);
     homology.append(buildProvenanceSummary(space));
@@ -1840,17 +1864,20 @@
       "section",
       "record-details entry-details evidence-details space-section",
     );
-    records.append(element("h2", "", "Further details"));
-    const modelBlock = detailsBlock("Model & sources");
+    records.append(element("h2", "", "Sources and details"));
+    const readableSources = element("section", "space-readable-sources");
+    readableSources.append(element("h3", "", "Supporting homology sources"));
+    const citations = supportingCitations(space);
+    const citationList = element("ul", "citation-list");
+    citations.forEach(reference => citationList.append(renderCitation(reference)));
+    readableSources.append(citations.length ? citationList : element("p", "", "Supporting homology sources are not recorded."));
+    records.append(readableSources);
+    const modelBlock = detailsBlock("Technical model and evidence records");
     const modelDefinition = element("p", "detail-definition");
     modelDefinition.append(buildKnowl("model", "What is a Model?"));
     modelBlock.content.append(modelDefinition, metadata);
     renderModels(space, modelBlock.content);
     renderEvidence(space, modelBlock.content);
-    const downloadJson = element("button", "text-button", "Download space JSON");
-    downloadJson.type = "button";
-    downloadJson.addEventListener("click", () => downloadRecord(space));
-    modelBlock.content.append(downloadJson);
     records.append(modelBlock.details);
 
     const relations = asArray(space.relations);
@@ -1965,11 +1992,17 @@
     const spaceMatch = hash.match(/^#space=(.+)$/);
     if (spaceMatch) {
       try {
-        const slug = decodeURIComponent(spaceMatch[1]);
+        const [encodedSlug, query = ""] = spaceMatch[1].split("?", 2);
+        const slug = decodeURIComponent(encodedSlug);
         const space = spacesBySlug.get(slug);
-        return space
-          ? (window.HomologyWorkbench?.legacy(space) || { kind: "space", space })
-          : { kind: "not-found", requested: hash };
+        if (!space) return { kind: "not-found", requested: hash };
+        const params = new URLSearchParams(query);
+        const viewState = {};
+        if (availableCoefficients(space).includes(params.get("coefficient"))) viewState.coefficient = params.get("coefficient");
+        if (["0", "1"].includes(params.get("reduced"))) viewState.reduced = params.get("reduced") === "1";
+        const legacy = window.HomologyWorkbench?.legacy(space);
+        if (legacy) return {...legacy, ...(viewState.reduced !== undefined ? {reduced:viewState.reduced} : {})};
+        return { kind: "space", space, viewState };
       } catch (_error) {
         return { kind: "not-found", requested: hash };
       }
@@ -2011,6 +2044,7 @@
   function renderRoute({ initial = false } = {}) {
     const route = parseRoute();
     state.route = route;
+    if (route.kind === "space") Object.assign(homologyViewFor(route.space), route.viewState || {});
     if (["home", "workbench"].includes(route.kind) && validWorkbenchHash(window.location.hash || "#home")) {
       lastWorkbenchHash = window.location.hash || "#home";
       navHome.href = lastWorkbenchHash;
