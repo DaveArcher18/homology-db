@@ -1,6 +1,7 @@
 # F-01 — Textbook reference ready for human QA
 
-Status: agreed for implementation by user, 2026-09-06. Human QA pending.
+Status: implemented, independently verified and live, 2026-09-06. Human QA and
+mathematical acceptance pending. Release5bf19f8; docs/QA_WITH_GABRIEL.md.
 
 ## Outcome
 

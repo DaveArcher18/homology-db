@@ -59,3 +59,29 @@ Disposition: **PASS for this bounded independent integration review; no
 remaining findings**. This does not replace root's release-wide verification
 or live publication checks. No implementation or production review data was
 edited by this verifier; only this report was written. Human QA remains pending.
+
+## Transport verification addendum — 2026-09-06
+
+The GitHub API transport creates a new commit identity without changing the
+reviewed implementation. I independently checked the isolated release checkout:
+
+- Source commit: `63116513cc59565e88877c41362a0461862f56a6`.
+- Source-input SHA-256: `ffdf2030163d6df28a615414da8b7850b420fdd5e4eaa813dd1bb73dde4e5c84`, identical to the independently reviewed candidate above.
+- Full committed-tree comparison with local release `be891b7f5675140f592c4b2fa2f6d52dbc57668d` differed only in `WORKSTATE.md` and the then-unrebuilt `dist/atlas.html`.
+- `WORKSTATE.md` retained upstream `e33e830` blob `bff719185431228d0c88ee0ee8ef764b07b765bb`; it is not a source input.
+- No differences from `ec30547` in `homology_db`, `static_atlas`, `scripts`, `tests`, or `.github`. The source-input working tree was clean.
+
+**PASS:** original content-level mathematical and implementation reviews remain
+applicable by this exact-tree and input-hash check. Artifact identity necessarily
+changes with the transported source commit and must use fresh release evidence.
+
+Root reports the rebuilt artifact SHA-256 as
+`80f2adaa588657c8cf33c8450f8ae7ad037d3bdb46671fdbaf0239de0f89d974`,
+in release `5bf19f8ca49009e412ec73247acd231e9740b1b5`. Root also reports fresh
+unittest discovery: 211 tests, OK with 3 optional skips, 222.844 seconds; all
+four Chrome suites pass; deterministic release gate passes. These fresh runs
+are **root-reported, not independently rerun by this verifier**.
+
+Live publication checks remain pending. Human QA remains pending, and locked
+Codex in-app verification remains not verifiable. This addendum performs no
+remote action and does not claim a live deployment outcome.

@@ -66,3 +66,29 @@ Existing SQLite ResourceWarnings are non-failing. No source changes during final
 fullsuite. Remote main confirmed e33e830 before authorized nonforce publication.
 Live publication and verification pending.
 Human QA journey: docs/QA_WITH_GABRIEL.md; acceptance remains pending.
+
+## Publication identity refresh
+
+Connected publication re-created the source commit as
+63116513cc59565e88877c41362a0461862f56a6. Independent full-tree comparison found
+only two deliberate differences from local be891b7: the old artifact awaiting
+rebuild and WORKSTATE.md retained unchanged from upstream. Every implementation,
+test, source and review-form blob is identical. Source-input SHA-256 remains
+ffdf2030163d6df28a615414da8b7850b420fdd5e4eaa813dd1bb73dde4e5c84.
+
+Fresh artifact: 5,386,015 bytes; SHA-256
+80f2adaa588657c8cf33c8450f8ae7ad037d3bdb46671fdbaf0239de0f89d974.
+Deterministic --verify-rebuild passes against this source. All four exact-artifact
+Chrome suites pass with the same coverage recorded above and zero page errors.
+The original content-level independent reviews remain applicable by exact hashes.
+Fresh full unittest discovery: 211tests, OK (3optional skips), 222.844 seconds.
+Release commit5bf19f8ca49009e412ec73247acd231e9740b1b5 changes only the artifact
+from source63116513. Remote Git blob equals local rebuilt file exactly.
+Main advanced non-force only after all checks; preceding main was e33e830.
+Pages run34039872067 succeeded. Live HTTP200 is5,386,015bytes and equals the
+artifact SHA-25680f2adaa588657c8cf33c8450f8ae7ad037d3bdb46671fdbaf0239de0f89d974.
+All four browser suites also pass against the live GitHub Pages URL:42mapentries,
+3comparisons,75records,171coefficientviews,11widths,33pickerselections, keyboard,
+125%/200%zoom,21familyviews,42legacyspaces and49spectra, with zero page errors.
+Codex in-app verification remains unavailable, not passed. No production review
+was added. The three tasks are complete for human QA, not human acceptance.
