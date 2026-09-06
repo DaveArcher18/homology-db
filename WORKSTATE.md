@@ -1,6 +1,6 @@
 # Work state
 
-Status: IN_PROGRESS
+Status: COMPLETE
 
 ## Objective
 
@@ -28,9 +28,17 @@ without an explicit user request here.
 ## Active run lease
 
 Claimed by: `/root (interactive chat)`
-Heartbeat: `2026-09-06T12:23:40Z`
+Heartbeat: `2026-09-06T12:28:04Z` — completed, lease released.
 
 ## Last checkpoint
+
+- COMPLETE: navigation repair live. Source346af91, release8e5f3a6,
+  Pages run34033019164 succeeded; HTTP200 live bytes match5,270,111-byte
+  artifact SHA-256`912776cb004a7312a0272ccc4e42170140b95fa3a154bd0a6f59abfd2136a98e`.
+  Final/live browser suites pass11 widths,33 picker selections,actual125%/200%
+  zoom,21 family views,42 legacy spaces,49 spectra; Codex live About/return
+  interactions pass. Full189 tests OK (three optional skips), independent review
+  and deterministic rebuild pass. Mathematics and human-review bindings unchanged.
 
 - Navigation repair source346af91 verified:189 tests (three optional skips),
   independent source review, deterministic rebuild, both final-artifact Chrome
@@ -495,8 +503,8 @@ Heartbeat: `2026-09-06T12:23:40Z`
 
 ## Exact next action
 
-Commit the verified release artifact, publish and verify live bytes and browser
-interactions. Close the navigation map only after those checks pass.
+No automatic continuation. Navigation repair complete; await actual user feedback.
+Active map's TESTLOG.md records exact source, artifact, deployment and live checks.
 
 ## Verification state
 
@@ -504,7 +512,7 @@ Navigation source review and189-test suite pass (three optional skips). Both
 final-artifact Chrome suites pass, including11 widths,33 picker selections,
 keyboard, About history/reload/resize, and real125%/200% zoom. Codex in-app checks
 confirm all families, About visibility and preserved return state. Deterministic
-rebuild gate passes. Publication and final live verification pending.
+rebuild gate passes. Pages publication and exact-byte/live browser checks pass.
 Mathematical sources and review bindings are unchanged; human review stays pending.
 Historical verification below describes earlier releases, not this candidate.
 

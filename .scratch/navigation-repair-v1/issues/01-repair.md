@@ -1,5 +1,5 @@
 Type: task
-Status: claimed
+Status: resolved
 Claimed by: /root (interactive chat)
 Claimed at: 2026-09-06T11:51:26Z
 Blocked by:
@@ -12,5 +12,7 @@ Independent review after implementation. Preserve unrelated untracked files.
 ## Checkpoint
 
 Implemented native select, dedicated About, wrapping nav and responsive form.
-Independent review findings resolved. Preview Chrome/in-app checks pass; see
-../TESTLOG.md. Frozen for source commit, artifact build, full suite and release.
+Independent review findings resolved. Full189-test suite passes (three optional
+skips), deterministic rebuild and final/live Chrome suites pass. Published8e5f3a6
+through Pages run34033019164; live bytes identical. Codex live interaction
+checks pass. See ../TESTLOG.md. Mathematics and bindings unchanged.
