@@ -46,4 +46,14 @@ reported to the user; isolated Chrome is not claimed to verify the in-app browse
 
 ## Frozen release
 
-Pending source freeze, full suite, deterministic rebuild and live verification.
+Source commit: 66b550709b538ddbffd59194560be67dc1a1800c.
+Independent review passes on exact source hashes in review.md.
+Full unittest discovery: 189 tests, OK, 3 optional skips, 215.688 seconds.
+Existing non-failing SQLite ResourceWarnings remain.
+All three Chrome suites pass again on the frozen dist/atlas.html artifact.
+Deterministic release gate with --verify-rebuild passes in public_review_preview.
+Artifact: 5,280,258 bytes; SHA-256
+516648907cebad4ee275f4c8bf7bffb5a93a1b01557f7e449066551b036a459f.
+No differences in homology_db, docs/reviews or static_atlas/families.js.
+Remote main verified at baseline 2e11291 before non-force publication.
+Pages publication/live verification pending.
