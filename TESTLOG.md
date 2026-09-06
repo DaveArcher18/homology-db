@@ -921,6 +921,14 @@ stable router predates this reversible presentation pass, while the change
 already removes parser duplication by sharing one renderer.
 # Classical student reference — 2026-09-06
 
+- Live follow-up: initial Pages run `34024927748` succeeded and served the exact
+  artifact bytes. All live interaction assertions passed; the console check
+  found only Chrome's automatic root `/favicon.ico` request returning 404.
+  Source commit `a59e40a` adds one self-contained SVG icon line. All 17 static-atlas
+  tests and the clean deterministic release gate pass after this packaging-only
+  change. New artifact: 5,238,562 bytes; SHA-256
+  `04e7a9d069eb1939e422f7110834fa4acbf76a996c1b2f6967e5047f7e80b3aa`.
+
 - Reviewed implementation: `2e576bd`; artifact commit: `b6a0ac9`.
 - Full frozen-source suite: `python3 -m unittest discover -s tests -q` — 169
   tests, OK, three optional external-consumer checks skipped, 221.059 seconds.
