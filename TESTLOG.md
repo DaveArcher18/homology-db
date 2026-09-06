@@ -919,3 +919,29 @@ assistive path and a weak Home acceptance predicate; both were corrected. Its
 possible three-file presentation-seam smell is deferred because the separate
 stable router predates this reversible presentation pass, while the change
 already removes parser duplication by sharing one renderer.
+# Classical student reference — 2026-09-06
+
+- Reviewed implementation: `2e576bd`; artifact commit: `b6a0ac9`.
+- Full frozen-source suite: `python3 -m unittest discover -s tests -q` — 169
+  tests, OK, three optional external-consumer checks skipped, 221.059 seconds.
+  Existing non-failing SQLite ResourceWarnings remain. Earlier development runs
+  caught stale UI expectations and source-bound fixtures during concurrent edits;
+  the final run above used frozen source and the rebuilt committed artifact.
+- Fifteen classical algebra/integration tests pass. Independent review checks
+  65 sourced rings, 381 ordered basis products, and 88 Q homology derivations.
+  Mathematical content SHA-256:
+  `e33d8cffc29e5f036c4696285242daca903e0b2265ce43bc16f1acf4631f1cd6`.
+- `verify_classical_browser.cjs dist/atlas.html` passes 65 field views, 13 explicit
+  integral-ring missing states, 65 reduced-homology isolation checks, all 42 space
+  routes and 49 spectrum routes, and 21 responsive route/viewport combinations.
+  No browser console errors. Supplemental keyboard/search/history/knowl/source
+  and real JSON-download checks pass; desktop and mobile screenshots inspected.
+- Two clean public-preview builds are byte-identical. Exact final HTML:
+  5,238,250 bytes; SHA-256
+  `e6185d5f3365081e42e0d2f18ed4db02c292b4860f3640c15c406cc178877bfe`.
+- `verify_steenrod_release.py --atlas dist/atlas.html --allow-public-review-preview
+  --verify-rebuild` passes. The separate accepted-spectrum path also passes its
+  deterministic/release tests. No acceptance record or human review was invented.
+- Python/JavaScript syntax and `git diff --check` pass. Build source-input hash:
+  `8234c3794ca3d18070a9eb50161ba251da30dff75b6d55469ac4c2c714676388`.
+- GitHub Pages publication and live byte verification follow this checkpoint.

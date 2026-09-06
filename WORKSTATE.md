@@ -35,6 +35,13 @@ tests; student_ui — static_atlas sources; parent — export, integration, rele
 
 ## Last checkpoint
 
+- Final source-bound verification passed: 169 tests, three optional consumers
+  skipped; full browser matrix and clean deterministic rebuild pass. Source
+  commit `2e576bd`, artifact commit `b6a0ac9`; HTML 5,238,250 bytes, SHA-256
+  `e6185d5f3365081e42e0d2f18ed4db02c292b4860f3640c15c406cc178877bfe`.
+  The release branch is pushed. Next: merge preserving source commits and verify
+  GitHub Pages/live bytes. Human mathematical review remains pending.
+
 - Implementation complete on `agent/classical-spaces-v1`: 65 sourced ring records,
   88 rational homology derivations, the student UI, contextual JSON downloads,
   and read-model `/4`. Independent mathematical and integration review passed;
@@ -441,14 +448,13 @@ tests; student_ui — static_atlas sources; parent — export, integration, rele
 
 ## Exact next action
 
-Commit reviewed source, build the public-preview artifact from that clean source,
-verify the full regression suite and deterministic rebuild, then publish and
-verify Pages against committed bytes. No external outreach or purchases.
+Merge the verified release preserving source commits; verify Pages and live bytes.
+No external outreach or purchases.
 
 ## Verification state
 
 Classical mathematical and integration reviews pass; browser acceptance passes.
-Final source-bound regression, artifact verification, and deployment are pending.
+Final source-bound 169-test suite and artifact verification pass. Deployment pending.
 Historical verification below describes earlier releases, not this candidate.
 
 ### Historical verification checkpoints
