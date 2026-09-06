@@ -1,5 +1,33 @@
 # Test log
 
+## 2026-09-06 — family workbench release candidate
+
+- Source commit `226154ffa6a42040dfd2d0144a223e7957b7bad2`; source-input SHA-256
+  `044aafea53ca555925af8491a576eeeaa9e98b444b57b6c488c9dbc84a8d1240`.
+- Full `python3 -m unittest discover -s tests -v`: **189 tests, OK**, 256.535s;
+  three existing optional external-consumer tests skipped. Existing non-failing
+  SQLite ResourceWarning remains. Twenty family/review/integration tests include
+  independent cellular kernel/image/product oracles, huge exact integers, all
+  seven coefficients, legacy projection agreement, review invalidation and
+  3,087 formula/group plus 24 glossary parser checks.
+- Independent mathematical and integration reviews pass; reports with file
+  hashes are in `.scratch/family-workbench-v1/`. Corrected an old-schema
+  validation regression, RP raw-TeX fallback, provenance visibility and reduced
+  download ambiguity before source freeze. Human mathematical review is pending.
+- `verify_family_browser.cjs dist/atlas.html`: 21 family views, 42 old space
+  routes, 49 spectrum routes, 21 responsive cases (1440/390/320), keyboard
+  submission, reduced/cohomology isolation, product windows, legacy Klein
+  products, glossary, versioned review links and downloaded JSON all pass;
+  zero console errors. Desktop/mobile screenshots inspected.
+- Deterministic public-preview gate with `--verify-rebuild` passes. Artifact
+  is 5,280,726 bytes, SHA-256
+  `b10946df9aa2af465f3b186c2ed9ad435cdfd8448f2bdcb8f34f7bd73907b1d9`.
+  The approved symbolic-workbench update uses a 6 MiB cap while retaining
+  self-contained/offline delivery and all stable review gating.
+- Earlier pre-build checked-in-artifact failure correctly rejected old source
+  inputs; the final full suite above uses the new clean-source artifact.
+- Publication and live byte/browser verification follow this checkpoint.
+
 ## 2026-07-11 — local preview checkpoint
 
 Environment: Python 3.10.16; SQLite 3.45.3; macOS development workspace.

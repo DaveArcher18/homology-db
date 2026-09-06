@@ -45,7 +45,7 @@ async function main() {
     assert.deepEqual(await page.locator('.wb-groups tbody tr td:last-child').allTextContents(),before);
     await page.getByLabel('Dimension parameter n').fill('25');
     await page.getByLabel('First displayed degree').fill('24');
-    await page.getByRole('button',{name:'Explore',exact:true}).click();
+    await page.getByLabel('First displayed degree').press('Enter');
     await page.waitForURL(/n=25.*start=24/);
     assert.match(page.url(),/n=25/);
     assert.match(page.url(),/start=24/);
@@ -75,8 +75,7 @@ async function main() {
     assert.equal(await page.locator('.glossary-view .math-fallback').count(),0);
     await page.goto(base+'#space=klein-bottle');
     await page.locator('input[name="coefficient-klein-bottle"][value="F2"]').locator('..').click();
-    const legacyProducts=page.getByText('Cup-product multiplication table',{exact:true});
-    if(await legacyProducts.count())await legacyProducts.click();
+    await page.locator('.cohomology-rendered').getByText('Cup-product table',{exact:true}).click();
     assert.ok((await page.locator('.cohomology-rendered').innerText()).includes('Multiplication'));
     for(const space of atlas.conceptual_spaces) {
       await page.goto(base+'#space='+space.slug);
