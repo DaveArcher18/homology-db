@@ -107,9 +107,10 @@ contributing.
 
 ## License and acknowledgements
 
-A project-wide license for original code has **not yet been selected**.
-See [licensing status and third-party attribution](docs/LICENSING.md); do not
-assume the licenses of upstream references cover the whole repository.
+Original code and accompanying original documentation are **[MIT licensed](LICENSE)**.
+Fork, modify, and use them commercially; keep the copyright and license notice.
+See [licensing and third-party attribution](docs/LICENSING.md) for material with
+separate terms, including imported datasets and upstream reference documents.
 
 The project is inspired by the LMFDB's reference-oriented approach. Mathematical
 sources are credited with individual records. Retained LMFDB reference documents

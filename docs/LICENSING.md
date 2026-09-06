@@ -1,14 +1,15 @@
-# Licensing status and attribution
+# Licensing and attribution
 
 ## Original project material
 
-No project-wide license for the original Homology DB code has been selected.
-Earlier planning explicitly deferred this decision. A public repository is not
-being presented here as already having a settled open-source license.
+The original Homology DB code and accompanying original documentation are
+licensed under the [MIT License](../LICENSE). You may fork, modify, redistribute,
+and use them commercially, including in closed-source projects, provided you
+retain the copyright and license notice. Contributions back are welcome but
+not required.
 
-The maintainer needs to choose the original-code license before this status can
-be replaced with a root `LICENSE`. This documentation cleanup does not relicense
-code, datasets, source documents, or other contributors' work.
+This license does not replace the separate licenses on third-party documents,
+imported datasets, or other material identified below or by its own notices.
 
 ## Material with separate provenance
 
@@ -24,6 +25,6 @@ code, datasets, source documents, or other contributors' work.
 - **Mathematical references:** citations identify the evidence for a result;
   they do not grant permission to redistribute a cited book or paper.
 
-This is a guide to the recorded evidence, not a completed repository-wide
+This attribution guide is not a completed repository-wide
 rights audit. Keep upstream notices intact and check new code, data, or copied
 text individually before adding it.

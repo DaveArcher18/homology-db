@@ -66,10 +66,11 @@ issue is usually easier to act on than a broad rewrite.
 
 ## Licensing and security
 
-The original-code license decision is still pending; see
-[licensing status](docs/LICENSING.md). Please discuss substantial code or data
-contributions before relying on a licensing assumption. Retain all upstream
-attribution and license notices.
+Original code and accompanying original documentation use the [MIT License](LICENSE).
+Submit original contributions under those same terms, and only contribute
+material you have the right to share. For third-party code, text, or datasets,
+identify the source and license and retain all upstream notices. See
+[licensing and attribution](docs/LICENSING.md) for the existing exceptions.
 
 For sensitive vulnerabilities, follow [SECURITY.md](SECURITY.md), not a public
 issue containing exploit details or private data.
