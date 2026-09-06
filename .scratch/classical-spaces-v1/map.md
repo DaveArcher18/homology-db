@@ -1,5 +1,5 @@
 Type: wayfinder:map
-Status: active
+Status: complete
 
 # Classical spaces reference
 
@@ -17,6 +17,11 @@ Ticket 02 coordinates the complete implementation and release across separately
 owned components, retaining independent mathematical review.
 
 ## Decisions so far
+
+- 2026-09-06: Both tickets resolved. All 65 ring records and the student reference
+  are live; independent mathematical/integration review, regression tests,
+  deterministic build, Pages, and live browser/byte checks passed. Human review
+  remains pending. Resume from actual user feedback, not an automatic backlog.
 
 - 2026-09-06: David selected both homology and cohomology with rings central,
   a small textbook core, and fields first with integral data retained.

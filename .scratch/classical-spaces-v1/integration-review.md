@@ -70,7 +70,7 @@ Reviewed preview: `/tmp/homology-classical-candidate.html`, **5,238,233 bytes**,
 SHA-256 `f716c594a65917fc68fe8fdd5a89c3f4189a5448a07471fb49c9a845f50d5cb1`.
 
 Exact final implementation input SHA-256:
-`8234c3794ca3d18070a9eb50161ba251da30dff75b6d55469ac4c2c714676388`.
+`3d9cbc9ab90d4dbe6f450568f7d08157a52103cd87a0a1993f4c6da38c89c3d8`.
 
 Final small follow-up: `.textbook-space-link` adds `gap: 0.35rem` to separate
 the symbol and label. Removing just that line from the current CSS reproduces
@@ -91,8 +91,20 @@ static_atlas/presentation.js
 static_atlas/atlas.css
 928b040a1943c91e1f01caec41d23ef17e704b49110f5a853248cb80ca4f05ff
 static_atlas/index.template.html
-1829956df2731fa86540fbcdaa311bd2f059f6924f8380c087dffb4412318dbf
+2a845700943998fc324d4be15bab6f5d9f435a5c387a8d0bcc28aa2efefde590
 ```
+
+Packaging follow-up, commit `a59e40ac8949f7444fdaf1fe4c89a6f1b80c3ca7`:
+independently inspected the one-line inline SVG favicon addition. The decoded
+data URI contains only `svg`, `rect`, and `text` elements, fixed attributes, and
+the letter H. It has no script, event handler, external image/font reference,
+foreign object, or URL-based resource. The SVG namespace URI identifies the
+format and is not a network fetch. The icon remains available offline and
+avoids Chrome's default missing `/favicon.ico` request. The previous template
+hash matches the earlier review exactly, and all other reviewed file hashes are
+unchanged. No mathematical or executable behavior changed. The parent run owns
+the fresh artifact-size, static, release, and live-browser checks for this
+packaging commit; no expensive mathematical tests were repeated here.
 
 Browser behavior and the full regression run remain with the coordinating
 agent; this review does not independently claim those results. A final clean

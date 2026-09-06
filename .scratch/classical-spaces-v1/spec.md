@@ -1,6 +1,6 @@
 # Classical spaces reference — next iteration
 
-Status: implemented and independently reviewed; final release verification pending
+Status: implemented, independently reviewed, verified and published; human review pending
 
 ## Purpose and accepted direction
 

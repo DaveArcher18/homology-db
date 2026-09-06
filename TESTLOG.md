@@ -921,6 +921,12 @@ stable router predates this reversible presentation pass, while the change
 already removes parser duplication by sharing one renderer.
 # Classical student reference — 2026-09-06
 
+- Final deployment: Pages run `34025164986` succeeded from `0cc3e66`.
+  Live HTTP body is byte-identical to the final artifact below. The complete
+  browser matrix passes again on the live URL with zero console errors, including
+  all 65 field views, 42 spaces, 49 spectra and 21 responsive route cases.
+  Independent packaging-only review passed the embedded static SVG icon.
+
 - Live follow-up: initial Pages run `34024927748` succeeded and served the exact
   artifact bytes. All live interaction assertions passed; the console check
   found only Chrome's automatic root `/favicon.ico` request returning 404.
