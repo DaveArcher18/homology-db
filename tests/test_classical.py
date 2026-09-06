@@ -10,6 +10,8 @@ from homology_db.chromatic import ChromaticDatabase, ChromaticTools
 from homology_db.classical import (
     CLASSICAL_COEFFICIENTS,
     CLASSICAL_SPACE_IDS,
+    CLASSICAL_EXTENSION_SPACE_IDS,
+    CLASSICAL_RECORDED_SPACE_IDS,
     classical_records,
     validate_classical_record,
     validate_classical_records,
@@ -49,8 +51,9 @@ class ClassicalCohomologyTests(unittest.TestCase):
 
     def test_exact_identity_coverage_sources_and_fresh_deterministic_records(self) -> None:
         summary = validate_classical_records(self.records)
-        self.assertEqual((summary["space_count"], summary["record_count"]), (13, 65))
-        self.assertEqual(set(self.records), set(CLASSICAL_SPACE_IDS))
+        self.assertEqual((summary["space_count"], summary["record_count"]), (15, 75))
+        self.assertEqual(len(CLASSICAL_SPACE_IDS), 13)
+        self.assertEqual(set(self.records), set(CLASSICAL_RECORDED_SPACE_IDS))
         original = json.dumps(self.records, sort_keys=True)
         self.assertEqual(original, json.dumps(classical_records(), sort_keys=True))
         self.records["point"][0]["groups"][0]["dimension"] = 999
@@ -90,6 +93,19 @@ class ClassicalCohomologyTests(unittest.TestCase):
             self.assertEqual(self.multiply(cp2, "x", "x"), {"x2": 1})
             self.assertEqual(self.multiply(wedge, "a", "a"), {})
             self.assertEqual(self.multiply(wedge, "a", "b"), {})
+
+    def test_selected_projective_plane_extension(self) -> None:
+        self.assertEqual(set(CLASSICAL_EXTENSION_SPACE_IDS),
+                         {"quaternionic_projective_space:2", "cayley_plane:2"})
+        for space, degree in (("quaternionic_projective_space:2", 4), ("cayley_plane:2", 8)):
+            for field in CLASSICAL_COEFFICIENTS:
+                record = self.record(space, field)
+                self.assertEqual([g["degree"] for g in record["groups"] if g["dimension"]], [0, degree, 2*degree])
+                self.assertEqual(self.multiply(record, "x", "x"), {"x2": 1})
+                self.assertEqual(self.multiply(record, "x", "x2"), {})
+                self.assertEqual(self.multiply(record, "x2", "x2"), {})
+                self.assertEqual(record["coverage"]["upper_vanishing_starts_at"], 2*degree+1)
+                self.assertEqual(record["provenance"]["review_state"], "human_review_pending")
 
     def test_torus_has_exterior_products_and_characteristic_sensitive_signs(self) -> None:
         for field in CLASSICAL_COEFFICIENTS:
@@ -185,7 +201,7 @@ class ClassicalCohomologyTests(unittest.TestCase):
             with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):
                 validate_classical_record(record)
         self.records.pop("sphere:0")
-        with self.assertRaisesRegex(ValueError, "exact 13"):
+        with self.assertRaisesRegex(ValueError, "original 13"):
             validate_classical_records(self.records)
         records = classical_records()
         records["point"][0] = records["point"][1]

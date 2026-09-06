@@ -32,7 +32,8 @@ async function main() {
     }
     await page.goto(base+'#workbench?family=real_projective_space&n=4&start=0');
     await page.locator('.wb-provenance > summary').click();
-    const reviewLink=page.getByRole('link',{name:'Review this family'});
+    await page.getByRole('button',{name:'Review this result',exact:true}).click();
+    const reviewLink=page.getByRole('link',{name:'Open public GitHub review form'});
     const reviewURL=new URL(await reviewLink.getAttribute('href'));
     assert.equal(reviewURL.searchParams.get('template'),'family-review.yml');
     assert.match(reviewURL.searchParams.get('rule-hash'),/^[a-f0-9]{64}$/);

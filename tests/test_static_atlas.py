@@ -135,6 +135,7 @@ console.log(JSON.stringify({
                     "homology_db/classical.py",
                     "homology_db/families.py",
                     "homology_db/family_reviews.py",
+                    "homology_db/teaching.py",
                     "docs/reviews/family-reviews.json",
                     "homology_db/migrations/0005_stable_steenrod_modules.sql",
                     "homology_db/preview.py",

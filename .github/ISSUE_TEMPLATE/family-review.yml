@@ -8,7 +8,8 @@ body:
         Thank you for reviewing! Your GitHub account identifies the submitter.
         This form does not automatically mark mathematics as reviewed. A maintainer
         checks authorship, scope and the exact rule hash before publishing your verdict.
-        Use ordinary family feedback instead if you have not reviewed the entire rule.
+        You can review one instance, a parameter range, selected coefficients,
+        degrees or theories. Narrow acceptance never approves the entire rule.
   - type: input
     id: rule-id
     attributes:
@@ -30,8 +31,8 @@ body:
   - type: textarea
     id: scope
     attributes:
-      label: Parameter, degree and coefficient scope
-      description: Preserve the prefilled scope. If your review is narrower, explain that; it will not be published as a whole-rule acceptance.
+      label: Exact review scope
+      description: Preserve or narrow the prefilled scope JSON. State n or its inclusive range, coefficients, degrees and components (homology, cohomology, multiplication). Use entire_rule only after reviewing the whole sourced rule.
     validations:
       required: true
   - type: textarea
@@ -54,7 +55,7 @@ body:
     id: rationale
     attributes:
       label: Review reasoning
-      description: Explain what you checked, including boundary cases, integral torsion, cup products and all-degree completeness. Give corrections or further sources where needed.
+      description: Explain what you checked within the declared scope, including any relevant boundary cases, torsion or products. List limitations and corrections; do not imply checks outside that scope.
     validations:
       required: true
   - type: checkboxes

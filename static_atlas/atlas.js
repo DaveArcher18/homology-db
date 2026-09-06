@@ -897,6 +897,37 @@
     return view;
   }
 
+  function teachingParagraph(text, className = "") {
+    const node = element("p", className);
+    window.HomologyWorkbench.mathText(node, text || "", renderTex);
+    return node;
+  }
+
+  function buildTeachingView(route) {
+    const catalog = atlas.teaching || {};
+    const view = element("article", "route-view teaching-view");
+    const comparisons = asArray(catalog.comparisons);
+    const comparison = comparisons.find(item => item.id === route.id);
+    if (route.kind === "comparison") {
+      if (!comparison) return buildNotFoundView({requested:window.location.hash});
+      const back=element("a", "teaching-entry-link", "← Textbook map");back.href="#textbook";
+      view.append(back, element("p", "page-kicker", "Guided comparison"), element("h1", "page-title", comparison.title), teachingParagraph(comparison.introduction));
+      const steps=element("ol", "teaching-steps");
+      asArray(comparison.steps).forEach(step=>{const item=element("li");item.append(teachingParagraph(step.text));if(String(step.href).startsWith("#")){const go=element("a", "", "Open this example →");go.href=step.href;item.append(go);}steps.append(item);});
+      view.append(steps, element("h2", "", "What to take away"), teachingParagraph(comparison.takeaway));
+      const sources=element("ul", "citation-list");asArray(comparison.sources).forEach(ref=>sources.append(renderCitation(ref)));view.append(element("h2", "", "Sources"),sources,element("p", "table-note", "Teaching notes · human review pending. Follow each result’s own coverage and review labels."));return view;
+    }
+    view.append(element("h1", "page-title", catalog.title || "Textbook map"),teachingParagraph(catalog.scope_note || "A selected inventory, not every example in the book."));
+    const guided=element("section", "teaching-guided");guided.append(element("h2", "", "Three ways to read the examples"));
+    comparisons.forEach(item=>{const a=element("a", "teaching-comparison-link", item.title);a.href="#comparison="+encodeURIComponent(item.id);guided.append(a);});view.append(guided);
+    const filters=element("div", "teaching-filters");const searchLabel=element("label", "wb-field", "Find a textbook example");const search=element("input");search.type="search";searchLabel.append(search);
+    const chapterLabel=element("label", "wb-field", "Chapter or topic");const chapter=element("select");const all=element("option", "", "All chapters and topics");all.value="";chapter.append(all);
+    [...new Set(asArray(catalog.entries).map(item=>item.chapter))].filter(Boolean).forEach(value=>{const option=element("option", "", value);option.value=value;chapter.append(option);});chapterLabel.append(chapter);filters.append(searchLabel,chapterLabel);view.append(filters);
+    const count=element("p", "table-note");count.setAttribute("role","status");const results=element("div", "teaching-inventory");view.append(count,results);
+    function draw(){results.replaceChildren();let number=0;asArray(catalog.entries).forEach(entry=>{const space=spacesById.get(entry.space_id);if(!space)return;const text=[space.name.plain,entry.chapter,entry.introduction,entry.locator,entry.coverage?.label].join(" ").toLowerCase();if((chapter.value&&chapter.value!==entry.chapter)||!text.includes(search.value.toLowerCase()))return;number++;const card=element("article", "teaching-example");card.dataset.spaceId=space.id;const title=element("h2");const a=element("a");a.href="#space="+encodeURIComponent(space.slug);a.append(mathName(space,"math-inline"));title.append(a);card.append(element("p", "page-kicker",entry.chapter),title,teachingParagraph(entry.introduction),element("p", "teaching-coverage",entry.coverage?.label || entry.coverage_note || "Coverage: see the space record."));if(entry.coverage?.label&&entry.coverage_note)card.append(teachingParagraph(entry.coverage_note,"table-note"));const details=element("details", "teaching-source");details.append(element("summary", "", "Reading and sources"),teachingParagraph(entry.teaching_point));const sources=element("ul","citation-list");asArray(entry.sources).forEach(ref=>sources.append(renderCitation(ref)));details.append(sources);card.append(details);results.append(card);});count.textContent=`${number} of ${asArray(catalog.entries).length} retained examples. Selected inventory; not an exhaustive textbook index.`;if(!number)results.append(element("p","","No examples match. Try another topic or clear the search."));}
+    search.addEventListener("input",draw);chapter.addEventListener("change",draw);draw();return view;
+  }
+
   function buildSpacesView() {
     const view = element("article", "route-view spaces-view");
     view.append(
@@ -910,6 +941,8 @@
         "Search the collection or browse by family. The textbook core includes cohomology rings; every space retains its existing homology and sources.",
       ),
     );
+    const teachingLink = element("a", "teaching-entry-link", "Textbook map and guided comparisons →");
+    teachingLink.href = "#textbook"; view.append(teachingLink);
 
     const allSpaces = element("section", "all-spaces-section");
     allSpaces.append(
@@ -1750,7 +1783,7 @@
     titleCopy.append(
       heading,
       element("p", "space-plain-name", space.name.plain),
-      element("p", "space-summary", classicalDescriptions[space.id] ?? space.summary),
+      teachingParagraph(atlas.teaching?.entries?.find(entry => entry.space_id === space.id)?.introduction ?? classicalDescriptions[space.id] ?? space.summary, "space-summary"),
     );
     const feedback = outboundLink(
       "Correct or improve ↗",
@@ -1793,6 +1826,14 @@
       || asArray(space.cohomology).some(record => record.provenance?.review_state === "human_review_pending");
     titleFacts.append(document.createTextNode(" · "), element("span", "space-review-state", reviewPending ? "Human review pending" : "Human review not recorded"));
     titleCopy.append(titleFacts);
+    const teaching = atlas.teaching?.entries?.find(entry => entry.space_id === space.id);
+    if (teaching) {
+      const readerNote = element("details", "space-teaching-note");
+      readerNote.append(element("summary", "", "What to notice"), teachingParagraph(teaching.teaching_point));
+      const sources = element("ul", "citation-list"); asArray(teaching.sources).forEach(ref => sources.append(renderCitation(ref)));
+      readerNote.append(sources); titleCopy.append(readerNote);
+      const map = element("a", "teaching-entry-link", "Place this example in the textbook map →"); map.href="#textbook"; titleCopy.append(map);
+    }
     const metadataItems = [
       ["Dimension", dimensionLabel],
       ["Aliases", asArray(space.aliases).join(", ") || "None recorded"],
@@ -1968,6 +2009,8 @@
   }
 
   function parseRoute(hash = window.location.hash) {
+    if (hash === "#textbook") return {kind:"textbook"};
+    if (hash.startsWith("#comparison=")) { try { return {kind:"comparison",id:decodeURIComponent(hash.slice(12))}; } catch { return {kind:"not-found",requested:hash}; } }
     if (hash === "#about") return { kind: "about" };
     const workbenchRoute = window.HomologyWorkbench?.route(hash);
     if (workbenchRoute) return workbenchRoute;
@@ -2011,6 +2054,7 @@
   }
 
   function routeTitle(route) {
+    if (["textbook", "comparison"].includes(route.kind)) return "Textbook examples · Homology Atlas";
     if (route.kind === "about") return "About · Homology Atlas";
     if (route.kind === "workbench") return "Family workbench · Homology Atlas";
     if (route.kind === "glossary") return "Glossary · Homology Atlas";
@@ -2056,6 +2100,7 @@
     }
     else if (route.kind === "home") view = buildHomeView();
     else if (route.kind === "about") view = buildAboutView();
+    else if (["textbook", "comparison"].includes(route.kind)) view = buildTeachingView(route);
     else if (route.kind === "spaces") view = buildSpacesView();
     else if (route.kind === "family") view = buildFamilyView(route.section);
     else if (route.kind === "space") view = buildSpaceView(route.space);
@@ -2113,6 +2158,7 @@
 
   function buildAboutView() {
     const view = element("article", "route-view about-view");
+    const textbook = element("a", "teaching-entry-link", "Textbook map and guided comparisons →"); textbook.href="#textbook"; view.append(textbook);
     view.append(element("p", "page-kicker", "A reference, with its workings visible"), element("h1", "page-title", "About Homology Atlas"));
     view.append(element("p", "page-lede", "Explore ordinary homology and cohomology rings of familiar spaces, compare coefficients, and follow each result back to its sources."));
     view.append(element("h2", "", "What is covered"), element("p", "", "The family workbench evaluates sourced rules for spheres, real projective spaces, and complex projective spaces at every finite nonnegative dimension parameter. Its degree window limits the display, not the mathematical coverage."));
@@ -2122,10 +2168,13 @@
     const list = element("ul", "about-review-list");
     rules.forEach(rule => {
       const label = rule.human_review_state === "human_reviewed" ? "Human reviewed" : rule.human_review_state === "human_concern" ? "Human concern recorded" : "Human review pending";
-      list.append(element("li", "", `${rule.name || humanize(rule.family)}: ${label}`));
+      const scopedLabel = rule.scoped_review_state === "scoped_human_concern" ? " · Concern recorded in a narrower scope" : asArray(rule.scoped_human_reviews).length ? " · Narrow-scope reviews recorded" : "";
+      const item = element("li", "", `${rule.name || humanize(rule.family)}: ${label}${scopedLabel}`);
+      if (scopedLabel) { const details = element("a", "", " — inspect exact review scopes"); details.href = "#workbench?" + new URLSearchParams({family:rule.family,n:"2",start:"0"}); item.append(details); }
+      list.append(item);
     });
     if (!rules.length) list.append(element("li", "", "Family human-review state not recorded."));
-    view.append(list, element("p", "", "Use “Review this family” in a workbench’s source details to submit a version-bound review through GitHub. A maintainer validates submissions before publishing them as mathematical review."));
+    view.append(list, element("p", "", "Use “Review this result” on the workbench to choose your exact scope and copy a review packet or open the public GitHub form. A maintainer validates submissions before publishing them as mathematical review."));
     const back = element("a", "", "Return to your workbench →"); back.href = lastWorkbenchHash; view.append(back);
     const request = element("a", "about-request-link", "Request a space ↗");
     request.href = requestSpaceUrl(); request.target = "_blank"; request.rel = "noopener noreferrer";

@@ -30,11 +30,13 @@ from homology_db.classical import (
     CLASSICAL_SCHEMA_VERSION,
     CLASSICAL_SOURCES,
     CLASSICAL_SPACE_IDS,
+    CLASSICAL_EXTENSION_SPACE_IDS,
     classical_records,
     validate_classical_records,
 )
 from homology_db.families import family_catalog
 from homology_db.family_reviews import reviewed_family_catalog
+from homology_db.teaching import teaching_catalog
 
 
 SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
@@ -195,6 +197,7 @@ SOURCE_REVISION_INPUTS = (
     "homology_db/classical.py",
     "homology_db/families.py",
     "homology_db/family_reviews.py",
+    "homology_db/teaching.py",
     "docs/reviews/family-reviews.json",
     "homology_db/migrations/0005_stable_steenrod_modules.sql",
     "homology_db/preview.py",
@@ -1221,7 +1224,9 @@ def rational_homology_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def classical_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
     return {
         "schema_version": CLASSICAL_SCHEMA_VERSION,
-        "space_ids": list(CLASSICAL_SPACE_IDS),
+        "space_ids": sorted(records),
+        "core_space_ids": list(CLASSICAL_SPACE_IDS),
+        "extension_space_ids": list(CLASSICAL_EXTENSION_SPACE_IDS),
         "coefficients": list(CLASSICAL_COEFFICIENTS),
         "space_count": len(records),
         "record_count": sum(len(items) for items in records.values()),
@@ -1235,6 +1240,37 @@ def classical_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> d
             "locator": "Corollary 3A.6(a), p. 266: rational homology and integral rank",
         },
     }
+
+
+def teaching_projection(spaces: list[dict[str, Any]]) -> dict[str, Any]:
+    """Bind exposition to actual recorded coverage, without inventing review."""
+    catalog = copy.deepcopy(teaching_catalog())
+    by_id = {space["id"]: space for space in spaces}
+    entries = catalog["entries"]
+    family_rules = reviewed_family_catalog(family_catalog())["rules"]
+    if len(entries) != len(by_id) or {entry["space_id"] for entry in entries} != set(by_id):
+        raise ValueError("teaching inventory must cover each retained space exactly once")
+    for entry in entries:
+        space = by_id[entry["space_id"]]
+        family = re.fullmatch(r"(sphere|real_projective_space|complex_projective_space):[0-9]+", space["id"])
+        if family:
+            kind, label = "general_family", "General family · all degrees"
+            coefficients = ["Z", "Q", "F2", "F3", "F5", "F7", "F11"]
+        elif space["id"] in CLASSICAL_SPACE_IDS:
+            kind, label = "core_ring", "Textbook core · five-field rings"
+            coefficients = [record["coefficient"] for record in space.get("cohomology", [])]
+        elif space.get("cohomology"):
+            kind, label = "extension_ring", "Projective-plane extension · five-field rings"
+            coefficients = [record["coefficient"] for record in space["cohomology"]]
+        else:
+            kind, label = "homology_only", "Homology recorded · cohomology rings not recorded"
+            coefficients = []
+        entry["space_slug"] = space["slug"]
+        rule = next((rule for rule in family_rules if family and rule["family"] == family.group(1)), None)
+        entry["coverage"] = {"kind": kind, "label": label, "coefficients": coefficients,
+                             "human_review_state": rule["human_review_state"] if rule else "human_review_pending"}
+    catalog["content_sha256"] = _canonical_sha256(catalog)
+    return catalog
 
 
 def validate_read_model(
@@ -1292,6 +1328,10 @@ def validate_read_model(
 
     conceptual_spaces = atlas["conceptual_spaces"]
     conceptual_space_ids = [item["id"] for item in conceptual_spaces]
+    if "teaching" in atlas or "teaching_sha256" in atlas.get("snapshot", {}):
+        expected_teaching = teaching_projection(conceptual_spaces)
+        if atlas.get("teaching") != expected_teaching or atlas["snapshot"].get("teaching_sha256") != expected_teaching["content_sha256"]:
+            raise ValueError("teaching exposition or coverage differs from source-bound catalog")
     if atlas["snapshot"].get("schema_version") in {"homology-db.static-atlas/4", READ_MODEL_VERSION}:
         projected_classical = {
             item["id"]: item["cohomology"]
@@ -1300,7 +1340,7 @@ def validate_read_model(
         }
         validate_classical_records(projected_classical)
         if any(
-            item.get("classical_core") != (item["id"] in projected_classical)
+            item.get("classical_core") != (item["id"] in CLASSICAL_SPACE_IDS)
             for item in conceptual_spaces
         ):
             raise ValueError("classical core labels disagree with cohomology coverage")
@@ -1312,7 +1352,7 @@ def validate_read_model(
             raise ValueError("classical cohomology snapshot metadata mismatch")
         for space in conceptual_spaces:
             actual_q = [row for row in space["homology"] if row["coefficient_ring"] == "Q"]
-            expected_q = rational_homology_rows(space["homology"]) if space["classical_core"] else []
+            expected_q = rational_homology_rows(space["homology"]) if space.get("cohomology") else []
             if actual_q != expected_q:
                 raise ValueError(f"rational homology does not match integral inputs: {space['id']}")
     slugs = [item["slug"] for item in conceptual_spaces]
@@ -2022,7 +2062,7 @@ def build_read_model(
                 ],
                 "homology_coverage": coverage,
                 "homology": homology,
-                "classical_core": space_id in cohomology_records,
+                "classical_core": space_id in CLASSICAL_SPACE_IDS,
                 "cohomology": cohomology_records.get(space_id, []),
                 "models": models,
                 "relations": relations_by_space[space_id],
@@ -2075,6 +2115,7 @@ def build_read_model(
         conceptual_spectra, spectrum_source = build_spectrum_read_model()
 
     classical_metadata = classical_projection_metadata(cohomology_records)
+    teaching = teaching_projection(conceptual_spaces)
 
     atlas = {
         "snapshot": {
@@ -2118,6 +2159,7 @@ def build_read_model(
             "homology_conventions": [],
             "homology_convention_state": "not_recorded_in_database_schema",
             "classical_cohomology": classical_metadata,
+            "teaching_sha256": teaching["content_sha256"],
         },
         "definitions": [
             {
@@ -2132,6 +2174,7 @@ def build_read_model(
         "conceptual_spectra": conceptual_spectra,
         "classical": {**classical_metadata, "sources": CLASSICAL_SOURCES},
         "family_rules": reviewed_family_catalog(family_catalog()),
+        "teaching": teaching,
     }
     validate_read_model(atlas, allow_malformed_for_review=allow_malformed_for_review)
     return atlas

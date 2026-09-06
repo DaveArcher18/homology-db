@@ -21,6 +21,8 @@ CLASSICAL_SPACE_IDS = (
     *(f"real_projective_space:{n}" for n in (2, 3, 4)),
     "complex_projective_space:2", "sphere_wedge:2:4",
 )
+CLASSICAL_EXTENSION_SPACE_IDS = ("quaternionic_projective_space:2", "cayley_plane:2")
+CLASSICAL_RECORDED_SPACE_IDS = CLASSICAL_SPACE_IDS + CLASSICAL_EXTENSION_SPACE_IDS
 CLASSICAL_SOURCES = {
     "hatcher2002": {
         "title": "Algebraic Topology",
@@ -47,7 +49,7 @@ def validate_classical_record(record: dict[str, Any]) -> None:
     """
     if record.get("schema_version") != CLASSICAL_SCHEMA_VERSION:
         raise ValueError("unsupported classical schema version")
-    if record.get("space_id") not in CLASSICAL_SPACE_IDS:
+    if record.get("space_id") not in CLASSICAL_RECORDED_SPACE_IDS:
         raise ValueError("unknown classical space identity")
     coefficient = record.get("coefficient")
     if coefficient not in CLASSICAL_COEFFICIENTS:
@@ -195,8 +197,8 @@ def validate_classical_record(record: dict[str, Any]) -> None:
 def validate_classical_records(records: dict[str, list[dict[str, Any]]] | None = None) -> dict[str, Any]:
     """Validate exact identity/coefficient coverage as well as each finite ring."""
     records = classical_records() if records is None else records
-    if set(records) != set(CLASSICAL_SPACE_IDS):
-        raise ValueError("classical corpus requires the exact 13 space identities")
+    if set(records) != set(CLASSICAL_RECORDED_SPACE_IDS):
+        raise ValueError("classical corpus requires the original 13 and two extension identities")
     for space_id, entries in records.items():
         if len(entries) != len(CLASSICAL_COEFFICIENTS) or {r["coefficient"] for r in entries} != set(CLASSICAL_COEFFICIENTS):
             raise ValueError("classical corpus requires five distinct field records per space")
@@ -273,7 +275,7 @@ def _record(space: str, coefficient: str, dimension: int, generators: list[tuple
 
 def classical_records() -> dict[str, list[dict[str, Any]]]:
     """Return fresh, versioned literature records; callers cannot mutate a cache."""
-    records: dict[str, list[dict[str, Any]]] = {space: [] for space in CLASSICAL_SPACE_IDS}
+    records: dict[str, list[dict[str, Any]]] = {space: [] for space in CLASSICAL_RECORDED_SPACE_IDS}
     for field in CLASSICAL_COEFFICIENTS:
         records["point"].append(_record(
             "point", field, 0, [], [], [], [], "Proposition 2.8, p. 110; §3.1, p. 198; §3.2, p. 207",
@@ -341,4 +343,14 @@ def classical_records() -> dict[str, list[dict[str, Any]]]:
             "Example 3.14, pp. 213–214",
             "Sphere wedge products vanish in positive degrees.",
             "All positive-degree products vanish, including a² in degree 4; b is independent."))
+        for space, degree, locator in (
+            ("quaternionic_projective_space:2", 4, "Example 3.12, p. 213; quaternionic projective rings following Theorem 3.19, p. 222"),
+            ("cayley_plane:2", 8, "Example 4.47, p. 379; §4.B, Hopf invariant examples, p. 427; coefficient ring maps, p. 222"),
+        ):
+            records[space].append(_record(
+                space, field, 2 * degree, [("x", degree)],
+                [("x", degree, {"x": 1}), ("x2", 2 * degree, {"x": 2})],
+                [_relation((1, {"x": 3}))], [("x", "x", "x2", 1)], locator,
+                "The cited integral projective-plane ring has a generator whose square is the top generator. Its free integral groups imply that coefficient change carries these generators and their cup product to each requested field. This coefficient-extension step is a deduction, not a new integral record.",
+                "A selected extension to the original thirteen-space core. The positive generator squares nontrivially and its cube vanishes by dimension."))
     return records

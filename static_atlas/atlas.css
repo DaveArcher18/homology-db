@@ -37,6 +37,41 @@
   line-height: 1.58;
 }
 
+/* Teaching is an optional reading layer; results keep their existing hierarchy. */
+.teaching-entry-link { display:inline-block; margin:.5rem 0 1rem; font-size:.84rem; }
+.teaching-view { max-width:72rem; }
+.teaching-view > p { max-width:72ch; }
+.teaching-guided { padding:1rem 0 1.4rem; border-bottom:1px solid var(--border); margin-bottom:1.3rem; }
+.teaching-guided h2 { font-size:1.1rem; }
+.teaching-comparison-link { display:block; width:fit-content; margin:.55rem 0; }
+.teaching-filters { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0; }
+.teaching-inventory { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 2rem; }
+.teaching-example { min-width:0; padding:1.3rem 0; border-top:1px solid var(--border); }
+.teaching-example h2 { margin:.4rem 0; font-size:1.35rem; }
+.teaching-example p { margin:.5rem 0; }
+.teaching-coverage { font-size:.78rem; font-weight:600; }
+.teaching-source { font-size:.83rem; }
+.teaching-steps { max-width:65ch; padding-left:1.5rem; }
+.teaching-steps li { padding:.5rem 0 1.2rem .5rem; }
+.space-teaching-note { max-width:70ch; font-size:.85rem; margin:.75rem 0; }
+.space-teaching-note p { margin:.7rem 0; }
+.wb-teaching-intro { max-width:70ch; margin:.65rem 0; }
+.wb-review-panel { border-top:1px solid var(--border); margin:1.4rem 0; padding:1rem 0; scroll-margin-top:calc(var(--header-height) + 1rem); }
+.wb-review-panel > summary { font-weight:650; }
+.review-scope-form { max-width:55rem; }
+.review-scope-form > .wb-field { margin:1rem 0; }
+.review-narrow-scope { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.review-narrow-scope > p,.review-choices { grid-column:1/-1; }
+.review-choices { display:flex; flex-wrap:wrap; gap:.5rem 1rem; border:1px solid var(--border); padding:.75rem; }
+.review-choices legend { padding:0 .3rem; font-size:.85rem; }
+.review-choices label { display:flex; align-items:center; gap:.3rem; }
+.review-scope-summary { font-size:.85rem; margin-top:1rem; }
+.review-scope-error { color:var(--danger); font-size:.85rem; }
+.review-scope-form > button { margin:.7rem 1rem; }
+.wb-scoped-review { padding:.75rem 0; border-top:1px solid var(--border); }
+.wb-scoped-review p { margin:.3rem 0; }
+@media(max-width:40rem) { .teaching-inventory,.teaching-filters,.review-narrow-scope { grid-template-columns:minmax(0,1fr); } .teaching-guided { padding-top:.5rem; } .review-choices { gap:.6rem; } }
+
 :root[data-theme="dark"] {
   --page: #111419;
   --surface: #171b21;
@@ -3098,3 +3133,8 @@ pre {
   .wb-finite-scroll { overflow:visible; }
   .wb-finite-grid { display:block; }
 }
+
+/* Reading routes are reference pages, not oversized landing-page headings. */
+.teaching-view .page-title { font-size:clamp(1.8rem,2.6vw,2.5rem); line-height:1.18; max-width:32ch; }
+.teaching-view .teaching-guided { padding:.5rem 0 .8rem; margin-bottom:.8rem; }
+.teaching-view .teaching-filters { margin:.7rem 0; }

@@ -35,8 +35,11 @@ start human-review-pending; publication is not human mathematical acceptance.
 ## Classical cohomology overlay
 
 Every space has `classical_core` and `cohomology` fields. The 13 core spaces each
-contain five ordinary unreduced field-cohomology records. An empty array on
-other spaces means no ring has been recorded, not that the ring is zero. Existing
+contain five ordinary unreduced field-cohomology records. The selected extension
+adds HP² and OP² over those same five fields, without relabelling them as core.
+`classical.space_ids` lists all recorded spaces; `core_space_ids` and
+`extension_space_ids` preserve the distinction. An empty array means no ring has
+been recorded, not that the ring is zero. Existing
 homology records, CLI interfaces, conceptual IDs, and source database are unchanged.
 
 `classical` holds the versioned source catalog and coverage metadata;
@@ -52,6 +55,22 @@ an ordered basis, and a complete multiplication table represented sparsely.
 Omission means zero only within that table's explicitly complete scope. The
 unit is recorded; S0 uses a nontrivial degree-zero idempotent. A local homology
 reduction setting never changes these unreduced ring records.
+
+## Teaching exposition and scoped review
+
+The optional additive `teaching` catalog contains sourced introductions, a
+selected chapter/example inventory of the 42 retained spaces, and guided
+comparisons. It does not claim an exhaustive inventory of Hatcher's book.
+Coverage badges are derived from actual records/family redirects; exposition
+does not create assertions. `snapshot.teaching_sha256` binds exact content and
+derived coverage. The Python teaching source also participates in source-input
+binding; old read models without this additive catalog remain identifiable.
+
+Review document /2 adds bounded parameter, coefficient, degree and component
+scope while accepting legacy /1 whole-rule records. Whole-rule and scoped review
+projections remain separate. A partial acceptance never marks the whole rule
+reviewed; stale hashes remain history, not current acceptance. Production review
+records require actual named humans and maintainer validation, not QA fixtures.
 
 ## Source selection
 

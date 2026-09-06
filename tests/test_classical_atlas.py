@@ -24,8 +24,10 @@ class ClassicalAtlasTest(unittest.TestCase):
     def test_five_field_dimensions_match_independent_cellular_homology(self):
         core = [space for space in self.atlas["conceptual_spaces"] if space["classical_core"]]
         self.assertEqual(len(core), 13)
-        self.assertEqual(self.atlas["classical"]["record_count"], 65)
-        for space in core:
+        self.assertEqual(self.atlas["classical"]["record_count"], 75)
+        recorded = [space for space in self.atlas["conceptual_spaces"] if space["cohomology"]]
+        self.assertEqual(len(recorded), 15)
+        for space in recorded:
             self.assertEqual({row["coefficient"] for row in space["cohomology"]},
                              {"Q", "F2", "F3", "F5", "F7"})
             for record in space["cohomology"]:
@@ -42,7 +44,7 @@ class ClassicalAtlasTest(unittest.TestCase):
     def test_noncore_and_integral_absence_is_not_zero(self):
         noncore = [space for space in self.atlas["conceptual_spaces"] if not space["classical_core"]]
         self.assertEqual(len(noncore), 29)
-        self.assertTrue(all(space["cohomology"] == [] for space in noncore))
+        self.assertEqual(sum(not space["cohomology"] for space in noncore), 27)
         for space in self.atlas["conceptual_spaces"]:
             self.assertTrue(any(row["coefficient_ring"] == "Z" for row in space["homology"]))
             self.assertFalse(any(row["coefficient"] == "Z" for row in space["cohomology"]))
