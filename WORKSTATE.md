@@ -28,9 +28,15 @@ without an explicit user request here.
 ## Active run lease
 
 Claimed by: `/root (interactive chat)`
-Heartbeat: `2026-09-06T11:51:26Z`
+Heartbeat: `2026-09-06T12:23:40Z`
 
 ## Last checkpoint
+
+- Navigation repair source346af91 verified:189 tests (three optional skips),
+  independent source review, deterministic rebuild, both final-artifact Chrome
+  suites and Codex in-app checks pass. Artifact5,270,111 bytes SHA-256
+  `912776cb004a7312a0272ccc4e42170140b95fa3a154bd0a6f59abfd2136a98e`.
+  Next authorized publication and live checks. Mathematical bindings unchanged.
 
 - Approved navigation repair started. No mathematical content or review bindings
   may change. Root picker/tests/release; UI agent routing/template/CSS. Next
@@ -489,16 +495,16 @@ Heartbeat: `2026-09-06T11:51:26Z`
 
 ## Exact next action
 
-Freeze the repaired sources, commit, rebuild the source-bound artifact, run the
-full suite and deterministic release gate, then publish and verify live bytes
-and browser interactions. Close the navigation map only after those checks pass.
+Commit the verified release artifact, publish and verify live bytes and browser
+interactions. Close the navigation map only after those checks pass.
 
 ## Verification state
 
-Navigation source review passes. Preview Chrome checks pass 11 widths, 33 picker
-selections, keyboard and About history/reload/resize. Codex in-app interactions
-confirm all families, About visibility and preserved return state. Existing
-family/legacy browser suite passes. Final artifact/full suite/publication pending.
+Navigation source review and189-test suite pass (three optional skips). Both
+final-artifact Chrome suites pass, including11 widths,33 picker selections,
+keyboard, About history/reload/resize, and real125%/200% zoom. Codex in-app checks
+confirm all families, About visibility and preserved return state. Deterministic
+rebuild gate passes. Publication and final live verification pending.
 Mathematical sources and review bindings are unchanged; human review stays pending.
 Historical verification below describes earlier releases, not this candidate.
 

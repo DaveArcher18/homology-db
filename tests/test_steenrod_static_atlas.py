@@ -684,7 +684,7 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 "withheld_pending_review",
             )
             self.assertIn('id="nav-spectra"', public_html)
-            self.assertIn('id="nav-spectra" class="secondary-resource-link" href="#spectra" hidden', public_html)
+            self.assertIn('id="nav-spectra" href="#spectra" hidden', public_html)
 
             review = subprocess.run(
                 [

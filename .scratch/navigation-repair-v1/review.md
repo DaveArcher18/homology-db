@@ -88,6 +88,17 @@ and About. Root reports both zoom levels and the full matrix passing. All four
 UI source hashes above remain unchanged; this test strengthening does not
 reopen the implementation review.
 
+Release-test correction reviewed: `tests/test_steenrod_static_atlas.py` now
+expects the relocated footer link's actual `id="nav-spectra" href="#spectra"
+hidden` markup instead of the removed sidebar styling class. The assertions
+that public export has zero spectra, an empty spectrum list, and
+`withheld_pending_review` remain intact, as does the hidden-link requirement.
+This is a stale styling assertion correction, not weakened publication
+authority. Test file SHA-256:
+`5edc26e476ed91f7d1ce24dcc09b259e6cbcd31fa21b451ffdb0c3f162321dde`.
+The four UI hashes above were rechecked unchanged. Root is rerunning the full
+suite; this note does not claim that unfinished run has passed.
+
 Final status: **no remaining identified blocker within the navigation review
 scope**. This acceptance is exact-source-bound and does not replace the final
 artifact rebuild, full-suite, publication or live verification. Only this
