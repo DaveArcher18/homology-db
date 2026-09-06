@@ -1,5 +1,5 @@
 Type: wayfinder:map
-Status: active
+Status: complete
 
 # Space reading experience
 

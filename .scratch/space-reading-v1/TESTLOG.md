@@ -56,4 +56,14 @@ Artifact: 5,280,258 bytes; SHA-256
 516648907cebad4ee275f4c8bf7bffb5a93a1b01557f7e449066551b036a459f.
 No differences in homology_db, docs/reviews or static_atlas/families.js.
 Remote main verified at baseline 2e11291 before non-force publication.
-Pages publication/live verification pending.
+Release commit: 7174f93f36ae96cb9deb42e66b60b12a275065ab, pushed without force.
+GitHub Pages run 34034689672 succeeded on 2026-09-06:
+https://github.com/DaveArcher18/homology-db/actions/runs/34034689672
+Observed using connected GitHub fetch (Gather GitHub instructions, local revision
+read 2026-09-06). Workflow actor DaveArcher18; no derived acceptance claim.
+Live HTTP 200 response matches the artifact bytes and SHA-256 above.
+All three browser suites pass again against https://davearcher18.github.io/homology-db/:
+42 space routes, 169 legacy coefficient views, 21 family views, 49 spectra,
+11 navigation widths, 33 picker selections, actual zoom, keyboard and history.
+Zero browser errors. Source and artifact committed/published; no pending release
+work. Codex in-app verification remains unperformed because the Mac was locked.

@@ -1,6 +1,6 @@
 # Work state
 
-Status: IN_PROGRESS
+Status: COMPLETE
 
 ## Objective
 
@@ -26,10 +26,17 @@ without an explicit user request here.
 ## Active run lease
 
 Claimed by: `/root (interactive chat)`
-Heartbeat: `2026-09-06` — active interactive audit.
+Heartbeat: `2026-09-06` — completed; lease released.
 
 ## Last checkpoint
 
+- COMPLETE: static reading improvement live. Source66b5507, release7174f93;
+  Pages34034689672 succeeded. Live HTTP200 bytes match the 5,280,258-byte artifact
+  SHA-256`516648907cebad4ee275f4c8bf7bffb5a93a1b01557f7e449066551b036a459f`.
+  All42-page visual audit, independent source review,189 tests (3 optional skips),
+  deterministic rebuild and all3 frozen/live Chrome suites pass. No mathematics
+  or human-review binding changes. No settings agent/backend. Current Codex
+  in-app checks could not run because the Mac was locked; not claimed as passed.
 - Space reading implementation complete for final review/release. All 42 pages
   visually audited; 169 coefficient views pass the new browser reading suite.
   Existing family/navigation suites pass, including 11 widths and browser zoom.
@@ -506,16 +513,17 @@ Heartbeat: `2026-09-06` — active interactive audit.
 
 ## Exact next action
 
-Finish independent review, freeze source, build the exact release artifact, run
-the full regression and deterministic gate, then publish and verify live bytes
-and browser interactions under the user's existing authorization.
+No automatic continuation. Static reading improvements are published and verified.
+Await user feedback. Current iteration's Codex in-app check remains unavailable
+while the Mac is locked; Chrome/live verification is complete and separately logged.
 
 ## Verification state
 
-Current reading preview: all 42 routes, 169 coefficient views, degree disclosures,
+Current live reading release: all 42 routes, 169 coefficient views, degree disclosures,
 print, copied state/reload/history, keyboard field scrolling, source focus and
-dark theme pass. Existing navigation and family browser suites pass. Full frozen
-source regression and publication are pending. Mathematical sources and review
+dark theme pass. Navigation and family browser suites pass. Full 189-test suite
+is OK (3 optional skips), deterministic gate passes, and live bytes match the
+published artifact. Independent source review passes. Mathematical sources and review
 bindings are unchanged; human review stays pending. Mac lock prevents current
 Codex in-app browser verification; Chrome results are recorded separately.
 Historical verification below describes earlier releases, not this candidate.
