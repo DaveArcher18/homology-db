@@ -121,7 +121,7 @@ console.log(JSON.stringify({
             self.assertIsNotNone(embedded)
             atlas = json.loads(embedded.group(1))
             self.assertEqual(atlas["snapshot"]["snapshot_id"], snapshot_id)
-            self.assertEqual(atlas["snapshot"]["schema_version"], "homology-db.static-atlas/3")
+            self.assertEqual(atlas["snapshot"]["schema_version"], "homology-db.static-atlas/4")
             self.assertEqual(
                 atlas["snapshot"]["source_revision_inputs"],
                 [
@@ -132,6 +132,7 @@ console.log(JSON.stringify({
                     "homology_db/__init__.py",
                     "homology_db/atlas_schema.py",
                     "homology_db/chromatic.py",
+                    "homology_db/classical.py",
                     "homology_db/migrations/0005_stable_steenrod_modules.sql",
                     "homology_db/preview.py",
                     "homology_db/steenrod.py",
@@ -521,7 +522,8 @@ console.log(JSON.stringify({
                 "Model & sources",
                 "Classification & record",
                 "serializedSpaceRecord",
-                "JSON.stringify(space, null, 2)",
+                "export_context:",
+                "classical: atlas.classical",
             ):
                 self.assertIn(required_space_contract, html)
             self.assertNotIn("item.rank === best", html)
@@ -635,7 +637,8 @@ console.log(JSON.stringify({
                 "if (members.length > familySearchThreshold)",
                 "showAllOnEmpty: false",
                 "const visibleMatches =",
-                "if (updateSection) view.append(updateSection)",
+                "cohomology-section space-section",
+                'element("h2", "", "Cohomology")',
                 "item.append(main)",
                 "if (relations.length) records.append(relationBlock.details)",
                 "if (qualityIssueCount) records.append(qualityBlock.details)",

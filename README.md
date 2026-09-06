@@ -1,9 +1,19 @@
 # Homology DB
 
-Homology DB is a searchable, citable, provenance-rich atlas of Conceptual
-spaces and computations, inspired by the LMFDB. It is under active
-construction; the current public atlas is a focused chromatic gateway built
-from 42 named CW spaces.
+Homology DB is a searchable, sourced reference for the ordinary homology and
+cohomology of spaces, inspired by the LMFDB. Its student-facing core contains
+13 familiar spaces with cohomology rings over Q, F2, F3, F5, and F7, alongside
+the existing homology of 42 named CW spaces. Ring presentations include generator
+degrees, relations, complete finite multiplication data, and precise sources.
+These literature-based records have automated consistency checks and agent
+review; human mathematical review is pending.
+
+Start with CP2 and S2 wedge S4: the additive groups agree, but their cup products
+show why the rings differ. Try RP2 over F2 and Q to see coefficient dependence,
+or the torus and Klein bottle to explore surface products. Integral homology is
+retained; integral cohomology rings and rings outside the 13-space core are
+explicitly not recorded. The stable-spectrum feedback preview remains available
+through About and its existing direct links.
 
 ## Browse the atlas
 
@@ -32,6 +42,15 @@ Rebuild the current `chromatic-gateway-42` Snapshot deterministically with:
 ```bash
 python3 scripts/export_static_atlas.py --snapshot current --output dist/atlas.html
 ```
+
+That command builds the spaces-only variant. To retain the public stable-spectrum
+preview and all its existing links, use the public-preview command below. The
+classical cohomology overlay is included in both variants and carries its own
+content hash independently of the historical homology database Snapshot.
+
+The [classical iteration specification](.scratch/classical-spaces-v1/spec.md)
+records the core and UX contract; the [source qualification](.scratch/classical-spaces-v1/sources.md)
+records the mathematical presentations and primary-source locators.
 
 ## Stable Steenrod review candidate
 

@@ -8,11 +8,14 @@
   const {
     coefficientDisplay,
     coefficientTex,
+    cohomologyCoveragePresentation,
     coverageFor,
     coveragePresentation: pureCoveragePresentation,
     firstRecorded,
     groupPresentation,
+    monomialTex,
     parseTex,
+    relationTex,
   } = presentation;
   const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
   const snapshot = atlas.snapshot ?? {};
@@ -37,6 +40,35 @@
     system: "System",
     light: "Light",
     dark: "Dark",
+  });
+  const textbookGroups = [
+    { title: "First examples", note: "Points, components, and spheres", ids: ["point", "sphere:0", "sphere:1", "sphere:2", "sphere:3", "sphere:4"] },
+    { title: "Surfaces", note: "Products and a change of coefficients", ids: ["torus:2", "klein_bottle"] },
+    { title: "Real projective spaces", note: "See what changes over a field", ids: ["real_projective_space:2", "real_projective_space:3", "real_projective_space:4"] },
+    { title: "Same groups, different rings", note: "A cup product tells the difference", ids: ["complex_projective_space:2", "sphere_wedge:2:4"] },
+  ];
+  const classicalDescriptions = Object.freeze({
+    point: "A space consisting of a single point. Every contractible space has the same ordinary homology and cohomology ring.",
+    "sphere:0": "Two distinct points with the discrete topology. Its two components make degree zero different from that of a connected space.",
+    "sphere:1": "The circle: the points at distance one from the origin in the plane.",
+    "sphere:2": "The usual two-dimensional sphere, the boundary of a solid ball in three-dimensional Euclidean space.",
+    "sphere:3": "The unit sphere in four-dimensional Euclidean space, with one cell in dimensions zero and three.",
+    "sphere:4": "The unit sphere in five-dimensional Euclidean space, with one cell in dimensions zero and four.",
+    "torus:2": "The product of two circles, or a square with each pair of opposite edges identified in the same direction. It is an orientable closed surface.",
+    klein_bottle: "A square with one pair of opposite edges identified in the same direction and the other pair in opposite directions. It is a nonorientable closed surface.",
+    "real_projective_space:2": "The space of lines through the origin in three-dimensional real space, equivalently the two-sphere with antipodal points identified.",
+    "real_projective_space:3": "The space of lines through the origin in four-dimensional real space, equivalently the three-sphere with antipodal points identified.",
+    "real_projective_space:4": "The space of lines through the origin in five-dimensional real space, equivalently the four-sphere with antipodal points identified.",
+    "complex_projective_space:2": "The space of complex lines through the origin in complex three-dimensional space. It has one cell in real dimensions zero, two, and four.",
+    "sphere_wedge:2:4": "A two-sphere and a four-sphere joined at one chosen point. Its additive groups agree with those of the complex projective plane; its cup products do not.",
+  });
+  const classicalFamilyDescriptions = Object.freeze({
+    point: "The one-point space is the starting example for ordinary homology and cohomology.",
+    sphere: "Unit spheres in Euclidean space, from the disconnected zero-sphere to higher-dimensional examples.",
+    wedge: "Join pointed spaces at their chosen basepoints. Wedges give simple examples where cup products carry information beyond additive groups.",
+    surface: "The torus and Klein bottle illustrate orientability, torsion, and the effect of changing coefficients.",
+    real_projective_space: "Real lines through the origin, or spheres with antipodal points identified. Each has one cell in every dimension up to its dimension.",
+    hopf_projective_plane: "The complex, quaternionic, and octonionic projective planes each have three cells, with different attaching maps.",
   });
 
   const spacesById = new Map(conceptualSpaces.map((space) => [space.id, space]));
@@ -402,18 +434,23 @@
 
   function availableCoefficients(space) {
     const recorded = new Set(
-      asArray(space.homology).map((row) => row.coefficient_ring),
+      [
+        ...asArray(space.homology).map((row) => row.coefficient_ring),
+        ...asArray(space.cohomology).map((record) => record.coefficient),
+      ],
     );
-    const ordered = supportedCoefficients.filter((item) => recorded.has(item));
-    return ordered.length ? ordered : [...recorded];
+    const core = space.classical_core || asArray(space.cohomology).length > 0;
+    if (core) ["Q", "F2", "F3", "F5", "F7", "Z"].forEach((item) => recorded.add(item));
+    const order = core ? ["Q", "F2", "F3", "F5", "F7", "Z"] : supportedCoefficients;
+    return [...new Set([...order.filter((item) => recorded.has(item)), ...recorded])];
   }
 
   function homologyViewFor(space) {
     if (!state.homologyViewBySpace.has(space.id)) {
       const coefficients = availableCoefficients(space);
-      const coefficient = coefficients.includes("Z")
-        ? "Z"
-        : coefficients[0] ?? "Z";
+      const core = space.classical_core || asArray(space.cohomology).length > 0;
+      const coefficient = core && coefficients.includes("Q") ? "Q"
+        : coefficients.includes("Z") ? "Z" : coefficients[0] ?? "Z";
       state.homologyViewBySpace.set(space.id, {
         coefficient,
         reduced: false,
@@ -509,7 +546,17 @@
   }
 
   function serializedSpaceRecord(space) {
-    return JSON.stringify(space, null, 2);
+    return JSON.stringify({
+      ...space,
+      export_context: {
+        atlas_schema_version: snapshot.schema_version,
+        snapshot_id: snapshot.snapshot_id,
+        source_commit: snapshot.source_commit,
+        source_inputs_sha256: snapshot.source_inputs_sha256,
+        source_database_sha256: snapshot.source_database_sha256,
+        classical: atlas.classical,
+      },
+    }, null, 2);
   }
 
   async function copyText(text, button) {
@@ -694,8 +741,8 @@
     input.type = "search";
     input.autocomplete = "off";
     input.placeholder =
-      scopeKey === "spaces"
-        ? "Try “sphere”, “torsion”, or “B(C₂)”"
+      scopeKey === "spaces" || scopeKey === "home"
+        ? "Try “torus”, “RP²”, or “CP²”"
         : "Search names, parameters, and aliases";
     input.value = state.queriesByScope.get(scopeKey) ?? "";
     input.setAttribute("aria-describedby", statusId);
@@ -800,77 +847,49 @@
     const hero = element("section", "home-hero");
     const heroCopy = element("div", "home-hero-copy");
     heroCopy.append(
-      element("p", "page-kicker", "An atlas of computed examples"),
-      element("h1", "page-title", "Homology, space by space"),
+      element("p", "page-kicker", "A classical topology reference"),
+      element("h1", "page-title", "Spaces, groups, and cup products."),
       element(
         "p",
         "home-intro page-lede",
-        "Browse ordinary homology, concrete models, and provenance for a focused collection of familiar spaces.",
+        "Look up a familiar space. Compare coefficients, understand its cohomology ring, and follow the mathematics back to a source.",
       ),
     );
-    const actions = element("div", "hero-actions");
-    const explore = element("a", "primary-action", "Explore spaces");
-    explore.href = "#spaces";
-    actions.append(explore);
-    heroCopy.append(actions);
     hero.append(heroCopy);
-
-    let updateSection = null;
-    if (Number(snapshot.conceptual_spectrum_count) > 0) {
-      const accepted =
-        snapshot.spectrum_release_status === "accepted_finalized"
-        && Array.isArray(atlas.conceptual_spectra)
-        && atlas.conceptual_spectra.length
-          === Number(snapshot.conceptual_spectrum_count)
-        && atlas.conceptual_spectra.every(
-          (spectrum) => spectrum.review_state === "accepted",
-        );
-      updateSection = element("section", "home-update home-section");
-      const updateCopy = element("div", "home-update-copy");
-      const updateHeadingId = "home-stable-update-title";
-      updateSection.setAttribute("aria-labelledby", updateHeadingId);
-      const updateHeading = element(
-        "h2",
-        "",
-        "Steenrod operation tables are ready to explore",
-      );
-      updateHeading.id = updateHeadingId;
-      updateCopy.append(
-        element("p", "section-kicker", "What's new in the atlas"),
-        updateHeading,
-        element(
-          "p",
-          "",
-          accepted
-            ? "Alongside the familiar spaces, you can now explore reviewed Steenrod operation tables for stable spectra."
-            : "Alongside the familiar spaces, you can now explore Steenrod operation tables for stable spectra. The operations are imported and unreviewed, so this preview is open for friendly feedback.",
-        ),
-      );
-      const exploreOperations = element(
-        "a",
-        "secondary-action",
-        "Explore Steenrod operations",
-      );
-      exploreOperations.href = "#spectra";
-      updateSection.append(updateCopy, exploreOperations);
-    }
-
-    const familySection = element("section", "home-families home-section");
-    const familyHeading = element("div", "section-heading");
-    familyHeading.append(
-      element("div", "", ""),
-    );
-    familyHeading.firstElementChild.append(
-      element("p", "section-kicker", "Start with a family"),
-      element("h2", "", "Browse familiar families"),
-    );
-    const allFamilies = element("a", "text-link", "See every family");
-    allFamilies.href = "#spaces";
-    familyHeading.append(allFamilies);
-    familySection.append(familyHeading, buildFamilyDirectory(6));
-    view.append(hero);
-    if (updateSection) view.append(updateSection);
-    view.append(familySection);
+    const examples = element("section", "textbook-examples home-section");
+    const heading = element("div", "section-heading");
+    heading.append(element("h2", "", "Start with these spaces"));
+    const allSpaces = element("a", "text-link", `Browse all ${conceptualSpaces.length} spaces →`);
+    allSpaces.href = "#spaces";
+    heading.append(allSpaces);
+    const groups = element("div", "textbook-groups");
+    textbookGroups.forEach((group) => {
+      const entries = group.ids.map((id) => spacesById.get(id)).filter(Boolean);
+      if (!entries.length) return;
+      const card = element("div", "textbook-group");
+      card.append(element("h3", "", group.title), element("p", "", group.note));
+      const links = element("ul", "textbook-links");
+      entries.forEach((space) => {
+        const item = element("li");
+        const link = element("a", "textbook-space-link");
+        link.href = `#space=${encodeURIComponent(space.slug)}`;
+        link.setAttribute("aria-label", space.name.plain);
+        link.append(mathName(space, "math-inline"));
+        if (space.id === "point" || space.id === "klein_bottle") {
+          link.append(document.createTextNode(` ${space.name.plain}`));
+        }
+        item.append(link);
+        links.append(item);
+      });
+      card.append(links);
+      groups.append(card);
+    });
+    const coreCount = conceptualSpaces.filter((space) => asArray(space.cohomology).length > 0).length;
+    examples.append(heading, groups,
+      element("p", "classical-coverage-note", coreCount
+        ? `Cohomology rings over ℚ, 𝔽₂, 𝔽₃, 𝔽₅, and 𝔽₇ are recorded for ${coreCount} textbook spaces. Integral homology remains available. Human mathematical review is pending.`
+        : "Explore the existing homology collection. Cohomology-ring coverage is not recorded in this snapshot."));
+    view.append(hero, buildSpaceSearch(conceptualSpaces, "home", "Find a space", { showAllOnEmpty: false }), examples);
     return view;
   }
 
@@ -883,8 +902,8 @@
       ]),
       pageHeader(
         "Spaces",
-        `${conceptualSpaces.length} conceptual spaces in ${sections.length} families`,
-        "Browse by mathematical family or search the whole snapshot. Each result opens a focused page for one space.",
+        `${conceptualSpaces.length} spaces in ${sections.length} families`,
+        "Search the collection or browse by family. The textbook core includes cohomology rings; every space retains its existing homology and sources.",
       ),
     );
 
@@ -919,10 +938,7 @@
         { label: section.label },
       ]),
     );
-    const familyIntroduction = [
-      section.summary,
-      section.chromatic_relevance ?? section.relevance,
-    ].filter(Boolean).join(" ");
+    const familyIntroduction = classicalFamilyDescriptions[section.id] ?? section.summary;
     const header = pageHeader(
       section.label,
       `${members.length} space${members.length === 1 ? "" : "s"} in this snapshot`,
@@ -960,17 +976,17 @@
     return view;
   }
 
-  function buildHomologyControls(space, host) {
+  function buildCoefficientControls(space, cohomology, homology) {
     const controls = element(
       "div",
-      "homology-controls coefficient-controls local-homology-controls",
+      "coefficient-controls shared-coefficient-controls",
     );
     const view = homologyViewFor(space);
     const coefficientFieldset = element(
       "fieldset",
       "space-coefficients segmented-fieldset segmented-control-group",
     );
-    coefficientFieldset.append(element("legend", "", "Coefficient ring"));
+    coefficientFieldset.append(element("legend", "", "Coefficients for both theories"));
     const coefficientOptions = element(
       "div",
       "segment-options segmented-control",
@@ -989,7 +1005,24 @@
       coefficientOptions.append(option);
     });
     coefficientFieldset.append(coefficientOptions);
+    const help = element("p", "control-help");
+    help.append(buildKnowl("coefficient-field", "What do coefficients change?"));
+    controls.append(coefficientFieldset, help);
+    controls.addEventListener("change", (event) => {
+      if (!(event.target instanceof HTMLInputElement)
+        || event.target.name !== `coefficient-${space.slug}`) return;
+      const current = homologyViewFor(space);
+      current.coefficient = event.target.value;
+      renderCohomology(space, cohomology);
+      renderHomology(space, homology);
+      announce(`${space.name.plain}: cohomology and homology with ${coefficientDisplay(current.coefficient)} coefficients.`);
+    });
+    return controls;
+  }
 
+  function buildHomologyControls(space, host) {
+    const controls = element("div", "homology-controls local-homology-controls");
+    const view = homologyViewFor(space);
     const conventionFieldset = element(
       "fieldset",
       "space-convention segmented-fieldset segmented-control-group",
@@ -1016,15 +1049,13 @@
     const conventionHelp = element("p", "control-help");
     conventionHelp.append(
       buildKnowl("reduced-homology", "Reduced versus unreduced"),
+      document.createTextNode(" · Applies to homology only."),
     );
     conventionFieldset.append(conventionHelp);
 
     controls.addEventListener("change", (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
       const current = homologyViewFor(space);
-      if (event.target.name === `coefficient-${space.slug}`) {
-        current.coefficient = event.target.value;
-      }
       if (event.target.name === `convention-${space.slug}`) {
         current.reduced = event.target.value === "true";
       }
@@ -1033,8 +1064,134 @@
         `${space.name.plain}: ${current.reduced ? "reduced" : "unreduced"} homology with ${coefficientDisplay(current.coefficient)} coefficients.`,
       );
     });
-    controls.append(coefficientFieldset, conventionFieldset);
+    controls.append(conventionFieldset);
     return controls;
+  }
+
+  function renderCohomology(space, host) {
+    const dynamic = host.querySelector(".cohomology-dynamic");
+    const coefficient = homologyViewFor(space).coefficient;
+    const records = asArray(space.cohomology)
+      .filter((record) => record.coefficient === coefficient);
+    const record = records.length === 1 ? records[0] : null;
+    const content = element("div", "cohomology-rendered");
+    if (!record || record.knowledge_state !== "exact"
+      || !record.presentation?.tex || !Array.isArray(record.groups)) {
+      content.append(
+        element("p", "cohomology-missing empty-state", `Not recorded with ${coefficientDisplay(coefficient)} coefficients.`),
+        element("p", "table-note", coefficient === "Z"
+          ? "Integral homology is available below. An integral cohomology ring is not inferred from the field results."
+          : "This snapshot does not supply a cohomology-ring presentation for this selection. Missing data does not mean the ring is zero."),
+      );
+      dynamic.replaceChildren(content);
+      return;
+    }
+
+    const algebra = record.algebra ?? {};
+    const formula = element("div", "ring-presentation");
+    formula.append(
+      renderTex(`H^{*}(${space.name.tex};${coefficientTex(coefficient)})`,
+        `Ordinary cohomology ring of ${space.name.plain} with ${coefficientDisplay(coefficient)} coefficients`, "cohomology-formula"),
+      renderTex(`\\cong ${record.presentation.tex}`,
+        `is isomorphic to ${record.presentation.plain}`, "ring-formula"),
+    );
+    content.append(formula,
+      element("p", "ring-convention", "Ordinary, unreduced cohomology · multiplication is the cup product · unit 1 in degree 0"));
+
+    const definitionsLine = element("p", "ring-definitions");
+    definitionsLine.append(buildKnowl("cup-product", "Cup product"), document.createTextNode(" · "),
+      buildKnowl("generator-degree", "Generator degree"), document.createTextNode(" · "),
+      buildKnowl("ring-relation", "Relations"));
+    content.append(definitionsLine);
+
+    const structure = element("dl", "ring-structure");
+    structure.append(element("dt", "", "Generators"));
+    const generators = element("dd", "ring-generators");
+    if (!asArray(algebra.generators).length) {
+      generators.textContent = "The unit 1 alone; no additional generators.";
+    } else {
+      asArray(algebra.generators).forEach((generator, index) => {
+        if (index) generators.append(document.createTextNode("; "));
+        generators.append(renderTex(generator.id, generator.id, "math-inline"),
+          document.createTextNode(` in degree ${generator.degree}`));
+      });
+    }
+    structure.append(generators, element("dt", "", "Relations"));
+    const relations = element("dd", "ring-relations");
+    if (!asArray(algebra.relations).length) {
+      relations.textContent = "No additional relations.";
+    } else {
+      asArray(algebra.relations).forEach((relation, index) => {
+        if (index) relations.append(document.createTextNode("; "));
+        const tex = relationTex(relation);
+        relations.append(renderTex(tex, tex.replaceAll("^{", " to the power ").replaceAll("}", ""), "math-inline"));
+      });
+    }
+    structure.append(relations);
+    content.append(structure);
+    const notes = element("div", "ring-meaning");
+    asArray(record.presentation.notes).forEach((note) => notes.append(element("p", "", note)));
+    content.append(notes, element("h3", "cohomology-groups-heading", "Groups by degree"));
+
+    const tableWrap = element("div", "homology-table-wrap cohomology-table-wrap");
+    const table = element("table", "homology-table cohomology-table");
+    table.append(element("caption", "visually-hidden", `Cohomology groups and a vector-space basis for ${space.name.plain} over ${coefficientDisplay(coefficient)}`));
+    const head = element("thead");
+    const header = element("tr");
+    ["Degree", "Group", "Basis"].forEach((label) => {
+      const cell = element("th", "", label);
+      cell.scope = "col";
+      header.append(cell);
+    });
+    head.append(header);
+    const body = element("tbody");
+    record.groups.forEach((group) => {
+      const row = element("tr");
+      const degree = element("th", "degree-cell");
+      degree.scope = "row";
+      degree.append(renderTex(`H^{${group.degree}}`, `Cohomology degree ${group.degree}`, "math-inline"));
+      const groupCell = element("td", "group-cell");
+      const value = groupPresentation({ coefficient_ring: coefficient, knowledge_state: "exact", group: { state: "exact", dimension: group.dimension } });
+      groupCell.append(value.exact ? renderTex(value.tex, value.plain, "group-math") : document.createTextNode(value.plain));
+      const basisCell = element("td", "cohomology-basis");
+      const basis = asArray(algebra.basis).filter((item) => item.degree === group.degree);
+      if (group.dimension === 0) {
+        basisCell.textContent = "—";
+      } else if (basis.length !== group.dimension) {
+        basisCell.textContent = "Not recorded";
+      } else {
+        basis.forEach((item, index) => {
+          if (index) basisCell.append(document.createTextNode(", "));
+          basisCell.append(renderTex(monomialTex(item.powers), item.id, "math-inline"));
+        });
+      }
+      row.append(degree, groupCell, basisCell);
+      body.append(row);
+    });
+    table.append(head, body);
+    tableWrap.append(table);
+    const coverage = cohomologyCoveragePresentation(record);
+    content.append(tableWrap, element("p", "cohomology-coverage table-note", `${coverage.label}. ${coverage.detail}`));
+
+    const sources = element("div", "cohomology-sources");
+    sources.append(element("h3", "", "Sources & review"));
+    const citations = element("ul", "citation-list");
+    asArray(record.sources).forEach((reference) => {
+      const catalog = atlas.classical?.sources;
+      const source = Array.isArray(catalog)
+        ? catalog.find((item) => item.id === reference.source_id || item.source_id === reference.source_id)
+        : catalog?.[reference.source_id];
+      citations.append(renderCitation({ ...source, ...reference, year: source?.publication_year ?? source?.year }));
+    });
+    if (!citations.children.length) citations.append(element("li", "", "Source not recorded."));
+    sources.append(citations, element("p", "human-review-note", "Literature-based presentation · human mathematical review pending."));
+    if (record.provenance?.derivation) {
+      const derivation = detailsBlock("How this record is supported");
+      derivation.content.append(element("p", "", record.provenance.derivation));
+      sources.append(derivation.details);
+    }
+    content.append(sources);
+    dynamic.replaceChildren(content);
   }
 
   function hasRepeatedSummand(rows) {
@@ -1073,6 +1230,15 @@
       convention,
       buildCoverageBadge(space, rows),
     );
+    if (view.coefficient === "Q" && rows.length) {
+      const note = element("p", "table-note rational-homology-note",
+        "Rational homology is derived from integral homology by extension of scalars. ");
+      const source = atlas.classical?.rational_homology_derivation;
+      const link = outboundLink(source?.locator ?? "Source", source?.source_url,
+        "Source for rational homology by extension of scalars");
+      if (link) note.append(link);
+      content.append(note);
+    }
     if (reviewModeEnabled) {
       const conventionNote = element("p", "convention-note review-only");
       conventionNote.append(
@@ -1552,7 +1718,7 @@
     titleCopy.append(
       heading,
       element("p", "space-plain-name", space.name.plain),
-      element("p", "space-summary", space.summary),
+      element("p", "space-summary", classicalDescriptions[space.id] ?? space.summary),
     );
     const feedback = outboundLink(
       "Correct or improve ↗",
@@ -1561,17 +1727,16 @@
     );
     if (feedback) {
       feedback.classList.add("context-feedback-link");
-      titleCopy.append(feedback);
     }
     let reviewToggle = null;
     header.append(titleCopy);
+    const actions = element("div", "space-actions permalink-actions");
+    const copyLink = element("button", "text-button", "Copy link");
+    copyLink.type = "button";
+    copyLink.addEventListener("click", () => copyText(permalinkFor(space), copyLink));
+    actions.append(copyLink);
+    header.append(actions);
     if (reviewModeEnabled) {
-      const actions = element("div", "space-actions permalink-actions");
-      const copyLink = element("button", "text-button", "Copy link");
-      copyLink.type = "button";
-      copyLink.addEventListener("click", () =>
-        copyText(permalinkFor(space), copyLink),
-      );
       reviewToggle = element(
         "button",
         "text-button review-toggle",
@@ -1579,8 +1744,7 @@
       );
       reviewToggle.type = "button";
       reviewToggle.setAttribute("aria-pressed", "false");
-      actions.append(copyLink, reviewToggle);
-      header.append(actions);
+      actions.append(reviewToggle);
     }
     view.append(header);
 
@@ -1601,8 +1765,11 @@
       );
       metadata.append(item);
     });
-    view.append(metadata);
-
+    const cohomology = element("section", "cohomology-section space-section");
+    const cohomologyHeading = element("div", "section-heading space-section-heading");
+    cohomologyHeading.append(element("h2", "", "Cohomology"),
+      buildKnowl("ordinary-cohomology", "Definition"));
+    cohomology.append(cohomologyHeading, element("div", "cohomology-dynamic"));
     const homology = element(
       "section",
       "homology-section space-section",
@@ -1613,7 +1780,6 @@
     );
     const headingCopy = element("div");
     headingCopy.append(
-      element("p", "section-kicker", "Computed invariant"),
       element("h2", "", "Homology"),
     );
     homologyHeading.append(
@@ -1625,10 +1791,33 @@
       buildHomologyControls(space, homology),
       element("div", "homology-dynamic"),
     );
-    view.append(homology);
+    view.append(buildCoefficientControls(space, cohomology, homology), cohomology, homology);
+    renderCohomology(space, cohomology);
     renderHomology(space, homology);
+    homology.append(buildProvenanceSummary(space));
 
-    view.append(buildProvenanceSummary(space));
+    if (space.id === "complex_projective_space:2" || space.id === "sphere_wedge:2:4") {
+      const otherId = space.id === "complex_projective_space:2"
+        ? "sphere_wedge:2:4" : "complex_projective_space:2";
+      const other = spacesById.get(otherId);
+      if (other) {
+        const comparison = element("aside", "ring-comparison space-section");
+        comparison.setAttribute("aria-label", "Why ring structure matters");
+        comparison.append(element("h2", "", "Why ring structure matters"));
+        const explanation = element("p");
+        explanation.append(
+          document.createTextNode("Over each displayed field, the complex projective plane and "),
+          renderTex("S^{2}\\vee S^{4}", "the wedge of a two-sphere and a four-sphere", "math-inline"),
+          document.createTextNode(" have one-dimensional cohomology in degrees 0, 2, and 4. In the projective plane, the square of a degree-2 generator is nonzero. In the wedge, every product of positive-degree classes is zero. The groups agree; the rings distinguish the spaces."),
+        );
+        const link = element("a", "text-link related-example-link");
+        link.href = `#space=${encodeURIComponent(other.slug)}`;
+        link.append(document.createTextNode("Compare with "), mathName(other, "math-inline"), document.createTextNode(" →"));
+        comparison.append(explanation, link);
+        view.append(comparison);
+      }
+    }
+
     const records = element(
       "section",
       "record-details entry-details evidence-details space-section",
@@ -1637,9 +1826,13 @@
     const modelBlock = detailsBlock("Model & sources");
     const modelDefinition = element("p", "detail-definition");
     modelDefinition.append(buildKnowl("model", "What is a Model?"));
-    modelBlock.content.append(modelDefinition);
+    modelBlock.content.append(modelDefinition, metadata);
     renderModels(space, modelBlock.content);
     renderEvidence(space, modelBlock.content);
+    const downloadJson = element("button", "text-button", "Download space JSON");
+    downloadJson.type = "button";
+    downloadJson.addEventListener("click", () => downloadRecord(space));
+    modelBlock.content.append(downloadJson);
     records.append(modelBlock.details);
 
     const relations = asArray(space.relations);
@@ -1688,6 +1881,7 @@
       records.append(buildClassificationBlock(space));
     }
     view.append(records);
+    if (feedback) view.append(feedback);
     reviewToggle?.addEventListener("click", () => {
       const enabled = reviewToggle.getAttribute("aria-pressed") !== "true";
       reviewToggle.setAttribute("aria-pressed", String(enabled));

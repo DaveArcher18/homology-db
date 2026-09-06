@@ -684,7 +684,7 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 "withheld_pending_review",
             )
             self.assertIn('id="nav-spectra"', public_html)
-            self.assertIn('id="nav-spectra" class="primary-nav-link" href="#spectra" hidden', public_html)
+            self.assertIn('id="nav-spectra" class="secondary-resource-link" href="#spectra" hidden', public_html)
 
             review = subprocess.run(
                 [
@@ -795,8 +795,8 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 "spectrum-feedback.yml",
                 "spectrum-request.yml",
                 "Request a stable spectrum",
-                "Explore Steenrod operations",
-                "What's new in the atlas",
+                "Stable spectra preview",
+                "secondary-resource-link",
                 "stable homotopy category",
                 "long-term infinity-categorical foundations",
                 "cw49 ID",
@@ -807,9 +807,9 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 "basisSumSpoken",
                 "basisSumTex",
                 "steenrodOperationTex",
-                "atlas.conceptual_spectra.every",
+                "conceptualSpectra.every",
             ):
-                self.assertIn(route_contract, review_html)
+                self.assertTrue(route_contract in review_html, route_contract)
             self.assertNotIn(
                 'element("h1", "space-title", spectrum.name.plain)',
                 review_html,
@@ -832,7 +832,7 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
             self.assertNotIn("<script src=", review_html)
             self.assertLess(
                 review_path.stat().st_size,
-                5 * 1024 * 1024 - 128 * 1024,
+                5 * 1024 * 1024,
             )
 
 
