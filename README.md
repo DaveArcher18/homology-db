@@ -1,183 +1,117 @@
-# Homology DB
+# Homology Atlas · Homology DB
 
-Homology DB is a searchable, sourced reference for the ordinary homology and
-cohomology of spaces, inspired by the LMFDB. Its student-facing core contains
-13 familiar spaces with cohomology rings over Q, F2, F3, F5, and F7, alongside
-the existing homology of 42 named CW spaces. Ring presentations include generator
-degrees, relations, complete finite multiplication data, and precise sources.
-These literature-based records have automated consistency checks and agent
-review; human mathematical review is pending.
+A small, source-first reference for the homology and cohomology of spaces.
+Browse familiar examples, compare coefficients, and see what cup products
+tell you beyond the additive groups.
 
-Start with CP2 and S2 wedge S4: the additive groups agree, but their cup products
-show why the rings differ. Try RP2 over F2 and Q to see coefficient dependence,
-or the torus and Klein bottle to explore surface products. Integral homology is
-retained; integral cohomology rings and rings outside the 13-space core are
-explicitly not recorded. The stable-spectrum feedback preview remains available
-through About and its existing direct links.
+**[Explore the atlas](https://davearcher18.github.io/homology-db/)** ·
+[Textbook trail](https://davearcher18.github.io/homology-db/#textbook) ·
+[Contribute](CONTRIBUTING.md) · [Try the QA walkthrough](docs/QA_WITH_GABRIEL.md)
 
-## Browse the atlas
+This is a hobby project in active development. Students, mathematicians,
+developers, and curious readers are welcome. You do not need to write code—or
+review a whole family—to help.
 
-**Live atlas:** [davearcher18.github.io/homology-db](https://davearcher18.github.io/homology-db/)
+## What can I explore?
 
-Open [`dist/atlas.html`](dist/atlas.html) directly in a browser. It is a single
-self-contained, offline file with a landing page, a searchable Spaces
-directory, family landing pages, and one stable page per Conceptual space.
-Coefficient rings and reduced/unreduced choices are local to each space.
-Curated mathematical notation, compact direct sums, definition knowls,
-exhaustive/bounded coverage, CW models, citations, computation sketches,
-recorded runs, and full atlas JSON remain available without turning the atlas
-into one large control panel. An object-local `Review details` control exposes
-assertion IDs and provenance when validation work calls for them.
+- **Families:** spheres, real projective spaces, and complex projective spaces
+  for any finite nonnegative dimension parameter.
+- **Coefficients:** ℤ and ℚ, followed by 𝔽₂, 𝔽₃, 𝔽₅, 𝔽₇, and 𝔽₁₁ in the
+  family workbench. Compare homology and cohomology degree by degree.
+- **Rings:** generators, degrees, relations, and expandable cup-product tables.
+- **A selected textbook trail:** all 42 retained spaces, sourced introductions,
+  three guided comparisons, and clearly labelled coverage gaps.
+- **Explanations:** a glossary and expandable inline definitions.
+- **Evidence:** citations, derivations, versioned rules, and JSON downloads.
 
-The corpus includes Moore spaces with prime-power torsion, projective and lens
-spaces, low-rank compact Lie groups, Schubert spaces, classifying spaces,
-`BU(2)`, and the universal rank-two complex Thom space. Ten infinite
-finite-type models are materialized through degree 24 and never presented as
-vanishing above that bound. This is ordinary Homology: the atlas explains the
-chromatic connection but does not claim to compute chromatic type or Morava
-K-theory.
+Start with **CP² versus S² ∨ S⁴**: their additive groups agree over a field, but
+their cup products differ. Then try **RP² over ℤ, ℚ, and 𝔽₂**.
 
-Rebuild the current `chromatic-gateway-42` Snapshot deterministically with:
+The original thirteen-space ring core is retained, with HP² and OP² added as a
+separate five-field extension. Coverage varies outside the three general
+families; 27 retained spaces do not yet have encoded cohomology rings. Ten
+infinite finite-type entries have stored homology only through degree 24.
 
-```bash
-python3 scripts/export_static_atlas.py --snapshot current --output dist/atlas.html
-```
+A separate [stable-spectrum preview](https://davearcher18.github.io/homology-db/#spectra)
+preserves the existing 49-spectrum collection. It is secondary to the
+ordinary-space atlas.
 
-That command builds the spaces-only variant. To retain the public stable-spectrum
-preview and all its existing links, use the public-preview command below. The
-classical cohomology overlay is included in both variants and carries its own
-content hash independently of the historical homology database Snapshot.
+## What should I trust?
 
-The [classical iteration specification](.scratch/classical-spaces-v1/spec.md)
-records the core and UX contract; the [source qualification](.scratch/classical-spaces-v1/sources.md)
-records the mathematical presentations and primary-source locators.
+**Human mathematical review is pending.** Automated checks and agent review
+help catch errors; neither is human mathematical acceptance.
 
-## Stable Steenrod review candidate
+- Missing or unrecorded information never means zero.
+- A short display window is different from limited mathematical knowledge.
+- A review applies only to its stated rule version, parameters, coefficients,
+  degrees, and components.
+- Sources and review history stay attached to the results.
 
-The public atlas currently carries an openly labeled review preview of the
-stable-first, mod-2 Steenrod-module corpus for all 49 spectra in Wayne Lin's
-cw49 index: 48 complete finite-basis modules and the infinite `tmf` profile.
-Every imported claim remains `imported_unreviewed`; this preview invites
-feedback and is not Dan Isaksen's mathematical acceptance. Inspect and export
-it locally with:
+Found something questionable? Use **Review this result** on a family page or
+**Correct or improve** on an individual space. A small, precise correction is
+very useful. See [how mathematical review works](docs/reviews/FAMILY_REVIEW_GUIDE.md).
 
-```bash
-python3 -m homology_db steenrod list
-python3 -m homology_db steenrod validate
-python3 -m homology_db steenrod export Ceta --format sseq
-python3 -m homology_db steenrod export Ceta --format sseqcpp
-python3 -m homology_db steenrod export Ceta --format bruner
-```
+## Run it locally
 
-Build the self-contained review atlas and its deterministic handoff files:
+To browse, download or clone the repository and open
+[`dist/atlas.html`](dist/atlas.html). The atlas is a self-contained static file:
+no account, server, package install, or network is needed to read it. External
+sources and GitHub feedback links need a connection.
 
-```bash
-python3 scripts/export_static_atlas.py \
-  --snapshot current \
-  --output .scratch/steenrod-cw49-v1/artifacts/atlas.html \
-  --steenrod-review-candidate \
-  --steenrod-review-packet .scratch/steenrod-cw49-v1/artifacts/review-packet.json \
-  --steenrod-coverage-report .scratch/steenrod-cw49-v1/artifacts/coverage.md
-```
+For the Python tools, use **Python 3.11 or newer**, from the repository root.
+No third-party Python packages are needed for the core demo and tests.
 
-The checked public preview is built explicitly with:
-
-```bash
-python3 scripts/export_static_atlas.py \
-  --snapshot current \
-  --output dist/atlas.html \
-  --steenrod-review-candidate \
-  --allow-public-review-preview
-```
-
-The [interoperability note](docs/research/steenrod-module-interoperability-2026-08-05.md)
-records the pinned source and consumer boundaries. The
-[review-record instructions](docs/reviews/README.md) distinguish this public
-feedback preview from the separate accepted-release materialization; preview
-publication does not create or imply an acceptance record.
-
-The [static atlas read-model note](docs/static-atlas-read-model.md) records the
-schema mapping, measured database and HTML sizes, and validation boundaries.
-Pushes of the checked-in artifact to `main` are deployed by
-[`deploy-atlas-pages.yml`](.github/workflows/deploy-atlas-pages.yml).
-Every space and family has a correction/computation-feedback link, and the
-header links to a structured request-a-space form. Browsing is account-free;
-submitting those GitHub Issue Forms requires a GitHub account.
-
-## Try it now
-
-No installation or network access is required beyond Python 3.10 or newer:
-
-```bash
+```sh
+git clone https://github.com/DaveArcher18/homology-db.git
+cd homology-db
 python3 -m homology_db chromatic demo
+python3 -m unittest discover -s tests
 ```
 
-The command builds a disposable SQLite snapshot and walks through a Moore
-space, a 3-primary lens space, a Hopf-attached projective plane, and the model
-and citation behind an answer. It finishes in under a second on the development
-machine. The unprefixed `python3 -m homology_db ...` commands remain the frozen
-60-space regression fixture so its 2026-07-12 adversarial audit stays replayable.
+The full suite takes a few minutes. Some optional external-consumer checks may
+be skipped when their tools are unavailable.
 
-For a guided Codex session, say:
+See [development and build instructions](docs/DEVELOPMENT.md) for rebuilding the
+atlas, running browser checks, and preserving release provenance. There is no
+`pip install` step or published package to install.
 
-> Read `docs/TEST_DRIVE.md`, run the Homology DB test drive, and guide me
-> through three questions of my choice. Show the evidence behind each answer.
+## Help improve it
 
-External mathematical review is currently **on hold**. The
-[retained reviewer handoff](docs/EXTERNAL_REVIEW.md) documents the frozen
-60-space regression fixture; it is not a review claim for this newer corpus.
+Good first contributions include:
 
-The four public tools also accept stable JSON for agent use. See
-[the local test-drive guide](docs/TEST_DRIVE.md) for copy-paste examples,
-limitations, and the automated checks. The current atlas is still a development
-corpus, not the qualified `0.0.1` release. It makes model identity, parameterized
-torsion computations, bounded coverage, and source provenance tangible while
-the full release process remains in progress.
+- explaining where a page or control was confusing;
+- fixing a typo or improving a source locator;
+- reviewing one example over one coefficient ring;
+- adding a focused regression test;
+- proposing a sourced example that is missing.
 
-Its two confirmed downstream consumers are future spectral-sequence computation engines and LLM tools that retrieve useful examples from partial homological descriptions. The purpose is to reduce routine lookup and reconstruction work so algebraic topologists can spend more time on mathematical judgment and discovery.
+[Open an issue](https://github.com/DaveArcher18/homology-db/issues/new/choose)
+or read [CONTRIBUTING.md](CONTRIBUTING.md). Please be kind, patient, and specific.
+This is maintained as a side project, so response times vary.
 
-The long-term direction is an AI-powered research harness or operating system for stable homotopy theorists. The intended sequence is Homology DB first, Serre spectral-sequence support second, and Adams spectral-sequence support after that. Querying known spectral sequences with LLMs and forcing new computations are later research programs, not current implementation scope.
+## Find your way around
 
-The project intends to reimplement the relevant mathematical capabilities under a coherent architecture. Existing systems are references, attributed sources, datasets, and differential-test oracles rather than intended permanent runtime foundations. Licensing is deliberately deferred and is not a current architecture decision.
+| Path | What lives here |
+| --- | --- |
+| `homology_db/` | Mathematical records, family rules, validation, and Python tools |
+| `static_atlas/` | Static page templates, JavaScript, and CSS |
+| `corpus/` | Pinned data and provenance |
+| `tests/` | Python regression tests |
+| `scripts/` | Export, validation, and browser checks |
+| `dist/atlas.html` | The built, offline atlas published to GitHub Pages |
+| `docs/` | Contributor references, source research, and review guidance |
 
-The current recommendation is to begin with a deliberately narrow vertical slice:
+The [documentation index](docs/README.md) separates current guides from
+historical design notes. Internal planning files are not prerequisites for
+contributing.
 
-- spaces and their finite simplicial or CW models;
-- ordinary integral homology in explicit degrees;
-- relationships between spaces, models, and constructions;
-- reproducible computation records with sources, software versions, and reliability states;
-- a Conceptual-space page, browse/search experience, downloads, and a versioned JSON API.
+## License and acknowledgements
 
-The identity model and pilot corpus selection contract are now fixed. The
-current implementation frontier is owned chain computation, followed by
-measured persistence/query design and the release pipeline.
+A project-wide license for original code has **not yet been selected**.
+See [licensing status and third-party attribution](docs/LICENSING.md); do not
+assume the licenses of upstream references cover the whole repository.
 
-## Start here
-
-1. [Project brief](docs/planning/00-project-brief.md)
-2. [Domain model](docs/planning/01-domain-model.md)
-3. [First implementation tasks](docs/planning/03-first-tasks.md)
-4. [Long-term vision and scope boundary](docs/planning/04-long-term-vision.md)
-5. [Compute-platform strategy](docs/planning/05-compute-platform-strategy.md)
-6. [Working agreements and decision state](docs/planning/06-working-agreements.md)
-7. [Reimplementation doctrine](docs/planning/07-reimplementation-doctrine.md)
-8. [Roadmap](docs/planning/02-roadmap.md)
-9. [Candidate data sources](docs/research/data-source-landscape.md)
-10. [Spectral-sequence prior art](docs/research/spectral-sequence-prior-art.md)
-11. [Pinned LMFDB documentation](docs/upstream/lmfdb/UPSTREAM.md)
-12. [Local test drive](docs/TEST_DRIVE.md)
-13. [Chromatic gateway 42 corpus contract](docs/contracts/chromatic-gateway-42.md)
-14. [Next steps](docs/NEXT_STEPS.md)
-15. [Prepared database-connected review run](docs/REVIEW_AGENT_RUN.md)
-16. [External reviewer handoff — on hold](docs/EXTERNAL_REVIEW.md)
-17. [Append-only review process](docs/REVIEW_PROCESS.md)
-18. [Common-example source review](docs/research/common-examples-review.md)
-19. [ICERM/LMFDB knowl and usability review](docs/research/icerm-lmfdb-knowl-review.md)
-20. [Topology-agent question benchmark](docs/research/topology-agent-question-benchmark.md)
-21. [Atlas schema prototype contract](docs/contracts/atlas-schema-prototype-v1.md)
-22. [Four-minute development-preview Loom plan](docs/LOOM_WALKTHROUGH.md)
-23. [Open-this-first Loom recording workspace](LOOM_START_HERE.md)
-
-## Working position
-
-Build an independent prototype that adopts LMFDB's information architecture and editorial discipline. Do not fork the LMFDB application until there is a decision to pursue an official LMFDB section and the LMFDB developers have been consulted. This keeps the first experiment small and avoids prematurely inheriting its Sage/Flask deployment stack and runtime type model.
+The project is inspired by the LMFDB's reference-oriented approach. Mathematical
+sources are credited with individual records. Retained LMFDB reference documents
+and the stable-spectrum data have their own recorded provenance and licensing;
+they are not silently relicensed by this project.

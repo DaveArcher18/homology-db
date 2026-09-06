@@ -1,0 +1,33 @@
+name: Website bug or usability feedback
+description: Something confusing, broken, or difficult to use? Tell us about it.
+title: "[Website] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping! You do not need to diagnose the cause.
+        For a mathematical correction, please use the affected space's feedback link.
+        Issues are public; leave out passwords, private correspondence, and personal data.
+  - type: input
+    id: page
+    attributes:
+      label: Page link
+      description: The atlas Copy link button preserves the current result.
+      placeholder: https://davearcher18.github.io/homology-db/#...
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened, and what did you expect?
+      description: A short explanation or cropped screenshot is welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we reproduce it?
+      placeholder: "1. Open the page, 2. choose..., 3. click..."
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device (optional)
+      placeholder: e.g. Safari on an iPhone, or the Codex in-app browser
