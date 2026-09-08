@@ -249,3 +249,35 @@ def _validate_presentation(record, algebra, basis, unit, multiply, normalize, ch
             raise ValueError("relation is not homogeneous")
         if normalize(dict(total)):
             raise ValueError("relation is not satisfied by the multiplication table")
+
+
+def check_corroborating_records(records: dict[str, list[dict[str, Any]]]) -> list[dict[str, Any]]:
+    """Report slots carrying more than one record, and refuse disagreement.
+
+    Two records for the same space and coefficient are independent assertions
+    about one slot, not duplicates to be reconciled.  They are kept side by
+    side and reported as corroboration; if their additive groups disagree the
+    slot is a conflict, and a conflict fails the build rather than being
+    settled by preferring one provenance over the other.
+    """
+    corroborated = []
+    for space_id in sorted(records):
+        by_coefficient: dict[str, list[dict[str, Any]]] = {}
+        for record in records[space_id]:
+            by_coefficient.setdefault(record["coefficient"], []).append(record)
+        for coefficient, entries in sorted(by_coefficient.items()):
+            if len(entries) < 2:
+                continue
+            groups = [entry["groups"] for entry in entries]
+            if any(item != groups[0] for item in groups[1:]):
+                raise ValueError(
+                    f"cohomology ring records for {space_id} over {coefficient} disagree on the "
+                    f"additive groups; this is a conflict and must be resolved upstream, not ranked"
+                )
+            corroborated.append({
+                "space_id": space_id,
+                "coefficient": coefficient,
+                "record_ids": sorted(entry["record_id"] for entry in entries),
+                "provenance_kinds": sorted({entry["provenance"]["kind"] for entry in entries}),
+            })
+    return corroborated

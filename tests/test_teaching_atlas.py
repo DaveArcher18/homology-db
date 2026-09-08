@@ -21,9 +21,10 @@ class TeachingAtlasTest(unittest.TestCase):
 
     def test_exact_coverage_without_core_inflation(self):
         entries = self.atlas["teaching"]["entries"]
-        self.assertEqual(len(entries), 42)
+        self.assertEqual(len(entries), 51)
         self.assertEqual(Counter(e["coverage"]["kind"] for e in entries),
-                         {"general_family": 9, "core_ring": 4, "extension_ring": 2, "homology_only": 27})
+                         {"general_family": 9, "core_ring": 4, "extension_ring": 2,
+                          "computed_ring": 9, "homology_only": 27})
         self.assertEqual(sum(s["classical_core"] for s in self.atlas["conceptual_spaces"]), 13)
         self.assertEqual(len(self.atlas["classical"]["space_ids"]), 15)
         self.assertEqual(len(self.atlas["classical"]["core_space_ids"]), 13)

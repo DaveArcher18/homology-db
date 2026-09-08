@@ -755,6 +755,55 @@ def _materialize_family(
                 tags=["surface", "nonorientable", "2_primary", "torsion"],
             )
         raise ValueError(f"unknown surface kind {kind}")
+    if formula == "orientable_surface_connected_sum":
+        genus = int(parameters["genus"])
+        if genus < 2:
+            raise ValueError("genus-one and genus-zero orientable surfaces are recorded separately")
+        return _base_spec(
+            family,
+            parameters,
+            key=f"orientable_surface:{genus}",
+            label=f"Genus-{genus} orientable surface",
+            dimension=2,
+            aliases=[f"Sigma_{genus}", f"M_{genus}", f"connected sum of {genus} tori"],
+            ranks={0: 1, 1: 2 * genus, 2: 1},
+            nonzero=None,
+            attaching_map=(
+                f"Attach the 2-cell to a wedge of {2 * genus} circles by the product of "
+                f"{genus} commutators [a_1,b_1]...[a_{genus},b_{genus}]."
+            ),
+            boundary_formula="Each commutator abelianizes to zero, so d_2 = 0.",
+            computation_sketch=(
+                f"The zero cellular differential gives H_0=Z, H_1=Z^{2 * genus} and H_2=Z."
+            ),
+            tags=["surface", "orientable", "torsion_free", "connected_sum"],
+        )
+    if formula == "nonorientable_surface_connected_sum":
+        genus = int(parameters["genus"])
+        if genus < 3:
+            raise ValueError("the projective plane and Klein bottle are recorded separately")
+        return _base_spec(
+            family,
+            parameters,
+            key=f"nonorientable_surface:{genus}",
+            label=f"Genus-{genus} nonorientable surface",
+            dimension=2,
+            aliases=[f"N_{genus}", f"connected sum of {genus} projective planes"],
+            ranks={0: 1, 1: genus, 2: 1},
+            nonzero={2: [(index, 0, 2) for index in range(genus)]},
+            attaching_map=(
+                f"Attach the 2-cell to a wedge of {genus} circles by the crosscap word "
+                f"a_1^2...a_{genus}^2."
+            ),
+            boundary_formula=(
+                f"Abelianizing the crosscap word gives d_2(1) = 2(a_1 + ... + a_{genus})."
+            ),
+            computation_sketch=(
+                f"Smith reduction of the column of {genus} twos has invariant factor 2, giving "
+                f"H_1=Z^{genus - 1} + Z/2 and H_2=0."
+            ),
+            tags=["surface", "nonorientable", "2_primary", "torsion", "connected_sum"],
+        )
     if formula == "real_projective_standard_cw":
         n = int(parameters["n"])
         ranks = {degree: 1 for degree in range(n + 1)}
@@ -1104,8 +1153,8 @@ def materialize_specs(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     space_ids = [spec["key"] for spec in specs]
     if len(space_ids) != len(set(space_ids)):
         raise ValueError("chromatic corpus contains duplicate Conceptual-space IDs")
-    if len(specs) != 42:
-        raise ValueError(f"expected the curated 42-space corpus, generated {len(specs)}")
+    if len(specs) != 51:
+        raise ValueError(f"expected the curated 51-space corpus, generated {len(specs)}")
     if any(len(spec["sources"]) == 0 for spec in specs):
         raise ValueError("every chromatic space must inherit at least one source")
     return specs
@@ -2074,7 +2123,7 @@ def demo(path: Path) -> None:
         lens = tools.read_homology("L^5(3;1,1,1)")
         projective = tools.read_homology("CP^2")
         evidence = tools.expand_evidence([moore["groups"][2]["evidence_id"]])
-        print(f"Chromatic Homology Atlas ready: 42 spaces, snapshot {snapshot_id}")
+        print(f"Chromatic Homology Atlas ready: 51 spaces, snapshot {snapshot_id}")
         print(f"Scratch database: {path} (safe to delete; rebuilt on every run)\n")
         print("Quick mathematical tour")
         print(f"  M(Z/5,2): H_2 = {moore['groups'][2]['value']['display']}")
@@ -2096,7 +2145,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Chromatic Homology Atlas")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("demo", help="rebuild the 42-space snapshot and show a tour")
+    subparsers.add_parser("demo", help="rebuild the 51-space snapshot and show a tour")
     tool_parser = subparsers.add_parser("tool", help="execute one stable JSON tool request")
     tool_parser.add_argument("request", help='JSON object with "tool" and "arguments"')
     args = parser.parse_args()

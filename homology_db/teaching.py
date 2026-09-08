@@ -49,6 +49,18 @@ def teaching_catalog() -> dict:
     add("klein_bottle", "2.2 / 3.2 · Surfaces",
         "The Klein bottle is a closed nonorientable surface, equivalently the connected sum of two projective planes.",
         "Changing from odd characteristic to F2 reveals a top cohomology class and nonzero degree-one squares.", _source("§1.2, pp. 51–52; Examples 2.37 and 3.8, pp. 141, 208",208))
+    for g in range(2, 7):
+        add(f"orientable_surface:{g}", "2.2 / 3.2 · Surfaces",
+            rf"The genus-{g} orientable surface is the connected sum of {g} tori, the classification of closed surfaces naming it $\Sigma_{{{g}}}$.",
+            rf"Its one 2-cell is attached by a product of {g} commutators, which abelianize to zero, so the cellular differential vanishes and $H_1$ is free of rank {2*g}.",
+            _source("Example 2.36, p. 141", 141),
+            coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation and are not human-reviewed.")
+    for k in range(3, 7):
+        add(f"nonorientable_surface:{k}", "2.2 / 3.2 · Surfaces",
+            rf"The genus-{k} nonorientable surface is the connected sum of {k} projective planes, written $N_{{{k}}}$ in the classification of closed surfaces.",
+            rf"The crosscap word $a_1^2\cdots a_{{{k}}}^2$ abelianizes to twice the sum of the generators, so one order-two class appears no matter how large the genus grows.",
+            _source("Example 2.37, p. 141", 141),
+            coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation and are not human-reviewed.")
     for n in (2,3,4):
         add(f"real_projective_space:{n}", "2.2 / 3.2 · Projective spaces",
             rf"$\mathbb{{RP}}^{{{n}}}$ is the space of real lines through the origin in real {n+1}-dimensional space.",
@@ -131,5 +143,5 @@ def teaching_catalog() -> dict:
          "sources":[_source("Projective rings, pp. 220–222; Hopf invariant examples, p. 427",427)]},
     ]
     return {"schema_version":SCHEMA_VERSION, "title":"A selected textbook trail",
-            "scope_note":"A selected Hatcher-oriented inventory of all 42 retained spaces, with clearly marked supplementary sources—not an exhaustive index of Hatcher. Teaching exposition and new records remain human-review-pending.",
+            "scope_note":"A selected Hatcher-oriented inventory of all 51 retained spaces, with clearly marked supplementary sources—not an exhaustive index of Hatcher. Teaching exposition and new records remain human-review-pending.",
             "entries":entries,"comparisons":comparisons}

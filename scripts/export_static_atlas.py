@@ -25,6 +25,17 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from homology_db.chromatic import COEFFICIENTS, ChromaticTools
+from homology_db.cohomology_rings import (
+    COHOMOLOGY_RING_COEFFICIENTS,
+    COHOMOLOGY_RING_SCHEMA_VERSION,
+    check_corroborating_records,
+)
+from homology_db.computed_rings import (
+    COMPUTED_RING_SOURCES,
+    COMPUTED_RINGS_REVIEW_STATE,
+    computed_ring_records,
+    validate_computed_projection,
+)
 from homology_db.classical import (
     CLASSICAL_COEFFICIENTS,
     CLASSICAL_SCHEMA_VERSION,
@@ -196,6 +207,9 @@ SOURCE_REVISION_INPUTS = (
     "homology_db/chromatic.py",
     "homology_db/classical.py",
     "homology_db/cohomology_rings.py",
+    "homology_db/computed_rings.py",
+    "corpus/computed-rings-v1/manifest.json",
+    "corpus/computed-rings-v1/rings.json",
     "homology_db/families.py",
     "homology_db/family_reviews.py",
     "homology_db/teaching.py",
@@ -1120,6 +1134,10 @@ def conceptual_space_tex(space: dict[str, Any]) -> str:
             return r"T^{2}"
         if parameters["kind"] == "klein_bottle":
             return r"\mathrm{K}"
+    if family == "orientable_surface":
+        return rf"\Sigma_{{{int(parameters['genus'])}}}"
+    if family == "nonorientable_surface":
+        return rf"N_{{{int(parameters['genus'])}}}"
     if family == "real_projective_space":
         return rf"\mathbb{{R}}P^{{{int(parameters['n'])}}}"
     if family == "hopf_projective_plane":
@@ -1244,6 +1262,22 @@ def classical_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> d
     }
 
 
+def computed_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    return {
+        "schema_version": COHOMOLOGY_RING_SCHEMA_VERSION,
+        "space_ids": sorted(records),
+        "coefficients": list(COHOMOLOGY_RING_COEFFICIENTS),
+        "space_count": len(records),
+        "record_count": sum(len(items) for items in records.values()),
+        "content_sha256": _canonical_sha256(records),
+        "review_state": COMPUTED_RINGS_REVIEW_STATE,
+        "evidence_note": (
+            "Cup products imported from an external computer algebra system and bound to a pinned "
+            "simplicial model. Importing is not verification and is not human review."
+        ),
+    }
+
+
 def teaching_projection(spaces: list[dict[str, Any]]) -> dict[str, Any]:
     """Bind exposition to actual recorded coverage, without inventing review."""
     catalog = copy.deepcopy(teaching_catalog())
@@ -1259,11 +1293,15 @@ def teaching_projection(spaces: list[dict[str, Any]]) -> dict[str, Any]:
             kind, label = "general_family", "General family · all degrees"
             coefficients = ["Z", "Q", "F2", "F3", "F5", "F7", "F11"]
         elif space["id"] in CLASSICAL_SPACE_IDS:
-            kind, label = "core_ring", "Textbook core · five-field rings"
-            coefficients = [record["coefficient"] for record in space.get("cohomology", [])]
+            kind, label = "core_ring", "Textbook core · sourced rings"
+            coefficients = sorted({record["coefficient"] for record in space.get("cohomology", [])})
         elif space.get("cohomology"):
-            kind, label = "extension_ring", "Projective-plane extension · five-field rings"
-            coefficients = [record["coefficient"] for record in space["cohomology"]]
+            provenance_kinds = {record["provenance"]["kind"] for record in space["cohomology"]}
+            if provenance_kinds == {"external_engine_computation"}:
+                kind, label = "computed_ring", "Computed rings · imported, not human-reviewed"
+            else:
+                kind, label = "extension_ring", "Projective-plane extension · sourced rings"
+            coefficients = sorted({record["coefficient"] for record in space["cohomology"]})
         else:
             kind, label = "homology_only", "Homology recorded · cohomology rings not recorded"
             coefficients = []
@@ -1335,12 +1373,31 @@ def validate_read_model(
         if atlas.get("teaching") != expected_teaching or atlas["snapshot"].get("teaching_sha256") != expected_teaching["content_sha256"]:
             raise ValueError("teaching exposition or coverage differs from source-bound catalog")
     if atlas["snapshot"].get("schema_version") in {"homology-db.static-atlas/4", READ_MODEL_VERSION}:
-        projected_classical = {
-            item["id"]: item["cohomology"]
-            for item in conceptual_spaces
-            if item.get("cohomology")
-        }
+        def _by_provenance(kind: str) -> dict[str, list[dict[str, Any]]]:
+            projected = {}
+            for item in conceptual_spaces:
+                entries = [record for record in item.get("cohomology", [])
+                           if record["provenance"]["kind"] == kind]
+                if entries:
+                    projected[item["id"]] = entries
+            return projected
+
+        projected_classical = _by_provenance("literature")
+        projected_computed = _by_provenance("external_engine_computation")
         validate_classical_records(projected_classical)
+        validate_computed_projection(projected_computed)
+        computed = atlas.get("computed_rings", {})
+        expected_computed = computed_projection_metadata(projected_computed)
+        projected_all = {item["id"]: item["cohomology"] for item in conceptual_spaces
+                         if item.get("cohomology")}
+        expected_corroborated = check_corroborating_records(projected_all)
+        if computed.get("corroborated_slots") != expected_corroborated:
+            raise ValueError("corroborating ring slots disagree with the validated corpus")
+        if computed != {**expected_computed, "sources": COMPUTED_RING_SOURCES,
+                        "corroborated_slots": expected_corroborated}:
+            raise ValueError("computed ring metadata or sources disagree with the validated corpus")
+        if expected_computed != atlas["snapshot"].get("computed_cohomology"):
+            raise ValueError("computed cohomology snapshot metadata mismatch")
         if any(
             item.get("classical_core") != (item["id"] in CLASSICAL_SPACE_IDS)
             for item in conceptual_spaces
@@ -1761,8 +1818,18 @@ def build_read_model(
 ) -> dict[str, Any]:
     if not database_path.exists():
         raise FileNotFoundError(database_path)
-    cohomology_records = classical_records()
-    validate_classical_records(cohomology_records)
+    classical_cohomology_records = classical_records()
+    validate_classical_records(classical_cohomology_records)
+    computed_cohomology_records = computed_ring_records()
+    validate_computed_projection(computed_cohomology_records)
+    # One space can carry both a literature ring and a computed one. They are
+    # corroborating assertions about the same slot and are never merged into one.
+    cohomology_records = {
+        space_id: list(entries) for space_id, entries in classical_cohomology_records.items()
+    }
+    for space_id, entries in computed_cohomology_records.items():
+        cohomology_records.setdefault(space_id, []).extend(entries)
+    corroborated_rings = check_corroborating_records(cohomology_records)
     with closing(sqlite3.connect(database_path)) as connection:
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys = ON")
@@ -2116,7 +2183,8 @@ def build_read_model(
     if steenrod_review_candidate:
         conceptual_spectra, spectrum_source = build_spectrum_read_model()
 
-    classical_metadata = classical_projection_metadata(cohomology_records)
+    classical_metadata = classical_projection_metadata(classical_cohomology_records)
+    computed_metadata = computed_projection_metadata(computed_cohomology_records)
     teaching = teaching_projection(conceptual_spaces)
 
     atlas = {
@@ -2161,6 +2229,7 @@ def build_read_model(
             "homology_conventions": [],
             "homology_convention_state": "not_recorded_in_database_schema",
             "classical_cohomology": classical_metadata,
+            "computed_cohomology": computed_metadata,
             "teaching_sha256": teaching["content_sha256"],
         },
         "definitions": [
@@ -2175,6 +2244,8 @@ def build_read_model(
         "conceptual_spaces": conceptual_spaces,
         "conceptual_spectra": conceptual_spectra,
         "classical": {**classical_metadata, "sources": CLASSICAL_SOURCES},
+        "computed_rings": {**computed_metadata, "sources": COMPUTED_RING_SOURCES,
+                           "corroborated_slots": corroborated_rings},
         "family_rules": reviewed_family_catalog(family_catalog()),
         "teaching": teaching,
     }

@@ -14,6 +14,7 @@
     firstRecorded,
     groupPresentation,
     monomialTex,
+    basisLabelTex,
     parseTex,
     relationTex,
   } = presentation;
@@ -1115,13 +1116,16 @@
     const coefficient = homologyViewFor(space).coefficient;
     const records = asArray(space.cohomology)
       .filter((record) => record.coefficient === coefficient);
-    const record = records.length === 1 ? records[0] : null;
-    const hasRing = Boolean(record?.knowledge_state === "exact" && record.presentation?.tex && Array.isArray(record.groups));
+    // A slot can carry more than one record: a sourced ring and an independently
+    // computed one corroborate each other and are never merged. Lead with the one
+    // that states a presentation, and name the others rather than hiding them.
+    const record = records.find((item) => item.presentation?.tex) ?? records[0] ?? null;
+    const corroborating = records.filter((item) => item !== record);
+    const hasRing = Boolean(record?.knowledge_state === "exact" && Array.isArray(record.groups) && record.algebra);
     host.classList.toggle("cohomology-unrecorded", !hasRing);
     host.closest(".space-theory-results")?.classList.toggle("has-cohomology-ring", hasRing);
     const content = element("div", "cohomology-rendered");
-    if (!record || record.knowledge_state !== "exact"
-      || !record.presentation?.tex || !Array.isArray(record.groups)) {
+    if (!hasRing) {
       content.append(
         element("p", "cohomology-missing", `Cohomology is not recorded with ${coefficientDisplay(coefficient)} coefficients. This does not mean it is zero.`),
       );
@@ -1134,11 +1138,23 @@
     formula.append(
       renderTex(`H^{*}(${space.name.tex};${coefficientTex(coefficient)})`,
         `Ordinary cohomology ring of ${space.name.plain} with ${coefficientDisplay(coefficient)} coefficients`, "cohomology-formula"),
-      renderTex(`\\cong ${record.presentation.tex}`,
-        `is isomorphic to ${record.presentation.plain}`, "ring-formula"),
     );
+    if (record.presentation?.tex) {
+      formula.append(renderTex(`\\cong ${record.presentation.tex}`,
+        `is isomorphic to ${record.presentation.plain}`, "ring-formula"));
+    }
     content.append(formula,
       element("p", "ring-convention", "Ordinary, unreduced cohomology · multiplication is the cup product · unit 1 in degree 0"));
+    if (record.provenance?.kind === "external_engine_computation") {
+      content.append(element("p", "ring-provenance cohomology-imported",
+        `Computed by ${record.provenance.engine ?? "an external system"} from a pinned simplicial model, and imported. Not independently verified here and not human-reviewed.`));
+    }
+    if (corroborating.length) {
+      const kinds = corroborating.map((item) => item.provenance?.kind === "external_engine_computation"
+        ? "an independent machine computation" : "a literature source");
+      content.append(element("p", "ring-corroboration",
+        `Also recorded by ${[...new Set(kinds)].join(" and ")}, agreeing on the additive groups.`));
+    }
 
     const definitionsLine = element("p", "ring-definitions");
     definitionsLine.append(buildKnowl("cup-product", "Cup product"), document.createTextNode(" · "),
@@ -1147,6 +1163,11 @@
     content.append(definitionsLine);
 
     const structure = element("dl", "ring-structure");
+    if (algebra.kind === "graded_structure_constants") {
+      structure.append(element("dt", "", "Presentation"));
+      structure.append(element("dd", "ring-generators",
+        "Recorded as an additive basis with its full cup-product table. No generators-and-relations presentation is claimed."));
+    } else {
     structure.append(element("dt", "", "Generators"));
     const generators = element("dd", "ring-generators");
     if (!asArray(algebra.generators).length) {
@@ -1170,9 +1191,10 @@
       });
     }
     structure.append(relations);
+    }
     content.append(structure);
     const notes = element("div", "ring-meaning");
-    asArray(record.presentation.notes).forEach((note) => notes.append(element("p", "", note)));
+    asArray(record.presentation?.notes).forEach((note) => notes.append(element("p", "", note)));
     content.append(notes, element("h3", "cohomology-groups-heading", "Groups by degree"));
 
     const tableWrap = element("div", "homology-table-wrap cohomology-table-wrap");
@@ -1193,18 +1215,21 @@
       degree.scope = "row";
       degree.append(renderTex(`H^{${group.degree}}`, `Cohomology degree ${group.degree}`, "math-inline"));
       const groupCell = element("td", "group-cell");
-      const value = groupPresentation({ coefficient_ring: coefficient, knowledge_state: "exact", group: { state: "exact", dimension: group.dimension } });
+      const value = groupPresentation({ coefficient_ring: coefficient, knowledge_state: "exact", group: { state: "exact", ...group } });
       groupCell.append(value.exact ? renderTex(value.tex, value.plain, "group-math") : document.createTextNode(value.plain));
       const basisCell = element("td", "cohomology-basis");
       const basis = asArray(algebra.basis).filter((item) => item.degree === group.degree);
-      if (group.dimension === 0) {
+      const summands = Number.isInteger(group.dimension)
+        ? group.dimension
+        : (group.free_rank ?? 0) + asArray(group.torsion_orders).length;
+      if (summands === 0) {
         basisCell.textContent = "—";
-      } else if (basis.length !== group.dimension) {
+      } else if (basis.length !== summands) {
         basisCell.textContent = "Not recorded";
       } else {
         basis.forEach((item, index) => {
           if (index) basisCell.append(document.createTextNode(", "));
-          basisCell.append(renderTex(monomialTex(item.powers), item.id, "math-inline"));
+          basisCell.append(renderTex(basisLabelTex(item), item.id, "math-inline"));
         });
       }
       row.append(degree, groupCell, basisCell);
@@ -1220,7 +1245,7 @@
     products.append(element("p", "wb-muted", complete ? "Multiplication: complete for all additive basis pairs." : "Multiplication: not recorded completely. Missing products are not zero."));
     const basis = asArray(algebra.basis);
     const basisById = new Map(basis.map(item => [item.id,item]));
-    const basisTex = item => monomialTex(item.powers);
+    const basisTex = basisLabelTex;
     const list = element("ul", "wb-generator-list");
     basis.forEach(item => {const row=element("li");row.append(renderTex(basisTex(item),item.id,"math-inline"),document.createTextNode(` · degree ${item.degree}`));list.append(row);});
     products.append(list);
@@ -1240,7 +1265,7 @@
     sources.append(element("h3", "", "Sources & review"));
     const citations = element("ul", "citation-list");
     asArray(record.sources).forEach((reference) => {
-      const catalog = atlas.classical?.sources;
+      const catalog = { ...(atlas.classical?.sources ?? {}), ...(atlas.computed_rings?.sources ?? {}) };
       const source = Array.isArray(catalog)
         ? catalog.find((item) => item.id === reference.source_id || item.source_id === reference.source_id)
         : catalog?.[reference.source_id];

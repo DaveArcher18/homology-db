@@ -281,6 +281,12 @@
       .join(" ") || "1";
   }
 
+  // A basis element of a presented ring is a monomial in the generators; one
+  // recorded only by structure constants has no monomial, just its own label.
+  function basisLabelTex(item) {
+    return item?.powers ? monomialTex(item.powers) : (item?.id ?? "?");
+  }
+
   function relationTex(relation) {
     const terms = Array.isArray(relation?.terms) ? relation.terms : [];
     if (!terms.length) return "";
@@ -513,6 +519,7 @@
     groupPresentation,
     isSupportedTex,
     monomialTex,
+    basisLabelTex,
     parseTex,
     relationTex,
     simpleTexCommands,

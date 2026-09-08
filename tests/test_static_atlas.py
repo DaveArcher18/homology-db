@@ -110,7 +110,7 @@ console.log(JSON.stringify({
 
             self.assertEqual(completed.returncode, 0, completed.stderr)
             build_summary = json.loads(completed.stdout)
-            self.assertEqual(build_summary["relation_count"], 11)
+            self.assertEqual(build_summary["relation_count"], 20)
             self.assertGreater(build_summary["source_database_bytes"], 0)
             html = output_path.read_text(encoding="utf-8")
             embedded = re.search(
@@ -133,7 +133,10 @@ console.log(JSON.stringify({
                     "homology_db/atlas_schema.py",
                     "homology_db/chromatic.py",
                     "homology_db/classical.py",
-                "homology_db/cohomology_rings.py",
+                    "homology_db/cohomology_rings.py",
+                    "homology_db/computed_rings.py",
+                    "corpus/computed-rings-v1/manifest.json",
+                    "corpus/computed-rings-v1/rings.json",
                     "homology_db/families.py",
                     "homology_db/family_reviews.py",
                     "homology_db/teaching.py",
@@ -163,10 +166,10 @@ console.log(JSON.stringify({
                 atlas["snapshot"]["source_inputs_dirty"],
                 atlas["snapshot"]["source_tree_state"] == "dirty",
             )
-            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 42)
-            self.assertEqual(atlas["snapshot"]["relation_count"], 11)
-            self.assertEqual(len(atlas["conceptual_spaces"]), 42)
-            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 42)
+            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 51)
+            self.assertEqual(atlas["snapshot"]["relation_count"], 20)
+            self.assertEqual(len(atlas["conceptual_spaces"]), 51)
+            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 51)
             self.assertTrue(
                 all(
                     isinstance(item["name"]["tex"], str)
@@ -316,7 +319,7 @@ console.log(JSON.stringify({
                     item["homology_coverage"]["kind"] == "complete_finite_cw"
                     for item in atlas["conceptual_spaces"]
                 ),
-                32,
+                41,
             )
             self.assertEqual(
                 sum(
@@ -401,7 +404,7 @@ console.log(JSON.stringify({
             self.assertEqual(
                 presentation_result["coverageCounts"],
                 {
-                    "coverage-exhaustive": 32,
+                    "coverage-exhaustive": 41,
                     "coverage-bounded": 10,
                     "coverage-neutral": 0,
                 },
@@ -851,7 +854,7 @@ console.log(JSON.stringify({
         )
         self.assertIsNotNone(embedded)
         atlas = json.loads(embedded.group(1))
-        self.assertEqual(len(atlas["conceptual_spaces"]), 42)
+        self.assertEqual(len(atlas["conceptual_spaces"]), 51)
         if not review_path.is_file():
             self.assertEqual(summary["state"], "public_review_preview")
             self.assertEqual(len(atlas.get("conceptual_spectra", [])), 49)

@@ -12,7 +12,7 @@ class TeachingTests(unittest.TestCase):
         catalog = teaching_catalog()
         retained = {space["key"] for space in materialize_specs(load_manifest())}
         entries = catalog["entries"]
-        self.assertEqual(len(entries), 42)
+        self.assertEqual(len(entries), 51)
         self.assertEqual({entry["space_id"] for entry in entries}, retained)
         self.assertIn("not an exhaustive index", catalog["scope_note"])
         self.assertIn("human-review-pending", catalog["scope_note"])

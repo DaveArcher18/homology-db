@@ -30,7 +30,7 @@ class ChromaticAtlasTests(unittest.TestCase):
 
     def test_builds_the_curated_forty_two_space_snapshot_deterministically(self) -> None:
         summary = self.tools.corpus_summary()
-        self.assertEqual(summary["subject_count"], 42)
+        self.assertEqual(summary["subject_count"], 51)
         self.assertEqual(
             summary["release_status"],
             "development_corpus_not_externally_reviewed",
@@ -51,7 +51,7 @@ class ChromaticAtlasTests(unittest.TestCase):
                 "schubert_space": 2,
                 "sphere": 5,
                 "stunted_projective_space": 2,
-                "surface": 2,
+                "surface": 2, "orientable_surface": 5, "nonorientable_surface": 4,
                 "thom_space": 1,
                 "unitary_classifying_space": 1,
                 "wedge": 1,
@@ -171,12 +171,12 @@ class ChromaticAtlasTests(unittest.TestCase):
             connection.row_factory = sqlite3.Row
             self.assertEqual(connection.execute("PRAGMA integrity_check").fetchone()[0], "ok")
             self.assertEqual(connection.execute("PRAGMA foreign_key_check").fetchall(), [])
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM space").fetchone()[0], 42)
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM model").fetchone()[0], 42)
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM evidence").fetchone()[0], 42)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM space").fetchone()[0], 51)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM model").fetchone()[0], 51)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM evidence").fetchone()[0], 51)
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM space_relation").fetchone()[0],
-                11,
+                20,
             )
             self.assertEqual(
                 connection.execute(
@@ -209,7 +209,7 @@ class ChromaticAtlasTests(unittest.TestCase):
                       AND torsion_json != '[]'
                     """
                 ).fetchone()[0],
-                21,
+                25,
             )
             self.assertEqual(
                 {

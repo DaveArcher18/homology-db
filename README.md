@@ -19,7 +19,7 @@ review a whole family—to help.
 - **Coefficients:** ℤ and ℚ, followed by 𝔽₂, 𝔽₃, 𝔽₅, 𝔽₇, and 𝔽₁₁ in the
   family workbench. Compare homology and cohomology degree by degree.
 - **Rings:** generators, degrees, relations, and expandable cup-product tables.
-- **A selected textbook trail:** all 42 retained spaces, sourced introductions,
+- **A selected textbook trail:** all 51 retained spaces, sourced introductions,
   three guided comparisons, and clearly labelled coverage gaps.
 - **Explanations:** a glossary and expandable inline definitions.
 - **Evidence:** citations, derivations, versioned rules, and JSON downloads.

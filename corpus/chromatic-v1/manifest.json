@@ -1,9 +1,9 @@
 {
   "schema_version": "homology-db.chromatic-corpus/3",
-  "snapshot_name": "chromatic-gateway-42",
+  "snapshot_name": "chromatic-gateway-51",
   "title": "Chromatic gateway CW corpus",
   "materialized_through_degree": 24,
-  "scope": "Forty-two named CW spaces spanning calibration examples, torsion cofibers, projective and lens filtrations, Lie and Schubert spaces, cyclic and elementary-abelian classifying spaces, complex orientations, and a universal Thom space. Finite-type formulas are materialized only through degree 24; the snapshot computes ordinary homology and does not claim Morava K-theory or chromatic type calculations.",
+  "scope": "Fifty-one named CW spaces spanning calibration examples, torsion cofibers, closed surfaces of every genus through six, projective and lens filtrations, Lie and Schubert spaces, cyclic and elementary-abelian classifying spaces, complex orientations, and a universal Thom space. Finite-type formulas are materialized only through degree 24; the snapshot computes ordinary homology and does not claim Morava K-theory or chromatic type calculations.",
   "artifacts": [
     {
       "path": "corpus/chromatic-v1/poincare-sphere-facets.json",
@@ -12,6 +12,69 @@
     }
   ],
   "relations": [
+    {
+      "id": "relation:orientable-surface-2:connected-sum:torus",
+      "source_space_id": "orientable_surface:2",
+      "type": "connected_sum_power_of",
+      "target_space_id": "torus:2",
+      "detail": "The classification of closed surfaces presents the genus-2 orientable surface as the connected sum of 2 tori."
+    },
+    {
+      "id": "relation:orientable-surface-3:connected-sum:torus",
+      "source_space_id": "orientable_surface:3",
+      "type": "connected_sum_power_of",
+      "target_space_id": "torus:2",
+      "detail": "The classification of closed surfaces presents the genus-3 orientable surface as the connected sum of 3 tori."
+    },
+    {
+      "id": "relation:orientable-surface-4:connected-sum:torus",
+      "source_space_id": "orientable_surface:4",
+      "type": "connected_sum_power_of",
+      "target_space_id": "torus:2",
+      "detail": "The classification of closed surfaces presents the genus-4 orientable surface as the connected sum of 4 tori."
+    },
+    {
+      "id": "relation:orientable-surface-5:connected-sum:torus",
+      "source_space_id": "orientable_surface:5",
+      "type": "connected_sum_power_of",
+      "target_space_id": "torus:2",
+      "detail": "The classification of closed surfaces presents the genus-5 orientable surface as the connected sum of 5 tori."
+    },
+    {
+      "id": "relation:orientable-surface-6:connected-sum:torus",
+      "source_space_id": "orientable_surface:6",
+      "type": "connected_sum_power_of",
+      "target_space_id": "torus:2",
+      "detail": "The classification of closed surfaces presents the genus-6 orientable surface as the connected sum of 6 tori."
+    },
+    {
+      "id": "relation:nonorientable-surface-3:connected-sum:rp2",
+      "source_space_id": "nonorientable_surface:3",
+      "type": "connected_sum_power_of",
+      "target_space_id": "real_projective_space:2",
+      "detail": "The classification of closed surfaces presents the genus-3 nonorientable surface as the connected sum of 3 projective planes."
+    },
+    {
+      "id": "relation:nonorientable-surface-4:connected-sum:rp2",
+      "source_space_id": "nonorientable_surface:4",
+      "type": "connected_sum_power_of",
+      "target_space_id": "real_projective_space:2",
+      "detail": "The classification of closed surfaces presents the genus-4 nonorientable surface as the connected sum of 4 projective planes."
+    },
+    {
+      "id": "relation:nonorientable-surface-5:connected-sum:rp2",
+      "source_space_id": "nonorientable_surface:5",
+      "type": "connected_sum_power_of",
+      "target_space_id": "real_projective_space:2",
+      "detail": "The classification of closed surfaces presents the genus-5 nonorientable surface as the connected sum of 5 projective planes."
+    },
+    {
+      "id": "relation:nonorientable-surface-6:connected-sum:rp2",
+      "source_space_id": "nonorientable_surface:6",
+      "type": "connected_sum_power_of",
+      "target_space_id": "real_projective_space:2",
+      "detail": "The classification of closed surfaces presents the genus-6 nonorientable surface as the connected sum of 6 projective planes."
+    },
     {
       "id": "relation:rp2:finite-skeleton:bc2",
       "source_space_id": "real_projective_space:2",
@@ -209,6 +272,24 @@
       "model_formula": "closed_surface_cells",
       "instances": [{"kind": "torus"}, {"kind": "klein_bottle"}],
       "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology"}]
+    },
+    {
+      "id": "orientable_surface",
+      "label": "Orientable surfaces",
+      "summary": "Closed orientable surfaces of genus two through six, each a connected sum of that many tori, with free homology and a zero cellular differential.",
+      "chromatic_relevance": "The genus filtration grows the rank of a degree-one class while keeping the differential zero, separating additive growth from multiplicative structure.",
+      "model_formula": "orientable_surface_connected_sum",
+      "parameters": {"genus": [2, 3, 4, 5, 6]},
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.36, p. 141, the closed orientable surface of genus g and its cellular chain complex"}]
+    },
+    {
+      "id": "nonorientable_surface",
+      "label": "Nonorientable surfaces",
+      "summary": "Closed nonorientable surfaces of genus three through six, each a connected sum of that many projective planes, carrying a single order-two class.",
+      "chromatic_relevance": "The crosscap word gives a degree-two cellular boundary whose Smith reduction produces 2-primary torsion independent of the genus.",
+      "model_formula": "nonorientable_surface_connected_sum",
+      "parameters": {"genus": [3, 4, 5, 6]},
+      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.37, p. 141, the closed nonorientable surface of genus g and its cellular chain complex"}]
     },
     {
       "id": "real_projective_space",
