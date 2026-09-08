@@ -191,7 +191,10 @@ class ClassicalCohomologyTests(unittest.TestCase):
             (lambda r: r["coverage"].update(upper_vanishing_starts_at=None), "upper vanishing"),
             (lambda r: r["sources"][0].update(source_id="missing"), "resolvable"),
             (lambda r: r["presentation"].update(tex="wrong"), "generated"),
-            (lambda r: r["provenance"].update(review_state="human_approved"), "pending human"),
+            (lambda r: r["provenance"].update(review_state="human_approved"), "promoted review state"),
+            (lambda r: r["provenance"].update(kind="external_engine_computation"),
+             "literature-evidenced subset"),
+            (lambda r: r["algebra"]["basis"][1].update(order=2), "free summands only"),
             (lambda r: r["algebra"].update(unit="x"), "unit must"),
             (lambda r: r["algebra"]["basis"][1].update(degree=-1), "basis degree"),
         ]
