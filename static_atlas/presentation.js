@@ -304,6 +304,18 @@
     }).join("") + " = 0";
   }
 
+  // A recorded group is a dimension over a field, or a free rank with torsion
+  // over the integers. Requiring a dimension would silently refuse to state the
+  // vanishing an integral record does establish.
+  function isRecordedGroupRow(row) {
+    if (!row || typeof row !== "object") return false;
+    if (Number.isInteger(row.dimension)) return row.dimension >= 0;
+    return Number.isInteger(row.free_rank)
+      && row.free_rank >= 0
+      && Array.isArray(row.torsion_orders)
+      && row.torsion_orders.every((order) => Number.isInteger(order) && order >= 2);
+  }
+
   function cohomologyCoveragePresentation(record) {
     const coverage = record?.coverage ?? {};
     const groups = Array.isArray(record?.groups) ? record.groups : [];
@@ -313,7 +325,7 @@
       && Number.isInteger(through) && through >= 0
       && Array.from({ length: through + 1 }, (_, degree) => {
         const row = rowsByDegree.get(degree);
-        return Number.isInteger(row?.dimension) && row.dimension >= 0;
+        return isRecordedGroupRow(row);
       }).every(Boolean);
     if (coverage.kind === "complete_finite" && exactThrough
       && Number.isInteger(coverage.upper_vanishing_starts_at)

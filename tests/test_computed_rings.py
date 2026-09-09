@@ -3,6 +3,8 @@
 import copy
 import json
 import re
+import shutil
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -21,6 +23,7 @@ from homology_db.computed_rings import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+NODE = shutil.which("node")
 CORPUS = ROOT / "corpus" / "computed-rings-v1"
 
 
@@ -142,6 +145,46 @@ class ComputedRingsTest(unittest.TestCase):
                         self.assertEqual(
                             sorted(ids, key=lambda name: int(name.split("_")[1])),
                             [f"x{degree}_{i + 1}" for i in range(len(ids))])
+
+    def test_cohomology_vanishes_above_the_dimension_and_says_so(self):
+        """A finite complex has no cohomology above its dimension, so every record
+        here is exhaustive and must be displayed as such.
+
+        The display check previously demanded a `dimension` on every group, which
+        integral records do not carry, so integral rings were shown as "recorded
+        degrees only" -- understating a vanishing the record does establish.
+        """
+        for space_id, entries in self.corpus["records"].items():
+            for record in entries:
+                through = record["coverage"]["through_degree"]
+                with self.subTest(space=space_id, coefficient=record["coefficient"]):
+                    self.assertEqual(record["coverage"]["kind"], "complete_finite")
+                    self.assertEqual(record["coverage"]["upper_vanishing_starts_at"], through + 1)
+                    self.assertEqual(through, 2, "these are surfaces")
+                    self.assertEqual([g["degree"] for g in record["groups"]],
+                                     list(range(through + 1)))
+
+    @unittest.skipUnless(NODE, "node is required to exercise the shipped display code")
+    def test_the_shipped_display_states_vanishing_for_every_coefficient(self):
+        script = """
+        const assert = require('node:assert/strict');
+        const p = require('./static_atlas/presentation.js');
+        const field = {coverage:{kind:'complete_finite',through_degree:2,upper_vanishing_starts_at:3},
+                       knowledge_state:'exact',
+                       groups:[{degree:0,dimension:1},{degree:1,dimension:4},{degree:2,dimension:1}]};
+        const integral = {coverage:{kind:'complete_finite',through_degree:2,upper_vanishing_starts_at:3},
+                          knowledge_state:'exact',
+                          groups:[{degree:0,free_rank:1,torsion_orders:[]},
+                                  {degree:1,free_rank:4,torsion_orders:[]},
+                                  {degree:2,free_rank:0,torsion_orders:[2]}]};
+        assert.equal(p.cohomologyCoveragePresentation(field).complete, true);
+        assert.equal(p.cohomologyCoveragePresentation(integral).complete, true,
+          'an integral record must state its vanishing too');
+        const partial = {...integral, groups:[integral.groups[0], integral.groups[2]]};
+        assert.equal(p.cohomologyCoveragePresentation(partial).complete, false,
+          'a gap in the recorded degrees must not claim vanishing');
+        """
+        subprocess.run([NODE, "-e", script], cwd=ROOT, check=True)
 
     def test_imported_homology_covers_every_surface_and_coefficient(self):
         homology = self.corpus["homology"]
