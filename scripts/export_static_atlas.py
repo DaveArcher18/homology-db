@@ -1851,11 +1851,16 @@ def build_read_model(
     validate_computed_projection(computed_cohomology_records)
     # One space can carry both a literature ring and a computed one. They are
     # corroborating assertions about the same slot and are never merged into one.
+    # Literature first in every slot: a cited text takes precedence over a machine
+    # computation wherever one exists, so consumers reading in order get the sourced
+    # ring rather than depending on the renderer to prefer it.
     cohomology_records = {
         space_id: list(entries) for space_id, entries in classical_cohomology_records.items()
     }
     for space_id, entries in computed_cohomology_records.items():
         cohomology_records.setdefault(space_id, []).extend(entries)
+    for entries in cohomology_records.values():
+        entries.sort(key=lambda record: record["provenance"]["kind"] != "literature")
     corroborated_rings = check_corroborating_records(cohomology_records)
     with closing(sqlite3.connect(database_path)) as connection:
         connection.row_factory = sqlite3.Row

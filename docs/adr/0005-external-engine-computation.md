@@ -35,7 +35,11 @@ review.
    -- is recorded as imported evidence, with engine, engine version, and source locator.
 5. A slot may carry both a sourced and a computed record. They are corroborating
    assertions, exposed side by side and never merged. If their additive groups disagree the
-   slot is a conflict and the build fails; provenance is not a tiebreaker.
+   slot is a conflict and the build fails; provenance does not settle a disagreement.
+6. Where both exist and agree, the cited text takes precedence for display: the ring, its
+   presentation and its multiplication table are read from the literature record, and the
+   computed record is named as corroboration. Precedence is by provenance, not by which
+   record happens to carry a presentation.
 
 ## Consequences
 

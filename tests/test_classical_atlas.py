@@ -78,6 +78,27 @@ class ClassicalAtlasTest(unittest.TestCase):
         for space in sourced_only:
             self.assertFalse(any(row["coefficient"] == "Z" for row in space["cohomology"]))
 
+    def test_a_cited_text_takes_precedence_over_a_machine_computation(self):
+        """Where both exist, the sourced ring leads and the computed one corroborates."""
+        shared = 0
+        for space in self.atlas["conceptual_spaces"]:
+            by_coefficient = {}
+            for record in space["cohomology"]:
+                by_coefficient.setdefault(record["coefficient"], []).append(record)
+            for coefficient, entries in by_coefficient.items():
+                kinds = [record["provenance"]["kind"] for record in entries]
+                if "literature" not in kinds or len(entries) < 2:
+                    continue
+                shared += 1
+                with self.subTest(space=space["id"], coefficient=coefficient):
+                    # literature first, so a consumer reading in order gets the citation
+                    self.assertEqual(kinds[0], "literature")
+                    self.assertIn("external_engine_computation", kinds[1:])
+                    # and the records must actually agree before either is preferred
+                    for record in entries[1:]:
+                        self.assertEqual(record["groups"], entries[0]["groups"])
+        self.assertEqual(shared, 10)
+
     def test_classical_content_and_source_catalog_are_bound(self):
         for mutate in (
             lambda atlas: atlas["classical"].update(content_sha256="0" * 64),

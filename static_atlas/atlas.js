@@ -1117,9 +1117,14 @@
     const records = asArray(space.cohomology)
       .filter((record) => record.coefficient === coefficient);
     // A slot can carry more than one record: a sourced ring and an independently
-    // computed one corroborate each other and are never merged. Lead with the one
-    // that states a presentation, and name the others rather than hiding them.
-    const record = records.find((item) => item.presentation?.tex) ?? records[0] ?? null;
+    // computed one corroborate each other and are never merged. A cited text takes
+    // precedence over a machine computation wherever one exists, so the displayed
+    // ring and its table come from the literature record when there is one. The
+    // others are named rather than hidden.
+    const record = records.find((item) => item.provenance?.kind === "literature")
+      ?? records.find((item) => item.presentation?.tex)
+      ?? records[0]
+      ?? null;
     const corroborating = records.filter((item) => item !== record);
     const hasRing = Boolean(record?.knowledge_state === "exact" && Array.isArray(record.groups) && record.algebra);
     host.classList.toggle("cohomology-unrecorded", !hasRing);
