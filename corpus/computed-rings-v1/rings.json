@@ -3817,12 +3817,12 @@
      },
      {
       "degree": 1,
-      "id": "b1",
+      "id": "x1",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 2
      }
     ],
@@ -3906,7 +3906,7 @@
      },
      {
       "degree": 1,
-      "id": "b1",
+      "id": "x1",
       "order": 0
      }
     ],
@@ -3985,17 +3985,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -4008,34 +4008,34 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      }
     ],
     "unit": "1"
@@ -4105,7 +4105,7 @@
      },
      {
       "degree": 1,
-      "id": "b1",
+      "id": "x1",
       "order": 0
      }
     ],
@@ -4184,7 +4184,7 @@
      },
      {
       "degree": 1,
-      "id": "b1",
+      "id": "x1",
       "order": 0
      }
     ],
@@ -4263,7 +4263,7 @@
      },
      {
       "degree": 1,
-      "id": "b1",
+      "id": "x1",
       "order": 0
      }
     ],
@@ -4342,17 +4342,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 2
      }
     ],
@@ -4365,24 +4365,24 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -4457,12 +4457,12 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      }
     ],
@@ -4541,22 +4541,22 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -4569,34 +4569,34 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -4666,12 +4666,12 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      }
     ],
@@ -4750,12 +4750,12 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      }
     ],
@@ -4834,12 +4834,12 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      }
     ],
@@ -4918,22 +4918,22 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 2
      }
     ],
@@ -4946,64 +4946,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      }
     ],
     "unit": "1"
@@ -5078,17 +5078,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      }
     ],
@@ -5167,27 +5167,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -5200,84 +5200,84 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      }
     ],
     "unit": "1"
@@ -5347,17 +5347,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      }
     ],
@@ -5436,17 +5436,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      }
     ],
@@ -5525,17 +5525,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      }
     ],
@@ -5614,27 +5614,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 2
      }
     ],
@@ -5647,64 +5647,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -5779,22 +5779,22 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      }
     ],
@@ -5873,32 +5873,32 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -5911,134 +5911,134 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      }
     ],
     "unit": "1"
@@ -6108,22 +6108,22 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      }
     ],
@@ -6202,22 +6202,22 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      }
     ],
@@ -6296,22 +6296,22 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      }
     ],
@@ -6390,32 +6390,32 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 2
      }
     ],
@@ -6428,64 +6428,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      }
     ],
     "unit": "1"
@@ -6560,27 +6560,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      }
     ],
@@ -6659,37 +6659,37 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -6702,104 +6702,104 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      }
     ],
     "unit": "1"
@@ -6869,27 +6869,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      }
     ],
@@ -6968,27 +6968,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      }
     ],
@@ -7067,27 +7067,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      }
     ],
@@ -7166,27 +7166,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -7199,44 +7199,44 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -7309,27 +7309,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -7342,44 +7342,44 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -7449,27 +7449,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -7482,44 +7482,44 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -7589,27 +7589,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -7622,44 +7622,44 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -7729,27 +7729,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -7762,44 +7762,44 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -7869,27 +7869,27 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -7902,44 +7902,44 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      }
     ],
     "unit": "1"
@@ -8009,37 +8009,37 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -8052,64 +8052,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      }
     ],
     "unit": "1"
@@ -8182,37 +8182,37 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -8225,64 +8225,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      }
     ],
     "unit": "1"
@@ -8352,37 +8352,37 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -8395,64 +8395,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      }
     ],
     "unit": "1"
@@ -8522,37 +8522,37 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -8565,64 +8565,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      }
     ],
     "unit": "1"
@@ -8692,37 +8692,37 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -8735,64 +8735,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      }
     ],
     "unit": "1"
@@ -8862,37 +8862,37 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -8905,64 +8905,64 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      }
     ],
     "unit": "1"
@@ -9032,47 +9032,47 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -9085,84 +9085,84 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_6",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_8"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_6"
+      "right": "x1_7"
      }
     ],
     "unit": "1"
@@ -9235,47 +9235,47 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -9288,84 +9288,84 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_6",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_8"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_6"
+      "right": "x1_7"
      }
     ],
     "unit": "1"
@@ -9435,47 +9435,47 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -9488,84 +9488,84 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_6",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_8"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_6"
+      "right": "x1_7"
      }
     ],
     "unit": "1"
@@ -9635,47 +9635,47 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -9688,84 +9688,84 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_6",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_8"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_6"
+      "right": "x1_7"
      }
     ],
     "unit": "1"
@@ -9835,47 +9835,47 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -9888,84 +9888,84 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_6",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_8"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_6"
+      "right": "x1_7"
      }
     ],
     "unit": "1"
@@ -10035,47 +10035,47 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -10088,84 +10088,84 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_3"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_5"
+      "right": "x1_6"
      },
      {
-      "left": "b1_5",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_5"
      },
      {
-      "left": "b1_6",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_8"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_6"
+      "right": "x1_7"
      }
     ],
     "unit": "1"
@@ -10235,57 +10235,57 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -10298,184 +10298,184 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_10"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_8"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_2"
-     },
-     {
-      "left": "b1_2",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_6"
      },
      {
-      "left": "b1_3",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_9"
-     },
-     {
-      "left": "b1_4",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_1"
      },
      {
-      "left": "b1_5",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_6",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_7",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_6"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_3"
      },
      {
-      "left": "b1_9",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_2"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_1"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_5",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_6"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_1"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_5"
+     },
+     {
+      "left": "x1_7",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -10548,57 +10548,57 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -10611,184 +10611,184 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_10"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_8"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_2"
-     },
-     {
-      "left": "b1_2",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_6"
      },
      {
-      "left": "b1_3",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_9"
-     },
-     {
-      "left": "b1_4",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_1"
      },
      {
-      "left": "b1_5",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_6",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_7",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_6"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_3"
      },
      {
-      "left": "b1_9",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_2"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_1"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_5",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_6"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_1"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_5"
+     },
+     {
+      "left": "x1_7",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -10858,57 +10858,57 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -10921,184 +10921,184 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_10"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_4"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_6"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_9"
      },
      {
-      "left": "b1_1",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_1"
      },
      {
-      "left": "b1_2",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_4"
      },
      {
-      "left": "b1_3",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_6"
      },
      {
-      "left": "b1_3",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_3"
      },
      {
-      "left": "b1_4",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_2"
      },
      {
-      "left": "b1_5",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      },
      {
-      "left": "b1_5",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_10"
      },
      {
-      "left": "b1_5",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_6"
      },
      {
-      "left": "b1_6",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_1"
      },
      {
-      "left": "b1_7",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_6"
+      "right": "x1_10"
      },
      {
-      "left": "b1_8",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_5"
      },
      {
-      "left": "b1_9",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_8"
      },
      {
-      "left": "b1_9",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_7"
      },
      {
-      "left": "b1_9",
+      "left": "x1_9",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -11168,57 +11168,57 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -11231,184 +11231,184 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_3"
+      "right": "x1_10"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_8"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_2"
-     },
-     {
-      "left": "b1_2",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_6"
      },
      {
-      "left": "b1_3",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_9"
-     },
-     {
-      "left": "b1_4",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_1"
      },
      {
-      "left": "b1_5",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_6",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_7",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_6"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_0"
+      "right": "x1_3"
      },
      {
-      "left": "b1_9",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_2"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_1"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_5"
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_5",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_6"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_1"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_5"
+     },
+     {
+      "left": "x1_7",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -11478,57 +11478,57 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -11541,184 +11541,184 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_3"
+      "right": "x1_10"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_8"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_2"
-     },
-     {
-      "left": "b1_2",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_6"
      },
      {
-      "left": "b1_3",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_9"
-     },
-     {
-      "left": "b1_4",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_1"
      },
      {
-      "left": "b1_5",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_6",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_7",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_6"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_0"
+      "right": "x1_3"
      },
      {
-      "left": "b1_9",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_2"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_1"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_5"
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_5",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_6"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_1"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_5"
+     },
+     {
+      "left": "x1_7",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -11788,57 +11788,57 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -11851,184 +11851,184 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_3"
+      "right": "x1_10"
      },
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_8"
-     },
-     {
-      "left": "b1_0",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_1",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_2"
-     },
-     {
-      "left": "b1_2",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_6"
      },
      {
-      "left": "b1_3",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_9"
-     },
-     {
-      "left": "b1_4",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_5"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_5",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_1"
      },
      {
-      "left": "b1_5",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_4"
      },
      {
-      "left": "b1_6",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_7",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_6"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_0"
+      "right": "x1_3"
      },
      {
-      "left": "b1_9",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_2"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_1"
      },
      {
-      "left": "b1_9",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_5"
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_5",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_6"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_1"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_10"
+     },
+     {
+      "left": "x1_6",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_5"
+     },
+     {
+      "left": "x1_7",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -12098,67 +12098,67 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_10",
+      "id": "x1_11",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_11",
+      "id": "x1_12",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -12171,224 +12171,224 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_10"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_8"
      },
      {
-      "left": "b1_2",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_10"
      },
      {
-      "left": "b1_4",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_11"
      },
      {
-      "left": "b1_5",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_12",
+      "result": [
+       {
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_9"
      },
      {
-      "left": "b1_6",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_1"
      },
      {
-      "left": "b1_7",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_4"
      },
      {
-      "left": "b1_7",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_3"
      },
      {
-      "left": "b1_7",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_5"
      },
      {
-      "left": "b1_8",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_6"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_9"
      },
      {
-      "left": "b1_9",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_9"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
      }
     ],
     "unit": "1"
@@ -12461,67 +12461,67 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_10",
+      "id": "x1_11",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_11",
+      "id": "x1_12",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -12534,224 +12534,224 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_10"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_8"
      },
      {
-      "left": "b1_2",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_10"
      },
      {
-      "left": "b1_4",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_11"
      },
      {
-      "left": "b1_5",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_12",
+      "result": [
+       {
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_9"
      },
      {
-      "left": "b1_6",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_1"
      },
      {
-      "left": "b1_7",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_4"
      },
      {
-      "left": "b1_7",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_3"
      },
      {
-      "left": "b1_7",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_5"
      },
      {
-      "left": "b1_8",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": -1
-       }
-      ],
-      "right": "b1_6"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_9"
      },
      {
-      "left": "b1_9",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_9"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": -1
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
      }
     ],
     "unit": "1"
@@ -12821,67 +12821,67 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_10",
+      "id": "x1_11",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_11",
+      "id": "x1_12",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -12894,224 +12894,224 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_12"
      },
      {
-      "left": "b1_10",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_12"
      },
      {
-      "left": "b1_10",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_8"
      },
      {
-      "left": "b1_10",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_9"
      },
      {
-      "left": "b1_11",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_10"
      },
      {
-      "left": "b1_11",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_11"
      },
      {
-      "left": "b1_11",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_8"
      },
      {
-      "left": "b1_11",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_9"
      },
      {
-      "left": "b1_2",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_3"
+      "right": "x1_1"
      },
      {
-      "left": "b1_3",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_4"
      },
      {
-      "left": "b1_4",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_5"
+      "right": "x1_3"
      },
      {
-      "left": "b1_5",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_6"
      },
      {
-      "left": "b1_6",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_5"
      },
      {
-      "left": "b1_7",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_9"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_11"
      },
      {
-      "left": "b1_7",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_8",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_9"
      },
      {
-      "left": "b1_8",
+      "left": "x1_9",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_11"
      },
      {
-      "left": "b1_8",
+      "left": "x1_9",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_6"
+      "right": "x1_12"
      },
      {
-      "left": "b1_8",
+      "left": "x1_9",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_7"
      },
      {
-      "left": "b1_9",
+      "left": "x1_9",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_8"
      }
     ],
     "unit": "1"
@@ -13181,67 +13181,67 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_10",
+      "id": "x1_11",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_11",
+      "id": "x1_12",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -13254,224 +13254,224 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_10"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_8"
      },
      {
-      "left": "b1_2",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_3"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_10"
      },
      {
-      "left": "b1_4",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_5"
+      "right": "x1_11"
      },
      {
-      "left": "b1_5",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_12",
+      "result": [
+       {
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_9"
      },
      {
-      "left": "b1_6",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_1"
      },
      {
-      "left": "b1_7",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_10"
+      "right": "x1_4"
      },
      {
-      "left": "b1_7",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_3"
      },
      {
-      "left": "b1_7",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_8"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_5"
      },
      {
-      "left": "b1_8",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 2
-       }
-      ],
-      "right": "b1_6"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_9"
      },
      {
-      "left": "b1_9",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_11"
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_9"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 2
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
      }
     ],
     "unit": "1"
@@ -13541,67 +13541,67 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_10",
+      "id": "x1_11",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_11",
+      "id": "x1_12",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -13614,224 +13614,224 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_10"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_8"
      },
      {
-      "left": "b1_2",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_3"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_10"
      },
      {
-      "left": "b1_4",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_5"
+      "right": "x1_11"
      },
      {
-      "left": "b1_5",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_12",
+      "result": [
+       {
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_9"
      },
      {
-      "left": "b1_6",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_1"
      },
      {
-      "left": "b1_7",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_10"
+      "right": "x1_4"
      },
      {
-      "left": "b1_7",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_3"
      },
      {
-      "left": "b1_7",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_8"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_5"
      },
      {
-      "left": "b1_8",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 4
-       }
-      ],
-      "right": "b1_6"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_9"
      },
      {
-      "left": "b1_9",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_11"
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_9"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 4
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
      }
     ],
     "unit": "1"
@@ -13901,67 +13901,67 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_2",
+      "id": "x1_3",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_3",
+      "id": "x1_4",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_4",
+      "id": "x1_5",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_5",
+      "id": "x1_6",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_6",
+      "id": "x1_7",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_7",
+      "id": "x1_8",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_8",
+      "id": "x1_9",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_9",
+      "id": "x1_10",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_10",
+      "id": "x1_11",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_11",
+      "id": "x1_12",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -13974,224 +13974,224 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_10",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_0"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 1
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_10",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_10"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_7"
-     },
-     {
-      "left": "b1_11",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_12"
      },
      {
-      "left": "b1_11",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_9"
+      "right": "x1_8"
      },
      {
-      "left": "b1_2",
+      "left": "x1_11",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_3"
+      "right": "x1_9"
      },
      {
-      "left": "b1_3",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_2"
+      "right": "x1_10"
      },
      {
-      "left": "b1_4",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_5"
+      "right": "x1_11"
      },
      {
-      "left": "b1_5",
+      "left": "x1_12",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_8"
+     },
+     {
+      "left": "x1_12",
+      "result": [
+       {
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_4"
+      "right": "x1_9"
      },
      {
-      "left": "b1_6",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_8"
+      "right": "x1_1"
      },
      {
-      "left": "b1_7",
+      "left": "x1_3",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_10"
+      "right": "x1_4"
      },
      {
-      "left": "b1_7",
+      "left": "x1_4",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_11"
+      "right": "x1_3"
      },
      {
-      "left": "b1_7",
+      "left": "x1_5",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_8"
+      "right": "x1_6"
      },
      {
-      "left": "b1_8",
+      "left": "x1_6",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_10"
+      "right": "x1_5"
      },
      {
-      "left": "b1_8",
+      "left": "x1_7",
       "result": [
        {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_11"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
-        "coefficient": 6
-       }
-      ],
-      "right": "b1_6"
-     },
-     {
-      "left": "b1_8",
-      "result": [
-       {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_7"
+      "right": "x1_9"
      },
      {
-      "left": "b1_9",
+      "left": "x1_8",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_11"
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_8",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_9"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_11"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_12"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 6
+       }
+      ],
+      "right": "x1_7"
+     },
+     {
+      "left": "x1_9",
+      "result": [
+       {
+        "basis": "x2",
+        "coefficient": 1
+       }
+      ],
+      "right": "x1_8"
      }
     ],
     "unit": "1"
@@ -14261,17 +14261,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -14284,24 +14284,24 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -14374,17 +14374,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -14397,24 +14397,24 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": -1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -14484,17 +14484,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -14507,24 +14507,24 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -14594,17 +14594,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -14617,24 +14617,24 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 2
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -14704,17 +14704,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -14727,24 +14727,24 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 4
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      }
     ],
     "unit": "1"
@@ -14814,17 +14814,17 @@
      },
      {
       "degree": 1,
-      "id": "b1_0",
+      "id": "x1_1",
       "order": 0
      },
      {
       "degree": 1,
-      "id": "b1_1",
+      "id": "x1_2",
       "order": 0
      },
      {
       "degree": 2,
-      "id": "b2",
+      "id": "x2",
       "order": 0
      }
     ],
@@ -14837,24 +14837,24 @@
     },
     "products": [
      {
-      "left": "b1_0",
+      "left": "x1_1",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 6
        }
       ],
-      "right": "b1_1"
+      "right": "x1_2"
      },
      {
-      "left": "b1_1",
+      "left": "x1_2",
       "result": [
        {
-        "basis": "b2",
+        "basis": "x2",
         "coefficient": 1
        }
       ],
-      "right": "b1_0"
+      "right": "x1_1"
      }
     ],
     "unit": "1"

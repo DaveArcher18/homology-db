@@ -281,10 +281,13 @@
       .join(" ") || "1";
   }
 
-  // A basis element of a presented ring is a monomial in the generators; one
-  // recorded only by structure constants has no monomial, just its own label.
+  // A basis element of a presented ring is a monomial in the generators. One
+  // recorded only by structure constants has no monomial, so it is named the way
+  // the Steenrod modules already name theirs: x1_2 reads as a double subscript.
   function basisLabelTex(item) {
-    return item?.powers ? monomialTex(item.powers) : (item?.id ?? "?");
+    if (item?.powers) return monomialTex(item.powers);
+    const name = String(item?.id ?? "");
+    return basisNameTex(name) || name || "?";
   }
 
   function relationTex(relation) {

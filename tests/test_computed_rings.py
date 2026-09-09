@@ -2,6 +2,7 @@
 
 import copy
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -116,6 +117,31 @@ class ComputedRingsTest(unittest.TestCase):
         field["groups"][1]["dimension"] = 99
         with self.assertRaisesRegex(ValueError, "disagree on the additive groups"):
             check_corroborating_records(conflicted)
+
+    def test_basis_names_follow_the_shared_display_convention(self):
+        """Renaming these silently once left the atlas printing raw ids like b1_1.
+
+        static_atlas/presentation.js turns x<degree> and x<degree>_<index> into a
+        subscripted name, the same way the Steenrod modules are displayed. A basis
+        id that does not match that shape falls through to its raw text, so the
+        producer's names are kept rather than renumbered on import.
+        """
+        pattern = re.compile(r"^(?:1|x\d+(?:_\d+)?)$")
+        for space_id, entries in self.corpus["records"].items():
+            for record in entries:
+                for item in record["algebra"]["basis"]:
+                    with self.subTest(space=space_id, basis=item["id"]):
+                        self.assertRegex(item["id"], pattern)
+                degrees = {}
+                for item in record["algebra"]["basis"]:
+                    degrees.setdefault(item["degree"], []).append(item["id"])
+                for degree, ids in degrees.items():
+                    if degree and len(ids) > 1:
+                        # indices are 1-based and dense, matching the display parser
+                        # (sorted numerically: x1_10 must not sort before x1_2)
+                        self.assertEqual(
+                            sorted(ids, key=lambda name: int(name.split("_")[1])),
+                            [f"x{degree}_{i + 1}" for i in range(len(ids))])
 
     def test_imported_homology_covers_every_surface_and_coefficient(self):
         homology = self.corpus["homology"]

@@ -172,7 +172,7 @@
  },
  "review_state": "imported_unreviewed",
  "rings_path": "corpus/computed-rings-v1/rings.json",
- "rings_sha256": "e34b42f78b27a3fc07cb87d2b15b9c7e1a64f29dd15af635de7939c74a359f01",
+ "rings_sha256": "6aecde87c411064368af3c248ec92e4e8a100222b8539a926dff48460e0fcb4c",
  "schema_version": "homology-db.computed-rings-manifest/1",
  "scope": "Ordinary unreduced cohomology rings of eleven closed surfaces, computed from explicit finite simplicial models by an external computer algebra system. Coefficients Z, Q, F2, F3, F5 and F7. These are imported computations, not owned ones and not human-reviewed mathematics: the release records what was computed and by what, and never presents it as this repository's own verified result.",
  "title": "Cup-product rings of closed surfaces from explicit triangulations"
