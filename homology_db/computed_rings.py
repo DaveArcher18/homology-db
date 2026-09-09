@@ -31,6 +31,7 @@ from .cohomology_rings import (
 )
 
 COMPUTED_RINGS_CORPUS_VERSION = "homology-db.computed-rings-corpus/1"
+COMPUTED_HOMOLOGY_SCHEMA_VERSION = "homology-db.computed-homology/1"
 COMPUTED_RINGS_MANIFEST_VERSION = "homology-db.computed-rings-manifest/1"
 SIMPLICIAL_MODEL_VERSION = "homology-db.simplicial-model/1"
 COMPUTED_RINGS_REVIEW_STATE = "imported_unreviewed"
@@ -192,12 +193,103 @@ def load_computed_rings() -> dict[str, Any]:
         if sorted(coefficients) != sorted(COHOMOLOGY_RING_COEFFICIENTS):
             raise ValueError(f"computed rings for {space_id} do not cover every coefficient once")
 
-    return {"manifest": manifest, "models": models, "records": records}
+    homology: dict[str, list[dict[str, Any]]] = {}
+    for record in corpus.get("homology", []):
+        validate_computed_homology_record(record, COMPUTED_RING_SOURCES)
+        space_id = record["space_id"]
+        if space_id not in models:
+            raise ValueError(f"computed homology for {space_id} has no pinned model")
+        homology.setdefault(space_id, []).append(record)
+    for space_id, entries in homology.items():
+        if sorted(record["coefficient"] for record in entries) != sorted(COHOMOLOGY_RING_COEFFICIENTS):
+            raise ValueError(f"computed homology for {space_id} does not cover every coefficient once")
+    if set(homology) != set(records):
+        raise ValueError("every space with computed rings must carry computed homology")
+
+    return {"manifest": manifest, "models": models, "records": records, "homology": homology}
 
 
 def computed_ring_records() -> dict[str, list[dict[str, Any]]]:
     """Fresh, validated computed records keyed by space; callers cannot mutate a cache."""
     return load_computed_rings()["records"]
+
+
+def validate_computed_homology_record(record: dict[str, Any], sources: dict[str, Any]) -> None:
+    """Check an imported homology record for internal consistency.
+
+    This never establishes the homology of a space. The atlas computes that from
+    its own cellular models; an imported record is a second, independent
+    calculation from a pinned triangulation, and its value is precisely that it
+    can disagree. Agreement is checked against the owned rows elsewhere.
+    """
+    if record.get("schema_version") != COMPUTED_HOMOLOGY_SCHEMA_VERSION:
+        raise ValueError("unsupported computed homology schema version")
+    coefficient = record.get("coefficient")
+    if coefficient not in COHOMOLOGY_RING_COEFFICIENTS:
+        raise ValueError("unsupported computed homology coefficient")
+    characteristic = 0 if coefficient in ("Z", "Q") else int(coefficient[1:])
+    if _integer(record.get("characteristic"), "characteristic", 0) != characteristic:
+        raise ValueError("coefficient characteristic mismatch")
+    space_id = record.get("space_id")
+    if record.get("record_id") != f"computed-homology:{space_id}:{coefficient}:v1":
+        raise ValueError("record identity mismatch")
+    if (record.get("theory"), record.get("convention"), record.get("knowledge_state")) != (
+        "ordinary_homology", "unreduced", "exact"
+    ):
+        raise ValueError("ordinary unreduced exact homology is required")
+    coverage = record["coverage"]
+    through = _integer(coverage.get("through_degree"), "coverage through_degree", 0)
+    if coverage != {"kind": "complete_finite", "through_degree": through,
+                    "upper_vanishing_starts_at": through + 1}:
+        raise ValueError("complete finite coverage must declare its upper vanishing bound")
+    groups = record["groups"]
+    if [group["degree"] for group in groups] != list(range(through + 1)):
+        raise ValueError("homology degrees must be dense and ordered through the coverage")
+    for group in groups:
+        if coefficient == "Z":
+            _integer(group["free_rank"], "free rank", 0)
+            for order in group["torsion_orders"]:
+                _integer(order, "torsion order", 2)
+            if "dimension" in group:
+                raise ValueError("integral homology reports free rank and torsion, not a dimension")
+        else:
+            _integer(group["dimension"], "dimension", 0)
+            if "torsion_orders" in group:
+                raise ValueError("field homology carries no torsion")
+    provenance = record["provenance"]
+    if provenance.get("kind") != "external_engine_computation":
+        raise ValueError("the computed corpus is the machine-computed subset")
+    if provenance.get("review_state") != COMPUTED_RINGS_REVIEW_STATE:
+        raise ValueError("importing is not reviewing; the review state may not be promoted here")
+    if not record.get("sources"):
+        raise ValueError("a computed homology record must cite its evidence")
+    for source in record["sources"]:
+        if source.get("source_id") not in sources:
+            raise ValueError("source requires a resolvable ID")
+
+
+def compare_homology_to_owned(
+    imported: dict[tuple[str, str], list[dict[str, Any]]],
+    owned: dict[tuple[str, str], list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    """Confirm each imported homology matches the atlas's own, and refuse drift.
+
+    The imported calculation runs on a triangulation while the atlas computes
+    from a cellular model, so agreement is real evidence that the pinned model
+    presents the space the rings are attached to. Disagreement is a conflict
+    about that binding and fails the build rather than being ranked away.
+    """
+    confirmed = []
+    for key in sorted(imported):
+        if key not in owned:
+            raise ValueError(f"imported homology for {key[0]} over {key[1]} has no owned rows to check")
+        if imported[key] != owned[key]:
+            raise ValueError(
+                f"imported homology for {key[0]} over {key[1]} disagrees with this repository's "
+                f"own cellular homology; the model binding is in conflict and must be resolved"
+            )
+        confirmed.append({"space_id": key[0], "coefficient": key[1]})
+    return confirmed
 
 
 def validate_computed_projection(records: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:

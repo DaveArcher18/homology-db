@@ -33,7 +33,8 @@ from homology_db.cohomology_rings import (
 from homology_db.computed_rings import (
     COMPUTED_RING_SOURCES,
     COMPUTED_RINGS_REVIEW_STATE,
-    computed_ring_records,
+    compare_homology_to_owned,
+    load_computed_rings,
     validate_computed_projection,
 )
 from homology_db.classical import (
@@ -1393,8 +1394,33 @@ def validate_read_model(
         expected_corroborated = check_corroborating_records(projected_all)
         if computed.get("corroborated_slots") != expected_corroborated:
             raise ValueError("corroborating ring slots disagree with the validated corpus")
+        owned_rows: dict[tuple[str, str], list[dict[str, Any]]] = {}
+        for item in conceptual_spaces:
+            for row in item["homology"]:
+                if row["reduced"] or row["group"].get("state") != "exact":
+                    continue
+                group = row["group"]
+                owned_rows.setdefault((item["id"], row["coefficient_ring"]), []).append(
+                    {"degree": row["degree"], "free_rank": group["free_rank"],
+                     "torsion_orders": group["torsion_orders"]}
+                    if row["coefficient_ring"] == "Z"
+                    else {"degree": row["degree"], "dimension": group["dimension"]}
+                )
+        for rows in owned_rows.values():
+            rows.sort(key=lambda row: row["degree"])
+        imported_rows = {
+            (record["space_id"], record["coefficient"]): record["groups"]
+            for entries in load_computed_rings()["homology"].values()
+            for record in entries
+        }
+        if computed.get("homology_confirmed_against_owned") != compare_homology_to_owned(
+            imported_rows, owned_rows
+        ):
+            raise ValueError("imported homology confirmation disagrees with the validated corpus")
         if computed != {**expected_computed, "sources": COMPUTED_RING_SOURCES,
-                        "corroborated_slots": expected_corroborated}:
+                        "corroborated_slots": expected_corroborated,
+                        "homology_confirmed_against_owned": computed.get(
+                            "homology_confirmed_against_owned")}:
             raise ValueError("computed ring metadata or sources disagree with the validated corpus")
         if expected_computed != atlas["snapshot"].get("computed_cohomology"):
             raise ValueError("computed cohomology snapshot metadata mismatch")
@@ -1820,7 +1846,8 @@ def build_read_model(
         raise FileNotFoundError(database_path)
     classical_cohomology_records = classical_records()
     validate_classical_records(classical_cohomology_records)
-    computed_cohomology_records = computed_ring_records()
+    computed_corpus = load_computed_rings()
+    computed_cohomology_records = computed_corpus["records"]
     validate_computed_projection(computed_cohomology_records)
     # One space can carry both a literature ring and a computed one. They are
     # corroborating assertions about the same slot and are never merged into one.
@@ -2183,6 +2210,27 @@ def build_read_model(
     if steenrod_review_candidate:
         conceptual_spectra, spectrum_source = build_spectrum_read_model()
 
+    owned_homology = {}
+    for space in conceptual_spaces:
+        for row in space["homology"]:
+            if row["reduced"] or row["group"].get("state") != "exact":
+                continue
+            group = row["group"]
+            owned_homology.setdefault((space["id"], row["coefficient_ring"]), []).append(
+                {"degree": row["degree"], "free_rank": group["free_rank"],
+                 "torsion_orders": group["torsion_orders"]}
+                if row["coefficient_ring"] == "Z"
+                else {"degree": row["degree"], "dimension": group["dimension"]}
+            )
+    for rows in owned_homology.values():
+        rows.sort(key=lambda row: row["degree"])
+    imported_homology = {
+        (record["space_id"], record["coefficient"]): record["groups"]
+        for entries in computed_corpus["homology"].values()
+        for record in entries
+    }
+    confirmed_homology = compare_homology_to_owned(imported_homology, owned_homology)
+
     classical_metadata = classical_projection_metadata(classical_cohomology_records)
     computed_metadata = computed_projection_metadata(computed_cohomology_records)
     teaching = teaching_projection(conceptual_spaces)
@@ -2245,7 +2293,8 @@ def build_read_model(
         "conceptual_spectra": conceptual_spectra,
         "classical": {**classical_metadata, "sources": CLASSICAL_SOURCES},
         "computed_rings": {**computed_metadata, "sources": COMPUTED_RING_SOURCES,
-                           "corroborated_slots": corroborated_rings},
+                           "corroborated_slots": corroborated_rings,
+                           "homology_confirmed_against_owned": confirmed_homology},
         "family_rules": reviewed_family_catalog(family_catalog()),
         "teaching": teaching,
     }

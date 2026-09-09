@@ -11,6 +11,8 @@ from homology_db.cohomology_rings import (
 )
 from homology_db.computed_rings import (
     COMPUTED_RING_SOURCES,
+    compare_homology_to_owned,
+    validate_computed_homology_record,
     canonical_facets,
     facets_sha256,
     load_computed_rings,
@@ -114,6 +116,77 @@ class ComputedRingsTest(unittest.TestCase):
         field["groups"][1]["dimension"] = 99
         with self.assertRaisesRegex(ValueError, "disagree on the additive groups"):
             check_corroborating_records(conflicted)
+
+    def test_imported_homology_covers_every_surface_and_coefficient(self):
+        homology = self.corpus["homology"]
+        self.assertEqual(set(homology), set(self.corpus["records"]))
+        self.assertEqual(sum(len(v) for v in homology.values()), 66)
+        for entries in homology.values():
+            self.assertEqual(sorted(record["coefficient"] for record in entries),
+                             sorted(["Z", "Q", "F2", "F3", "F5", "F7"]))
+
+    def test_imported_homology_matches_this_repositorys_own(self):
+        """The point of importing it is that it could disagree. It must not."""
+        import json as _json
+        import sqlite3
+        import tempfile
+        from homology_db.chromatic import build_database
+
+        database = Path(tempfile.mkdtemp()) / "chromatic.sqlite3"
+        build_database(database)
+        connection = sqlite3.connect(database)
+        checked = 0
+        for space_id, entries in self.corpus["homology"].items():
+            for record in entries:
+                coefficient = record["coefficient"]
+                stored = "Z" if coefficient == "Q" else coefficient
+                rows = connection.execute(
+                    "SELECT degree, free_rank, torsion_json FROM homology "
+                    "WHERE space_id=? AND coefficient=? AND reduced=0 ORDER BY degree",
+                    (space_id, stored)).fetchall()
+                self.assertTrue(rows, f"no owned homology for {space_id}")
+                if coefficient == "Z":
+                    owned = [{"degree": d, "free_rank": f,
+                              "torsion_orders": _json.loads(t)} for d, f, t in rows]
+                elif coefficient == "Q":
+                    owned = [{"degree": d, "dimension": f} for d, f, _ in rows]
+                else:
+                    owned = [{"degree": d, "dimension": f} for d, f, _ in rows]
+                with self.subTest(space=space_id, coefficient=coefficient):
+                    self.assertEqual(record["groups"], owned)
+                checked += 1
+        connection.close()
+        database.unlink()
+        self.assertEqual(checked, 66)
+
+    def test_a_disagreeing_homology_is_a_conflict_not_a_ranking(self):
+        imported = {("orientable_surface:2", "Z"): [{"degree": 0, "free_rank": 1,
+                                                     "torsion_orders": []}]}
+        self.assertEqual(compare_homology_to_owned(imported, dict(imported)),
+                         [{"space_id": "orientable_surface:2", "coefficient": "Z"}])
+        owned = {("orientable_surface:2", "Z"): [{"degree": 0, "free_rank": 2,
+                                                  "torsion_orders": []}]}
+        with self.assertRaisesRegex(ValueError, "model binding is in conflict"):
+            compare_homology_to_owned(imported, owned)
+        with self.assertRaisesRegex(ValueError, "no owned rows"):
+            compare_homology_to_owned(imported, {})
+
+    def test_homology_records_are_internally_checked(self):
+        base = copy.deepcopy(self.corpus["homology"]["nonorientable_surface:3"][0])
+        self.assertEqual(base["coefficient"], "Z")
+        for mutate, message in (
+            (lambda r: r["groups"].pop(1), "dense and ordered"),
+            (lambda r: r["groups"][1].update(free_rank=-1), "free rank"),
+            (lambda r: r["groups"][1].update(dimension=1), "not a dimension"),
+            (lambda r: r["provenance"].update(review_state="human_reviewed"), "promoted"),
+            (lambda r: r.update(theory="ordinary_cohomology"), "ordinary unreduced exact homology"),
+            (lambda r: r["coverage"].update(upper_vanishing_starts_at=99), "upper vanishing"),
+            (lambda r: r["sources"].clear(), "cite its evidence"),
+        ):
+            record = copy.deepcopy(base)
+            mutate(record)
+            with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):
+                validate_computed_homology_record(record, COMPUTED_RING_SOURCES)
 
 
 if __name__ == "__main__":
