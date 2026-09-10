@@ -34,8 +34,8 @@ class ComputedRingsTest(unittest.TestCase):
         cls.model = json.loads((CORPUS / "triangulations" / "orientable_surface-3.json").read_text())
 
     def test_corpus_covers_every_surface_over_every_coefficient(self):
-        self.assertEqual(len(self.corpus["models"]), 11)
-        self.assertEqual(sum(len(v) for v in self.corpus["records"].values()), 66)
+        self.assertEqual(len(self.corpus["models"]), 15)
+        self.assertEqual(sum(len(v) for v in self.corpus["records"].values()), 90)
         for space_id, entries in self.corpus["records"].items():
             self.assertEqual(
                 sorted(record["coefficient"] for record in entries),
@@ -87,8 +87,9 @@ class ComputedRingsTest(unittest.TestCase):
             validate_cohomology_ring_record(record, COMPUTED_RING_SOURCES)
 
     def test_ring_axioms_are_enforced_on_imported_tables(self):
-        base = copy.deepcopy(self.corpus["records"]["orientable_surface:2"][0])
-        self.assertEqual(base["coefficient"], "Z")
+        base = copy.deepcopy(next(
+            record for record in self.corpus["records"]["orientable_surface:2"]
+            if record["coefficient"] == "Z"))
         for mutate, message in (
             (lambda r: r["algebra"]["products"][0]["result"][0].update(coefficient=3),
              "graded commutativity"),
@@ -160,7 +161,13 @@ class ComputedRingsTest(unittest.TestCase):
                 with self.subTest(space=space_id, coefficient=record["coefficient"]):
                     self.assertEqual(record["coverage"]["kind"], "complete_finite")
                     self.assertEqual(record["coverage"]["upper_vanishing_starts_at"], through + 1)
-                    self.assertEqual(through, 2, "these are surfaces")
+                    # The coverage bound is the model's own dimension, not a
+                    # corpus-wide constant: this corpus now holds 3-manifolds too.
+                    self.assertEqual(
+                        through,
+                        len(self.corpus["models"][space_id]["f_vector"]) - 1,
+                        "coverage must reach exactly the model's dimension",
+                    )
                     self.assertEqual([g["degree"] for g in record["groups"]],
                                      list(range(through + 1)))
 
@@ -189,7 +196,7 @@ class ComputedRingsTest(unittest.TestCase):
     def test_imported_homology_covers_every_surface_and_coefficient(self):
         homology = self.corpus["homology"]
         self.assertEqual(set(homology), set(self.corpus["records"]))
-        self.assertEqual(sum(len(v) for v in homology.values()), 66)
+        self.assertEqual(sum(len(v) for v in homology.values()), 90)
         for entries in homology.values():
             self.assertEqual(sorted(record["coefficient"] for record in entries),
                              sorted(["Z", "Q", "F2", "F3", "F5", "F7"]))
@@ -226,7 +233,7 @@ class ComputedRingsTest(unittest.TestCase):
                 checked += 1
         connection.close()
         database.unlink()
-        self.assertEqual(checked, 66)
+        self.assertEqual(checked, 90)
 
     def test_a_disagreeing_homology_is_a_conflict_not_a_ranking(self):
         imported = {("orientable_surface:2", "Z"): [{"degree": 0, "free_rank": 1,
@@ -241,8 +248,9 @@ class ComputedRingsTest(unittest.TestCase):
             compare_homology_to_owned(imported, {})
 
     def test_homology_records_are_internally_checked(self):
-        base = copy.deepcopy(self.corpus["homology"]["nonorientable_surface:3"][0])
-        self.assertEqual(base["coefficient"], "Z")
+        base = copy.deepcopy(next(
+            record for record in self.corpus["homology"]["nonorientable_surface:3"]
+            if record["coefficient"] == "Z"))
         for mutate, message in (
             (lambda r: r["groups"].pop(1), "dense and ordered"),
             (lambda r: r["groups"][1].update(free_rank=-1), "free rank"),

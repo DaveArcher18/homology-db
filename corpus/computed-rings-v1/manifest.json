@@ -7,8 +7,8 @@
    "julia": "1.12.7"
   },
   "exit_status": "succeeded",
-  "model_count": 11,
-  "record_count": 132,
+  "model_count": 15,
+  "record_count": 180,
   "run_id": "oscar-simplicial-cup-2026-09-09"
  },
  "corpus_id": "computed-rings-v1",
@@ -21,6 +21,7 @@
   "name": "OSCAR",
   "version": "1.8.2"
  },
+ "identified_models_path": "corpus/computed-rings-v1/imported-models.json",
  "limits": [
   "Cup products are imported, not recomputed by this repository. The loader re-derives the ring axioms and the additive groups; it does not re-derive the products from the triangulation.",
   "Cocycle representatives are not imported: they belong to one vertex labelling and are not needed to state the ring.",
@@ -172,8 +173,8 @@
  },
  "review_state": "imported_unreviewed",
  "rings_path": "corpus/computed-rings-v1/rings.json",
- "rings_sha256": "6aecde87c411064368af3c248ec92e4e8a100222b8539a926dff48460e0fcb4c",
+ "rings_sha256": "79f4a5e2b00351aab4621e1d18335ca0f19bbcf01dd597b4264b454e709dfd8a",
  "schema_version": "homology-db.computed-rings-manifest/1",
- "scope": "Ordinary unreduced cohomology rings of eleven closed surfaces, computed from explicit finite simplicial models by an external computer algebra system. Coefficients Z, Q, F2, F3, F5 and F7. These are imported computations, not owned ones and not human-reviewed mathematics: the release records what was computed and by what, and never presents it as this repository's own verified result.",
- "title": "Cup-product rings of closed surfaces from explicit triangulations"
+ "scope": "Ordinary unreduced cohomology rings and homology of eleven closed surfaces and the four closed S^2 x R 3-manifolds, computed from explicit finite simplicial models by an external computer algebra system. Coefficients Z, Q, F2, F3, F5 and F7. The surfaces' models are checked in; the S^2 x R models come from a catalogue that states no licence and are identified by hash rather than shipped. These are imported computations, not owned ones and not human-reviewed mathematics.",
+ "title": "Cup-product rings from explicit triangulations"
 }

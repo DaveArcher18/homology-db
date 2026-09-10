@@ -830,9 +830,11 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 1,
             )
             self.assertNotIn("<script src=", review_html)
+            # The one-file budget lives in the exporter; PR #5 raised it and this
+            # literal was left behind. Read the constant so the two cannot drift.
             self.assertLess(
                 review_path.stat().st_size,
-                6 * 1024 * 1024,
+                export_static_atlas.MAX_HTML_BYTES,
             )
 
 

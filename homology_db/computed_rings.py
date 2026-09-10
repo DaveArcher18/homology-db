@@ -37,6 +37,8 @@ SIMPLICIAL_MODEL_VERSION = "homology-db.simplicial-model/1"
 COMPUTED_RINGS_REVIEW_STATE = "imported_unreviewed"
 CANONICALIZATION = "cohomology-tables/canonical-facets/1"
 
+IMPORTED_MODELS_VERSION = "homology-db.imported-models/1"
+
 COMPUTED_RING_SOURCES = {
     "cohomology-tables": {
         "title": "cohomology-tables: cohomology rings and cup product tables for simplicial complexes",
@@ -51,6 +53,13 @@ COMPUTED_RING_SOURCES = {
         "publication_year": 2026,
         "url": "https://github.com/oscar-system/Oscar.jl",
         "source_kind": "official_software_source",
+    },
+    "lutz-manifold-page": {
+        "title": "Frank H. Lutz, The Manifold Page: geometric 3-manifold catalogues",
+        "authors": ["Frank H. Lutz"],
+        "publication_year": 2017,
+        "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/",
+        "source_kind": "unlicensed_author_catalogue",
     },
     "sagemath": {
         "title": "SageMath simplicial complex examples",
@@ -175,6 +184,39 @@ def load_computed_rings() -> dict[str, Any]:
             raise ValueError(f"model {summary['model_id']} disagrees with the manifest facet hash")
         models[summary["space_id"]] = summary
 
+    # Models whose source states no licence are identified, never shipped, so there
+    # is no facet list to re-derive here (ADR 0005, point 4). What can still be
+    # checked is that the descriptor is well formed and that its f-vector Euler
+    # characteristic matches the alternating sum of its Betti numbers.
+    identified_path = manifest.get("identified_models_path")
+    if identified_path:
+        payload = json.loads((_ROOT / identified_path).read_text())
+        if payload.get("schema_version") != IMPORTED_MODELS_VERSION:
+            raise ValueError("unsupported imported-model schema version")
+        for model in payload["models"]:
+            space_id = model["space_id"]
+            if space_id in models:
+                raise ValueError(f"{space_id} is both checked in and identified only")
+            descriptor = model["model"]
+            if descriptor.get("redistribution") != "identified_not_redistributed":
+                raise ValueError(f"identified model {space_id} does not declare its redistribution")
+            f_vector = descriptor["f_vector"]
+            euler_faces = sum((-1) ** degree * count for degree, count in enumerate(f_vector))
+            euler_groups = sum((-1) ** row["degree"] * row["free_rank"]
+                               for row in model["integral_homology"])
+            if euler_faces != euler_groups:
+                raise ValueError(
+                    f"identified model {space_id} has f-vector Euler characteristic "
+                    f"{euler_faces} but recorded Betti numbers give {euler_groups}")
+            models[space_id] = {
+                "model_id": descriptor["model_id"],
+                "space_id": space_id,
+                "facets_sha256": descriptor["facets_sha256"],
+                "f_vector": f_vector,
+                "vertices": descriptor["vertices"],
+                "redistribution": "identified_only",
+            }
+
     records: dict[str, list[dict[str, Any]]] = {}
     for record in corpus["records"]:
         validate_cohomology_ring_record(record, COMPUTED_RING_SOURCES)
@@ -206,7 +248,13 @@ def load_computed_rings() -> dict[str, Any]:
     if set(homology) != set(records):
         raise ValueError("every space with computed rings must carry computed homology")
 
-    return {"manifest": manifest, "models": models, "records": records, "homology": homology}
+    # Every identified model is available to bind a record, but only the ones a
+    # record actually names are part of the corpus the atlas projects.
+    used = {model_id: summary for model_id, summary in models.items() if model_id in records}
+    missing = sorted(set(records) - set(used))
+    if missing:
+        raise ValueError(f"computed rings without a pinned model: {missing}")
+    return {"manifest": manifest, "models": used, "records": records, "homology": homology}
 
 
 def computed_ring_records() -> dict[str, list[dict[str, Any]]]:

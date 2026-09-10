@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
 from pathlib import Path
 
@@ -258,6 +259,154 @@ def build_models(records: Path) -> dict:
         })
     models.sort(key=lambda model: model["space_id"])
     return {"schema_version": SCHEMA_VERSION, "models": models}
+
+
+RING_SCHEMA = "homology-db.cohomology-rings/1"
+HOMOLOGY_SCHEMA = "homology-db.computed-homology/1"
+MULTIPLICATION_SCOPE = {
+    "complete": True, "omitted_products": "zero",
+    "scope": "all_nonunit_ordered_basis_pairs", "unit_products": "identity",
+}
+RING_DERIVATION = (
+    "Alexander-Whitney cup product on the simplicial cochains of the pinned model, "
+    "with canonical graded bases obtained by Smith normal form; imported as computed, "
+    "not verified here."
+)
+HOMOLOGY_DERIVATION = (
+    "Simplicial chain complex of the pinned model, reduced to Smith normal form; "
+    "imported as computed, and corroborating rather than replacing this repository's "
+    "own cellular homology."
+)
+MODEL_SOURCE_ID = {"lutz": "lutz-manifold-page", "sage": "sagemath",
+                   "builtin": "cohomology-tables", "arxiv": "cohomology-tables"}
+
+
+def _basis_and_order(graded, characteristic):
+    """Flatten the producer's graded bases into the atlas's basis list."""
+    basis = []
+    for block in graded:
+        degree = block["degree"]
+        factors = block.get("invariant_factors") or []
+        for index, label in enumerate(block.get("basis_labels") or []):
+            raw = factors[index] if index < len(factors) else "0"
+            order = int(raw) if raw.isdigit() else 0
+            basis.append({"degree": degree, "id": label,
+                          "order": 0 if characteristic else order})
+    return basis
+
+
+def _products(record, graded):
+    """Nonzero, non-unit structure constants in the atlas's sparse shape."""
+    labels_by_degree = {block["degree"]: (block.get("basis_labels") or [])
+                        for block in graded}
+    products = []
+    for entry in record.get("structure_constants") or []:
+        left, right = entry["a"]["label"], entry["b"]["label"]
+        if left == "1" or right == "1":
+            continue                                  # implied by unit_products
+        target = labels_by_degree.get(entry["product_degree"], [])
+        result = [{"basis": target[index], "coefficient": int(value)}
+                  for index, value in enumerate(entry["coefficients"])
+                  if index < len(target) and value not in ("0", "0//1")]
+        if result:                                    # implied by omitted_products
+            products.append({"left": left, "right": right, "result": result})
+    products.sort(key=lambda item: (item["left"], item["right"]))
+    return products
+
+
+def _sources(entry, row, coefficient, kind):
+    model_source = MODEL_SOURCE_ID[row["kind"]]
+    locator = (f"{row['file']}:{row['label']}" if row["kind"] == "lutz"
+               else row["call"] or row["space"])
+    return [
+        {"source_id": "cohomology-tables", "role": kind,
+         "locator": f"records/{entry['space_id']} over {coefficient}"},
+        {"source_id": model_source, "role": "model", "locator": locator},
+        {"source_id": "oscar", "role": "engine",
+         "locator": "SimplicialCochainComplex and DGAlgCohRing (experimental/DoubleAndHyperComplexes)"},
+    ]
+
+
+def _provenance(entry, row, coefficient, kind, derivation):
+    return {
+        "kind": "external_engine_computation", "review_state": "imported_unreviewed",
+        "derivation": derivation, "engine": "OSCAR", "engine_version": "1.8.2",
+        "model_id": entry["model"]["model_id"],
+        "model_facets_sha256": entry["model"]["facets_sha256"],
+        "source_locator": f"cohomology-tables:records/{row['space']}.{coefficient}#/{kind}",
+    }
+
+
+def build_records(records: Path, entries: list[dict], expected_groups) -> tuple[list, list]:
+    """Ring and homology records for the given imported spaces."""
+    rows = {row["space"]: row for row in
+            csv.DictReader((records / "MANIFEST.tsv").open(), delimiter="\t")}
+    stems = {}
+    for name in os.listdir(records):
+        if name.endswith(".Z.json") and ".homology." not in name:
+            stems[name[: -len(".Z.json")]] = True
+
+    def stem_for(space_name):
+        prefix = re.sub(r"[^A-Za-z0-9]+", "_", space_name).strip("_")
+        matches = [stem for stem in stems if stem.rsplit("_", 1)[0] == prefix]
+        if len(matches) != 1:
+            raise ValueError(f"cannot locate records for {space_name!r}")
+        return matches[0]
+
+    rings, homology = [], []
+    for entry in entries:
+        row = rows[entry["source_space"]]
+        stem = stem_for(entry["source_space"])
+        dimension = entry["dimension"]
+        for coefficient in COEFFICIENTS:
+            characteristic = 0 if coefficient in ("Z", "Q") else int(coefficient[1:])
+            source = json.loads(
+                (records / f"{stem}.{coefficient}.json").read_text(encoding="utf-8"))
+            graded = source["cohomology"]
+            basis = _basis_and_order(graded, characteristic)
+            rings.append({
+                "schema_version": RING_SCHEMA,
+                "record_id": f"computed:{entry['space_id']}:{coefficient}:v1",
+                "space_id": entry["space_id"], "theory": "ordinary_cohomology",
+                "coefficient": coefficient, "characteristic": characteristic,
+                "convention": "unreduced", "knowledge_state": "exact",
+                "algebra": {"kind": "graded_structure_constants", "unit": "1",
+                            "basis": basis, "multiplication": dict(MULTIPLICATION_SCOPE),
+                            "products": _products(source, graded)},
+                "coverage": {"kind": "complete_finite", "through_degree": dimension,
+                             "upper_vanishing_starts_at": dimension + 1},
+                "groups": expected_groups(basis, dimension, coefficient),
+                "provenance": _provenance(entry, row, coefficient,
+                                          "structure_constants", RING_DERIVATION),
+                "sources": _sources(entry, row, coefficient, "computed_ring"),
+            })
+            hom_source = json.loads(
+                (records / f"{stem}.homology.{coefficient}.json").read_text(encoding="utf-8"))
+            groups = []
+            for block in hom_source["homology"]:
+                factors = block.get("invariant_factors") or []
+                free = sum(1 for value in factors if value == "0")
+                torsion = sorted(int(value) for value in factors
+                                 if value.isdigit() and value != "0")
+                groups.append({"degree": block["degree"], "free_rank": free,
+                               "torsion_orders": torsion} if coefficient == "Z"
+                              else {"degree": block["degree"],
+                                    "dimension": free + len(torsion)})
+            homology.append({
+                "schema_version": HOMOLOGY_SCHEMA,
+                "record_id": f"computed-homology:{entry['space_id']}:{coefficient}:v1",
+                "space_id": entry["space_id"], "theory": "ordinary_homology",
+                "coefficient": coefficient, "characteristic": characteristic,
+                "convention": "unreduced", "knowledge_state": "exact",
+                "coverage": {"kind": "complete_finite", "through_degree": dimension,
+                             "upper_vanishing_starts_at": dimension + 1},
+                "groups": groups,
+                "euler_characteristic": hom_source["euler_characteristic"],
+                "provenance": _provenance(entry, row, coefficient,
+                                          "homology", HOMOLOGY_DERIVATION),
+                "sources": _sources(entry, row, coefficient, "computed_homology"),
+            })
+    return rings, homology
 
 
 def main() -> int:
