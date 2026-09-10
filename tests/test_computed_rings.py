@@ -34,8 +34,8 @@ class ComputedRingsTest(unittest.TestCase):
         cls.model = json.loads((CORPUS / "triangulations" / "orientable_surface-3.json").read_text())
 
     def test_corpus_covers_every_surface_over_every_coefficient(self):
-        self.assertEqual(len(self.corpus["models"]), 15)
-        self.assertEqual(sum(len(v) for v in self.corpus["records"].values()), 90)
+        self.assertEqual(len(self.corpus["models"]), 150)
+        self.assertEqual(sum(len(v) for v in self.corpus["records"].values()), 864)
         for space_id, entries in self.corpus["records"].items():
             self.assertEqual(
                 sorted(record["coefficient"] for record in entries),
@@ -195,8 +195,15 @@ class ComputedRingsTest(unittest.TestCase):
 
     def test_imported_homology_covers_every_surface_and_coefficient(self):
         homology = self.corpus["homology"]
-        self.assertEqual(set(homology), set(self.corpus["records"]))
-        self.assertEqual(sum(len(v) for v in homology.values()), 90)
+        # Rings imply homology, not the reverse: a space whose upstream table was
+        # incomplete, or whose structure constants left Z, carries homology alone.
+        self.assertLessEqual(set(self.corpus["records"]), set(homology))
+        self.assertEqual(sorted(set(homology) - set(self.corpus["records"])), [
+            "connected_sum:s2-twist-s1-sum-20", "connected_sum:s2xs1-sum-20",
+            "four_manifold:k3", "hadamard_torsion_complex:32",
+            "hom_complex:c6-compl-k5-small", "random_2_complex:25",
+        ])
+        self.assertEqual(sum(len(v) for v in homology.values()), 900)
         for entries in homology.values():
             self.assertEqual(sorted(record["coefficient"] for record in entries),
                              sorted(["Z", "Q", "F2", "F3", "F5", "F7"]))
@@ -233,7 +240,7 @@ class ComputedRingsTest(unittest.TestCase):
                 checked += 1
         connection.close()
         database.unlink()
-        self.assertEqual(checked, 90)
+        self.assertEqual(checked, 900)
 
     def test_a_disagreeing_homology_is_a_conflict_not_a_ranking(self):
         imported = {("orientable_surface:2", "Z"): [{"degree": 0, "free_rank": 1,

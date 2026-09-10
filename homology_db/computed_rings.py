@@ -245,15 +245,20 @@ def load_computed_rings() -> dict[str, Any]:
     for space_id, entries in homology.items():
         if sorted(record["coefficient"] for record in entries) != sorted(COHOMOLOGY_RING_COEFFICIENTS):
             raise ValueError(f"computed homology for {space_id} does not cover every coefficient once")
-    if set(homology) != set(records):
-        raise ValueError("every space with computed rings must carry computed homology")
+    # Rings imply homology, not the other way round: a space whose upstream table
+    # is incomplete, or whose structure constants lie outside Z, contributes
+    # homology and no ring.
+    ringless = sorted(set(records) - set(homology))
+    if ringless:
+        raise ValueError(f"computed rings without computed homology: {ringless}")
 
     # Every identified model is available to bind a record, but only the ones a
     # record actually names are part of the corpus the atlas projects.
-    used = {model_id: summary for model_id, summary in models.items() if model_id in records}
-    missing = sorted(set(records) - set(used))
+    named = set(records) | set(homology)
+    used = {model_id: summary for model_id, summary in models.items() if model_id in named}
+    missing = sorted(named - set(used))
     if missing:
-        raise ValueError(f"computed rings without a pinned model: {missing}")
+        raise ValueError(f"computed records without a pinned model: {missing}")
     return {"manifest": manifest, "models": used, "records": records, "homology": homology}
 
 

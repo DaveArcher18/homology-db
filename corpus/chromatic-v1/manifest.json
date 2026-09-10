@@ -1,578 +1,2047 @@
 {
-  "schema_version": "homology-db.chromatic-corpus/3",
-  "snapshot_name": "chromatic-gateway-56",
-  "title": "Chromatic gateway CW corpus",
-  "materialized_through_degree": 24,
-  "scope": "Fifty-one named CW spaces spanning calibration examples, torsion cofibers, closed surfaces of every genus through six, projective and lens filtrations, Lie and Schubert spaces, cyclic and elementary-abelian classifying spaces, complex orientations, and a universal Thom space. Finite-type formulas are materialized only through degree 24; the snapshot computes ordinary homology and does not claim Morava K-theory or chromatic type calculations.",
-  "artifacts": [
+ "schema_version": "homology-db.chromatic-corpus/3",
+ "snapshot_name": "chromatic-gateway-56",
+ "title": "Chromatic gateway CW corpus",
+ "materialized_through_degree": 24,
+ "scope": "Fifty-one named CW spaces spanning calibration examples, torsion cofibers, closed surfaces of every genus through six, projective and lens filtrations, Lie and Schubert spaces, cyclic and elementary-abelian classifying spaces, complex orientations, and a universal Thom space. Finite-type formulas are materialized only through degree 24; the snapshot computes ordinary homology and does not claim Morava K-theory or chromatic type calculations.",
+ "artifacts": [
+  {
+   "path": "corpus/chromatic-v1/poincare-sphere-facets.json",
+   "sha256": "41ca884492be84a54c3923ee9976b79d7dc66a06847b2b7d8c8ac7cbb9d8e2e2",
+   "reference_id": "sage-poincare-source"
+  }
+ ],
+ "relations": [
+  {
+   "id": "relation:bec2-rank2:product-power:bc2",
+   "source_space_id": "classifying_space:elementary_abelian:2:2",
+   "type": "cartesian_product_power_of",
+   "target_space_id": "classifying_space:cyclic:2",
+   "detail": "The product CW model is the 2-fold Cartesian product of the cyclic classifying-space model B(C_2)."
+  },
+  {
+   "id": "relation:bec2-rank3:product-power:bc2",
+   "source_space_id": "classifying_space:elementary_abelian:2:3",
+   "type": "cartesian_product_power_of",
+   "target_space_id": "classifying_space:cyclic:2",
+   "detail": "The product CW model is the 3-fold Cartesian product of the cyclic classifying-space model B(C_2)."
+  },
+  {
+   "id": "relation:bec3-rank2:product-power:bc3",
+   "source_space_id": "classifying_space:elementary_abelian:3:2",
+   "type": "cartesian_product_power_of",
+   "target_space_id": "classifying_space:cyclic:3",
+   "detail": "The product CW model is the 2-fold Cartesian product of the cyclic classifying-space model B(C_3)."
+  },
+  {
+   "id": "relation:connected_sum-l31-sum-l31:summand:lens-3-3-1-1",
+   "source_space_id": "connected_sum:l31-sum-l31",
+   "type": "connected_sum_power_of",
+   "target_space_id": "lens:3:3:1-1",
+   "detail": "The prime decomposition of this space is the connected sum of 2 copies of L_3_1."
+  },
+  {
+   "id": "relation:connected_sum-l31-sum-minus-l31:summand:lens-3-3-1-1",
+   "source_space_id": "connected_sum:l31-sum-minus-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "lens:3:3:1-1",
+   "detail": "Two copies of L_3_1 appear in the prime decomposition of this space, one of them orientation-reversed."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-10:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-10",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 10 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-11:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-11",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 11 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-12:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-12",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 12 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-13:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-13",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 13 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-14:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-14",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 14 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-15:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-15",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 15 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-16:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-16",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 16 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-17:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-17",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 17 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-18:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-18",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 18 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-19:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-19",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 19 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-2-sum-l31:summand:lens-3-3-1-1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-2-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "lens:3:3:1-1",
+   "detail": "One copy of L_3_1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-2-sum-l31:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-2-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "Two copies of S^2twistS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-2-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-2-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-2-sum-rp3:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-2-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "Two copies of S^2twistS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-20:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-20",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 20 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-2:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-2",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 2 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-3-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-3-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-3-sum-rp3:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-3-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "Three copies of S^2twistS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-3:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-3",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 3 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-4-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-4-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-4-sum-rp3:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-4-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "Four copies of S^2twistS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-4:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-4",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 4 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-5-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-5-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-5-sum-rp3:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-5-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "Five copies of S^2twistS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-5:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-5",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 5 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-6:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-6",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 6 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-7:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-7",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 7 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-8:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-8",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 8 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-9:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-9",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "The prime decomposition of this space is the connected sum of 9 copies of S^2twistS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-l31:summand:lens-3-3-1-1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "lens:3:3:1-1",
+   "detail": "One copy of L_3_1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-l31:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "One copy of S^2twistS^1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2-twist-s1-sum-rp3:summand:s2xr-s2-twist-s1",
+   "source_space_id": "connected_sum:s2-twist-s1-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2-twist-s1",
+   "detail": "One copy of S^2twistS^1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-10:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-10",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 10 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-11:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-11",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 11 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-12:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-12",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 12 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-13:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-13",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 13 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-14:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-14",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 14 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-15:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-15",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 15 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-16:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-16",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 16 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-17:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-17",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 17 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-18:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-18",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 18 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-19:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-19",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 19 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-2-sum-l31:summand:lens-3-3-1-1",
+   "source_space_id": "connected_sum:s2xs1-sum-2-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "lens:3:3:1-1",
+   "detail": "One copy of L_3_1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-2-sum-l31:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-2-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "Two copies of S^2xS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-2-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2xs1-sum-2-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-2-sum-rp3:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-2-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "Two copies of S^2xS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-20:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-20",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 20 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-2:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-2",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 2 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-3-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2xs1-sum-3-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-3-sum-rp3:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-3-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "Three copies of S^2xS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-3:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-3",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 3 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-4-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2xs1-sum-4-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-4-sum-rp3:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-4-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "Four copies of S^2xS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-4:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-4",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 4 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-5-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2xs1-sum-5-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-5-sum-rp3:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-5-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "Five copies of S^2xS^1 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-5:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-5",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 5 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-6:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-6",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 6 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-7:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-7",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 7 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-8:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-8",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 8 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-9:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-9",
+   "type": "connected_sum_power_of",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "The prime decomposition of this space is the connected sum of 9 copies of S^2xS^1."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-l31:summand:lens-3-3-1-1",
+   "source_space_id": "connected_sum:s2xs1-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "lens:3:3:1-1",
+   "detail": "One copy of L_3_1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-l31:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-l31",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "One copy of S^2xS^1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "connected_sum:s2xs1-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:3",
+   "detail": "One copy of RP^3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:connected_sum-s2xs1-sum-rp3:summand:s2xr-s2xs1",
+   "source_space_id": "connected_sum:s2xs1-sum-rp3",
+   "type": "connected_sum_summand",
+   "target_space_id": "s2xr:s2xs1",
+   "detail": "One copy of S^2xS^1 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:cp2:finite-skeleton:cp-infinity",
+   "source_space_id": "complex_projective_space:2",
+   "type": "finite_skeleton_of",
+   "target_space_id": "complex_projective_space:infinity",
+   "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity."
+  },
+  {
+   "id": "relation:cp2:finite-skeleton:cp3",
+   "source_space_id": "complex_projective_space:2",
+   "type": "finite_skeleton_of",
+   "target_space_id": "complex_projective_space:3",
+   "detail": "CP^2 is the 4-skeleton of CP^3 in the same projective cell filtration."
+  },
+  {
+   "id": "relation:cp3:finite-skeleton:cp-infinity",
+   "source_space_id": "complex_projective_space:3",
+   "type": "finite_skeleton_of",
+   "target_space_id": "complex_projective_space:infinity",
+   "detail": "The standard four-cell CW model is the 6-skeleton of the projective filtration of CP^infinity."
+  },
+  {
+   "id": "relation:four_manifold-cp2-sum-cp2:summand:complex_projective_space-2",
+   "source_space_id": "four_manifold:cp2-sum-cp2",
+   "type": "connected_sum_power_of",
+   "target_space_id": "complex_projective_space:2",
+   "detail": "The prime decomposition of this space is the connected sum of 2 copies of CP^2."
+  },
+  {
+   "id": "relation:four_manifold-cp2-sum-minus-cp2:summand:complex_projective_space-2",
+   "source_space_id": "four_manifold:cp2-sum-minus-cp2",
+   "type": "connected_sum_summand",
+   "target_space_id": "complex_projective_space:2",
+   "detail": "Two copies of CP^2 appear in the prime decomposition of this space, one of them orientation-reversed."
+  },
+  {
+   "id": "relation:four_manifold-cp2-sum-s2xs2:summand:complex_projective_space-2",
+   "source_space_id": "four_manifold:cp2-sum-s2xs2",
+   "type": "connected_sum_summand",
+   "target_space_id": "complex_projective_space:2",
+   "detail": "One copy of CP^2 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:four_manifold-cp2-sum-s2xs2:summand:four_manifold-s2xs2",
+   "source_space_id": "four_manifold:cp2-sum-s2xs2",
+   "type": "connected_sum_summand",
+   "target_space_id": "four_manifold:s2xs2",
+   "detail": "One copy of S^2xS^2 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:four_manifold-rp4-sum-11-s2xs2:summand:four_manifold-s2xs2",
+   "source_space_id": "four_manifold:rp4-sum-11-s2xs2",
+   "type": "connected_sum_summand",
+   "target_space_id": "four_manifold:s2xs2",
+   "detail": "11 copies of S^2xS^2 appear in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:four_manifold-rp4-sum-11-s2xs2:summand:real_projective_space-4",
+   "source_space_id": "four_manifold:rp4-sum-11-s2xs2",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:4",
+   "detail": "One copy of RP^4 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:four_manifold-rp4-sum-k3:summand:four_manifold-k3",
+   "source_space_id": "four_manifold:rp4-sum-k3",
+   "type": "connected_sum_summand",
+   "target_space_id": "four_manifold:k3",
+   "detail": "One copy of K3 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:four_manifold-rp4-sum-k3:summand:real_projective_space-4",
+   "source_space_id": "four_manifold:rp4-sum-k3",
+   "type": "connected_sum_summand",
+   "target_space_id": "real_projective_space:4",
+   "detail": "One copy of RP^4 appears in the prime decomposition of this space."
+  },
+  {
+   "id": "relation:four_manifold-s2xs2-sum-s2xs2:summand:four_manifold-s2xs2",
+   "source_space_id": "four_manifold:s2xs2-sum-s2xs2",
+   "type": "connected_sum_power_of",
+   "target_space_id": "four_manifold:s2xs2",
+   "detail": "The prime decomposition of this space is the connected sum of 2 copies of S^2xS^2."
+  },
+  {
+   "id": "relation:lens-3-3:finite-skeleton:bc3",
+   "source_space_id": "lens:3:3:1-1",
+   "type": "finite_skeleton_of",
+   "target_space_id": "classifying_space:cyclic:3",
+   "detail": "The diagonal 3-dimensional lens-space model is the 3-skeleton of the standard infinite lens-space model B(C_3)."
+  },
+  {
+   "id": "relation:lens-3-5:finite-skeleton:bc3",
+   "source_space_id": "lens:3:5:1-1-1",
+   "type": "finite_skeleton_of",
+   "target_space_id": "classifying_space:cyclic:3",
+   "detail": "The diagonal 5-dimensional lens-space model is the 5-skeleton of the standard infinite lens-space model B(C_3)."
+  },
+  {
+   "id": "relation:lens-5-3:finite-skeleton:bc5",
+   "source_space_id": "lens:5:3:1-1",
+   "type": "finite_skeleton_of",
+   "target_space_id": "classifying_space:cyclic:5",
+   "detail": "The diagonal 3-dimensional lens-space model is the 3-skeleton of the standard infinite lens-space model B(C_5)."
+  },
+  {
+   "id": "relation:mu2:thom-space:bu2",
+   "source_space_id": "universal_complex_thom:2",
+   "type": "thom_space_of_bundle_over",
+   "target_space_id": "unitary_classifying_space:2",
+   "detail": "Th(gamma_2 -> BU(2)) is the Thom space of the universal complex rank-two bundle over BU(2)."
+  },
+  {
+   "id": "relation:nonorientable-surface-3:connected-sum:rp2",
+   "source_space_id": "nonorientable_surface:3",
+   "type": "connected_sum_power_of",
+   "target_space_id": "real_projective_space:2",
+   "detail": "The classification of closed surfaces presents the genus-3 nonorientable surface as the connected sum of 3 projective planes."
+  },
+  {
+   "id": "relation:nonorientable-surface-4:connected-sum:rp2",
+   "source_space_id": "nonorientable_surface:4",
+   "type": "connected_sum_power_of",
+   "target_space_id": "real_projective_space:2",
+   "detail": "The classification of closed surfaces presents the genus-4 nonorientable surface as the connected sum of 4 projective planes."
+  },
+  {
+   "id": "relation:nonorientable-surface-5:connected-sum:rp2",
+   "source_space_id": "nonorientable_surface:5",
+   "type": "connected_sum_power_of",
+   "target_space_id": "real_projective_space:2",
+   "detail": "The classification of closed surfaces presents the genus-5 nonorientable surface as the connected sum of 5 projective planes."
+  },
+  {
+   "id": "relation:nonorientable-surface-6:connected-sum:rp2",
+   "source_space_id": "nonorientable_surface:6",
+   "type": "connected_sum_power_of",
+   "target_space_id": "real_projective_space:2",
+   "detail": "The classification of closed surfaces presents the genus-6 nonorientable surface as the connected sum of 6 projective planes."
+  },
+  {
+   "id": "relation:orientable-surface-2:connected-sum:torus",
+   "source_space_id": "orientable_surface:2",
+   "type": "connected_sum_power_of",
+   "target_space_id": "torus:2",
+   "detail": "The classification of closed surfaces presents the genus-2 orientable surface as the connected sum of 2 tori."
+  },
+  {
+   "id": "relation:orientable-surface-3:connected-sum:torus",
+   "source_space_id": "orientable_surface:3",
+   "type": "connected_sum_power_of",
+   "target_space_id": "torus:2",
+   "detail": "The classification of closed surfaces presents the genus-3 orientable surface as the connected sum of 3 tori."
+  },
+  {
+   "id": "relation:orientable-surface-4:connected-sum:torus",
+   "source_space_id": "orientable_surface:4",
+   "type": "connected_sum_power_of",
+   "target_space_id": "torus:2",
+   "detail": "The classification of closed surfaces presents the genus-4 orientable surface as the connected sum of 4 tori."
+  },
+  {
+   "id": "relation:orientable-surface-5:connected-sum:torus",
+   "source_space_id": "orientable_surface:5",
+   "type": "connected_sum_power_of",
+   "target_space_id": "torus:2",
+   "detail": "The classification of closed surfaces presents the genus-5 orientable surface as the connected sum of 5 tori."
+  },
+  {
+   "id": "relation:orientable-surface-6:connected-sum:torus",
+   "source_space_id": "orientable_surface:6",
+   "type": "connected_sum_power_of",
+   "target_space_id": "torus:2",
+   "detail": "The classification of closed surfaces presents the genus-6 orientable surface as the connected sum of 6 tori."
+  },
+  {
+   "id": "relation:rp2:finite-skeleton:bc2",
+   "source_space_id": "real_projective_space:2",
+   "type": "finite_skeleton_of",
+   "target_space_id": "classifying_space:cyclic:2",
+   "detail": "The standard RP^2 CW model is the 2-skeleton of RP^infinity = B(C_2)."
+  },
+  {
+   "id": "relation:rp3:finite-skeleton:bc2",
+   "source_space_id": "real_projective_space:3",
+   "type": "finite_skeleton_of",
+   "target_space_id": "classifying_space:cyclic:2",
+   "detail": "The standard RP^3 CW model is the 3-skeleton of RP^infinity = B(C_2)."
+  },
+  {
+   "id": "relation:rp4:finite-skeleton:bc2",
+   "source_space_id": "real_projective_space:4",
+   "type": "finite_skeleton_of",
+   "target_space_id": "classifying_space:cyclic:2",
+   "detail": "The standard RP^4 CW model is the 4-skeleton of RP^infinity = B(C_2)."
+  },
+  {
+   "id": "relation:s2xr-rp3-sum-rp3:summand:real_projective_space-3",
+   "source_space_id": "s2xr:rp3-sum-rp3",
+   "type": "connected_sum_power_of",
+   "target_space_id": "real_projective_space:3",
+   "detail": "The prime decomposition of this space is the connected sum of 2 copies of RP^3."
+  }
+ ],
+ "references": [
+  {
+   "id": "hatcher-at",
+   "authors": [
+    "Allen Hatcher"
+   ],
+   "title": "Algebraic Topology",
+   "year": 2002,
+   "url": "https://pi.math.cornell.edu/~hatcher/AT/AT.pdf",
+   "source_kind": "author_owned_text"
+  },
+  {
+   "id": "hatcher-vbkt",
+   "authors": [
+    "Allen Hatcher"
+   ],
+   "title": "Vector Bundles and K-Theory",
+   "year": 2017,
+   "url": "https://pi.math.cornell.edu/~hatcher/VBKT/VB.pdf",
+   "source_kind": "author_owned_text"
+  },
+  {
+   "id": "postnikov-flag-thesis",
+   "authors": [
+    "Alexander Postnikov"
+   ],
+   "title": "Enumeration in Algebra and Geometry",
+   "year": 1997,
+   "url": "https://math.mit.edu/~apost/papers/thesis.pdf",
+   "source_kind": "author_owned_thesis"
+  },
+  {
+   "id": "lutz-sulanke-swartz-3manifolds",
+   "authors": [
+    "Frank H. Lutz",
+    "Thom Sulanke",
+    "Ed Swartz"
+   ],
+   "title": "f-vectors of 3-manifolds",
+   "year": 2009,
+   "url": "https://doi.org/10.37236/68",
+   "source_kind": "peer_reviewed_article"
+  },
+  {
+   "id": "lutz-manifold-page",
+   "authors": [
+    "Frank H. Lutz"
+   ],
+   "title": "The Manifold Page: geometric 3-manifold catalogues",
+   "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/",
+   "year": 2017,
+   "source_kind": "unlicensed_author_catalogue"
+  },
+  {
+   "id": "sage-poincare-source",
+   "authors": [
+    "The SageMath Developers"
+   ],
+   "title": "Pinned PoincareHomologyThreeSphere simplicial-complex source",
+   "year": 2025,
+   "url": "https://github.com/sagemath/sage/blob/686dc1a8d420c2e0aabadd4f602d9a0aa4690c50/src/sage/topology/simplicial_complex_examples.py#L610-L653",
+   "source_kind": "official_software_source"
+  },
+  {
+   "id": "bmms-ring-spectra-v",
+   "authors": [
+    "Robert R. Bruner",
+    "J. Peter May",
+    "James E. McClure",
+    "Mark Steinberger"
+   ],
+   "title": "H infinity Ring Spectra and Their Applications, Chapter V",
+   "year": 1986,
+   "url": "https://people.math.rochester.edu/faculty/doug/otherpapers/BMMS5.pdf",
+   "source_kind": "authoritative_monograph"
+  },
+  {
+   "id": "walker-wood-lie-cells",
+   "authors": [
+    "G. Walker",
+    "R. M. W. Wood"
+   ],
+   "title": "Low codimensional embeddings of Sp(n) and SU(n)",
+   "year": 1984,
+   "url": "https://doi.org/10.1017/S0013091500022082",
+   "source_kind": "primary_research"
+  },
+  {
+   "id": "fernandez-sp2-cells",
+   "authors": [
+    "L. Fernandez-Suarez",
+    "A. Gomez-Tato",
+    "J. Strom",
+    "D. Tanre"
+   ],
+   "title": "The Lusternik-Schnirelmann category of Sp(3)",
+   "year": 2001,
+   "url": "https://arxiv.org/abs/math/0111263",
+   "source_kind": "primary_research"
+  },
+  {
+   "id": "hkr-characters",
+   "authors": [
+    "Michael J. Hopkins",
+    "Nicholas J. Kuhn",
+    "Douglas C. Ravenel"
+   ],
+   "title": "Generalized group characters and complex oriented cohomology theories",
+   "year": 2000,
+   "url": "https://people.math.rochester.edu/faculty/doug/mypapers/hkr.pdf",
+   "source_kind": "primary_research"
+  },
+  {
+   "id": "ravenel-green-book",
+   "authors": [
+    "Douglas C. Ravenel"
+   ],
+   "title": "Complex Cobordism and Stable Homotopy Groups of Spheres",
+   "year": 1986,
+   "url": "https://www.sas.rochester.edu/mth/sites/doug-ravenel/mybooks/ravenel.pdf",
+   "source_kind": "author_owned_monograph"
+  }
+ ],
+ "families": [
+  {
+   "id": "point",
+   "label": "Point",
+   "summary": "The terminal one-cell CW complex and zero-dimensional calibration object.",
+   "chromatic_relevance": "A baseline for reduced versus unreduced conventions and contractible-space behavior.",
+   "model_formula": "point_one_cell",
+   "instances": [
+    {}
+   ],
+   "sources": [
     {
-      "path": "corpus/chromatic-v1/poincare-sphere-facets.json",
-      "sha256": "41ca884492be84a54c3923ee9976b79d7dc66a06847b2b7d8c8ac7cbb9d8e2e2",
-      "reference_id": "sage-poincare-source"
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Chapter 0, CW-complex conventions"
     }
-  ],
-  "relations": [
+   ]
+  },
+  {
+   "id": "sphere",
+   "label": "Spheres",
+   "summary": "The basic finite CW complexes whose suspension spectra organize stable and chromatic homotopy.",
+   "chromatic_relevance": "The sphere spectrum is the unit and primary target of chromatic stable-homotopy calculations.",
+   "model_formula": "sphere_standard",
+   "parameters": {
+    "n": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "sources": [
     {
-      "id": "relation:orientable-surface-2:connected-sum:torus",
-      "source_space_id": "orientable_surface:2",
-      "type": "connected_sum_power_of",
-      "target_space_id": "torus:2",
-      "detail": "The classification of closed surfaces presents the genus-2 orientable surface as the connected sum of 2 tori."
-    },
-    {
-      "id": "relation:orientable-surface-3:connected-sum:torus",
-      "source_space_id": "orientable_surface:3",
-      "type": "connected_sum_power_of",
-      "target_space_id": "torus:2",
-      "detail": "The classification of closed surfaces presents the genus-3 orientable surface as the connected sum of 3 tori."
-    },
-    {
-      "id": "relation:orientable-surface-4:connected-sum:torus",
-      "source_space_id": "orientable_surface:4",
-      "type": "connected_sum_power_of",
-      "target_space_id": "torus:2",
-      "detail": "The classification of closed surfaces presents the genus-4 orientable surface as the connected sum of 4 tori."
-    },
-    {
-      "id": "relation:orientable-surface-5:connected-sum:torus",
-      "source_space_id": "orientable_surface:5",
-      "type": "connected_sum_power_of",
-      "target_space_id": "torus:2",
-      "detail": "The classification of closed surfaces presents the genus-5 orientable surface as the connected sum of 5 tori."
-    },
-    {
-      "id": "relation:orientable-surface-6:connected-sum:torus",
-      "source_space_id": "orientable_surface:6",
-      "type": "connected_sum_power_of",
-      "target_space_id": "torus:2",
-      "detail": "The classification of closed surfaces presents the genus-6 orientable surface as the connected sum of 6 tori."
-    },
-    {
-      "id": "relation:nonorientable-surface-3:connected-sum:rp2",
-      "source_space_id": "nonorientable_surface:3",
-      "type": "connected_sum_power_of",
-      "target_space_id": "real_projective_space:2",
-      "detail": "The classification of closed surfaces presents the genus-3 nonorientable surface as the connected sum of 3 projective planes."
-    },
-    {
-      "id": "relation:nonorientable-surface-4:connected-sum:rp2",
-      "source_space_id": "nonorientable_surface:4",
-      "type": "connected_sum_power_of",
-      "target_space_id": "real_projective_space:2",
-      "detail": "The classification of closed surfaces presents the genus-4 nonorientable surface as the connected sum of 4 projective planes."
-    },
-    {
-      "id": "relation:nonorientable-surface-5:connected-sum:rp2",
-      "source_space_id": "nonorientable_surface:5",
-      "type": "connected_sum_power_of",
-      "target_space_id": "real_projective_space:2",
-      "detail": "The classification of closed surfaces presents the genus-5 nonorientable surface as the connected sum of 5 projective planes."
-    },
-    {
-      "id": "relation:nonorientable-surface-6:connected-sum:rp2",
-      "source_space_id": "nonorientable_surface:6",
-      "type": "connected_sum_power_of",
-      "target_space_id": "real_projective_space:2",
-      "detail": "The classification of closed surfaces presents the genus-6 nonorientable surface as the connected sum of 6 projective planes."
-    },
-    {
-      "id": "relation:rp2:finite-skeleton:bc2",
-      "source_space_id": "real_projective_space:2",
-      "type": "finite_skeleton_of",
-      "target_space_id": "classifying_space:cyclic:2",
-      "detail": "The standard RP^2 CW model is the 2-skeleton of RP^infinity = B(C_2)."
-    },
-    {
-      "id": "relation:rp3:finite-skeleton:bc2",
-      "source_space_id": "real_projective_space:3",
-      "type": "finite_skeleton_of",
-      "target_space_id": "classifying_space:cyclic:2",
-      "detail": "The standard RP^3 CW model is the 3-skeleton of RP^infinity = B(C_2)."
-    },
-    {
-      "id": "relation:rp4:finite-skeleton:bc2",
-      "source_space_id": "real_projective_space:4",
-      "type": "finite_skeleton_of",
-      "target_space_id": "classifying_space:cyclic:2",
-      "detail": "The standard RP^4 CW model is the 4-skeleton of RP^infinity = B(C_2)."
-    },
-    {
-      "id": "relation:rp3-sum-rp3:connected-sum:rp3",
-      "source_space_id": "s2xr:rp3-sum-rp3",
-      "type": "connected_sum_power_of",
-      "target_space_id": "real_projective_space:3",
-      "detail": "The prime decomposition of this S^2 x R manifold is the connected sum of 2 copies of RP^3; each summand contributes one order-two class to H_1."
-    },
-    {
-      "id": "relation:cp2:finite-skeleton:cp-infinity",
-      "source_space_id": "complex_projective_space:2",
-      "type": "finite_skeleton_of",
-      "target_space_id": "complex_projective_space:infinity",
-      "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity."
-    },
-    {
-      "id": "relation:cp3:finite-skeleton:cp-infinity",
-      "source_space_id": "complex_projective_space:3",
-      "type": "finite_skeleton_of",
-      "target_space_id": "complex_projective_space:infinity",
-      "detail": "The standard four-cell CW model is the 6-skeleton of the projective filtration of CP^infinity."
-    },
-    {
-      "id": "relation:cp2:finite-skeleton:cp3",
-      "source_space_id": "complex_projective_space:2",
-      "type": "finite_skeleton_of",
-      "target_space_id": "complex_projective_space:3",
-      "detail": "CP^2 is the 4-skeleton of CP^3 in the same projective cell filtration."
-    },
-    {
-      "id": "relation:lens-3-3:finite-skeleton:bc3",
-      "source_space_id": "lens:3:3:1-1",
-      "type": "finite_skeleton_of",
-      "target_space_id": "classifying_space:cyclic:3",
-      "detail": "The diagonal 3-dimensional lens-space model is the 3-skeleton of the standard infinite lens-space model B(C_3)."
-    },
-    {
-      "id": "relation:lens-5-3:finite-skeleton:bc5",
-      "source_space_id": "lens:5:3:1-1",
-      "type": "finite_skeleton_of",
-      "target_space_id": "classifying_space:cyclic:5",
-      "detail": "The diagonal 3-dimensional lens-space model is the 3-skeleton of the standard infinite lens-space model B(C_5)."
-    },
-    {
-      "id": "relation:lens-3-5:finite-skeleton:bc3",
-      "source_space_id": "lens:3:5:1-1-1",
-      "type": "finite_skeleton_of",
-      "target_space_id": "classifying_space:cyclic:3",
-      "detail": "The diagonal 5-dimensional lens-space model is the 5-skeleton of the standard infinite lens-space model B(C_3)."
-    },
-    {
-      "id": "relation:bec2-rank2:product-power:bc2",
-      "source_space_id": "classifying_space:elementary_abelian:2:2",
-      "type": "cartesian_product_power_of",
-      "target_space_id": "classifying_space:cyclic:2",
-      "detail": "The product CW model is the 2-fold Cartesian product of the cyclic classifying-space model B(C_2)."
-    },
-    {
-      "id": "relation:bec3-rank2:product-power:bc3",
-      "source_space_id": "classifying_space:elementary_abelian:3:2",
-      "type": "cartesian_product_power_of",
-      "target_space_id": "classifying_space:cyclic:3",
-      "detail": "The product CW model is the 2-fold Cartesian product of the cyclic classifying-space model B(C_3)."
-    },
-    {
-      "id": "relation:bec2-rank3:product-power:bc2",
-      "source_space_id": "classifying_space:elementary_abelian:2:3",
-      "type": "cartesian_product_power_of",
-      "target_space_id": "classifying_space:cyclic:2",
-      "detail": "The product CW model is the 3-fold Cartesian product of the cyclic classifying-space model B(C_2)."
-    },
-    {
-      "id": "relation:mu2:thom-space:bu2",
-      "source_space_id": "universal_complex_thom:2",
-      "type": "thom_space_of_bundle_over",
-      "target_space_id": "unitary_classifying_space:2",
-      "detail": "Th(gamma_2 -> BU(2)) is the Thom space of the universal complex rank-two bundle over BU(2)."
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Example 0.3, p. 5"
     }
-  ],
-  "references": [
+   ]
+  },
+  {
+   "id": "homology_sphere",
+   "label": "Homology spheres",
+   "summary": "A triangulated Poincare homology sphere, deliberately paired with S^3 to prevent identity-by-homology.",
+   "chromatic_relevance": "It is an identity and model-integrity guard: ordinary homology agrees with S^3 while the fundamental group does not.",
+   "model_formula": "poincare_simplicial",
+   "instances": [
+    {}
+   ],
+   "sources": [
     {
-      "id": "hatcher-at",
-      "authors": ["Allen Hatcher"],
-      "title": "Algebraic Topology",
-      "year": 2002,
-      "url": "https://pi.math.cornell.edu/~hatcher/AT/AT.pdf",
-      "source_kind": "author_owned_text"
-    },
-    {
-      "id": "hatcher-vbkt",
-      "authors": ["Allen Hatcher"],
-      "title": "Vector Bundles and K-Theory",
-      "year": 2017,
-      "url": "https://pi.math.cornell.edu/~hatcher/VBKT/VB.pdf",
-      "source_kind": "author_owned_text"
-    },
-    {
-      "id": "postnikov-flag-thesis",
-      "authors": ["Alexander Postnikov"],
-      "title": "Enumeration in Algebra and Geometry",
-      "year": 1997,
-      "url": "https://math.mit.edu/~apost/papers/thesis.pdf",
-      "source_kind": "author_owned_thesis"
-    },
-    {
-      "id": "lutz-sulanke-swartz-3manifolds",
-      "authors": ["Frank H. Lutz", "Thom Sulanke", "Ed Swartz"],
-      "title": "f-vectors of 3-manifolds",
-      "year": 2009,
-      "url": "https://doi.org/10.37236/68",
-      "source_kind": "peer_reviewed_article"
-    },
-    {
-      "id": "lutz-manifold-page",
-      "authors": ["Frank H. Lutz"],
-      "title": "The Manifold Page: geometric 3-manifold catalogues",
-      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/",
-      "year": 2017,
-      "source_kind": "unlicensed_author_catalogue"
-    },
-    {
-      "id": "sage-poincare-source",
-      "authors": ["The SageMath Developers"],
-      "title": "Pinned PoincareHomologyThreeSphere simplicial-complex source",
-      "year": 2025,
-      "url": "https://github.com/sagemath/sage/blob/686dc1a8d420c2e0aabadd4f602d9a0aa4690c50/src/sage/topology/simplicial_complex_examples.py#L610-L653",
-      "source_kind": "official_software_source"
-    },
-    {
-      "id": "bmms-ring-spectra-v",
-      "authors": ["Robert R. Bruner", "J. Peter May", "James E. McClure", "Mark Steinberger"],
-      "title": "H infinity Ring Spectra and Their Applications, Chapter V",
-      "year": 1986,
-      "url": "https://people.math.rochester.edu/faculty/doug/otherpapers/BMMS5.pdf",
-      "source_kind": "authoritative_monograph"
-    },
-    {
-      "id": "walker-wood-lie-cells",
-      "authors": ["G. Walker", "R. M. W. Wood"],
-      "title": "Low codimensional embeddings of Sp(n) and SU(n)",
-      "year": 1984,
-      "url": "https://doi.org/10.1017/S0013091500022082",
-      "source_kind": "primary_research"
-    },
-    {
-      "id": "fernandez-sp2-cells",
-      "authors": ["L. Fernandez-Suarez", "A. Gomez-Tato", "J. Strom", "D. Tanre"],
-      "title": "The Lusternik-Schnirelmann category of Sp(3)",
-      "year": 2001,
-      "url": "https://arxiv.org/abs/math/0111263",
-      "source_kind": "primary_research"
-    },
-    {
-      "id": "hkr-characters",
-      "authors": ["Michael J. Hopkins", "Nicholas J. Kuhn", "Douglas C. Ravenel"],
-      "title": "Generalized group characters and complex oriented cohomology theories",
-      "year": 2000,
-      "url": "https://people.math.rochester.edu/faculty/doug/mypapers/hkr.pdf",
-      "source_kind": "primary_research"
-    },
-    {
-      "id": "ravenel-green-book",
-      "authors": ["Douglas C. Ravenel"],
-      "title": "Complex Cobordism and Stable Homotopy Groups of Spheres",
-      "year": 1986,
-      "url": "https://www.sas.rochester.edu/mth/sites/doug-ravenel/mybooks/ravenel.pdf",
-      "source_kind": "author_owned_monograph"
+     "reference_id": "sage-poincare-source",
+     "role": "model_and_homology",
+     "locator": "PoincareHomologyThreeSphere, lines 610-653 at pinned commit"
     }
-  ],
-  "families": [
+   ]
+  },
+  {
+   "id": "wedge",
+   "label": "Wedges",
+   "summary": "A simple attaching-map control with the same cellular chain ranks as CP^2 but a different homotopy type.",
+   "chromatic_relevance": "It guards against treating cellular homology matrices as complete CW identity data.",
+   "model_formula": "sphere_wedge",
+   "instances": [
     {
-      "id": "point",
-      "label": "Point",
-      "summary": "The terminal one-cell CW complex and zero-dimensional calibration object.",
-      "chromatic_relevance": "A baseline for reduced versus unreduced conventions and contractible-space behavior.",
-      "model_formula": "point_one_cell",
-      "instances": [{}],
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Chapter 0, CW-complex conventions"}]
-    },
-    {
-      "id": "sphere",
-      "label": "Spheres",
-      "summary": "The basic finite CW complexes whose suspension spectra organize stable and chromatic homotopy.",
-      "chromatic_relevance": "The sphere spectrum is the unit and primary target of chromatic stable-homotopy calculations.",
-      "model_formula": "sphere_standard",
-      "parameters": {"n": [0, 1, 2, 3, 4]},
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 0.3, p. 5"}]
-    },
-    {
-      "id": "homology_sphere",
-      "label": "Homology spheres",
-      "summary": "A triangulated Poincare homology sphere, deliberately paired with S^3 to prevent identity-by-homology.",
-      "chromatic_relevance": "It is an identity and model-integrity guard: ordinary homology agrees with S^3 while the fundamental group does not.",
-      "model_formula": "poincare_simplicial",
-      "instances": [{}],
-      "sources": [{"reference_id": "sage-poincare-source", "role": "model_and_homology", "locator": "PoincareHomologyThreeSphere, lines 610-653 at pinned commit"}]
-    },
-    {
-      "id": "wedge",
-      "label": "Wedges",
-      "summary": "A simple attaching-map control with the same cellular chain ranks as CP^2 but a different homotopy type.",
-      "chromatic_relevance": "It guards against treating cellular homology matrices as complete CW identity data.",
-      "model_formula": "sphere_wedge",
-      "instances": [{"a": 2, "b": 4}],
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Chapter 0, wedge sums and CW constructions"}]
-    },
-    {
-      "id": "surface",
-      "label": "Surfaces",
-      "summary": "Closed surfaces, classified by orientability and genus: each is a connected sum of tori or of projective planes, with a vanishing degree-two boundary in the orientable case and a single order-two class otherwise.",
-      "chromatic_relevance": "The genus filtration grows the rank of the degree-one classes while orientability alone decides whether the cellular boundary vanishes, separating additive growth from 2-primary torsion.",
-      "model_formula": "closed_surface_cells",
-      "instances": [
-        {
-          "kind": "torus"
-        },
-        {
-          "kind": "orientable",
-          "genus": 2
-        },
-        {
-          "kind": "orientable",
-          "genus": 3
-        },
-        {
-          "kind": "orientable",
-          "genus": 4
-        },
-        {
-          "kind": "orientable",
-          "genus": 5
-        },
-        {
-          "kind": "orientable",
-          "genus": 6
-        },
-        {
-          "kind": "klein_bottle"
-        },
-        {
-          "kind": "nonorientable",
-          "genus": 3
-        },
-        {
-          "kind": "nonorientable",
-          "genus": 4
-        },
-        {
-          "kind": "nonorientable",
-          "genus": 5
-        },
-        {
-          "kind": "nonorientable",
-          "genus": 6
-        }
-      ],
-      "sources": [
-        {
-          "reference_id": "hatcher-at",
-          "role": "model_and_homology",
-          "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology",
-          "applies_to": {
-            "kind": "torus"
-          }
-        },
-        {
-          "reference_id": "hatcher-at",
-          "role": "model_and_homology",
-          "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology",
-          "applies_to": {
-            "kind": "klein_bottle"
-          }
-        },
-        {
-          "reference_id": "hatcher-at",
-          "role": "model_and_homology",
-          "locator": "Example 2.36, p. 141, the closed orientable surface of genus g and its cellular chain complex",
-          "applies_to": {
-            "kind": "orientable"
-          }
-        },
-        {
-          "reference_id": "hatcher-at",
-          "role": "model_and_homology",
-          "locator": "Example 2.37, p. 141, the closed nonorientable surface of genus g and its cellular chain complex",
-          "applies_to": {
-            "kind": "nonorientable"
-          }
-        }
-      ]
-    },
-    {
-      "id": "s2xr_3manifold",
-      "label": "S^2 x R 3-manifolds",
-      "summary": "The four closed 3-manifolds modelled on S^2 x R: two sphere bundles over the circle, one product with the projective plane, and one connected sum. The list is complete.",
-      "chromatic_relevance": "A four-element geometry where orientability and 2-torsion vary independently, so the same coefficient change reads differently in each.",
-      "model_formula": "imported_simplicial_model",
-      "instances": [
-        {
-          "space": "s2xr:s2xs1"
-        },
-        {
-          "space": "s2xr:s2-twist-s1"
-        },
-        {
-          "space": "s2xr:rp2xs1"
-        },
-        {
-          "space": "s2xr:rp3-sum-rp3"
-        }
-      ],
-      "sources": [
-        {
-          "reference_id": "lutz-manifold-page",
-          "role": "model",
-          "locator": "S2xR_spaces.txt, the four closed S^2 x R manifolds"
-        },
-        {
-          "reference_id": "lutz-sulanke-swartz-3manifolds",
-          "role": "model_identity",
-          "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
-        }
-      ]
-    },
-    {
-      "id": "real_projective_space",
-      "label": "Real projective spaces",
-      "summary": "Finite skeleta of BC_2 with one cell in every degree and visible 2-primary torsion.",
-      "chromatic_relevance": "Real projective filtrations are standard inputs to 2-primary stable homotopy, image-of-J, and vector-field calculations.",
-      "model_formula": "real_projective_standard_cw",
-      "parameters": {"n": [2, 3, 4]},
-      "sources": [
-        {"reference_id": "hatcher-at", "role": "model", "locator": "Example 0.4, pp. 6-7"},
-        {"reference_id": "hatcher-at", "role": "homology", "locator": "Example 2.42, p. 144"}
-      ]
-    },
-    {
-      "id": "complex_projective_space",
-      "label": "Complex projective spaces",
-      "summary": "Finite complex projective spaces carry one cell in every even degree, so every cellular differential vanishes and the homology is free.",
-      "chromatic_relevance": "The finite skeleta of CP-infinity are the standard complex-orientation test objects, and the first place where a cup product separates spaces that cellular homology cannot.",
-      "model_formula": "complex_projective_standard_cw",
-      "parameters": {"n": [2, 3]},
-      "sources": [
-        {"reference_id": "hatcher-at", "role": "model", "locator": "Example 0.6, pp. 6-8"},
-        {"reference_id": "hatcher-at", "role": "homology", "locator": "Example 2.35, p. 140"},
-        {"reference_id": "hatcher-at", "role": "attaching_maps", "locator": "Example 4.47, pp. 378-379"}
-      ]
-    },
-    {
-      "id": "hopf_projective_plane",
-      "label": "Quaternionic and octonionic projective planes",
-      "summary": "The quaternionic and octonionic projective planes retain the nu and sigma attaching maps; the complex member of the Hopf-invariant-one trio is CP^2, recorded with the complex projective spaces.",
-      "chromatic_relevance": "These Hopf-invariant-one cofibers are foundational finite complexes whose identical-looking zero cellular differentials hide different attaching maps.",
-      "model_formula": "hopf_projective_plane",
-      "instances": [{"division_algebra": "quaternionic"}, {"division_algebra": "octonionic"}],
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.6 and 4.47; pp. 6-8 and 378-379"}]
-    },
-    {
-      "id": "moore_space",
-      "label": "Moore spaces",
-      "summary": "Degree-m two-cell cofibers isolate torsion at chosen primes, prime powers, and degrees.",
-      "chromatic_relevance": "After stabilization, prime Moore spaces supply V(0), the first finite torsion input to the chromatic type filtration.",
-      "model_formula": "cyclic_moore_degree_m",
-      "instances": [{"m": 3, "n": 1}, {"m": 4, "n": 1}, {"m": 5, "n": 2}, {"m": 9, "n": 2}, {"m": 7, "n": 3}, {"m": 8, "n": 4}],
-      "sources": [
-        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.40, pp. 143-144"},
-        {"reference_id": "ravenel-green-book", "role": "chromatic_context", "locator": "Section 1.3, pp. 18-19"}
-      ]
-    },
-    {
-      "id": "lens_space",
-      "label": "Lens spaces",
-      "summary": "Weighted odd-dimensional cyclic sphere quotients with explicit primary torsion and identity-sensitive weights.",
-      "chromatic_relevance": "Finite lens filtrations approximate BC_p; the two 5-primary three-spaces deliberately share homology but not homotopy type.",
-      "model_formula": "weighted_lens_cw",
-      "instances": [
-        {"p": 3, "weights": [1, 1]},
-        {"p": 5, "weights": [1, 1]},
-        {"p": 5, "weights": [1, 2]},
-        {"p": 3, "weights": [1, 1, 1]}
-      ],
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.43, pp. 144-146"}]
-    },
-    {
-      "id": "stunted_projective_space",
-      "label": "Stunted projective spaces",
-      "summary": "Quotients retaining consecutive real or complex projective cells.",
-      "chromatic_relevance": "Stunted projective complexes are classical finite inputs to stable homotopy, K-theory, vector-field, and image-of-J calculations.",
-      "model_formula": "stunted_projective_quotient",
-      "instances": [{"kind": "real", "bottom": 3, "top": 6}, {"kind": "complex", "bottom": 2, "top": 4}],
-      "sources": [
-        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.4, 0.6, and 2.42, using the CW quotient filtration"},
-        {"reference_id": "bmms-ring-spectra-v", "role": "stable_context", "locator": "Definition 2.10, p. 148"}
-      ]
-    },
-    {
-      "id": "compact_lie_group",
-      "label": "Compact Lie groups",
-      "summary": "Low-rank SU and Sp examples with finite CW decompositions and nontrivial attaching maps.",
-      "chromatic_relevance": "Compact Lie groups are core generalized-cohomology inputs and expose finite complexes whose cellular boundaries alone omit essential attaching data.",
-      "model_formula": "compact_lie_low_rank",
-      "instances": [{"group": "SU", "rank": 3}, {"group": "Sp", "rank": 2}],
-      "sources": [
-        {"reference_id": "walker-wood-lie-cells", "role": "model_and_homology", "locator": "Cell structure for SU(3), p. 29", "applies_to": {"group": "SU", "rank": 3}},
-        {"reference_id": "fernandez-sp2-cells", "role": "model_and_homology", "locator": "Section 2, cell structure for Sp(2)", "applies_to": {"group": "Sp", "rank": 2}}
-      ]
-    },
-    {
-      "id": "schubert_space",
-      "label": "Schubert spaces",
-      "summary": "A complete flag variety and Grassmannian with explicit even Schubert-cell ranks.",
-      "chromatic_relevance": "Schubert filtrations supply geometric, complex-oriented test spaces beyond projective space while remaining finitely computable.",
-      "model_formula": "finite_schubert_cells",
-      "instances": [{"kind": "complete_flag_c3"}, {"kind": "grassmannian_2_c4"}],
-      "sources": [
-        {"reference_id": "postnikov-flag-thesis", "role": "model_and_homology", "locator": "Section 2.2.1, Flag manifold and Schubert cells, pp. 53-54", "applies_to": {"kind": "complete_flag_c3"}},
-        {"reference_id": "hatcher-vbkt", "role": "model_and_homology", "locator": "Section 1.2, Grassmannian Schubert CW structures, pp. 31-34", "applies_to": {"kind": "grassmannian_2_c4"}}
-      ]
-    },
-    {
-      "id": "cyclic_classifying_space",
-      "label": "Cyclic classifying spaces",
-      "summary": "Infinite lens spaces BC_p with finite-type CW filtrations and recurring p-torsion.",
-      "chromatic_relevance": "Complex-oriented theories see the formal-group p-series on BC_p; these are direct chromatic character-theory inputs.",
-      "model_formula": "cyclic_classifying_finite_type",
-      "parameters": {"p": [2, 3, 5]},
-      "sources": [
-        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 1B.4 and 2.43, pp. 88 and 144-146"},
-        {"reference_id": "hkr-characters", "role": "chromatic_context", "locator": "Introduction and Section 5"}
-      ]
-    },
-    {
-      "id": "elementary_abelian_classifying_space",
-      "label": "Elementary-abelian classifying spaces",
-      "summary": "Products B(C_p^r) with explicit tensor-product CW filtrations and parameterized p-torsion ranks.",
-      "chromatic_relevance": "Elementary abelian p-groups are central test groups in generalized character theory, chromatic fixed points, and detection.",
-      "model_formula": "elementary_abelian_classifying_finite_type",
-      "instances": [{"p": 2, "rank": 2}, {"p": 3, "rank": 2}, {"p": 2, "rank": 3}],
-      "sources": [
-        {"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Product CW structures and Kunneth formula, Sections 0 and 3B"},
-        {"reference_id": "hkr-characters", "role": "chromatic_context", "locator": "Introduction and Section 5"}
-      ]
-    },
-    {
-      "id": "infinite_projective_space",
-      "label": "Infinite projective spaces",
-      "summary": "The universal complex and quaternionic line spaces with even finite-type CW filtrations.",
-      "chromatic_relevance": "CP-infinity equals BU(1) and is the universal complex-orientation/formal-group-law test object; HP-infinity supplies the quaternionic analogue.",
-      "model_formula": "infinite_projective_finite_type",
-      "instances": [{"division_algebra": "complex"}, {"division_algebra": "quaternionic"}],
-      "sources": [
-        {"reference_id": "hatcher-at", "role": "model_homology_and_identity", "locator": "Example 0.6, p. 7, and Example 4.50, p. 388: CP-infinity cells and K(Z,2)", "applies_to": {"division_algebra": "complex"}},
-        {"reference_id": "hatcher-vbkt", "role": "classifying_space_identity", "locator": "Proposition 3.10 and preceding discussion, p. 89: G_1(C^infinity)=CP-infinity classifies complex line bundles", "applies_to": {"division_algebra": "complex"}},
-        {"reference_id": "hatcher-at", "role": "model_homology_and_identity", "locator": "Quaternionic projective cells, p. 222; Examples 4.46 and 4.50, pp. 386 and 388: S^3 -> S^infinity -> HP^infinity", "applies_to": {"division_algebra": "quaternionic"}}
-      ]
-    },
-    {
-      "id": "unitary_classifying_space",
-      "label": "Unitary classifying spaces",
-      "summary": "BU(2) via the infinite complex Grassmannian and its partition-indexed Schubert cells.",
-      "chromatic_relevance": "BU(2) is the first universal complex-bundle base with two Chern classes and the base for the universal rank-two Thom space.",
-      "model_formula": "unitary_classifying_schubert",
-      "instances": [{"n": 2}],
-      "sources": [{"reference_id": "hatcher-vbkt", "role": "model_and_homology", "locator": "Section 1.2, pp. 31-34; Theorem 3.9, pp. 84-85"}]
-    },
-    {
-      "id": "thom_space",
-      "label": "Universal Thom spaces",
-      "summary": "The Thom space of the universal complex 2-plane bundle over BU(2), represented by its shifted Schubert filtration.",
-      "chromatic_relevance": "This is the actual space commonly denoted MU(2), one of the spaces assembled into the complex-cobordism spectrum underlying the Adams-Novikov and chromatic stories.",
-      "model_formula": "universal_complex_thom",
-      "instances": [{"rank": 2}],
-      "sources": [
-        {"reference_id": "hatcher-vbkt", "role": "model", "locator": "Thom spaces, Section 4.1, pp. 112-113"},
-        {"reference_id": "hatcher-at", "role": "homology", "locator": "Integral Thom isomorphism, pp. 441-443"},
-        {"reference_id": "ravenel-green-book", "role": "chromatic_context", "locator": "MU(n)=Th(gamma_n), Chapter 4, Section 1, pp. 103-104"}
-      ]
+     "a": 2,
+     "b": 4
     }
-  ]
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Chapter 0, wedge sums and CW constructions"
+    }
+   ]
+  },
+  {
+   "id": "surface",
+   "label": "Surfaces",
+   "summary": "Closed surfaces, classified by orientability and genus: each is a connected sum of tori or of projective planes, with a vanishing degree-two boundary in the orientable case and a single order-two class otherwise.",
+   "chromatic_relevance": "The genus filtration grows the rank of the degree-one classes while orientability alone decides whether the cellular boundary vanishes, separating additive growth from 2-primary torsion.",
+   "model_formula": "closed_surface_cells",
+   "instances": [
+    {
+     "kind": "torus"
+    },
+    {
+     "kind": "orientable",
+     "genus": 2
+    },
+    {
+     "kind": "orientable",
+     "genus": 3
+    },
+    {
+     "kind": "orientable",
+     "genus": 4
+    },
+    {
+     "kind": "orientable",
+     "genus": 5
+    },
+    {
+     "kind": "orientable",
+     "genus": 6
+    },
+    {
+     "kind": "klein_bottle"
+    },
+    {
+     "kind": "nonorientable",
+     "genus": 3
+    },
+    {
+     "kind": "nonorientable",
+     "genus": 4
+    },
+    {
+     "kind": "nonorientable",
+     "genus": 5
+    },
+    {
+     "kind": "nonorientable",
+     "genus": 6
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology",
+     "applies_to": {
+      "kind": "torus"
+     }
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology",
+     "applies_to": {
+      "kind": "klein_bottle"
+     }
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Example 2.36, p. 141, the closed orientable surface of genus g and its cellular chain complex",
+     "applies_to": {
+      "kind": "orientable"
+     }
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Example 2.37, p. 141, the closed nonorientable surface of genus g and its cellular chain complex",
+     "applies_to": {
+      "kind": "nonorientable"
+     }
+    }
+   ]
+  },
+  {
+   "id": "real_projective_space",
+   "label": "Real projective spaces",
+   "summary": "Finite skeleta of BC_2 with one cell in every degree and visible 2-primary torsion.",
+   "chromatic_relevance": "Real projective filtrations are standard inputs to 2-primary stable homotopy, image-of-J, and vector-field calculations.",
+   "model_formula": "real_projective_standard_cw",
+   "parameters": {
+    "n": [
+     2,
+     3,
+     4
+    ]
+   },
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model",
+     "locator": "Example 0.4, pp. 6-7"
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "homology",
+     "locator": "Example 2.42, p. 144"
+    }
+   ]
+  },
+  {
+   "id": "complex_projective_space",
+   "label": "Complex projective spaces",
+   "summary": "Finite complex projective spaces carry one cell in every even degree, so every cellular differential vanishes and the homology is free.",
+   "chromatic_relevance": "The finite skeleta of CP-infinity are the standard complex-orientation test objects, and the first place where a cup product separates spaces that cellular homology cannot.",
+   "model_formula": "complex_projective_standard_cw",
+   "parameters": {
+    "n": [
+     2,
+     3
+    ]
+   },
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model",
+     "locator": "Example 0.6, pp. 6-8"
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "homology",
+     "locator": "Example 2.35, p. 140"
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "attaching_maps",
+     "locator": "Example 4.47, pp. 378-379"
+    }
+   ]
+  },
+  {
+   "id": "hopf_projective_plane",
+   "label": "Quaternionic and octonionic projective planes",
+   "summary": "The quaternionic and octonionic projective planes retain the nu and sigma attaching maps; the complex member of the Hopf-invariant-one trio is CP^2, recorded with the complex projective spaces.",
+   "chromatic_relevance": "These Hopf-invariant-one cofibers are foundational finite complexes whose identical-looking zero cellular differentials hide different attaching maps.",
+   "model_formula": "hopf_projective_plane",
+   "instances": [
+    {
+     "division_algebra": "quaternionic"
+    },
+    {
+     "division_algebra": "octonionic"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Examples 0.6 and 4.47; pp. 6-8 and 378-379"
+    }
+   ]
+  },
+  {
+   "id": "moore_space",
+   "label": "Moore spaces",
+   "summary": "Degree-m two-cell cofibers isolate torsion at chosen primes, prime powers, and degrees.",
+   "chromatic_relevance": "After stabilization, prime Moore spaces supply V(0), the first finite torsion input to the chromatic type filtration.",
+   "model_formula": "cyclic_moore_degree_m",
+   "instances": [
+    {
+     "m": 3,
+     "n": 1
+    },
+    {
+     "m": 4,
+     "n": 1
+    },
+    {
+     "m": 5,
+     "n": 2
+    },
+    {
+     "m": 9,
+     "n": 2
+    },
+    {
+     "m": 7,
+     "n": 3
+    },
+    {
+     "m": 8,
+     "n": 4
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Example 2.40, pp. 143-144"
+    },
+    {
+     "reference_id": "ravenel-green-book",
+     "role": "chromatic_context",
+     "locator": "Section 1.3, pp. 18-19"
+    }
+   ]
+  },
+  {
+   "id": "lens_space",
+   "label": "Lens spaces",
+   "summary": "Weighted odd-dimensional cyclic sphere quotients with explicit primary torsion and identity-sensitive weights.",
+   "chromatic_relevance": "Finite lens filtrations approximate BC_p; the two 5-primary three-spaces deliberately share homology but not homotopy type.",
+   "model_formula": "weighted_lens_cw",
+   "instances": [
+    {
+     "p": 3,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
+     "p": 5,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
+     "p": 5,
+     "weights": [
+      1,
+      2
+     ]
+    },
+    {
+     "p": 3,
+     "weights": [
+      1,
+      1,
+      1
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Example 2.43, pp. 144-146"
+    }
+   ]
+  },
+  {
+   "id": "prism_polyhedral_3manifold",
+   "label": "Prism and polyhedral 3-manifolds",
+   "summary": "Spherical 3-manifolds other than the lens spaces: quotients of the 3-sphere by binary dihedral and binary polyhedral groups. The lens spaces, RP^3, S^3 and the Poincare sphere are the spherical quotients recorded elsewhere.",
+   "chromatic_relevance": "Finite fundamental groups whose abelianisations are small and 2-primary, so a single coefficient change separates the prism manifolds from one another.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "polyhedral:cube-space"
+    },
+    {
+     "space": "polyhedral:octahedron-space"
+    },
+    {
+     "space": "polyhedral:truncated-cube-space"
+    },
+    {
+     "space": "prism_manifold:10"
+    },
+    {
+     "space": "prism_manifold:3"
+    },
+    {
+     "space": "prism_manifold:4"
+    },
+    {
+     "space": "prism_manifold:5"
+    },
+    {
+     "space": "prism_manifold:6"
+    },
+    {
+     "space": "prism_manifold:7"
+    },
+    {
+     "space": "prism_manifold:8"
+    },
+    {
+     "space": "prism_manifold:9"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt, the non-lens spherical quotients"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "flat_3manifold",
+   "label": "Flat 3-manifolds",
+   "summary": "All ten closed flat 3-manifolds: the six orientable Bieberbach manifolds and the four nonorientable ones. The list is complete.",
+   "chromatic_relevance": "A complete classification small enough to read whole, where the first homology ranges over every shape a rank-three crystallographic quotient allows.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "flat:b2"
+    },
+    {
+     "space": "flat:b3"
+    },
+    {
+     "space": "flat:b4"
+    },
+    {
+     "space": "flat:g2"
+    },
+    {
+     "space": "flat:g3"
+    },
+    {
+     "space": "flat:g4"
+    },
+    {
+     "space": "flat:g5"
+    },
+    {
+     "space": "flat:g6"
+    },
+    {
+     "space": "flat:kxs1"
+    },
+    {
+     "space": "flat:t3"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt, the ten closed Euclidean 3-manifolds"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "nil_3manifold",
+   "label": "Nil 3-manifolds",
+   "summary": "Circle bundles over the torus with nonzero Euler number, modelled on the Heisenberg geometry Nil.",
+   "chromatic_relevance": "The Euler number of the bundle appears directly as the order of the torsion class in first homology.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "nil:1"
+    },
+    {
+     "space": "nil:2"
+    },
+    {
+     "space": "nil:3"
+    },
+    {
+     "space": "nil:4"
+    },
+    {
+     "space": "nil:5"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "nil_3manifolds.txt, the Nil-geometry circle bundles over the torus"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "s2xr_3manifold",
+   "label": "S^2 x R 3-manifolds",
+   "summary": "The four closed 3-manifolds modelled on S^2 x R: two sphere bundles over the circle, one product with the projective plane, and one connected sum. The list is complete.",
+   "chromatic_relevance": "A four-element geometry where orientability and 2-torsion vary independently, so the same coefficient change reads differently in each.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "s2xr:s2xs1"
+    },
+    {
+     "space": "s2xr:s2-twist-s1"
+    },
+    {
+     "space": "s2xr:rp2xs1"
+    },
+    {
+     "space": "s2xr:rp3-sum-rp3"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S2xR_spaces.txt, the four closed S^2 x R manifolds"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "h2xr_3manifold",
+   "label": "H^2 x R 3-manifolds",
+   "summary": "Products of a hyperbolic surface with the circle. Genus drives the Betti numbers; the surface's orientability decides whether torsion appears at all.",
+   "chromatic_relevance": "Kunneth against a known surface factor, so every group here is predictable and the interest is in how the ring assembles from the two factors.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "h2xr:n3xs1"
+    },
+    {
+     "space": "h2xr:n4xs1"
+    },
+    {
+     "space": "h2xr:n5xs1"
+    },
+    {
+     "space": "h2xr:n6xs1"
+    },
+    {
+     "space": "h2xr:sigma2xs1"
+    },
+    {
+     "space": "h2xr:sigma3xs1"
+    },
+    {
+     "space": "h2xr:sigma4xs1"
+    },
+    {
+     "space": "h2xr:sigma5xs1"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt, products of a closed hyperbolic surface with S^1"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "hyperbolic_3manifold",
+   "label": "Hyperbolic 3-manifolds",
+   "summary": "Closed hyperbolic 3-manifolds of small volume, keyed by that volume, together with the Weber-Seifert dodecahedral space.",
+   "chromatic_relevance": "Volume is a complete invariant here but homology is not: several of these share first homology and are distinguished only by geometry.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "hyperbolic:vol:0.94270736"
+    },
+    {
+     "space": "hyperbolic:vol:0.98136883"
+    },
+    {
+     "space": "hyperbolic:vol:1.01494161"
+    },
+    {
+     "space": "hyperbolic:vol:1.26370924"
+    },
+    {
+     "space": "hyperbolic:vol:1.28448530"
+    },
+    {
+     "space": "hyperbolic:vol:1.39850888"
+    },
+    {
+     "space": "hyperbolic:vol:1.41406104_a"
+    },
+    {
+     "space": "hyperbolic:vol:1.41406104_b"
+    },
+    {
+     "space": "hyperbolic:vol:1.42361190"
+    },
+    {
+     "space": "hyperbolic:vol:1.44069901"
+    },
+    {
+     "space": "hyperbolic:vol:1.46377664"
+    },
+    {
+     "space": "hyperbolic:vol:1.52947733"
+    },
+    {
+     "space": "hyperbolic:vol:1.54356891_a"
+    },
+    {
+     "space": "hyperbolic:vol:1.54356891_b"
+    },
+    {
+     "space": "hyperbolic:vol:1.58316666_a"
+    },
+    {
+     "space": "hyperbolic:vol:1.58316666_b"
+    },
+    {
+     "space": "hyperbolic:vol:1.58864664_a"
+    },
+    {
+     "space": "hyperbolic:vol:1.58864664_b"
+    },
+    {
+     "space": "hyperbolic:vol:1.64960972"
+    },
+    {
+     "space": "hyperbolic:vol:1.75712603"
+    },
+    {
+     "space": "hyperbolic:weber-seifert"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt, closed hyperbolic 3-manifolds ordered by volume"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "connected_sum_3manifold",
+   "label": "Connected sums of 3-manifolds",
+   "summary": "Reducible closed 3-manifolds, each a connected sum of prime pieces recorded elsewhere in this atlas. By Kneser-Milnor that decomposition is unique, and each entry names its summands.",
+   "chromatic_relevance": "Homology is additive over a connected sum in every degree but the top, so these give a long, regular family in which one summand at a time changes the answer.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "connected_sum:l31-sum-l31"
+    },
+    {
+     "space": "connected_sum:l31-sum-minus-l31"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-10"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-11"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-12"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-13"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-14"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-15"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-16"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-17"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-18"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-19"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-2"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-2-sum-l31"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-2-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-20"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-3"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-3-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-4"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-4-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-5"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-5-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-6"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-7"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-8"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-9"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-l31"
+    },
+    {
+     "space": "connected_sum:s2-twist-s1-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-10"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-11"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-12"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-13"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-14"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-15"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-16"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-17"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-18"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-19"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-2"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-2-sum-l31"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-2-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-20"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-3"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-3-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-4"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-4-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-5"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-5-sum-rp3"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-6"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-7"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-8"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-9"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-l31"
+    },
+    {
+     "space": "connected_sum:s2xs1-sum-rp3"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt, reducible 3-manifolds by prime decomposition"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "four_manifold",
+   "label": "Closed 4-manifolds",
+   "summary": "Closed 4-manifolds, most of them connected sums. The cup product H^2 x H^2 -> H^4 is the intersection form, and it is the only thing separating several of these.",
+   "chromatic_relevance": "CP^2 # CP^2 and S^2 x S^2 have identical homology in every degree and different intersection forms: the clearest case in the atlas where a ring does work groups cannot.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "four_manifold:cp2-sum-cp2"
+    },
+    {
+     "space": "four_manifold:cp2-sum-minus-cp2"
+    },
+    {
+     "space": "four_manifold:cp2-sum-s2xs2"
+    },
+    {
+     "space": "four_manifold:k3"
+    },
+    {
+     "space": "four_manifold:rp4-sum-11-s2xs2"
+    },
+    {
+     "space": "four_manifold:rp4-sum-k3"
+    },
+    {
+     "space": "four_manifold:s2xs2"
+    },
+    {
+     "space": "four_manifold:s2xs2-sum-s2xs2"
+    },
+    {
+     "space": "four_manifold:s3-twist-s1"
+    },
+    {
+     "space": "four_manifold:s3xs1"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt, RP4_K3_17 and RP4_11S2xS2"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "five_manifold",
+   "label": "Closed 5-manifolds",
+   "summary": "Closed 5-manifolds: two products and the Wu manifold SU(3)/SO(3), the standard example of a non-spin five-dimensional manifold.",
+   "chromatic_relevance": "The Wu manifold carries its 2-torsion in the middle degree, where a Steenrod square rather than a cup product detects it.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "five_manifold:s2-x-poincare-sphere"
+    },
+    {
+     "space": "five_manifold:s3xs2"
+    },
+    {
+     "space": "five_manifold:wu"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S3xS2, S2xpoincare and SU2_SO3"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "combinatorial_complex",
+   "label": "Combinatorial complexes",
+   "summary": "Complexes built from combinatorial data rather than geometry: chessboard, matching and Hom complexes, a sum complex, a random 2-complex, and the Hadamard torsion complexes whose first homology is a product of cyclic 2-groups.",
+   "chromatic_relevance": "Torsion here is large and arbitrary rather than structural, which is what makes it a stress test for coefficient changes and for the display of long invariant-factor lists.",
+   "model_formula": "imported_simplicial_model",
+   "instances": [
+    {
+     "space": "chessboard_complex:3:3"
+    },
+    {
+     "space": "chessboard_complex:4:4"
+    },
+    {
+     "space": "hadamard_torsion_complex:16"
+    },
+    {
+     "space": "hadamard_torsion_complex:32"
+    },
+    {
+     "space": "hadamard_torsion_complex:4"
+    },
+    {
+     "space": "hadamard_torsion_complex:8"
+    },
+    {
+     "space": "hom_complex:c6-compl-k5-small"
+    },
+    {
+     "space": "matching_complex:5"
+    },
+    {
+     "space": "matching_complex:6"
+    },
+    {
+     "space": "matching_complex:7"
+    },
+    {
+     "space": "not_i_connected_complex:5:2"
+    },
+    {
+     "space": "random_2_complex:25"
+    },
+    {
+     "space": "sum_complex:5:0-1-3"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "HMT_k, Hom complexes and Sage's combinatorial constructors"
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+    }
+   ]
+  },
+  {
+   "id": "stunted_projective_space",
+   "label": "Stunted projective spaces",
+   "summary": "Quotients retaining consecutive real or complex projective cells.",
+   "chromatic_relevance": "Stunted projective complexes are classical finite inputs to stable homotopy, K-theory, vector-field, and image-of-J calculations.",
+   "model_formula": "stunted_projective_quotient",
+   "instances": [
+    {
+     "kind": "real",
+     "bottom": 3,
+     "top": 6
+    },
+    {
+     "kind": "complex",
+     "bottom": 2,
+     "top": 4
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Examples 0.4, 0.6, and 2.42, using the CW quotient filtration"
+    },
+    {
+     "reference_id": "bmms-ring-spectra-v",
+     "role": "stable_context",
+     "locator": "Definition 2.10, p. 148"
+    }
+   ]
+  },
+  {
+   "id": "compact_lie_group",
+   "label": "Compact Lie groups",
+   "summary": "Low-rank SU and Sp examples with finite CW decompositions and nontrivial attaching maps.",
+   "chromatic_relevance": "Compact Lie groups are core generalized-cohomology inputs and expose finite complexes whose cellular boundaries alone omit essential attaching data.",
+   "model_formula": "compact_lie_low_rank",
+   "instances": [
+    {
+     "group": "SU",
+     "rank": 3
+    },
+    {
+     "group": "Sp",
+     "rank": 2
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "walker-wood-lie-cells",
+     "role": "model_and_homology",
+     "locator": "Cell structure for SU(3), p. 29",
+     "applies_to": {
+      "group": "SU",
+      "rank": 3
+     }
+    },
+    {
+     "reference_id": "fernandez-sp2-cells",
+     "role": "model_and_homology",
+     "locator": "Section 2, cell structure for Sp(2)",
+     "applies_to": {
+      "group": "Sp",
+      "rank": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "schubert_space",
+   "label": "Schubert spaces",
+   "summary": "A complete flag variety and Grassmannian with explicit even Schubert-cell ranks.",
+   "chromatic_relevance": "Schubert filtrations supply geometric, complex-oriented test spaces beyond projective space while remaining finitely computable.",
+   "model_formula": "finite_schubert_cells",
+   "instances": [
+    {
+     "kind": "complete_flag_c3"
+    },
+    {
+     "kind": "grassmannian_2_c4"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "postnikov-flag-thesis",
+     "role": "model_and_homology",
+     "locator": "Section 2.2.1, Flag manifold and Schubert cells, pp. 53-54",
+     "applies_to": {
+      "kind": "complete_flag_c3"
+     }
+    },
+    {
+     "reference_id": "hatcher-vbkt",
+     "role": "model_and_homology",
+     "locator": "Section 1.2, Grassmannian Schubert CW structures, pp. 31-34",
+     "applies_to": {
+      "kind": "grassmannian_2_c4"
+     }
+    }
+   ]
+  },
+  {
+   "id": "cyclic_classifying_space",
+   "label": "Cyclic classifying spaces",
+   "summary": "Infinite lens spaces BC_p with finite-type CW filtrations and recurring p-torsion.",
+   "chromatic_relevance": "Complex-oriented theories see the formal-group p-series on BC_p; these are direct chromatic character-theory inputs.",
+   "model_formula": "cyclic_classifying_finite_type",
+   "parameters": {
+    "p": [
+     2,
+     3,
+     5
+    ]
+   },
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Examples 1B.4 and 2.43, pp. 88 and 144-146"
+    },
+    {
+     "reference_id": "hkr-characters",
+     "role": "chromatic_context",
+     "locator": "Introduction and Section 5"
+    }
+   ]
+  },
+  {
+   "id": "elementary_abelian_classifying_space",
+   "label": "Elementary-abelian classifying spaces",
+   "summary": "Products B(C_p^r) with explicit tensor-product CW filtrations and parameterized p-torsion ranks.",
+   "chromatic_relevance": "Elementary abelian p-groups are central test groups in generalized character theory, chromatic fixed points, and detection.",
+   "model_formula": "elementary_abelian_classifying_finite_type",
+   "instances": [
+    {
+     "p": 2,
+     "rank": 2
+    },
+    {
+     "p": 3,
+     "rank": 2
+    },
+    {
+     "p": 2,
+     "rank": 3
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_and_homology",
+     "locator": "Product CW structures and Kunneth formula, Sections 0 and 3B"
+    },
+    {
+     "reference_id": "hkr-characters",
+     "role": "chromatic_context",
+     "locator": "Introduction and Section 5"
+    }
+   ]
+  },
+  {
+   "id": "infinite_projective_space",
+   "label": "Infinite projective spaces",
+   "summary": "The universal complex and quaternionic line spaces with even finite-type CW filtrations.",
+   "chromatic_relevance": "CP-infinity equals BU(1) and is the universal complex-orientation/formal-group-law test object; HP-infinity supplies the quaternionic analogue.",
+   "model_formula": "infinite_projective_finite_type",
+   "instances": [
+    {
+     "division_algebra": "complex"
+    },
+    {
+     "division_algebra": "quaternionic"
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_homology_and_identity",
+     "locator": "Example 0.6, p. 7, and Example 4.50, p. 388: CP-infinity cells and K(Z,2)",
+     "applies_to": {
+      "division_algebra": "complex"
+     }
+    },
+    {
+     "reference_id": "hatcher-vbkt",
+     "role": "classifying_space_identity",
+     "locator": "Proposition 3.10 and preceding discussion, p. 89: G_1(C^infinity)=CP-infinity classifies complex line bundles",
+     "applies_to": {
+      "division_algebra": "complex"
+     }
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "model_homology_and_identity",
+     "locator": "Quaternionic projective cells, p. 222; Examples 4.46 and 4.50, pp. 386 and 388: S^3 -> S^infinity -> HP^infinity",
+     "applies_to": {
+      "division_algebra": "quaternionic"
+     }
+    }
+   ]
+  },
+  {
+   "id": "unitary_classifying_space",
+   "label": "Unitary classifying spaces",
+   "summary": "BU(2) via the infinite complex Grassmannian and its partition-indexed Schubert cells.",
+   "chromatic_relevance": "BU(2) is the first universal complex-bundle base with two Chern classes and the base for the universal rank-two Thom space.",
+   "model_formula": "unitary_classifying_schubert",
+   "instances": [
+    {
+     "n": 2
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-vbkt",
+     "role": "model_and_homology",
+     "locator": "Section 1.2, pp. 31-34; Theorem 3.9, pp. 84-85"
+    }
+   ]
+  },
+  {
+   "id": "thom_space",
+   "label": "Universal Thom spaces",
+   "summary": "The Thom space of the universal complex 2-plane bundle over BU(2), represented by its shifted Schubert filtration.",
+   "chromatic_relevance": "This is the actual space commonly denoted MU(2), one of the spaces assembled into the complex-cobordism spectrum underlying the Adams-Novikov and chromatic stories.",
+   "model_formula": "universal_complex_thom",
+   "instances": [
+    {
+     "rank": 2
+    }
+   ],
+   "sources": [
+    {
+     "reference_id": "hatcher-vbkt",
+     "role": "model",
+     "locator": "Thom spaces, Section 4.1, pp. 112-113"
+    },
+    {
+     "reference_id": "hatcher-at",
+     "role": "homology",
+     "locator": "Integral Thom isomorphism, pp. 441-443"
+    },
+    {
+     "reference_id": "ravenel-green-book",
+     "role": "chromatic_context",
+     "locator": "MU(n)=Th(gamma_n), Chapter 4, Section 1, pp. 103-104"
+    }
+   ]
+  }
+ ]
 }

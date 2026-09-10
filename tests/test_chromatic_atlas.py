@@ -30,7 +30,7 @@ class ChromaticAtlasTests(unittest.TestCase):
 
     def test_builds_the_curated_forty_two_space_snapshot_deterministically(self) -> None:
         summary = self.tools.corpus_summary()
-        self.assertEqual(summary["subject_count"], 56)
+        self.assertEqual(summary["subject_count"], 191)
         self.assertEqual(
             summary["release_status"],
             "development_corpus_not_externally_reviewed",
@@ -38,16 +38,25 @@ class ChromaticAtlasTests(unittest.TestCase):
         self.assertEqual(
             summary["family_counts"],
             {
+                "combinatorial_complex": 13,
                 "compact_lie_group": 2,
+                "complex_projective_space": 2,
+                "connected_sum_3manifold": 54,
                 "cyclic_classifying_space": 3,
                 "elementary_abelian_classifying_space": 3,
+                "five_manifold": 3,
+                "flat_3manifold": 10,
+                "four_manifold": 10,
+                "h2xr_3manifold": 8,
                 "homology_sphere": 1,
-                "complex_projective_space": 2,
                 "hopf_projective_plane": 2,
+                "hyperbolic_3manifold": 21,
                 "infinite_projective_space": 2,
                 "lens_space": 4,
                 "moore_space": 6,
+                "nil_3manifold": 5,
                 "point": 1,
+                "prism_polyhedral_3manifold": 11,
                 "real_projective_space": 3,
                 "s2xr_3manifold": 4,
                 "schubert_space": 2,
@@ -173,12 +182,12 @@ class ChromaticAtlasTests(unittest.TestCase):
             connection.row_factory = sqlite3.Row
             self.assertEqual(connection.execute("PRAGMA integrity_check").fetchone()[0], "ok")
             self.assertEqual(connection.execute("PRAGMA foreign_key_check").fetchall(), [])
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM space").fetchone()[0], 56)
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM model").fetchone()[0], 56)
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM evidence").fetchone()[0], 56)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM space").fetchone()[0], 191)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM model").fetchone()[0], 191)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM evidence").fetchone()[0], 191)
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM space_relation").fetchone()[0],
-                23,
+                100,
             )
             self.assertEqual(
                 {
@@ -214,7 +223,7 @@ class ChromaticAtlasTests(unittest.TestCase):
                       AND torsion_json != '[]'
                     """
                 ).fetchone()[0],
-                28,
+                119,
             )
             self.assertEqual(
                 {
@@ -229,7 +238,7 @@ class ChromaticAtlasTests(unittest.TestCase):
                 connection.execute(
                     "SELECT MAX(exponent) FROM primary_summand WHERE prime = 2"
                 ).fetchone()[0],
-                3,
+                5,
             )
             self.assertEqual(
                 connection.execute(

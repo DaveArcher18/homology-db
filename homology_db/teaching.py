@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from .classical import CLASSICAL_SPACE_IDS, CLASSICAL_EXTENSION_SPACE_IDS
 
 SCHEMA_VERSION = "homology-db.teaching/1"
@@ -15,6 +18,92 @@ def _source(locator: str, page: int, *, url: str = AT, title: str = "Hatcher, Al
 
 
 LUTZ_S2XR = {'title': 'Frank H. Lutz, The Manifold Page (geometric 3-manifold catalogues)', 'url': 'https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/', 'locator': 'S2xR_spaces.txt, the four closed S^2 x R manifolds'}
+
+
+
+IMPORTED_COVERAGE = (
+    "Homology and cup-product rings over Z, Q, F2, F3, F5 and F7 are imported from an "
+    "external computation on a simplicial model identified by hash. That model's source "
+    "states no licence, so it is named and counted here but not redistributed, and nothing "
+    "below its f-vector is re-derived. Not human-reviewed."
+)
+_IMPORTED_MODELS = Path(__file__).resolve().parents[1] / "corpus" / "computed-rings-v1" / "imported-models.json"
+_LUTZ = {
+    "title": "Frank H. Lutz, The Manifold Page (geometric 3-manifold catalogues)",
+    "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/",
+}
+_CHAPTER = {
+    "prism_polyhedral_3manifold": "Supplement . Spherical 3-manifolds",
+    "flat_3manifold": "Supplement . Flat 3-manifolds",
+    "nil_3manifold": "Supplement . Nil 3-manifolds",
+    "h2xr_3manifold": "Supplement . Surface bundles",
+    "hyperbolic_3manifold": "Supplement . Hyperbolic 3-manifolds",
+    "connected_sum_3manifold": "Supplement . Connected sums",
+    "four_manifold": "Supplement . Closed 4-manifolds",
+    "five_manifold": "Supplement . Closed 5-manifolds",
+    "combinatorial_complex": "Supplement . Combinatorial complexes",
+}
+
+
+def _group_text(rows):
+    """`Z, Z^2 + Z/2, 0` from the recorded integral homology."""
+    parts = []
+    for row in rows:
+        pieces = []
+        if row["free_rank"] == 1:
+            pieces.append("Z")
+        elif row["free_rank"] > 1:
+            pieces.append(f"Z^{row['free_rank']}")
+        pieces += [f"Z/{order}" for order in row["torsion_orders"]]
+        parts.append(" + ".join(pieces) if pieces else "0")
+    return ", ".join(parts)
+
+
+def _imported_teaching():
+    """One sourced entry per imported space, keyed off what its record says."""
+    models = json.loads(_IMPORTED_MODELS.read_text(encoding="utf-8"))["models"]
+    entries = []
+    for model in models:
+        family = model["family"]
+        chapter = _CHAPTER.get(family)
+        if chapter is None:
+            continue
+        descriptor = model["model"]
+        name = model["source_space"]
+        groups = _group_text(model["integral_homology"])
+        introduction = (
+            f"{model['label']} is recorded here from a {descriptor['vertices']}-vertex, "
+            f"{descriptor['facets']}-facet triangulation, with integral homology {groups}."
+        )
+        point = _POINT[family](model, groups)
+        entries.append({
+            "space_id": model["space_id"], "chapter": chapter,
+            "introduction": introduction, "point": point,
+            "source": dict(_LUTZ, locator=f"{descriptor['retrieval']['file']}: {descriptor['retrieval']['label']}"),
+        })
+    return sorted(entries, key=lambda entry: entry["space_id"])
+
+
+_POINT = {
+    "prism_polyhedral_3manifold": lambda model, groups:
+        "A finite fundamental group leaves only torsion in the first homology; compare the coefficient fields that divide those orders with the ones that do not.",
+    "flat_3manifold": lambda model, groups:
+        "Whether the top group is Z or zero is exactly whether this quotient of Euclidean space is orientable.",
+    "nil_3manifold": lambda model, groups:
+        "The torsion in the first homology is the Euler number of the circle bundle, read straight off the group.",
+    "h2xr_3manifold": lambda model, groups:
+        "Check the groups against the Kunneth formula applied to the surface factor and the circle.",
+    "hyperbolic_3manifold": lambda model, groups:
+        "Volume determines this manifold but homology does not; look for the other entries in this family sharing its first homology.",
+    "connected_sum_3manifold": lambda model, groups:
+        "Homology adds over a connected sum away from the top degree; the relations on this page name the summands the sum is built from.",
+    "four_manifold": lambda model, groups:
+        "In dimension four the cup product on the middle degree is the intersection form, and it separates spaces this table cannot.",
+    "five_manifold": lambda model, groups:
+        "Read the middle-degree class first: in dimension five that is where a product or a twisting shows itself.",
+    "combinatorial_complex": lambda model, groups:
+        "The torsion here comes from the combinatorics rather than from any geometry, so its orders are arbitrary and worth changing coefficients against.",
+}
 
 
 def teaching_catalog() -> dict:
@@ -64,6 +153,9 @@ def teaching_catalog() -> dict:
             rf"The crosscap word $a_1^2\cdots a_{{{k}}}^2$ abelianizes to twice the sum of the generators, so one order-two class appears no matter how large the genus grows.",
             _source("Example 2.37, p. 141", 141),
             coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation and are not human-reviewed.")
+    for entry in _imported_teaching():
+        add(entry["space_id"], entry["chapter"], entry["introduction"], entry["point"],
+            dict(entry["source"]), coverage=IMPORTED_COVERAGE)
     for space, introduction, point in (
         ("s2xr:s2xs1",
          r"The product $S^{2}\times S^{1}$ is the orientable sphere bundle over the circle.",

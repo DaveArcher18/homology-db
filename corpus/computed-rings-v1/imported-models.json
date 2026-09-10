@@ -64,7 +64,8 @@
     "homology_sphere",
     "nontrivial_pi1",
     "same_homology_guard"
-   ]
+   ],
+   "tex": "\\mathrm{Sigma(2,3,7}"
   },
   {
    "aliases": [
@@ -130,7 +131,8 @@
     "homology_sphere",
     "nontrivial_pi1",
     "same_homology_guard"
-   ]
+   ],
+   "tex": "\\mathrm{Sigma(2,5,7}"
   },
   {
    "aliases": [
@@ -196,7 +198,8 @@
     "homology_sphere",
     "nontrivial_pi1",
     "same_homology_guard"
-   ]
+   ],
+   "tex": "\\mathrm{Sigma(3,4,5}"
   },
   {
    "aliases": [
@@ -262,7 +265,8 @@
     "homology_sphere",
     "nontrivial_pi1",
     "same_homology_guard"
-   ]
+   ],
+   "tex": "\\mathrm{Sigma(3,4,7}"
   },
   {
    "aliases": [
@@ -328,7 +332,8 @@
     "homology_sphere",
     "nontrivial_pi1",
     "same_homology_guard"
-   ]
+   ],
+   "tex": "\\mathrm{Sigma(3,5,7}"
   },
   {
    "aliases": [
@@ -394,7 +399,8 @@
     "homology_sphere",
     "nontrivial_pi1",
     "same_homology_guard"
-   ]
+   ],
+   "tex": "\\mathrm{Sigma(4,5,7}"
   },
   {
    "aliases": [
@@ -450,7 +456,8 @@
    "space_id": "chessboard_complex:3:3",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{Chessboard(3,3}"
   },
   {
    "aliases": [
@@ -512,7 +519,8 @@
    "space_id": "chessboard_complex:4:4",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{Chessboard(4,4}"
   },
   {
    "aliases": [
@@ -592,7 +600,8 @@
    },
    "source_space": "CP^3",
    "space_id": "complex_projective_space:3",
-   "tags": []
+   "tags": [],
+   "tex": "\\mathbb{C}P^{3}"
   },
   {
    "aliases": [
@@ -674,7 +683,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "L(3,1)\\#L(3,1)"
   },
   {
    "aliases": [
@@ -756,7 +766,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "L(3,1)\\#-L(3,1)"
   },
   {
    "aliases": [
@@ -832,7 +843,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "10(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -908,7 +920,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "11(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -984,7 +997,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "12(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1060,7 +1074,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "13(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1136,7 +1151,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "14(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1212,7 +1228,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "15(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1288,7 +1305,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "16(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1364,7 +1382,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "17(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1440,7 +1459,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "18(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1516,7 +1536,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "19(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1592,7 +1613,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "2(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1677,7 +1699,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "2(S^{2}\\widetilde{\\times}S^{1})\\#L(3,1)"
   },
   {
    "aliases": [
@@ -1762,7 +1785,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "2(S^{2}\\widetilde{\\times}S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -1838,7 +1862,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "20(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1914,7 +1939,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "3(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -1999,7 +2025,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "3(S^{2}\\widetilde{\\times}S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -2075,7 +2102,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "4(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -2160,7 +2188,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "4(S^{2}\\widetilde{\\times}S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -2236,7 +2265,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "5(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -2321,7 +2351,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "5(S^{2}\\widetilde{\\times}S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -2397,7 +2428,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "6(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -2473,7 +2505,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "7(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -2549,7 +2582,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "8(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -2625,7 +2659,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "9(S^{2}\\widetilde{\\times}S^{1})"
   },
   {
    "aliases": [
@@ -2710,7 +2745,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "S^{2}\\widetilde{\\times}S^{1}\\#L(3,1)"
   },
   {
    "aliases": [
@@ -2795,7 +2831,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "S^{2}\\widetilde{\\times}S^{1}\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -2861,7 +2898,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "10(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -2927,7 +2965,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "11(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -2993,7 +3032,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "12(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3059,7 +3099,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "13(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3125,7 +3166,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "14(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3191,7 +3233,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "15(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3257,7 +3300,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "16(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3323,7 +3367,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "17(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3389,7 +3434,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "18(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3455,7 +3501,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "19(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3521,7 +3568,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "2(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3597,7 +3645,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "2(S^{2}\\times S^{1})\\#L(3,1)"
   },
   {
    "aliases": [
@@ -3673,7 +3722,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "2(S^{2}\\times S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -3739,7 +3789,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "20(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3805,7 +3856,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "3(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -3881,7 +3933,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "3(S^{2}\\times S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -3947,7 +4000,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "4(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -4023,7 +4077,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "4(S^{2}\\times S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -4089,7 +4144,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "5(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -4165,7 +4221,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "5(S^{2}\\times S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -4231,7 +4288,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "6(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -4297,7 +4355,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "7(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -4363,7 +4422,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "8(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -4429,7 +4489,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "9(S^{2}\\times S^{1})"
   },
   {
    "aliases": [
@@ -4505,7 +4566,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "S^{2}\\times S^{1}\\#L(3,1)"
   },
   {
    "aliases": [
@@ -4581,7 +4643,8 @@
     "closed_3manifold",
     "connected_sum",
     "reducible"
-   ]
+   ],
+   "tex": "S^{2}\\times S^{1}\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -4658,7 +4721,8 @@
    "tags": [
     "closed_5manifold",
     "product"
-   ]
+   ],
+   "tex": "S^{2}\\times \\mathrm{Poincare\\ sphere}"
   },
   {
    "aliases": [
@@ -4735,7 +4799,8 @@
    "tags": [
     "closed_5manifold",
     "product"
-   ]
+   ],
+   "tex": "S^{3}\\times S^{2}"
   },
   {
    "aliases": [
@@ -4823,7 +4888,8 @@
     "2_primary",
     "closed_5manifold",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{Wu}"
   },
   {
    "aliases": [
@@ -4899,7 +4965,8 @@
     "closed_3manifold",
     "flat_geometry",
     "nonorientable"
-   ]
+   ],
+   "tex": "B_{2}"
   },
   {
    "aliases": [
@@ -4990,7 +5057,8 @@
     "closed_3manifold",
     "flat_geometry",
     "nonorientable"
-   ]
+   ],
+   "tex": "B_{3}"
   },
   {
    "aliases": [
@@ -5075,7 +5143,8 @@
     "closed_3manifold",
     "flat_geometry",
     "nonorientable"
-   ]
+   ],
+   "tex": "B_{4}"
   },
   {
    "aliases": [
@@ -5157,7 +5226,8 @@
     "closed_3manifold",
     "flat_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "G_{2}"
   },
   {
    "aliases": [
@@ -5233,7 +5303,8 @@
     "closed_3manifold",
     "flat_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "G_{3}"
   },
   {
    "aliases": [
@@ -5309,7 +5380,8 @@
     "closed_3manifold",
     "flat_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "G_{4}"
   },
   {
    "aliases": [
@@ -5375,7 +5447,8 @@
     "closed_3manifold",
     "flat_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "G_{5}"
   },
   {
    "aliases": [
@@ -5457,7 +5530,8 @@
     "closed_3manifold",
     "flat_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "G_{6}"
   },
   {
    "aliases": [
@@ -5542,7 +5616,8 @@
     "closed_3manifold",
     "flat_geometry",
     "nonorientable"
-   ]
+   ],
+   "tex": "\\mathrm{K}\\times S^{1}"
   },
   {
    "aliases": [
@@ -5608,7 +5683,8 @@
     "closed_3manifold",
     "flat_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "T^{3}"
   },
   {
    "aliases": [
@@ -5679,7 +5755,8 @@
     "closed_4manifold",
     "connected_sum",
     "intersection_form"
-   ]
+   ],
+   "tex": "\\mathbb{C}P^{2}\\#\\mathbb{C}P^{2}"
   },
   {
    "aliases": [
@@ -5750,7 +5827,8 @@
     "closed_4manifold",
     "connected_sum",
     "intersection_form"
-   ]
+   ],
+   "tex": "\\mathbb{C}P^{2}\\#-\\mathbb{C}P^{2}"
   },
   {
    "aliases": [
@@ -5821,7 +5899,8 @@
     "closed_4manifold",
     "connected_sum",
     "intersection_form"
-   ]
+   ],
+   "tex": "\\mathbb{C}P^{2}\\#S^{2}\\times S^{2}"
   },
   {
    "aliases": [
@@ -5891,7 +5970,8 @@
    "tags": [
     "closed_4manifold",
     "intersection_form"
-   ]
+   ],
+   "tex": "\\mathrm{K3}"
   },
   {
    "aliases": [
@@ -5983,7 +6063,8 @@
     "closed_4manifold",
     "connected_sum",
     "intersection_form"
-   ]
+   ],
+   "tex": "\\mathbb{R}P^{4}\\#11(S^{2}\\times S^{2})"
   },
   {
    "aliases": [
@@ -6075,7 +6156,8 @@
     "closed_4manifold",
     "connected_sum",
     "intersection_form"
-   ]
+   ],
+   "tex": "\\mathbb{R}P^{4}\\#\\mathrm{K3}"
   },
   {
    "aliases": [
@@ -6146,7 +6228,8 @@
     "closed_4manifold",
     "intersection_form",
     "product"
-   ]
+   ],
+   "tex": "S^{2}\\times S^{2}"
   },
   {
    "aliases": [
@@ -6217,7 +6300,8 @@
     "closed_4manifold",
     "connected_sum",
     "intersection_form"
-   ]
+   ],
+   "tex": "S^{2}\\times S^{2}\\#S^{2}\\times S^{2}"
   },
   {
    "aliases": [
@@ -6298,7 +6382,8 @@
    "tags": [
     "closed_4manifold",
     "intersection_form"
-   ]
+   ],
+   "tex": "S^{3}\\widetilde{\\times}S^{1}"
   },
   {
    "aliases": [
@@ -6370,7 +6455,8 @@
     "closed_4manifold",
     "intersection_form",
     "product"
-   ]
+   ],
+   "tex": "S^{3}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6455,7 +6541,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "N_{3}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6540,7 +6627,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "N_{4}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6625,7 +6713,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "N_{5}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6710,7 +6799,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "N_{6}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6776,7 +6866,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "\\Sigma_{2}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6842,7 +6933,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "\\Sigma_{3}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6908,7 +7000,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "\\Sigma_{4}\\times S^{1}"
   },
   {
    "aliases": [
@@ -6974,7 +7067,8 @@
     "closed_3manifold",
     "h2xr_geometry",
     "product"
-   ]
+   ],
+   "tex": "\\Sigma_{5}\\times S^{1}"
   },
   {
    "aliases": [
@@ -7127,7 +7221,8 @@
     "2_primary",
     "combinatorial",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{HMT}_{16}"
   },
   {
    "aliases": [
@@ -7376,7 +7471,8 @@
     "2_primary",
     "combinatorial",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{HMT}_{32}"
   },
   {
    "aliases": [
@@ -7457,7 +7553,8 @@
     "2_primary",
     "combinatorial",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{HMT}_{4}"
   },
   {
    "aliases": [
@@ -7562,7 +7659,8 @@
     "2_primary",
     "combinatorial",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{HMT}_{8}"
   },
   {
    "aliases": [
@@ -7631,7 +7729,8 @@
    "space_id": "hom_complex:c6-compl-k5-small",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{Hom}(C_{6},\\mathrm{co}K_{5})"
   },
   {
    "aliases": [
@@ -7713,7 +7812,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(0.94270736)"
   },
   {
    "aliases": [
@@ -7789,7 +7889,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(0.98136883)"
   },
   {
    "aliases": [
@@ -7871,7 +7972,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.01494161)"
   },
   {
    "aliases": [
@@ -7953,7 +8055,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.26370924)"
   },
   {
    "aliases": [
@@ -8029,7 +8132,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.28448530)"
   },
   {
    "aliases": [
@@ -8093,7 +8197,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.39850888)"
   },
   {
    "aliases": [
@@ -8169,7 +8274,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.41406104\\ a)"
   },
   {
    "aliases": [
@@ -8245,7 +8351,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.41406104\\ b)"
   },
   {
    "aliases": [
@@ -8321,7 +8428,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.42361190)"
   },
   {
    "aliases": [
@@ -8397,7 +8505,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.44069901)"
   },
   {
    "aliases": [
@@ -8473,7 +8582,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.46377664)"
   },
   {
    "aliases": [
@@ -8549,7 +8659,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.52947733)"
   },
   {
    "aliases": [
@@ -8625,7 +8736,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.54356891\\ a)"
   },
   {
    "aliases": [
@@ -8701,7 +8813,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.54356891\\ b)"
   },
   {
    "aliases": [
@@ -8777,7 +8890,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.58316666\\ a)"
   },
   {
    "aliases": [
@@ -8859,7 +8973,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.58316666\\ b)"
   },
   {
    "aliases": [
@@ -8935,7 +9050,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.58864664\\ a)"
   },
   {
    "aliases": [
@@ -9011,7 +9127,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.58864664\\ b)"
   },
   {
    "aliases": [
@@ -9087,7 +9204,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.64960972)"
   },
   {
    "aliases": [
@@ -9163,7 +9281,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{hyp}(1.75712603)"
   },
   {
    "aliases": [
@@ -9253,7 +9372,8 @@
     "closed_3manifold",
     "hyperbolic_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{WS}"
   },
   {
    "aliases": [
@@ -9332,7 +9452,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(10,1}"
   },
   {
    "aliases": [
@@ -9411,7 +9532,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(10,3}"
   },
   {
    "aliases": [
@@ -9489,7 +9611,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(4,1}"
   },
   {
    "aliases": [
@@ -9568,7 +9691,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(6,1}"
   },
   {
    "aliases": [
@@ -9646,7 +9770,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(7,1}"
   },
   {
    "aliases": [
@@ -9724,7 +9849,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(7,2}"
   },
   {
    "aliases": [
@@ -9802,7 +9928,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(8,1}"
   },
   {
    "aliases": [
@@ -9880,7 +10007,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(8,3}"
   },
   {
    "aliases": [
@@ -9958,7 +10086,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(9,1}"
   },
   {
    "aliases": [
@@ -10036,7 +10165,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{L(9,2}"
   },
   {
    "aliases": [
@@ -10086,7 +10216,8 @@
    "space_id": "matching_complex:5",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{Matching(5}"
   },
   {
    "aliases": [
@@ -10142,7 +10273,8 @@
    "space_id": "matching_complex:6",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{Matching(6}"
   },
   {
    "aliases": [
@@ -10209,7 +10341,8 @@
    "space_id": "matching_complex:7",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{Matching(7}"
   },
   {
    "aliases": [
@@ -10275,7 +10408,8 @@
     "closed_3manifold",
     "nil_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "\\mathrm{Nil}_{1}"
   },
   {
    "aliases": [
@@ -10351,7 +10485,8 @@
     "closed_3manifold",
     "nil_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "\\mathrm{Nil}_{2}"
   },
   {
    "aliases": [
@@ -10427,7 +10562,8 @@
     "closed_3manifold",
     "nil_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "\\mathrm{Nil}_{3}"
   },
   {
    "aliases": [
@@ -10503,7 +10639,8 @@
     "closed_3manifold",
     "nil_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "\\mathrm{Nil}_{4}"
   },
   {
    "aliases": [
@@ -10579,7 +10716,8 @@
     "closed_3manifold",
     "nil_geometry",
     "orientable"
-   ]
+   ],
+   "tex": "\\mathrm{Nil}_{5}"
   },
   {
    "aliases": [
@@ -10659,7 +10797,8 @@
    "space_id": "not_i_connected_complex:5:2",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{NC}_{5,2}"
   },
   {
    "aliases": [
@@ -10721,7 +10860,8 @@
     "orientable",
     "surface",
     "torsion_free"
-   ]
+   ],
+   "tex": "\\Sigma_{15}"
   },
   {
    "aliases": [
@@ -10783,7 +10923,8 @@
     "orientable",
     "surface",
     "torsion_free"
-   ]
+   ],
+   "tex": "\\Sigma_{26}"
   },
   {
    "aliases": [
@@ -10865,7 +11006,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{cube\\ space}"
   },
   {
    "aliases": [
@@ -10941,7 +11083,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{octahedron\\ space}"
   },
   {
    "aliases": [
@@ -11017,7 +11160,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "\\mathrm{truncated\\ cube\\ space}"
   },
   {
    "aliases": [
@@ -11100,7 +11244,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{10}"
   },
   {
    "aliases": [
@@ -11177,7 +11322,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{3}"
   },
   {
    "aliases": [
@@ -11260,7 +11406,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{4}"
   },
   {
    "aliases": [
@@ -11337,7 +11484,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{5}"
   },
   {
    "aliases": [
@@ -11420,7 +11568,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{6}"
   },
   {
    "aliases": [
@@ -11497,7 +11646,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{7}"
   },
   {
    "aliases": [
@@ -11580,7 +11730,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{8}"
   },
   {
    "aliases": [
@@ -11657,7 +11808,8 @@
     "closed_3manifold",
     "spherical_geometry",
     "torsion"
-   ]
+   ],
+   "tex": "P_{9}"
   },
   {
    "aliases": [
@@ -11713,7 +11865,8 @@
    "space_id": "random_2_complex:25",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "\\mathrm{rand}_{25}"
   },
   {
    "aliases": [
@@ -11808,7 +11961,8 @@
    },
    "source_space": "RP^5",
    "space_id": "real_projective_space:5",
-   "tags": []
+   "tags": [],
+   "tex": "\\mathbb{R}P^{5}"
   },
   {
    "aliases": [
@@ -11893,7 +12047,8 @@
     "closed_3manifold",
     "product",
     "s2xr_geometry"
-   ]
+   ],
+   "tex": "\\mathbb{R}P^{2}\\times S^{1}"
   },
   {
    "aliases": [
@@ -11975,7 +12130,8 @@
     "closed_3manifold",
     "connected_sum",
     "s2xr_geometry"
-   ]
+   ],
+   "tex": "\\mathbb{R}P^{3}\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -12051,7 +12207,8 @@
     "closed_3manifold",
     "s2xr_geometry",
     "sphere_bundle"
-   ]
+   ],
+   "tex": "S^{2}\\widetilde{\\times}S^{1}"
   },
   {
    "aliases": [
@@ -12117,7 +12274,8 @@
     "closed_3manifold",
     "product",
     "s2xr_geometry"
-   ]
+   ],
+   "tex": "S^{2}\\times S^{1}"
   },
   {
    "aliases": [
@@ -12189,7 +12347,8 @@
    },
    "source_space": "S^5",
    "space_id": "sphere:5",
-   "tags": []
+   "tags": [],
+   "tex": "S^{5}"
   },
   {
    "aliases": [
@@ -12267,7 +12426,8 @@
    },
    "source_space": "S^6",
    "space_id": "sphere:6",
-   "tags": []
+   "tags": [],
+   "tex": "S^{6}"
   },
   {
    "aliases": [
@@ -12298,7 +12458,7 @@
      "torsion_orders": []
     }
    ],
-   "label": "Sum complex X(5; {0,1,3})",
+   "label": "Sum complex on five vertices",
    "model": {
     "f_vector": [
      5,
@@ -12322,7 +12482,8 @@
    "space_id": "sum_complex:5:0-1-3",
    "tags": [
     "combinatorial"
-   ]
+   ],
+   "tex": "X_{5}(0,1,3)"
   }
  ],
  "schema_version": "homology-db.imported-models/1"

@@ -46,6 +46,7 @@ from homology_db.classical import (
     classical_records,
     validate_classical_records,
 )
+from homology_db.chromatic import imported_models
 from homology_db.families import family_catalog
 from homology_db.family_reviews import reviewed_family_catalog
 from homology_db.teaching import teaching_catalog
@@ -1139,13 +1140,10 @@ def conceptual_space_tex(space: dict[str, Any]) -> str:
             return rf"\Sigma_{{{int(parameters['genus'])}}}"
         if parameters["kind"] == "nonorientable":
             return rf"N_{{{int(parameters['genus'])}}}"
-    if family == "s2xr_3manifold":
-        return {
-            "s2xr:s2xs1": r"S^{2}\times S^{1}",
-            "s2xr:s2-twist-s1": r"S^{2}\widetilde{\times}S^{1}",
-            "s2xr:rp2xs1": r"\mathbb{R}P^{2}\times S^{1}",
-            "s2xr:rp3-sum-rp3": r"\mathbb{R}P^{3}\#\mathbb{R}P^{3}",
-        }[parameters["space"]]
+    # Imported spaces carry their own display name, generated with the model
+    # descriptor and checked against this atlas's own TeX parser at import time.
+    if "space" in parameters:
+        return imported_models()[parameters["space"]]["tex"]
     if family == "real_projective_space":
         return rf"\mathbb{{R}}P^{{{int(parameters['n'])}}}"
     if family == "hopf_projective_plane":
@@ -1477,10 +1475,16 @@ def validate_read_model(
         if expected_metadata != atlas["snapshot"].get("classical_cohomology"):
             raise ValueError("classical cohomology snapshot metadata mismatch")
         for space in conceptual_spaces:
+            # Rational rows are always derived from the integral ones, never
+            # recorded independently. A space carries them when something compares
+            # against them -- a ring over Q, or imported homology over Q -- so
+            # their presence is not tied to rings, but their content is fixed.
             actual_q = [row for row in space["homology"] if row["coefficient_ring"] == "Q"]
-            expected_q = rational_homology_rows(space["homology"]) if space.get("cohomology") else []
-            if actual_q != expected_q:
+            expected_q = rational_homology_rows(space["homology"])
+            if actual_q and actual_q != expected_q:
                 raise ValueError(f"rational homology does not match integral inputs: {space['id']}")
+            if space.get("cohomology") and not actual_q:
+                raise ValueError(f"a ring over Q needs rational homology rows: {space['id']}")
     slugs = [item["slug"] for item in conceptual_spaces]
     if len(conceptual_space_ids) != len(set(conceptual_space_ids)):
         raise ValueError("static atlas contains duplicate stable Conceptual-space IDs")
@@ -2167,7 +2171,11 @@ def build_read_model(
                     }
                 )
 
-            if space_id in cohomology_records:
+            # Rational rows are derived from the integral ones. A space needs them
+            # whenever something will be compared against them: a ring record over
+            # Q, or an imported homology record over Q for a space whose upstream
+            # cup-product table was withheld.
+            if space_id in cohomology_records or space_id in computed_corpus["homology"]:
                 homology.extend(rational_homology_rows(homology))
 
             missing_required_fields = [

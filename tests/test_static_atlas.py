@@ -110,7 +110,7 @@ console.log(JSON.stringify({
 
             self.assertEqual(completed.returncode, 0, completed.stderr)
             build_summary = json.loads(completed.stdout)
-            self.assertEqual(build_summary["relation_count"], 23)
+            self.assertEqual(build_summary["relation_count"], 100)
             self.assertGreater(build_summary["source_database_bytes"], 0)
             html = output_path.read_text(encoding="utf-8")
             embedded = re.search(
@@ -165,10 +165,10 @@ console.log(JSON.stringify({
                 atlas["snapshot"]["source_inputs_dirty"],
                 atlas["snapshot"]["source_tree_state"] == "dirty",
             )
-            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 56)
-            self.assertEqual(atlas["snapshot"]["relation_count"], 23)
-            self.assertEqual(len(atlas["conceptual_spaces"]), 56)
-            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 56)
+            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 191)
+            self.assertEqual(atlas["snapshot"]["relation_count"], 100)
+            self.assertEqual(len(atlas["conceptual_spaces"]), 191)
+            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 191)
             self.assertTrue(
                 all(
                     isinstance(item["name"]["tex"], str)
@@ -320,7 +320,7 @@ console.log(JSON.stringify({
                     item["homology_coverage"]["kind"] == "complete_finite_cw"
                     for item in atlas["conceptual_spaces"]
                 ),
-                46,
+                181,
             )
             self.assertEqual(
                 sum(
@@ -405,7 +405,7 @@ console.log(JSON.stringify({
             self.assertEqual(
                 presentation_result["coverageCounts"],
                 {
-                    "coverage-exhaustive": 46,
+                    "coverage-exhaustive": 181,
                     "coverage-bounded": 10,
                     "coverage-neutral": 0,
                 },
@@ -859,7 +859,7 @@ console.log(JSON.stringify({
         )
         self.assertIsNotNone(embedded)
         atlas = json.loads(embedded.group(1))
-        self.assertEqual(len(atlas["conceptual_spaces"]), 56)
+        self.assertEqual(len(atlas["conceptual_spaces"]), 191)
         if not review_path.is_file():
             self.assertEqual(summary["state"], "public_review_preview")
             self.assertEqual(len(atlas.get("conceptual_spectra", [])), 49)
