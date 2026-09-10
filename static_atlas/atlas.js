@@ -1277,7 +1277,14 @@
       citations.append(renderCitation({ ...source, ...reference, year: source?.publication_year ?? source?.year }));
     });
     if (!citations.children.length) citations.append(element("li", "", "Source not recorded."));
-    sources.append(citations, element("p", "human-review-note", "Literature-based presentation · human mathematical review pending."));
+    // Say how this particular record was established. Calling a machine
+    // computation literature-based is a false claim about its evidence, and the
+    // two differ in what is still unverified: a citation has not been re-derived
+    // here, an import has not been checked to be the cup product of its model.
+    const reviewNote = record.provenance?.kind === "external_engine_computation"
+      ? "Machine-computed from a pinned simplicial model · imported, not verified here · human mathematical review pending."
+      : "Literature-based presentation · human mathematical review pending.";
+    sources.append(citations, element("p", "human-review-note", reviewNote));
     if (record.provenance?.derivation) {
       const derivation = detailsBlock("How this record is supported");
       derivation.content.append(element("p", "", record.provenance.derivation));
@@ -1473,6 +1480,40 @@
       .join("; ");
     if (formula && cells) return `${formula}; materialized cells: ${cells}`;
     return displayValue(firstRecorded(formula, cells || degrees));
+  }
+
+  // A computed ring is only as identified as the model it was computed on, so the
+  // technical block shows that model too: its size, its pinned hash, and the
+  // constructor that produced it. Where the constructor does not reproduce its
+  // own vertex labelling, the facets are the identity and that is said plainly.
+  function renderSimplicialModels(space, content) {
+    const models = asArray(atlas.computed_rings?.models)
+      .filter((model) => model.space_id === space.id);
+    if (!models.length) return;
+    content.append(element("h4", "", "Simplicial models used for computed rings"));
+    models.forEach((model) => {
+      const list = element("dl", "record-fields");
+      const rows = [
+        ["Model", model.model_id],
+        ["Kind", model.kind],
+        ["Size", `${model.vertices} vertices · ${model.facets} facets · f-vector (${asArray(model.f_vector).join(", ")})`],
+        ["Constructed by", `${String(model.generator_version ?? "").startsWith(model.generator)
+          ? model.generator_version
+          : `${model.generator} ${model.generator_version}`} · ${model.constructor}`],
+        ["Computed by", `${model.engine} ${model.engine_version}`],
+        ["Facets SHA-256", model.facets_sha256],
+        ["Artifact", model.artifact_path],
+        ["Artifact SHA-256", model.artifact_sha256],
+        ["Labelling", model.reproducible_labelling
+          ? "The constructor reproduces this vertex labelling."
+          : "The constructor does not reproduce this vertex labelling between runs; the checked-in facets are the model of record."],
+      ];
+      rows.forEach(([label, value]) => {
+        if (!value) return;
+        list.append(element("dt", "", label), element("dd", "", String(value)));
+      });
+      content.append(list);
+    });
   }
 
   function renderModels(space, content) {
@@ -1734,6 +1775,43 @@
     });
   }
 
+  // The cohomology section shows the sources for whichever coefficient is
+  // selected. This is the whole set for the space, so a reader looking at
+  // "Sources and details" does not have to change coefficient to find them.
+  function cohomologyCitations(space) {
+    const catalog = { ...(atlas.classical?.sources ?? {}), ...(atlas.computed_rings?.sources ?? {}) };
+    const groups = new Map();
+    asArray(space.cohomology).forEach((record) => {
+      asArray(record.sources).forEach((reference) => {
+        const source = catalog?.[reference.source_id];
+        const merged = { ...source, ...reference, year: source?.publication_year ?? source?.year };
+        const key = JSON.stringify([merged.url, merged.title, merged.role]);
+        const group = groups.get(key);
+        if (group) {
+          if (!group.locators.includes(merged.locator)) group.locators.push(merged.locator);
+        } else {
+          groups.set(key, { reference: merged, locators: [merged.locator] });
+        }
+      });
+    });
+    // One source cited once per coefficient would otherwise repeat six times over,
+    // identical but for the tail of the locator. Fold those into a single line.
+    return Array.from(groups.values()).map(({ reference, locators }) => ({
+      ...reference,
+      locator: locators.length > 1 ? foldLocators(locators) : locators[0],
+    }));
+  }
+
+  function foldLocators(locators) {
+    let prefix = locators[0];
+    locators.forEach((locator) => {
+      while (prefix && !String(locator).startsWith(prefix)) prefix = prefix.slice(0, -1);
+    });
+    if (prefix.length < 4) return locators.join("; ");
+    const tails = locators.map((locator) => String(locator).slice(prefix.length)).filter(Boolean);
+    return tails.length ? `${prefix}${tails.join(", ")}` : prefix;
+  }
+
   function buildProvenanceSummary(space) {
     const citation = supportingCitations(space)[0];
     const summary = element("aside", "provenance-summary");
@@ -1946,11 +2024,21 @@
     citations.forEach(reference => citationList.append(renderCitation(reference)));
     readableSources.append(citations.length ? citationList : element("p", "", "Supporting homology sources are not recorded."));
     records.append(readableSources);
+    const ringCitations = cohomologyCitations(space);
+    if (ringCitations.length) {
+      const ringSources = element("section", "space-readable-sources");
+      ringSources.append(element("h3", "", "Supporting cohomology sources"));
+      const ringList = element("ul", "citation-list");
+      ringCitations.forEach((reference) => ringList.append(renderCitation(reference)));
+      ringSources.append(ringList);
+      records.append(ringSources);
+    }
     const modelBlock = detailsBlock("Technical model and evidence records");
     const modelDefinition = element("p", "detail-definition");
     modelDefinition.append(buildKnowl("model", "What is a Model?"));
     modelBlock.content.append(modelDefinition, metadata);
     renderModels(space, modelBlock.content);
+    renderSimplicialModels(space, modelBlock.content);
     renderEvidence(space, modelBlock.content);
     records.append(modelBlock.details);
 

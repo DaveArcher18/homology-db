@@ -1263,6 +1263,39 @@ def classical_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> d
     }
 
 
+def computed_model_projection(corpus: dict[str, Any]) -> list[dict[str, Any]]:
+    """The pinned simplicial models, so a space page can show what was computed on.
+
+    A computed ring is only as identified as the model it came from, so the model
+    travels with it: its size, its hash, the constructor that produced it, and
+    whether that constructor reproduces its own vertex labelling.
+    """
+    manifest = corpus["manifest"]
+    constructors = manifest["model_source"]["constructors"]
+    projected = []
+    for entry in manifest["models"]:
+        space_id = entry["space_id"]
+        projected.append({
+            "space_id": space_id,
+            "model_id": entry["model_id"],
+            "kind": "finite_simplicial_complex",
+            "vertices": entry["vertices"],
+            "facets": entry["facets"],
+            "f_vector": corpus["models"][space_id]["f_vector"],
+            "facets_sha256": entry["facets_sha256"],
+            "artifact_path": entry["path"],
+            "artifact_sha256": entry["sha256"],
+            "reproducible_labelling": entry["reproducible_labelling"],
+            "constructor": constructors[space_id],
+            "generator": manifest["model_source"]["name"],
+            "generator_version": manifest["model_source"]["version"],
+            "generator_license": manifest["model_source"]["license"],
+            "engine": manifest["engine"]["name"],
+            "engine_version": manifest["engine"]["version"],
+        })
+    return sorted(projected, key=lambda item: item["space_id"])
+
+
 def computed_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
     return {
         "schema_version": COHOMOLOGY_RING_SCHEMA_VERSION,
@@ -1420,7 +1453,8 @@ def validate_read_model(
         if computed != {**expected_computed, "sources": COMPUTED_RING_SOURCES,
                         "corroborated_slots": expected_corroborated,
                         "homology_confirmed_against_owned": computed.get(
-                            "homology_confirmed_against_owned")}:
+                            "homology_confirmed_against_owned"),
+                        "models": computed_model_projection(load_computed_rings())}:
             raise ValueError("computed ring metadata or sources disagree with the validated corpus")
         if expected_computed != atlas["snapshot"].get("computed_cohomology"):
             raise ValueError("computed cohomology snapshot metadata mismatch")
@@ -2299,7 +2333,8 @@ def build_read_model(
         "classical": {**classical_metadata, "sources": CLASSICAL_SOURCES},
         "computed_rings": {**computed_metadata, "sources": COMPUTED_RING_SOURCES,
                            "corroborated_slots": corroborated_rings,
-                           "homology_confirmed_against_owned": confirmed_homology},
+                           "homology_confirmed_against_owned": confirmed_homology,
+                           "models": computed_model_projection(computed_corpus)},
         "family_rules": reviewed_family_catalog(family_catalog()),
         "teaching": teaching,
     }

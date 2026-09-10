@@ -644,6 +644,10 @@ console.log(JSON.stringify({
                 "const visibleMatches =",
                 "cohomology-section space-section",
                 'element("h2", "", "Cohomology")',
+                # the review note must be chosen by provenance: calling an
+                # imported computation literature-based misstates its evidence
+                'record.provenance?.kind === "external_engine_computation"\n      ? "Machine-computed',
+                '"Literature-based presentation \u00b7 human mathematical review pending."',
                 "item.append(main)",
                 "if (relations.length) records.append(relationBlock.details)",
                 "if (qualityIssueCount) records.append(qualityBlock.details)",
