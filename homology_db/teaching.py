@@ -45,6 +45,29 @@ _CHAPTER = {
 }
 
 
+
+_SAGE = {"title": "SageMath simplicial complex examples",
+         "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html"}
+_PRODUCER = {"title": "cohomology-tables (Wern Juin Gabriel Ong)",
+             "url": "https://github.com/wgabrielong/cohomology-tables"}
+
+
+def _model_source(retrieval):
+    """Cite the catalogue the model actually came from, not always Lutz's.
+
+    The chessboard, matching and Hom complexes are Sage constructors; citing the
+    Manifold Page for them would attribute the model to the wrong author.
+    """
+    if retrieval["how"] == "file":
+        return dict(_LUTZ, locator=f"{retrieval['file']}: {retrieval['label']}")
+    if retrieval["how"] == "eprint":
+        return {"title": f"arXiv:{retrieval['eprint']}", "url": retrieval["url"],
+                "locator": "facet list read from the e-print source"}
+    if retrieval["catalog"] == "sagemath":
+        return dict(_SAGE, locator=f"{retrieval['constructor']} in {retrieval.get('version', 'SageMath')}")
+    return dict(_PRODUCER, locator=retrieval["constructor"])
+
+
 def _group_text(rows):
     """`Z, Z^2 + Z/2, 0` from the recorded integral homology."""
     parts = []
@@ -79,7 +102,7 @@ def _imported_teaching():
         entries.append({
             "space_id": model["space_id"], "chapter": chapter,
             "introduction": introduction, "point": point,
-            "source": dict(_LUTZ, locator=f"{descriptor['retrieval']['file']}: {descriptor['retrieval']['label']}"),
+            "source": _model_source(descriptor["retrieval"]),
         })
     return sorted(entries, key=lambda entry: entry["space_id"])
 

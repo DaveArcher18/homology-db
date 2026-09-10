@@ -1271,7 +1271,7 @@
       const recorded=asArray(algebra.products).find(product=>product.left===left.id&&product.right===right.id);
       let tex;
       if(left.id===algebra.unit)tex=basisTex(right);else if(right.id===algebra.unit)tex=basisTex(left);
-      else if(recorded)tex=recorded.result.map(term=>`${term.coefficient===1?"":term.coefficient===-1?"-":term.coefficient}${basisTex(basisById.get(term.basis))}`).join("+").replaceAll("+-","-") || "0";
+      else if(recorded)tex=recorded.result.map(term=>`${term.coefficient===1?"":term.coefficient===-1?"-":typeof term.coefficient==="string"?`${term.coefficient}\\,`:term.coefficient}${basisTex(basisById.get(term.basis))}`).join("+").replaceAll("+-","-") || "0";
       else if(complete&&algebra.multiplication.omitted_products==="zero")tex="0";
       const cell=element("td");cell.append(tex===undefined?document.createTextNode("Not recorded"):renderTex(tex,tex,"math-inline"));row.append(cell);
     });productBody.append(row);});productTable.append(productHead,productBody);wrap.append(productTable);products.append(wrap);content.append(products);
@@ -1778,7 +1778,15 @@
     const references = evidenceRecords(space).flatMap(record => citationRecords(record));
     const seen = new Set();
     return references.filter(reference => {
-      if (!reference || typeof reference !== "object" || !String(reference.role ?? "").split("_").includes("homology")) return false;
+      // Everything attached to the homology evidence supports it: the model, the
+      // paper identifying that model, the engine that ran the computation, and
+      // the record of the computation itself. Only "..._context" citations are
+      // there to say why a space is interesting rather than what establishes its
+      // groups. Filtering on the word "homology" dropped the model and the
+      // engine, so an imported space cited one source for its homology and three
+      // for its ring.
+      if (!reference || typeof reference !== "object") return false;
+      if (String(reference.role ?? "").endsWith("_context")) return false;
       const key = JSON.stringify([reference.url, reference.title, reference.locator, reference.role]);
       if (seen.has(key)) return false;
       seen.add(key); return true;

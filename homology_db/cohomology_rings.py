@@ -23,7 +23,9 @@ than choosing a winner.
 from __future__ import annotations
 
 from collections import Counter
+from fractions import Fraction
 from itertools import product
+import re
 from typing import Any
 
 COHOMOLOGY_RING_SCHEMA_VERSION = "homology-db.cohomology-rings/1"
@@ -46,6 +48,33 @@ def _integer(value: Any, label: str, minimum: int | None = None) -> int:
     if type(value) is not int or (minimum is not None and value < minimum):
         raise ValueError(f"{label} must be an integer" + (f" >= {minimum}" if minimum is not None else ""))
     return value
+
+
+_RATIONAL = re.compile(r"-?[1-9][0-9]*/[1-9][0-9]*")
+
+
+def _scalar(value: Any, label: str, coefficient: str) -> Fraction:
+    """A structure constant, as an exact rational.
+
+    Integers stay JSON integers. A rational appears only over Q and only as a
+    string in lowest terms, "-1/2" say: some spaces have no basis of H^*(X;Q)
+    in which the cup product has integer structure constants, and rescaling the
+    producer's basis to force one would replace the computed answer with a
+    different presentation of it.
+    """
+    if type(value) is int:
+        return Fraction(value)
+    if coefficient == "Q" and isinstance(value, str) and _RATIONAL.fullmatch(value):
+        scalar = Fraction(value)
+        if scalar.denominator == 1:
+            raise ValueError(f"{label} with denominator one must be written as an integer")
+        if str(scalar) != value:
+            raise ValueError(f"{label} must be in lowest terms")
+        return scalar
+    raise ValueError(
+        f"{label} must be an integer" +
+        (", or a rational string in lowest terms" if coefficient == "Q" else "")
+    )
 
 
 def characteristic_of(coefficient: str) -> int:
@@ -102,7 +131,7 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
     def modulus(key: str) -> int:
         return basis[key]["order"] or characteristic
 
-    def normalize(vector: dict[str, int]) -> dict[str, int]:
+    def normalize(vector: dict[str, Fraction]) -> dict[str, Fraction]:
         reduced = {}
         for key, value in vector.items():
             bound = modulus(key)
@@ -120,7 +149,7 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
         value: dict[str, int] = {}
         for term in entry["result"]:
             key = term["basis"]
-            scalar = _integer(term["coefficient"], "product scalar")
+            scalar = _scalar(term["coefficient"], "product scalar", coefficient)
             if key not in basis or key in value:
                 raise ValueError("product result requires unique known basis elements")
             if basis[key]["degree"] != sum(basis[item]["degree"] for item in pair):
@@ -131,7 +160,7 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
             raise ValueError("sparse table must omit zero products")
         table[pair] = reduced
 
-    def multiply(left: dict[str, int], right: dict[str, int]) -> dict[str, int]:
+    def multiply(left: dict[str, Fraction], right: dict[str, Fraction]) -> dict[str, Fraction]:
         result: Counter[str] = Counter()
         for a, x in left.items():
             for b, y in right.items():

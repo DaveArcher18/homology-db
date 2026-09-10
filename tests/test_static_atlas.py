@@ -885,10 +885,10 @@ console.log(JSON.stringify({
                     """
                     UPDATE homology
                     SET knowledge_state = 'not_computed', free_rank = 0, torsion_json = '[]'
-                    WHERE space_id = 'sphere:1'
+                    WHERE space_id = 'sphere_wedge:2:4'
                       AND coefficient = 'Z'
                       AND reduced = 0
-                      AND degree = 1
+                      AND degree = 2
                     """
                 )
                 connection.commit()
@@ -914,12 +914,13 @@ console.log(JSON.stringify({
                 re.DOTALL,
             )
             atlas = json.loads(embedded.group(1))
-            sphere = next(item for item in atlas["conceptual_spaces"] if item["id"] == "sphere:1")
+            sphere = next(item for item in atlas["conceptual_spaces"]
+                          if item["id"] == "sphere_wedge:2:4")
             row = next(
                 group for group in sphere["homology"]
                 if group["coefficient_ring"] == "Z"
                 and group["reduced"] is False
-                and group["degree"] == 1
+                and group["degree"] == 2
             )
             self.assertEqual(row["group"]["state"], "not_computed")
             self.assertEqual(row["group"]["plain"], "not computed")

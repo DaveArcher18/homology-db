@@ -18,6 +18,7 @@
     sigma: "σ",
     theta: "θ",
     Sigma: "Σ",
+    Delta: "Δ",
     vee: "∨",
     to: "→",
     oplus: "⊕",

@@ -54,6 +54,13 @@ COMPUTED_RING_SOURCES = {
         "url": "https://github.com/oscar-system/Oscar.jl",
         "source_kind": "official_software_source",
     },
+    "lutz-sulanke-swartz-3manifolds": {
+        "title": "f-vectors of 3-manifolds",
+        "authors": ["Frank H. Lutz", "Thom Sulanke", "Ed Swartz"],
+        "publication_year": 2009,
+        "url": "https://doi.org/10.37236/68",
+        "source_kind": "peer_reviewed_article",
+    },
     "lutz-manifold-page": {
         "title": "Frank H. Lutz, The Manifold Page: geometric 3-manifold catalogues",
         "authors": ["Frank H. Lutz"],

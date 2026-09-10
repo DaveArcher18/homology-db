@@ -834,6 +834,36 @@
    "year": 1986,
    "url": "https://www.sas.rochester.edu/mth/sites/doug-ravenel/mybooks/ravenel.pdf",
    "source_kind": "author_owned_monograph"
+  },
+  {
+   "id": "cohomology-tables",
+   "authors": [
+    "Wern Juin Gabriel Ong"
+   ],
+   "title": "cohomology-tables: cohomology rings and cup product tables for simplicial complexes",
+   "year": 2026,
+   "url": "https://github.com/wgabrielong/cohomology-tables",
+   "source_kind": "official_software_source"
+  },
+  {
+   "id": "oscar-system",
+   "authors": [
+    "The OSCAR Team"
+   ],
+   "title": "OSCAR: Open Source Computer Algebra Research system",
+   "year": 2026,
+   "url": "https://github.com/oscar-system/Oscar.jl",
+   "source_kind": "official_software_source"
+  },
+  {
+   "id": "sagemath-complexes",
+   "authors": [
+    "The SageMath Developers"
+   ],
+   "title": "SageMath simplicial complex examples",
+   "year": 2024,
+   "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+   "source_kind": "official_software_source"
   }
  ],
  "families": [
@@ -912,13 +942,154 @@
     {
      "reference_id": "sage-poincare-source",
      "role": "model_and_homology",
-     "locator": "PoincareHomologyThreeSphere, lines 610-653 at pinned commit"
+     "locator": "PoincareHomologyThreeSphere, lines 610-653 at pinned commit",
+     "applies_to": {
+      "kind": "poincare"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table",
+     "applies_to": {
+      "space": "brieskorn_sphere:2:3:7"
+     }
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing",
+     "applies_to": {
+      "space": "brieskorn_sphere:2:3:7"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table",
+     "applies_to": {
+      "space": "brieskorn_sphere:2:5:7"
+     }
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing",
+     "applies_to": {
+      "space": "brieskorn_sphere:2:5:7"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:4:5"
+     }
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:4:5"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:4:7"
+     }
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:4:7"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:5:7"
+     }
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:5:7"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table",
+     "applies_to": {
+      "space": "brieskorn_sphere:4:5:7"
+     }
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing",
+     "applies_to": {
+      "space": "brieskorn_sphere:4:5:7"
+     }
     },
     {
      "reference_id": "lutz-manifold-page",
      "role": "model",
-     "locator": "homology_3spheres.txt, Brieskorn spheres Sigma(p,q,r)",
-     "applies_to": {}
+     "locator": "homology_3spheres.txt: Sigma_2_3_7",
+     "applies_to": {
+      "space": "brieskorn_sphere:2:3:7"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "homology_3spheres.txt: Sigma_2_5_7",
+     "applies_to": {
+      "space": "brieskorn_sphere:2:5:7"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "homology_3spheres.txt: Sigma_3_4_5",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:4:5"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "homology_3spheres.txt: Sigma_3_4_7",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:4:7"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "homology_3spheres.txt: Sigma_3_5_7",
+     "applies_to": {
+      "space": "brieskorn_sphere:3:5:7"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "homology_3spheres.txt: Sigma_4_5_7",
+     "applies_to": {
+      "space": "brieskorn_sphere:4:5:7"
+     }
     }
    ]
   },
@@ -1317,14 +1488,190 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "spherical_3manifolds.txt, the non-lens spherical quotients"
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "polyhedral:cube-space"
+     }
     },
     {
      "reference_id": "lutz-sulanke-swartz-3manifolds",
      "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "polyhedral:octahedron-space"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "polyhedral:truncated-cube-space"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:10"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:4"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:5"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:6"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:7"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:8"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "prism_manifold:9"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: cube_space",
+     "applies_to": {
+      "space": "polyhedral:cube-space"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: octahedron_space",
+     "applies_to": {
+      "space": "polyhedral:octahedron-space"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: truncated_cube_space",
+     "applies_to": {
+      "space": "polyhedral:truncated-cube-space"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_10",
+     "applies_to": {
+      "space": "prism_manifold:10"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_3",
+     "applies_to": {
+      "space": "prism_manifold:3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_4",
+     "applies_to": {
+      "space": "prism_manifold:4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_5",
+     "applies_to": {
+      "space": "prism_manifold:5"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_6",
+     "applies_to": {
+      "space": "prism_manifold:6"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_7",
+     "applies_to": {
+      "space": "prism_manifold:7"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_8",
+     "applies_to": {
+      "space": "prism_manifold:8"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "spherical_3manifolds.txt: P_9",
+     "applies_to": {
+      "space": "prism_manifold:9"
+     }
     }
    ]
   },
@@ -1368,14 +1715,174 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "flat_3manifolds.txt, the ten closed Euclidean 3-manifolds"
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:b2"
+     }
     },
     {
      "reference_id": "lutz-sulanke-swartz-3manifolds",
      "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:b3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:b4"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:g2"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:g3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:g4"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:g5"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:g6"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:kxs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "flat:t3"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: B2",
+     "applies_to": {
+      "space": "flat:b2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: B3",
+     "applies_to": {
+      "space": "flat:b3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: B4",
+     "applies_to": {
+      "space": "flat:b4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: G2",
+     "applies_to": {
+      "space": "flat:g2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: G3",
+     "applies_to": {
+      "space": "flat:g3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: G4",
+     "applies_to": {
+      "space": "flat:g4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: G5",
+     "applies_to": {
+      "space": "flat:g5"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: G6",
+     "applies_to": {
+      "space": "flat:g6"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: KxS^1",
+     "applies_to": {
+      "space": "flat:kxs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "flat_3manifolds.txt: T^3",
+     "applies_to": {
+      "space": "flat:t3"
+     }
     }
    ]
   },
@@ -1404,14 +1911,94 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "nil_3manifolds.txt, the Nil-geometry circle bundles over the torus"
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "nil:1"
+     }
     },
     {
      "reference_id": "lutz-sulanke-swartz-3manifolds",
      "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "nil:2"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "nil:3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "nil:4"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "nil:5"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "nil_3manifolds.txt: Nil_Oo1_1",
+     "applies_to": {
+      "space": "nil:1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "nil_3manifolds.txt: Nil_Oo1_2",
+     "applies_to": {
+      "space": "nil:2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "nil_3manifolds.txt: Nil_Oo1_3",
+     "applies_to": {
+      "space": "nil:3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "nil_3manifolds.txt: Nil_Oo1_4",
+     "applies_to": {
+      "space": "nil:4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "nil_3manifolds.txt: Nil_Oo1_5",
+     "applies_to": {
+      "space": "nil:5"
+     }
     }
    ]
   },
@@ -1437,14 +2024,78 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "S2xR_spaces.txt, the four closed S^2 x R manifolds"
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "s2xr:s2xs1"
+     }
     },
     {
      "reference_id": "lutz-sulanke-swartz-3manifolds",
      "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "s2xr:s2-twist-s1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "s2xr:rp2xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "s2xr:rp3-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S2xR_spaces.txt: S^2xS^1",
+     "applies_to": {
+      "space": "s2xr:s2xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S2xR_spaces.txt: S^2twistS^1",
+     "applies_to": {
+      "space": "s2xr:s2-twist-s1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S2xR_spaces.txt: RP^2xS^1",
+     "applies_to": {
+      "space": "s2xr:rp2xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S2xR_spaces.txt: RP^3#RP^3",
+     "applies_to": {
+      "space": "s2xr:rp3-sum-rp3"
+     }
     }
    ]
   },
@@ -1482,14 +2133,142 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "H2xR_spaces.txt, products of a closed hyperbolic surface with S^1"
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:n3xs1"
+     }
     },
     {
      "reference_id": "lutz-sulanke-swartz-3manifolds",
      "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:n4xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:n5xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:n6xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:sigma2xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:sigma3xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:sigma4xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "h2xr:sigma5xs1"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: n_g3xS1",
+     "applies_to": {
+      "space": "h2xr:n3xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: n_g4xS1",
+     "applies_to": {
+      "space": "h2xr:n4xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: n_g5xS1",
+     "applies_to": {
+      "space": "h2xr:n5xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: n_g6xS1",
+     "applies_to": {
+      "space": "h2xr:n6xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: o_g2xS1",
+     "applies_to": {
+      "space": "h2xr:sigma2xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: o_g3xS1",
+     "applies_to": {
+      "space": "h2xr:sigma3xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: o_g4xS1",
+     "applies_to": {
+      "space": "h2xr:sigma4xs1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "H2xR_spaces.txt: o_g5xS1",
+     "applies_to": {
+      "space": "h2xr:sigma5xs1"
+     }
     }
    ]
   },
@@ -1566,14 +2345,350 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "hyperbolic_3manifolds.txt, closed hyperbolic 3-manifolds ordered by volume"
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:0.94270736"
+     }
     },
     {
      "reference_id": "lutz-sulanke-swartz-3manifolds",
      "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:0.98136883"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.01494161"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.26370924"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.28448530"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.39850888"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.41406104_a"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.41406104_b"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.42361190"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.44069901"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.46377664"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.52947733"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.54356891_a"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.54356891_b"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58316666_a"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58316666_b"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58864664_a"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58864664_b"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.64960972"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.75712603"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "hyperbolic:weber-seifert"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_0.94270736",
+     "applies_to": {
+      "space": "hyperbolic:vol:0.94270736"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_0.98136883",
+     "applies_to": {
+      "space": "hyperbolic:vol:0.98136883"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.01494161",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.01494161"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.26370924",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.26370924"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.28448530",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.28448530"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.39850888",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.39850888"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.41406104_a",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.41406104_a"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.41406104_b",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.41406104_b"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.42361190",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.42361190"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.44069901",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.44069901"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.46377664",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.46377664"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.52947733",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.52947733"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.54356891_a",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.54356891_a"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.54356891_b",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.54356891_b"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.58316666_a",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58316666_a"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.58316666_b",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58316666_b"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.58864664_a",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58864664_a"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.58864664_b",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.58864664_b"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.64960972",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.64960972"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_3manifolds.txt: or_1.75712603",
+     "applies_to": {
+      "space": "hyperbolic:vol:1.75712603"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "hyperbolic_dodecahedral_space.txt: ",
+     "applies_to": {
+      "space": "hyperbolic:weber-seifert"
+     }
     }
    ]
   },
@@ -1749,14 +2864,878 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "connected_sums_3d.txt, reducible 3-manifolds by prime decomposition"
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:l31-sum-l31"
+     }
     },
     {
      "reference_id": "lutz-sulanke-swartz-3manifolds",
      "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:l31-sum-minus-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-10"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-11"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-12"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-13"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-14"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-15"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-16"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-17"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-18"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-19"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-2"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-2-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-2-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-20"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-3-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-4"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-4-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-5"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-5-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-6"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-7"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-8"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-9"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-10"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-11"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-12"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-13"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-14"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-15"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-16"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-17"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-18"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-19"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-2"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-2-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-2-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-20"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-3-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-4"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-4-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-5"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-5-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-6"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-7"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-8"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-9"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-sulanke-swartz-3manifolds",
+     "role": "model_identity",
+     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
+    },
+    {
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: L_3_1#L_3_1",
+     "applies_to": {
+      "space": "connected_sum:l31-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: L_3_1#-L_3_1",
+     "applies_to": {
+      "space": "connected_sum:l31-sum-minus-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#10",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-10"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#11",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-11"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#12",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-12"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#13",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-13"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#14",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-14"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#15",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-15"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#16",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-16"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#17",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-17"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#18",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-18"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#19",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-19"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#2",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#2#L_3_1",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-2-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#2#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-2-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#20",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-20"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#3",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#3#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-3-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#4",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#4#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-4-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#5",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-5"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#5#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-5-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#6",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-6"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#7",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-7"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#8",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-8"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#9",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-9"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#L_3_1",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2twistS^1)#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2-twist-s1-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#10",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-10"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#11",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-11"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#12",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-12"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#13",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-13"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#14",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-14"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#15",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-15"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#16",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-16"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#17",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-17"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#18",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-18"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#19",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-19"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#2",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#2#L_3_1",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-2-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#2#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-2-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#20",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-20"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#3",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#3#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-3-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#4",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#4#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-4-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#5",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-5"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#5#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-5-sum-rp3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#6",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-6"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#7",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-7"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#8",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-8"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#9",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-9"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#L_3_1",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-l31"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "connected_sums_3d.txt: (S^2xS^1)#RP^3",
+     "applies_to": {
+      "space": "connected_sum:s2xs1-sum-rp3"
+     }
     }
    ]
   },
@@ -1800,14 +3779,94 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "small_4_manifolds.txt, RP4_K3_17 and RP4_11S2xS2"
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
     },
     {
-     "reference_id": "lutz-sulanke-swartz-3manifolds",
-     "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt: CP^2#CP^2",
+     "applies_to": {
+      "space": "four_manifold:cp2-sum-cp2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt: CP^2#-CP^2",
+     "applies_to": {
+      "space": "four_manifold:cp2-sum-minus-cp2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt: CP^2#(S^2xS^2)",
+     "applies_to": {
+      "space": "four_manifold:cp2-sum-s2xs2"
+     }
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "K3Surface() in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "four_manifold:k3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "RP4_11S2xS2.txt: ",
+     "applies_to": {
+      "space": "four_manifold:rp4-sum-11-s2xs2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "RP4_K3_17.txt: ",
+     "applies_to": {
+      "space": "four_manifold:rp4-sum-k3"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt: S^2xS^2",
+     "applies_to": {
+      "space": "four_manifold:s2xs2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt: (S^2xS^2)#(S^2xS^2)",
+     "applies_to": {
+      "space": "four_manifold:s2xs2-sum-s2xs2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt: S^3twistS^1",
+     "applies_to": {
+      "space": "four_manifold:s3-twist-s1"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "small_4_manifolds.txt: S^3xS^1",
+     "applies_to": {
+      "space": "four_manifold:s3xs1"
+     }
     }
    ]
   },
@@ -1830,14 +3889,38 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "S3xS2, S2xpoincare and SU2_SO3"
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
     },
     {
-     "reference_id": "lutz-sulanke-swartz-3manifolds",
-     "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S2xpoincare.txt: ",
+     "applies_to": {
+      "space": "five_manifold:s2-x-poincare-sphere"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "S3xS2.txt: S3xS2_12^a",
+     "applies_to": {
+      "space": "five_manifold:s3xs2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "SU2_SO3.txt: ",
+     "applies_to": {
+      "space": "five_manifold:wu"
+     }
     }
    ]
   },
@@ -1890,14 +3973,118 @@
    ],
    "sources": [
     {
-     "reference_id": "lutz-manifold-page",
-     "role": "model",
-     "locator": "HMT_k, Hom complexes and Sage's combinatorial constructors"
+     "reference_id": "cohomology-tables",
+     "role": "homology_and_cohomology",
+     "locator": "records/, integral and field homology and the cup-product table for each space"
     },
     {
-     "reference_id": "lutz-sulanke-swartz-3manifolds",
-     "role": "model_identity",
-     "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+     "reference_id": "oscar-system",
+     "role": "engine",
+     "locator": "SimplicialCochainComplex and DGAlgCohRing, and Polymake for integral homology"
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "ChessboardComplex(3,3) in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "chessboard_complex:3:3"
+     }
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "ChessboardComplex(4,4) in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "chessboard_complex:4:4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "HMT_16.txt: ",
+     "applies_to": {
+      "space": "hadamard_torsion_complex:16"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "HMT_32.txt: ",
+     "applies_to": {
+      "space": "hadamard_torsion_complex:32"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "HMT_4.txt: ",
+     "applies_to": {
+      "space": "hadamard_torsion_complex:4"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "HMT_8.txt: ",
+     "applies_to": {
+      "space": "hadamard_torsion_complex:8"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "Hom_C6_compl_K5_small.txt: ",
+     "applies_to": {
+      "space": "hom_complex:c6-compl-k5-small"
+     }
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "MatchingComplex(5) in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "matching_complex:5"
+     }
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "MatchingComplex(6) in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "matching_complex:6"
+     }
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "MatchingComplex(7) in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "matching_complex:7"
+     }
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "NotIConnectedGraphs(5,2) in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "not_i_connected_complex:5:2"
+     }
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "rand2_n25_p0.328.txt: ",
+     "applies_to": {
+      "space": "random_2_complex:25"
+     }
+    },
+    {
+     "reference_id": "sagemath-complexes",
+     "role": "model",
+     "locator": "SumComplex(5,[0,1,3]) in SageMath version 10.3, Release Date: 2024-03-19",
+     "applies_to": {
+      "space": "sum_complex:5:0-1-3"
+     }
     }
    ]
   },

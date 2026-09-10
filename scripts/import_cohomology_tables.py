@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+from fractions import Fraction
 import json
 import os
 import re
@@ -26,10 +27,32 @@ COEFFICIENTS = ("Z", "Q", "F2", "F3", "F5", "F7")
 SCHEMA_VERSION = "homology-db.imported-models/1"
 
 
-EXISTING = {"point","S^0","S^1","S^2","S^3","S^4","Poincare sphere","T^2","Klein bottle",
- "Sigma_2","Sigma_3","Sigma_4","Sigma_5","Sigma_6","N_3","N_4","N_5","N_6","RP^2","RP^3",
- "RP^4","CP^2","HP^2","M(Z/3,1)","M(Z/4,1)","M(Z/5,2)","M(Z/9,2)","M(Z/7,3)","M(Z/8,4)",
- "L(3,1)","L(5,1)","L(5,2)"}
+# Spaces the atlas already has. They gain no new entry, but their computed rings
+# and homology are still imported, as corroborating records beside whatever the
+# literature supplies -- that side-by-side comparison is the whole point of
+# splitting the corpus by evidence.
+EXISTING_SPACE_ID = {
+    "point": "point", "S^0": "sphere:0", "S^1": "sphere:1", "S^2": "sphere:2",
+    "S^3": "sphere:3", "S^4": "sphere:4",
+    "Poincare sphere": "poincare_homology_sphere:3",
+    "RP^2": "real_projective_space:2", "RP^3": "real_projective_space:3",
+    "RP^4": "real_projective_space:4",
+    "CP^2": "complex_projective_space:2",
+    "HP^2": "quaternionic_projective_space:2",
+    "M(Z/3,1)": "moore:3:1", "M(Z/4,1)": "moore:4:1", "M(Z/5,2)": "moore:5:2",
+    "M(Z/9,2)": "moore:9:2", "M(Z/7,3)": "moore:7:3", "M(Z/8,4)": "moore:8:4",
+    "L(3,1)": "lens:3:3:1-1", "L(5,1)": "lens:5:3:1-1", "L(5,2)": "lens:5:3:1-2",
+}
+
+# The eleven surfaces already carry checked-in Sage triangulations, so they are
+# bound to those models and must not also be declared identified-only.
+CHECKED_IN = {
+    "T^2", "Klein bottle", "Sigma_2", "Sigma_3", "Sigma_4", "Sigma_5", "Sigma_6",
+    "N_3", "N_4", "N_5", "N_6",
+}
+
+EXISTING = set(EXISTING_SPACE_ID) | CHECKED_IN
+
 DROP = {f"N_{k} x S^1" for k in (7, 8, 9, 10)}
 
 def ident(text):
@@ -43,6 +66,8 @@ def ident(text):
 
 def plan_for(name, row):
     dim = len(row["f_vector"].split(",")) - 1
+    if name in EXISTING_SPACE_ID:
+        return EXISTING_SPACE_ID[name], "__existing__", None, [name], []
     g3 = ["closed_3manifold"]
     if m := re.fullmatch(r"S\^(\d+)", name):
         return f"sphere:{m.group(1)}", "sphere", None, None, None
@@ -207,7 +232,7 @@ def build_plan(records: Path) -> list[dict]:
     spaces, seen = [], set()
     for row in csv.DictReader((records / "MANIFEST.tsv").open(), delimiter="\t"):
         name = row["space"]
-        if name in EXISTING or name in DROP:
+        if name in CHECKED_IN or name in DROP:
             continue
         space_id, family, label, aliases, tags = plan_for(name, row)
         if space_id is None:
@@ -246,13 +271,7 @@ def build_models(records: Path) -> dict:
                 "f_vector": f_vector,
                 "vertices": f_vector[0],
                 "facets": f_vector[-1],
-                "retrieval": {
-                    "catalog": row["kind"],
-                    "file": row["file"],
-                    "label": row["label"],
-                    "url": row["url"],
-                    "date_accessed": row["date_accessed"],
-                },
+                "retrieval": _retrieval(row),
                 "redistribution": "identified_not_redistributed",
             },
             "source_space": entry["source_space"],
@@ -319,7 +338,20 @@ def display_tex(name: str) -> str:
 
     def simple(text):
         """An atom, or a product of two atoms."""
-        text = text.strip().strip("()")
+        text = text.strip()
+        # Unwrap "(S^2xS^1)" but not "Matching(6)": strip only a pair that
+        # encloses everything, or the closing paren of a function-style name is
+        # lost and the atom rules stop matching it.
+        while text.startswith("(") and text.endswith(")"):
+            depth = 0
+            for index, character in enumerate(text):
+                depth += (character == "(") - (character == ")")
+                if depth == 0 and index < len(text) - 1:
+                    break
+            else:
+                text = text[1:-1].strip()
+                continue
+            break
         for separator, joiner in ((" x ", r"\times "), ("twist", r"\widetilde{\times}"),
                                   ("x", r"\times ")):
             left, found, right = text.partition(separator)
@@ -345,11 +377,46 @@ def display_tex(name: str) -> str:
             out.append((None, simple(piece), reversed_piece))
         parts = []
         for multiplicity, body, reversed_piece in out:
+            # A compound summand keeps its parentheses, or CP^2 # (S^2 x S^2)
+            # reads as CP^2 # S^2, times S^2.
+            if r"\times" in body and not multiplicity:
+                body = rf"({body})"
             body = ("-" if reversed_piece else "") + body
             parts.append(rf"{multiplicity}({body})" if multiplicity else body)
         return r"\#".join(parts)
 
     return simple(name)
+
+
+SAGE_DOCS = ("https://doc.sagemath.org/html/en/reference/topology/"
+             "sage/topology/simplicial_complex_examples.html")
+PRODUCER_URL = "https://github.com/wgabrielong/cohomology-tables"
+
+
+def _retrieval(row: dict) -> dict:
+    """How to obtain this model, in the terms its own catalogue uses.
+
+    Lutz's catalogues name a file and a label inside it. SageMath and the
+    producer's own built-ins name a constructor instead and leave those columns
+    empty, so reading them uniformly yields a citation with nothing in it.
+    """
+    kind = row["kind"]
+    if kind == "lutz":
+        return {"catalog": "lutz", "how": "file", "file": row["file"],
+                "label": row["label"], "url": row["url"],
+                "date_accessed": row["date_accessed"]}
+    if kind == "sage":
+        # sage_version already reads "SageMath version 10.3, ..."; and a
+        # constructor is reproducible from its version, so an access date would
+        # add nothing a reader could act on.
+        return {"catalog": "sagemath", "how": "constructor",
+                "constructor": row["call"], "version": row["sage_version"],
+                "url": SAGE_DOCS}
+    if kind == "arxiv":
+        return {"catalog": "arxiv", "how": "eprint", "eprint": row["call"],
+                "url": row["url"], "date_accessed": row["date_accessed"]}
+    return {"catalog": "cohomology-tables", "how": "constructor",
+            "constructor": row["call"], "url": PRODUCER_URL}
 
 
 RING_SCHEMA = "homology-db.cohomology-rings/1"
@@ -386,6 +453,15 @@ def _basis_and_order(graded, characteristic):
     return basis
 
 
+def _rational(value):
+    """An integer where the producer's constant is one, else a lowest-terms string.
+
+    Julia writes rationals as "1//2"; the atlas schema takes an int, or "1/2".
+    """
+    scalar = Fraction(value.replace("//", "/"))
+    return int(scalar) if scalar.denominator == 1 else str(scalar)
+
+
 def _products(record, graded):
     """Nonzero, non-unit structure constants in the atlas's sparse shape."""
     labels_by_degree = {block["degree"]: (block.get("basis_labels") or [])
@@ -396,26 +472,47 @@ def _products(record, graded):
         if left == "1" or right == "1":
             continue                                  # implied by unit_products
         target = labels_by_degree.get(entry["product_degree"], [])
-        result = [{"basis": target[index], "coefficient": int(value)}
+        result = [{"basis": target[index], "coefficient": _rational(value)}
                   for index, value in enumerate(entry["coefficients"])
-                  if index < len(target) and value not in ("0", "0//1")]
+                  if index < len(target) and Fraction(value.replace("//", "/"))]
         if result:                                    # implied by omitted_products
             products.append({"left": left, "right": right, "result": result})
     products.sort(key=lambda item: (item["left"], item["right"]))
     return products
 
 
+# The catalogues the f-vector paper describes. Naming them explicitly keeps that
+# citation off the Hom complexes and the K3 surface, which it says nothing about.
+GEOMETRIC_3MANIFOLD_FILES = {
+    "spherical_3manifolds", "flat_3manifolds", "nil_3manifolds", "S2xR_spaces",
+    "H2xR_spaces", "hyperbolic_3manifolds", "homology_3spheres",
+    "connected_sums_3d", "sphere_bundles",
+}
+
+
 def _sources(entry, row, coefficient, kind):
+    """The same chain the homology evidence carries, so a page cites one set.
+
+    A ring and the homology beside it are computed from one model by one engine.
+    Listing fewer sources against one of them than the other would suggest the
+    two rest on different evidence.
+    """
     model_source = MODEL_SOURCE_ID[row["kind"]]
-    locator = (f"{row['file']}:{row['label']}" if row["kind"] == "lutz"
+    locator = (f"{row['file']}: {row['label']}" if row["kind"] == "lutz"
                else row["call"] or row["space"])
-    return [
+    sources = [
         {"source_id": "cohomology-tables", "role": kind,
          "locator": f"records/{entry['space_id']} over {coefficient}"},
         {"source_id": model_source, "role": "model", "locator": locator},
         {"source_id": "oscar", "role": "engine",
          "locator": "SimplicialCochainComplex and DGAlgCohRing (experimental/DoubleAndHyperComplexes)"},
     ]
+    if row["kind"] == "lutz" and row["file"] in GEOMETRIC_3MANIFOLD_FILES:
+        sources.append({
+            "source_id": "lutz-sulanke-swartz-3manifolds", "role": "model_identity",
+            "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations",
+        })
+    return sources
 
 
 def _provenance(entry, row, coefficient, kind, derivation):
@@ -450,7 +547,7 @@ def build_records(records: Path, entries: list[dict], expected_groups) -> tuple[
             raise ValueError(f"cannot locate records for {row['space']!r}")
         return stem
 
-    rings, homology, incomplete = [], [], []
+    rings, homology, incomplete = [], [], {}
     for entry in entries:
         row = rows[entry["source_space"]]
         stem = stem_for(row)
@@ -458,20 +555,22 @@ def build_records(records: Path, entries: list[dict], expected_groups) -> tuple[
         # The atlas records a multiplication table only when it is complete, so a
         # space whose basis exceeded the producer's cutoff contributes homology
         # and no ring rather than a table with silent gaps.
-        complete = True
+        complete, reason = True, None
         for coefficient in COEFFICIENTS:
             source = json.loads(
                 (records / f"{stem}.{coefficient}.json").read_text(encoding="utf-8"))
             if not source.get("structure_constants_complete", True):
-                complete = False       # basis exceeded the producer's table cutoff
-            for constant in source.get("structure_constants") or []:
-                if any("//" in value and value != "0//1" for value in constant["coefficients"]):
-                    # A structure constant outside Z. The atlas's ring schema takes
-                    # integer scalars, so this table cannot be recorded without
-                    # either rescaling the producer's basis or widening the schema.
-                    complete = False
+                complete, reason = False, "basis_above_producer_cutoff"
+            labels = [label for block in source["cohomology"]
+                      for label in (block.get("basis_labels") or [])]
+            if "1" not in labels:
+                # A disconnected space: H^0 has rank above one and the unit is a
+                # sum of idempotents rather than a basis element, which this ring
+                # schema cannot name. Rewriting the basis to introduce a unit
+                # would replace the computed answer with a different presentation.
+                complete, reason = False, "unit_is_not_a_basis_element"
         if not complete:
-            incomplete.append(entry["space_id"])
+            incomplete[entry["space_id"]] = reason
         for coefficient in COEFFICIENTS:
             characteristic = 0 if coefficient in ("Z", "Q") else int(coefficient[1:])
             source = json.loads(

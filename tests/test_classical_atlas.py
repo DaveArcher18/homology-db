@@ -26,7 +26,7 @@ class ClassicalAtlasTest(unittest.TestCase):
         self.assertEqual(len(core), 13)
         self.assertEqual(self.atlas["classical"]["record_count"], 75)
         recorded = [space for space in self.atlas["conceptual_spaces"] if space["cohomology"]]
-        self.assertEqual(len(recorded), 178)
+        self.assertEqual(len(recorded), 189)
         for space in recorded:
             sourced = {row["coefficient"] for row in space["cohomology"]
                        if row["provenance"]["kind"] == "literature"}
@@ -60,7 +60,7 @@ class ClassicalAtlasTest(unittest.TestCase):
     def test_noncore_and_integral_absence_is_not_zero(self):
         noncore = [space for space in self.atlas["conceptual_spaces"] if not space["classical_core"]]
         self.assertEqual(len(noncore), 199)
-        self.assertEqual(sum(not space["cohomology"] for space in noncore), 34)
+        self.assertEqual(sum(not space["cohomology"] for space in noncore), 23)
         for space in self.atlas["conceptual_spaces"]:
             self.assertTrue(any(row["coefficient_ring"] == "Z" for row in space["homology"]))
             integral = [row for row in space["cohomology"] if row["coefficient"] == "Z"]
@@ -74,7 +74,7 @@ class ClassicalAtlasTest(unittest.TestCase):
                         if space["cohomology"] and not any(
                             row["provenance"]["kind"] == "external_engine_computation"
                             for row in space["cohomology"])]
-        self.assertEqual(len(sourced_only), 13)
+        self.assertEqual(len(sourced_only), 3)
         for space in sourced_only:
             self.assertFalse(any(row["coefficient"] == "Z" for row in space["cohomology"]))
 
@@ -97,7 +97,7 @@ class ClassicalAtlasTest(unittest.TestCase):
                     # and the records must actually agree before either is preferred
                     for record in entries[1:]:
                         self.assertEqual(record["groups"], entries[0]["groups"])
-        self.assertEqual(shared, 10)
+        self.assertEqual(shared, 60)
 
     def test_classical_content_and_source_catalog_are_bound(self):
         for mutate in (
@@ -122,7 +122,8 @@ class ClassicalAtlasTest(unittest.TestCase):
     def test_rational_rows_reject_missing_values_and_unbound_derivations(self):
         for mutation in ("missing", "dimension", "input"):
             atlas = copy.deepcopy(self.atlas)
-            space = next(space for space in atlas["conceptual_spaces"] if space["id"] == "point")
+            space = next(space for space in atlas["conceptual_spaces"]
+                         if space["id"] == "sphere_wedge:2:4")
             rational = next(row for row in space["homology"] if row["coefficient_ring"] == "Q")
             if mutation == "missing":
                 space["homology"] = [row for row in space["homology"] if row["coefficient_ring"] != "Q"]

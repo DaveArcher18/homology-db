@@ -52,6 +52,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "homology_3spheres",
+     "how": "file",
      "label": "Sigma_2_3_7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/homology_3spheres.txt"
     },
@@ -65,7 +66,7 @@
     "nontrivial_pi1",
     "same_homology_guard"
    ],
-   "tex": "\\mathrm{Sigma(2,3,7}"
+   "tex": "\\Sigma(2,3,7)"
   },
   {
    "aliases": [
@@ -119,6 +120,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "homology_3spheres",
+     "how": "file",
      "label": "Sigma_2_5_7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/homology_3spheres.txt"
     },
@@ -132,7 +134,7 @@
     "nontrivial_pi1",
     "same_homology_guard"
    ],
-   "tex": "\\mathrm{Sigma(2,5,7}"
+   "tex": "\\Sigma(2,5,7)"
   },
   {
    "aliases": [
@@ -186,6 +188,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "homology_3spheres",
+     "how": "file",
      "label": "Sigma_3_4_5",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/homology_3spheres.txt"
     },
@@ -199,7 +202,7 @@
     "nontrivial_pi1",
     "same_homology_guard"
    ],
-   "tex": "\\mathrm{Sigma(3,4,5}"
+   "tex": "\\Sigma(3,4,5)"
   },
   {
    "aliases": [
@@ -253,6 +256,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "homology_3spheres",
+     "how": "file",
      "label": "Sigma_3_4_7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/homology_3spheres.txt"
     },
@@ -266,7 +270,7 @@
     "nontrivial_pi1",
     "same_homology_guard"
    ],
-   "tex": "\\mathrm{Sigma(3,4,7}"
+   "tex": "\\Sigma(3,4,7)"
   },
   {
    "aliases": [
@@ -320,6 +324,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "homology_3spheres",
+     "how": "file",
      "label": "Sigma_3_5_7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/homology_3spheres.txt"
     },
@@ -333,7 +338,7 @@
     "nontrivial_pi1",
     "same_homology_guard"
    ],
-   "tex": "\\mathrm{Sigma(3,5,7}"
+   "tex": "\\Sigma(3,5,7)"
   },
   {
    "aliases": [
@@ -387,6 +392,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "homology_3spheres",
+     "how": "file",
      "label": "Sigma_4_5_7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/homology_3spheres.txt"
     },
@@ -400,7 +406,7 @@
     "nontrivial_pi1",
     "same_homology_guard"
    ],
-   "tex": "\\mathrm{Sigma(4,5,7}"
+   "tex": "\\Sigma(4,5,7)"
   },
   {
    "aliases": [
@@ -444,11 +450,11 @@
     "model_id": "simplicial:chessboard_complex:3:3",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "ChessboardComplex(3,3)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 9
    },
@@ -457,7 +463,7 @@
    "tags": [
     "combinatorial"
    ],
-   "tex": "\\mathrm{Chessboard(3,3}"
+   "tex": "\\Delta_{3,3}"
   },
   {
    "aliases": [
@@ -507,11 +513,11 @@
     "model_id": "simplicial:chessboard_complex:4:4",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "ChessboardComplex(4,4)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 16
    },
@@ -520,7 +526,75 @@
    "tags": [
     "combinatorial"
    ],
-   "tex": "\\mathrm{Chessboard(4,4}"
+   "tex": "\\Delta_{4,4}"
+  },
+  {
+   "aliases": [
+    "CP^2"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1,
+     "2": 1,
+     "4": 1
+    }
+   },
+   "dimension": 4,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 4,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "CP^2",
+   "model": {
+    "f_vector": [
+     9,
+     36,
+     84,
+     90,
+     36
+    ],
+    "facets": 36,
+    "facets_sha256": "d971a268a347c27aa9ddda5c5b04290d9d98049297f4a9cc73e7fddf9454a34a",
+    "model_id": "simplicial:complex_projective_space:2",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "ComplexProjectivePlane()",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 9
+   },
+   "source_space": "CP^2",
+   "space_id": "complex_projective_space:2",
+   "tags": [],
+   "tex": "\\mathbb{C}P^{2}"
   },
   {
    "aliases": [
@@ -592,8 +666,8 @@
     "retrieval": {
      "catalog": "arxiv",
      "date_accessed": "2026-09-08",
-     "file": "",
-     "label": "",
+     "eprint": "1012.3235",
+     "how": "eprint",
      "url": "https://arxiv.org/abs/1012.3235"
     },
     "vertices": 18
@@ -672,6 +746,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "L_3_1#L_3_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -755,6 +830,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "L_3_1#-L_3_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -832,6 +908,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#10",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -909,6 +986,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#11",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -986,6 +1064,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#12",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1063,6 +1142,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#13",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1140,6 +1220,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#14",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1217,6 +1298,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#15",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1294,6 +1376,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#16",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1371,6 +1454,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#17",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1448,6 +1532,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#18",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1525,6 +1610,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#19",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1602,6 +1688,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1688,6 +1775,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#2#L_3_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1774,6 +1862,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#2#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1851,6 +1940,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#20",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -1928,6 +2018,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2014,6 +2105,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#3#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2091,6 +2183,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#4",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2177,6 +2270,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#4#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2254,6 +2348,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#5",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2340,6 +2435,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#5#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2417,6 +2513,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#6",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2494,6 +2591,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2571,6 +2669,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#8",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2648,6 +2747,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#9",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2734,6 +2834,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#L_3_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2746,7 +2847,7 @@
     "connected_sum",
     "reducible"
    ],
-   "tex": "S^{2}\\widetilde{\\times}S^{1}\\#L(3,1)"
+   "tex": "(S^{2}\\widetilde{\\times}S^{1})\\#L(3,1)"
   },
   {
    "aliases": [
@@ -2820,6 +2921,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2twistS^1)#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2832,7 +2934,7 @@
     "connected_sum",
     "reducible"
    ],
-   "tex": "S^{2}\\widetilde{\\times}S^{1}\\#\\mathbb{R}P^{3}"
+   "tex": "(S^{2}\\widetilde{\\times}S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -2887,6 +2989,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#10",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -2954,6 +3057,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#11",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3021,6 +3125,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#12",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3088,6 +3193,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#13",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3155,6 +3261,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#14",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3222,6 +3329,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#15",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3289,6 +3397,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#16",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3356,6 +3465,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#17",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3423,6 +3533,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#18",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3490,6 +3601,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#19",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3557,6 +3669,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3634,6 +3747,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#2#L_3_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3711,6 +3825,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#2#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3778,6 +3893,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#20",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3845,6 +3961,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3922,6 +4039,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#3#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -3989,6 +4107,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#4",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4066,6 +4185,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#4#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4133,6 +4253,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#5",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4210,6 +4331,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#5#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4277,6 +4399,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#6",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4344,6 +4467,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4411,6 +4535,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#8",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4478,6 +4603,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#9",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4555,6 +4681,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#L_3_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4567,7 +4694,7 @@
     "connected_sum",
     "reducible"
    ],
-   "tex": "S^{2}\\times S^{1}\\#L(3,1)"
+   "tex": "(S^{2}\\times S^{1})\\#L(3,1)"
   },
   {
    "aliases": [
@@ -4632,6 +4759,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "connected_sums_3d",
+     "how": "file",
      "label": "(S^2xS^1)#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/connected_sums_3d.txt"
     },
@@ -4644,7 +4772,7 @@
     "connected_sum",
     "reducible"
    ],
-   "tex": "S^{2}\\times S^{1}\\#\\mathbb{R}P^{3}"
+   "tex": "(S^{2}\\times S^{1})\\#\\mathbb{R}P^{3}"
   },
   {
    "aliases": [
@@ -4711,6 +4839,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "S2xpoincare",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/S2xpoincare.txt"
     },
@@ -4789,6 +4918,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "S3xS2",
+     "how": "file",
      "label": "S3xS2_12^a",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/S3xS2.txt"
     },
@@ -4877,6 +5007,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "SU2_SO3",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/SU2_SO3.txt"
     },
@@ -4954,6 +5085,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "B2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5046,6 +5178,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "B3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5132,6 +5265,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "B4",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5215,6 +5349,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "G2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5292,6 +5427,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "G3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5369,6 +5505,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "G4",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5436,6 +5573,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "G5",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5519,6 +5657,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "G6",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5605,6 +5744,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "KxS^1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5672,6 +5812,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "flat_3manifolds",
+     "how": "file",
      "label": "T^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/flat_3manifolds.txt"
     },
@@ -5744,6 +5885,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "small_4_manifolds",
+     "how": "file",
      "label": "CP^2#CP^2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/small_4_manifolds.txt"
     },
@@ -5816,6 +5958,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "small_4_manifolds",
+     "how": "file",
      "label": "CP^2#-CP^2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/small_4_manifolds.txt"
     },
@@ -5888,6 +6031,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "small_4_manifolds",
+     "how": "file",
      "label": "CP^2#(S^2xS^2)",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/small_4_manifolds.txt"
     },
@@ -5900,7 +6044,7 @@
     "connected_sum",
     "intersection_form"
    ],
-   "tex": "\\mathbb{C}P^{2}\\#S^{2}\\times S^{2}"
+   "tex": "\\mathbb{C}P^{2}\\#(S^{2}\\times S^{2})"
   },
   {
    "aliases": [
@@ -5957,11 +6101,11 @@
     "model_id": "simplicial:four_manifold:k3",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "K3Surface()",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 16
    },
@@ -6052,6 +6196,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "RP4_11S2xS2",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/RP4_11S2xS2.txt"
     },
@@ -6145,6 +6290,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "RP4_K3_17",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/RP4_K3_17.txt"
     },
@@ -6217,6 +6363,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "small_4_manifolds",
+     "how": "file",
      "label": "S^2xS^2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/small_4_manifolds.txt"
     },
@@ -6289,6 +6436,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "small_4_manifolds",
+     "how": "file",
      "label": "(S^2xS^2)#(S^2xS^2)",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/small_4_manifolds.txt"
     },
@@ -6301,7 +6449,7 @@
     "connected_sum",
     "intersection_form"
    ],
-   "tex": "S^{2}\\times S^{2}\\#S^{2}\\times S^{2}"
+   "tex": "(S^{2}\\times S^{2})\\#(S^{2}\\times S^{2})"
   },
   {
    "aliases": [
@@ -6372,6 +6520,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "small_4_manifolds",
+     "how": "file",
      "label": "S^3twistS^1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/small_4_manifolds.txt"
     },
@@ -6444,6 +6593,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "small_4_manifolds",
+     "how": "file",
      "label": "S^3xS^1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/small_4_manifolds.txt"
     },
@@ -6530,6 +6680,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "n_g3xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -6616,6 +6767,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "n_g4xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -6702,6 +6854,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "n_g5xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -6788,6 +6941,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "n_g6xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -6855,6 +7009,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "o_g2xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -6922,6 +7077,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "o_g3xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -6989,6 +7145,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "o_g4xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -7056,6 +7213,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "H2xR_spaces",
+     "how": "file",
      "label": "o_g5xS1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/H2xR_spaces.txt"
     },
@@ -7210,6 +7368,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "HMT_16",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/HMT_16.txt"
     },
@@ -7460,6 +7619,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "HMT_32",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/HMT_32.txt"
     },
@@ -7542,6 +7702,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "HMT_4",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/HMT_4.txt"
     },
@@ -7648,6 +7809,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "HMT_8",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/HMT_8.txt"
     },
@@ -7720,6 +7882,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "Hom_C6_compl_K5_small",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/Hom_C6_compl_K5_small.txt"
     },
@@ -7801,6 +7964,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_0.94270736",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -7878,6 +8042,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_0.98136883",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -7961,6 +8126,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.01494161",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8044,6 +8210,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.26370924",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8121,6 +8288,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.28448530",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8186,6 +8354,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.39850888",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8263,6 +8432,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.41406104_a",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8340,6 +8510,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.41406104_b",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8417,6 +8588,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.42361190",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8494,6 +8666,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.44069901",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8571,6 +8744,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.46377664",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8648,6 +8822,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.52947733",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8725,6 +8900,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.54356891_a",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8802,6 +8978,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.54356891_b",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8879,6 +9056,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.58316666_a",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -8962,6 +9140,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.58316666_b",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -9039,6 +9218,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.58864664_a",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -9116,6 +9296,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.58864664_b",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -9193,6 +9374,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.64960972",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -9270,6 +9452,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_3manifolds",
+     "how": "file",
      "label": "or_1.75712603",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_3manifolds.txt"
     },
@@ -9360,6 +9543,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "hyperbolic_dodecahedral_space",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/hyperbolic_dodecahedral_space.txt"
     },
@@ -9439,6 +9623,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_10_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -9453,7 +9638,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(10,1}"
+   "tex": "L(10,1)"
   },
   {
    "aliases": [
@@ -9519,6 +9704,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_10_3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -9533,7 +9719,81 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(10,3}"
+   "tex": "L(10,3)"
+  },
+  {
+   "aliases": [
+    "L(3,1)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       3
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      3
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "L(3,1)",
+   "model": {
+    "f_vector": [
+     12,
+     66,
+     108,
+     54
+    ],
+    "facets": 54,
+    "facets_sha256": "3aef806f5d590f7245df99b97edd379160d301f7512ead8e313ce85e0bc8cc95",
+    "model_id": "simplicial:lens:3:3:1-1",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "lutz",
+     "date_accessed": "2026-09-08",
+     "file": "spherical_3manifolds",
+     "how": "file",
+     "label": "L_3_1",
+     "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
+    },
+    "vertices": 12
+   },
+   "source_space": "L(3,1)",
+   "space_id": "lens:3:3:1-1",
+   "tags": [],
+   "tex": "L(3,1)"
   },
   {
    "aliases": [
@@ -9599,6 +9859,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_4_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -9612,7 +9873,155 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(4,1}"
+   "tex": "L(4,1)"
+  },
+  {
+   "aliases": [
+    "L(5,1)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       5
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      5
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "L(5,1)",
+   "model": {
+    "f_vector": [
+     15,
+     97,
+     164,
+     82
+    ],
+    "facets": 82,
+    "facets_sha256": "43c09eca1cf9f8fab38cecb3cdde956c90732313acf14ed8de68cc7701ddb46e",
+    "model_id": "simplicial:lens:5:3:1-1",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "lutz",
+     "date_accessed": "2026-09-08",
+     "file": "spherical_3manifolds",
+     "how": "file",
+     "label": "L_5_1",
+     "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
+    },
+    "vertices": 15
+   },
+   "source_space": "L(5,1)",
+   "space_id": "lens:5:3:1-1",
+   "tags": [],
+   "tex": "L(5,1)"
+  },
+  {
+   "aliases": [
+    "L(5,2)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       5
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      5
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "L(5,2)",
+   "model": {
+    "f_vector": [
+     14,
+     86,
+     144,
+     72
+    ],
+    "facets": 72,
+    "facets_sha256": "d3e02049dee237464e5d8eef288109ac8c86de60272e13c91ef3ec9edb6907b1",
+    "model_id": "simplicial:lens:5:3:1-2",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "lutz",
+     "date_accessed": "2026-09-08",
+     "file": "spherical_3manifolds",
+     "how": "file",
+     "label": "L_5_2",
+     "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
+    },
+    "vertices": 14
+   },
+   "source_space": "L(5,2)",
+   "space_id": "lens:5:3:1-2",
+   "tags": [],
+   "tex": "L(5,2)"
   },
   {
    "aliases": [
@@ -9678,6 +10087,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_6_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -9692,7 +10102,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(6,1}"
+   "tex": "L(6,1)"
   },
   {
    "aliases": [
@@ -9758,6 +10168,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_7_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -9771,7 +10182,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(7,1}"
+   "tex": "L(7,1)"
   },
   {
    "aliases": [
@@ -9837,6 +10248,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_7_2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -9850,7 +10262,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(7,2}"
+   "tex": "L(7,2)"
   },
   {
    "aliases": [
@@ -9916,6 +10328,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_8_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -9929,7 +10342,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(8,1}"
+   "tex": "L(8,1)"
   },
   {
    "aliases": [
@@ -9995,6 +10408,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_8_3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -10008,7 +10422,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(8,3}"
+   "tex": "L(8,3)"
   },
   {
    "aliases": [
@@ -10074,6 +10488,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_9_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -10087,7 +10502,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(9,1}"
+   "tex": "L(9,1)"
   },
   {
    "aliases": [
@@ -10153,6 +10568,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "L_9_2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -10166,7 +10582,7 @@
     "spherical_geometry",
     "torsion"
    ],
-   "tex": "\\mathrm{L(9,2}"
+   "tex": "L(9,2)"
   },
   {
    "aliases": [
@@ -10204,11 +10620,11 @@
     "model_id": "simplicial:matching_complex:5",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "MatchingComplex(5)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 10
    },
@@ -10217,7 +10633,7 @@
    "tags": [
     "combinatorial"
    ],
-   "tex": "\\mathrm{Matching(5}"
+   "tex": "\\mathrm{M}_{5}"
   },
   {
    "aliases": [
@@ -10261,11 +10677,11 @@
     "model_id": "simplicial:matching_complex:6",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "MatchingComplex(6)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 15
    },
@@ -10274,7 +10690,7 @@
    "tags": [
     "combinatorial"
    ],
-   "tex": "\\mathrm{Matching(6}"
+   "tex": "\\mathrm{M}_{6}"
   },
   {
    "aliases": [
@@ -10329,11 +10745,11 @@
     "model_id": "simplicial:matching_complex:7",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "MatchingComplex(7)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 21
    },
@@ -10342,7 +10758,445 @@
    "tags": [
     "combinatorial"
    ],
-   "tex": "\\mathrm{Matching(7}"
+   "tex": "\\mathrm{M}_{7}"
+  },
+  {
+   "aliases": [
+    "M(Z/3,1)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       3
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1
+    }
+   },
+   "dimension": 2,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      3
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "M(Z/3,1)",
+   "model": {
+    "f_vector": [
+     9,
+     27,
+     19
+    ],
+    "facets": 19,
+    "facets_sha256": "32f03e68192ba369f9c453cc651bfb6ce75975ae2484a2056216a6bde04ca7b9",
+    "model_id": "simplicial:moore:3:1",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "MooreSpace(3)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 9
+   },
+   "source_space": "M(Z/3,1)",
+   "space_id": "moore:3:1",
+   "tags": [],
+   "tex": "\\mathrm{M(Z/3,1)}"
+  },
+  {
+   "aliases": [
+    "M(Z/4,1)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       4
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1
+    }
+   },
+   "dimension": 2,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      4
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "M(Z/4,1)",
+   "model": {
+    "f_vector": [
+     11,
+     36,
+     26
+    ],
+    "facets": 26,
+    "facets_sha256": "9d864a11d11767283ab2c17e84d17c78c4ecb212b0d621a1539952d665a0c41d",
+    "model_id": "simplicial:moore:4:1",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "MooreSpace(4)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 11
+   },
+   "source_space": "M(Z/4,1)",
+   "space_id": "moore:4:1",
+   "tags": [],
+   "tex": "\\mathrm{M(Z/4,1)}"
+  },
+  {
+   "aliases": [
+    "M(Z/5,2)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "3": [
+      [
+       0,
+       0,
+       5
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "2": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": [
+      5
+     ]
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "M(Z/5,2)",
+   "model": {
+    "f_vector": [
+     15,
+     71,
+     123,
+     66
+    ],
+    "facets": 66,
+    "facets_sha256": "c700440f61001b376ee6d84a06893de9ff2e9f53cdc65b7a1509def62c857816",
+    "model_id": "simplicial:moore:5:2",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "MooreSpace(5).suspension(1)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 15
+   },
+   "source_space": "M(Z/5,2)",
+   "space_id": "moore:5:2",
+   "tags": [],
+   "tex": "\\mathrm{M(Z/5,2)}"
+  },
+  {
+   "aliases": [
+    "M(Z/7,3)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "4": [
+      [
+       0,
+       0,
+       7
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "3": 1,
+     "4": 1
+    }
+   },
+   "dimension": 4,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": [
+      7
+     ]
+    },
+    {
+     "degree": 4,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "M(Z/7,3)",
+   "model": {
+    "f_vector": [
+     21,
+     135,
+     367,
+     440,
+     188
+    ],
+    "facets": 188,
+    "facets_sha256": "8d46473cddadd770a61300a2bb3bbf42ed9a3afa98ee7018ef433d3b407614e1",
+    "model_id": "simplicial:moore:7:3",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "MooreSpace(7).suspension(2)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 21
+   },
+   "source_space": "M(Z/7,3)",
+   "space_id": "moore:7:3",
+   "tags": [],
+   "tex": "\\mathrm{M(Z/7,3)}"
+  },
+  {
+   "aliases": [
+    "M(Z/8,4)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "5": [
+      [
+       0,
+       0,
+       8
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "4": 1,
+     "5": 1
+    }
+   },
+   "dimension": 5,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 4,
+     "free_rank": 0,
+     "torsion_orders": [
+      8
+     ]
+    },
+    {
+     "degree": 5,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "M(Z/8,4)",
+   "model": {
+    "f_vector": [
+     25,
+     198,
+     722,
+     1340,
+     1224,
+     432
+    ],
+    "facets": 432,
+    "facets_sha256": "5ce9c634e80ea7143e598665dc63569e0270470953209ea2b70f6fcaaecdfb48",
+    "model_id": "simplicial:moore:8:4",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "MooreSpace(8).suspension(3)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 25
+   },
+   "source_space": "M(Z/8,4)",
+   "space_id": "moore:8:4",
+   "tags": [],
+   "tex": "\\mathrm{M(Z/8,4)}"
+  },
+  {
+   "aliases": [
+    "M(Z/9,2)"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "3": [
+      [
+       0,
+       0,
+       9
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "2": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": [
+      9
+     ]
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "M(Z/9,2)",
+   "model": {
+    "f_vector": [
+     23,
+     123,
+     223,
+     122
+    ],
+    "facets": 122,
+    "facets_sha256": "abaaa54589e044a1e59d5d728b149fb3491395bfacb159c767113d6a91f3da73",
+    "model_id": "simplicial:moore:9:2",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "MooreSpace(9).suspension(1)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 23
+   },
+   "source_space": "M(Z/9,2)",
+   "space_id": "moore:9:2",
+   "tags": [],
+   "tex": "\\mathrm{M(Z/9,2)}"
   },
   {
    "aliases": [
@@ -10397,6 +11251,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "nil_3manifolds",
+     "how": "file",
      "label": "Nil_Oo1_1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/nil_3manifolds.txt"
     },
@@ -10474,6 +11329,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "nil_3manifolds",
+     "how": "file",
      "label": "Nil_Oo1_2",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/nil_3manifolds.txt"
     },
@@ -10551,6 +11407,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "nil_3manifolds",
+     "how": "file",
      "label": "Nil_Oo1_3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/nil_3manifolds.txt"
     },
@@ -10628,6 +11485,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "nil_3manifolds",
+     "how": "file",
      "label": "Nil_Oo1_4",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/nil_3manifolds.txt"
     },
@@ -10705,6 +11563,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "nil_3manifolds",
+     "how": "file",
      "label": "Nil_Oo1_5",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/nil_3manifolds.txt"
     },
@@ -10785,11 +11644,11 @@
     "model_id": "simplicial:not_i_connected_complex:5:2",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "NotIConnectedGraphs(5,2)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 10
    },
@@ -10848,6 +11707,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "regular_2_21_23_1",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/regular_2_21_23_1.txt"
     },
@@ -10908,11 +11768,11 @@
     "model_id": "simplicial:orientable_surface:26",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "FareyMap(11)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 60
    },
@@ -10925,6 +11785,108 @@
     "torsion_free"
    ],
    "tex": "\\Sigma_{26}"
+  },
+  {
+   "aliases": [
+    "Poincare sphere"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "Poincare sphere",
+   "model": {
+    "f_vector": [
+     16,
+     106,
+     180,
+     90
+    ],
+    "facets": 90,
+    "facets_sha256": "dead5e613d09d04a8b236077b27e073823a3c1261dc42ef03e885715afb48e69",
+    "model_id": "simplicial:poincare_homology_sphere:3",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "PoincareHomologyThreeSphere()",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 16
+   },
+   "source_space": "Poincare sphere",
+   "space_id": "poincare_homology_sphere:3",
+   "tags": [],
+   "tex": "\\mathrm{Poincare\\ sphere}"
+  },
+  {
+   "aliases": [
+    "point"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1
+    }
+   },
+   "dimension": 0,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "point",
+   "model": {
+    "f_vector": [
+     1
+    ],
+    "facets": 1,
+    "facets_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "model_id": "simplicial:point",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "cohomology-tables",
+     "constructor": "point_space()",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
+    },
+    "vertices": 1
+   },
+   "source_space": "point",
+   "space_id": "point",
+   "tags": [],
+   "tex": "\\mathrm{point}"
   },
   {
    "aliases": [
@@ -10995,6 +11957,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "cube_space",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11072,6 +12035,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "octahedron_space",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11149,6 +12113,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "truncated_cube_space",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11232,6 +12197,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_10",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11310,6 +12276,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11394,6 +12361,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_4",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11472,6 +12440,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_5",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11556,6 +12525,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_6",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11634,6 +12604,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_7",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11718,6 +12689,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_8",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11796,6 +12768,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "spherical_3manifolds",
+     "how": "file",
      "label": "P_9",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/spherical_3manifolds.txt"
     },
@@ -11810,6 +12783,98 @@
     "torsion"
    ],
    "tex": "P_{9}"
+  },
+  {
+   "aliases": [
+    "HP^2"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1,
+     "4": 1,
+     "8": 1
+    }
+   },
+   "dimension": 8,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 4,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 5,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 6,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 7,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 8,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "HP^2",
+   "model": {
+    "f_vector": [
+     15,
+     105,
+     455,
+     1365,
+     3003,
+     4515,
+     4230,
+     2205,
+     490
+    ],
+    "facets": 490,
+    "facets_sha256": "e8ecf934af8e087c497d1a50e5db5f6b39d718119a7500500209acdce3bc1215",
+    "model_id": "simplicial:quaternionic_projective_space:2",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "QuaternionicProjectivePlane()",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 15
+   },
+   "source_space": "HP^2",
+   "space_id": "quaternionic_projective_space:2",
+   "tags": [],
+   "tex": "\\mathbb{H}P^{2}"
   },
   {
    "aliases": [
@@ -11856,6 +12921,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "rand2_n25_p0.328",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/rand2_n25_p0.328.txt"
     },
@@ -11867,6 +12933,234 @@
     "combinatorial"
    ],
    "tex": "\\mathrm{rand}_{25}"
+  },
+  {
+   "aliases": [
+    "RP^2"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       2
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1
+    }
+   },
+   "dimension": 2,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      2
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "RP^2",
+   "model": {
+    "f_vector": [
+     6,
+     15,
+     10
+    ],
+    "facets": 10,
+    "facets_sha256": "c546fdb2e304fc376a3e7d20a55c2138029ca8847c1fe6976fee20aca021ddd8",
+    "model_id": "simplicial:real_projective_space:2",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "RealProjectivePlane()",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 6
+   },
+   "source_space": "RP^2",
+   "space_id": "real_projective_space:2",
+   "tags": [],
+   "tex": "\\mathbb{R}P^{2}"
+  },
+  {
+   "aliases": [
+    "RP^3"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       2
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      2
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "RP^3",
+   "model": {
+    "f_vector": [
+     11,
+     51,
+     80,
+     40
+    ],
+    "facets": 40,
+    "facets_sha256": "1542f0ea754ab15c082fee594ef4eece3db4b09e84870b7367b2d70cc2cecdde",
+    "model_id": "simplicial:real_projective_space:3",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "RealProjectiveSpace(3)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 11
+   },
+   "source_space": "RP^3",
+   "space_id": "real_projective_space:3",
+   "tags": [],
+   "tex": "\\mathbb{R}P^{3}"
+  },
+  {
+   "aliases": [
+    "RP^4"
+   ],
+   "certificate_chain": {
+    "nonzero": {
+     "2": [
+      [
+       0,
+       0,
+       2
+      ]
+     ],
+     "4": [
+      [
+       0,
+       0,
+       2
+      ]
+     ]
+    },
+    "ranks": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    }
+   },
+   "dimension": 4,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": [
+      2
+     ]
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": [
+      2
+     ]
+    },
+    {
+     "degree": 4,
+     "free_rank": 0,
+     "torsion_orders": []
+    }
+   ],
+   "label": "RP^4",
+   "model": {
+    "f_vector": [
+     16,
+     120,
+     330,
+     375,
+     150
+    ],
+    "facets": 150,
+    "facets_sha256": "4062380d7f2008443b5088ec682acbcb6b7cd7070482bee64a886e128e873679",
+    "model_id": "simplicial:real_projective_space:4",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "sagemath",
+     "constructor": "RealProjectiveSpace(4)",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
+    },
+    "vertices": 16
+   },
+   "source_space": "RP^4",
+   "space_id": "real_projective_space:4",
+   "tags": [],
+   "tex": "\\mathbb{R}P^{4}"
   },
   {
    "aliases": [
@@ -11954,6 +13248,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "RP5_24",
+     "how": "file",
      "label": "",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/RP5_24.txt"
     },
@@ -12036,6 +13331,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "S2xR_spaces",
+     "how": "file",
      "label": "RP^2xS^1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/S2xR_spaces.txt"
     },
@@ -12119,6 +13415,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "S2xR_spaces",
+     "how": "file",
      "label": "RP^3#RP^3",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/S2xR_spaces.txt"
     },
@@ -12196,6 +13493,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "S2xR_spaces",
+     "how": "file",
      "label": "S^2twistS^1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/S2xR_spaces.txt"
     },
@@ -12263,6 +13561,7 @@
      "catalog": "lutz",
      "date_accessed": "2026-09-08",
      "file": "S2xR_spaces",
+     "how": "file",
      "label": "S^2xS^1",
      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/library_of_triangulations/S2xR_spaces.txt"
     },
@@ -12276,6 +13575,275 @@
     "s2xr_geometry"
    ],
    "tex": "S^{2}\\times S^{1}"
+  },
+  {
+   "aliases": [
+    "S^0"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 2
+    }
+   },
+   "dimension": 0,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 2,
+     "torsion_orders": []
+    }
+   ],
+   "label": "S^0",
+   "model": {
+    "f_vector": [
+     2
+    ],
+    "facets": 2,
+    "facets_sha256": "1e9987e996a1c529f61f4339797481b7b1138b15f18a44e06dde45eabbc67921",
+    "model_id": "simplicial:sphere:0",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "cohomology-tables",
+     "constructor": "sphere(0)",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
+    },
+    "vertices": 2
+   },
+   "source_space": "S^0",
+   "space_id": "sphere:0",
+   "tags": [],
+   "tex": "S^{0}"
+  },
+  {
+   "aliases": [
+    "S^1"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1,
+     "1": 1
+    }
+   },
+   "dimension": 1,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "S^1",
+   "model": {
+    "f_vector": [
+     3,
+     3
+    ],
+    "facets": 3,
+    "facets_sha256": "292050944910a3a7f1da145b8d152535524602ddce87f8a25a30aea5bf589526",
+    "model_id": "simplicial:sphere:1",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "cohomology-tables",
+     "constructor": "sphere(1)",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
+    },
+    "vertices": 3
+   },
+   "source_space": "S^1",
+   "space_id": "sphere:1",
+   "tags": [],
+   "tex": "S^{1}"
+  },
+  {
+   "aliases": [
+    "S^2"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1,
+     "2": 1
+    }
+   },
+   "dimension": 2,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "S^2",
+   "model": {
+    "f_vector": [
+     4,
+     6,
+     4
+    ],
+    "facets": 4,
+    "facets_sha256": "41d49c975f160871b5e3210fa4e0d84f9b4abfb79c57c63a692ab77ead820200",
+    "model_id": "simplicial:sphere:2",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "cohomology-tables",
+     "constructor": "sphere(2)",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
+    },
+    "vertices": 4
+   },
+   "source_space": "S^2",
+   "space_id": "sphere:2",
+   "tags": [],
+   "tex": "S^{2}"
+  },
+  {
+   "aliases": [
+    "S^3"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1,
+     "3": 1
+    }
+   },
+   "dimension": 3,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "S^3",
+   "model": {
+    "f_vector": [
+     5,
+     10,
+     10,
+     5
+    ],
+    "facets": 5,
+    "facets_sha256": "128ebeebd4b4f727d8e4273c75a1d7ffc05d7dff4c1d5ce08d0b398ebb383536",
+    "model_id": "simplicial:sphere:3",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "cohomology-tables",
+     "constructor": "sphere(3)",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
+    },
+    "vertices": 5
+   },
+   "source_space": "S^3",
+   "space_id": "sphere:3",
+   "tags": [],
+   "tex": "S^{3}"
+  },
+  {
+   "aliases": [
+    "S^4"
+   ],
+   "certificate_chain": {
+    "nonzero": {},
+    "ranks": {
+     "0": 1,
+     "4": 1
+    }
+   },
+   "dimension": 4,
+   "family": "__existing__",
+   "integral_homology": [
+    {
+     "degree": 0,
+     "free_rank": 1,
+     "torsion_orders": []
+    },
+    {
+     "degree": 1,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 2,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 3,
+     "free_rank": 0,
+     "torsion_orders": []
+    },
+    {
+     "degree": 4,
+     "free_rank": 1,
+     "torsion_orders": []
+    }
+   ],
+   "label": "S^4",
+   "model": {
+    "f_vector": [
+     6,
+     15,
+     20,
+     15,
+     6
+    ],
+    "facets": 6,
+    "facets_sha256": "e6c3f70e42fa3a825f97c336d275c35d96ea5d55e58b957aabb5621ab766af44",
+    "model_id": "simplicial:sphere:4",
+    "redistribution": "identified_not_redistributed",
+    "retrieval": {
+     "catalog": "cohomology-tables",
+     "constructor": "sphere(4)",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
+    },
+    "vertices": 6
+   },
+   "source_space": "S^4",
+   "space_id": "sphere:4",
+   "tags": [],
+   "tex": "S^{4}"
   },
   {
    "aliases": [
@@ -12337,11 +13905,10 @@
     "model_id": "simplicial:sphere:5",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "builtin",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "cohomology-tables",
+     "constructor": "sphere(5)",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
     },
     "vertices": 7
    },
@@ -12416,11 +13983,10 @@
     "model_id": "simplicial:sphere:6",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "builtin",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "cohomology-tables",
+     "constructor": "sphere(6)",
+     "how": "constructor",
+     "url": "https://github.com/wgabrielong/cohomology-tables"
     },
     "vertices": 8
    },
@@ -12470,11 +14036,11 @@
     "model_id": "simplicial:sum_complex:5:0-1-3",
     "redistribution": "identified_not_redistributed",
     "retrieval": {
-     "catalog": "sage",
-     "date_accessed": "",
-     "file": "",
-     "label": "",
-     "url": ""
+     "catalog": "sagemath",
+     "constructor": "SumComplex(5,[0,1,3])",
+     "how": "constructor",
+     "url": "https://doc.sagemath.org/html/en/reference/topology/sage/topology/simplicial_complex_examples.html",
+     "version": "SageMath version 10.3, Release Date: 2024-03-19"
     },
     "vertices": 5
    },

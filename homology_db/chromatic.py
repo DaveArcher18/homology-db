@@ -665,6 +665,28 @@ def _poincare_artifact() -> tuple[str, list[dict[str, int]]]:
     ]
 
 
+def _model_citation(retrieval: dict[str, Any]) -> str:
+    """How to name this model in prose, in the terms its own catalogue uses."""
+    if retrieval["how"] == "file":
+        return f"{retrieval['label']!r} in {retrieval['file']}"
+    if retrieval["how"] == "eprint":
+        return f"read from arXiv:{retrieval['eprint']}"
+    return f"built by {retrieval['constructor']}"
+
+
+def _model_recipe(retrieval: dict[str, Any]) -> str:
+    """The instruction that reproduces the model, without shipping it."""
+    accessed = retrieval.get("date_accessed")
+    if retrieval["how"] == "file":
+        return (f"Fetch {retrieval['label']!r} from {retrieval['file']} at "
+                f"{retrieval['url']} (retrieved {accessed}).")
+    if retrieval["how"] == "eprint":
+        return (f"Read the facet list from the source of arXiv:{retrieval['eprint']} at "
+                f"{retrieval['url']} (retrieved {accessed}).")
+    where = retrieval.get("version") or "cohomology-tables itself"
+    return f"Run {retrieval['constructor']} in {where}."
+
+
 def _imported_simplicial_spec(
     family: dict[str, Any], parameters: dict[str, Any]
 ) -> dict[str, Any]:
@@ -695,7 +717,7 @@ def _imported_simplicial_spec(
         attaching_map=(
             f"The model is the {descriptor['vertices']}-vertex, "
             f"{descriptor['facets']}-facet triangulation "
-            f"{retrieval['label']!r} in {retrieval['file']}, identified by the "
+            f"{_model_citation(retrieval)}, identified by the "
             f"SHA-256 of its canonical facet list and not redistributed here."
         ),
         boundary_formula=(
@@ -711,9 +733,8 @@ def _imported_simplicial_spec(
         tags=list(model["tags"]),
         model_kind="finite_simplicial_complex",
         construction=(
-            f"Fetch {retrieval['label']!r} from {retrieval['file']} at "
-            f"{retrieval['url']} (retrieved {retrieval['date_accessed']}) and check "
-            f"its canonical facet list against the recorded hash."
+            f"{_model_recipe(retrieval)} Check its canonical facet "
+            f"list against the recorded hash."
         ),
         model_cell_degrees=[
             {"degree": degree, "count": count}
