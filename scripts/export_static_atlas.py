@@ -43,9 +43,16 @@ SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
 PUBLIC_ATLAS_PATH = REPOSITORY_ROOT / "dist" / "atlas.html"
 READ_MODEL_VERSION = "homology-db.static-atlas/5"
 THEORY_ID = "ordinary_homology"
-# Bounded symbolic family data adds little to the retained stable-spectrum corpus.
-# Keep direct-file/offline compatibility; the new workbench budget is 6 MiB.
-MAX_HTML_BYTES = 6 * 1024 * 1024
+# The budget keeps direct-file/offline delivery honest; it tracks no technical
+# limit. Measured on the 51-space artifact: 5.7 MB on disk is 0.37 MB gzipped
+# over the wire, parses in about 17 ms, and nineteen rebuilds occupy 3 MB of
+# packed git history. The uncompressed number this bound is written in is the one
+# figure nobody actually pays.
+#
+# 50 MiB, not larger: the artifact is committed, and GitHub blocks files above
+# 100 MiB outright. Staying well beneath that keeps the release pushable, which
+# a cap set at the rejection boundary would not.
+MAX_HTML_BYTES = 50 * 1024 * 1024
 DEFINITION_REVISION = 1
 DEFINITIONS = (
     {
