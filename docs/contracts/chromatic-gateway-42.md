@@ -10,7 +10,7 @@ Public read model: `homology-db.static-atlas/3`
 
 This Snapshot is a compact ordinary-Homology atlas of spaces that are either
 standard topology examples or geometric inputs to chromatic homotopy theory.
-It contains 51 named CW spaces in 19 families: 41 finite CW complexes and 10
+It contains 51 named CW spaces in 17 families: 41 finite CW complexes and 10
 infinite finite-type CW complexes. Twenty-one spaces have integral torsion.
 
 The word “chromatic” records why the examples are useful; ordinary Homology

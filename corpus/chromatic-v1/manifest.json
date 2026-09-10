@@ -267,29 +267,87 @@
     {
       "id": "surface",
       "label": "Surfaces",
-      "summary": "The torus and Klein bottle provide orientable, nonorientable, free, and 2-torsion two-dimensional test cases.",
-      "chromatic_relevance": "These common topology spaces stress nontrivial 2-cell attaching words and distinguish zero cellular boundaries from degree-two boundaries.",
+      "summary": "Closed surfaces, classified by orientability and genus: each is a connected sum of tori or of projective planes, with a vanishing degree-two boundary in the orientable case and a single order-two class otherwise.",
+      "chromatic_relevance": "The genus filtration grows the rank of the degree-one classes while orientability alone decides whether the cellular boundary vanishes, separating additive growth from 2-primary torsion.",
       "model_formula": "closed_surface_cells",
-      "instances": [{"kind": "torus"}, {"kind": "klein_bottle"}],
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology"}]
-    },
-    {
-      "id": "orientable_surface",
-      "label": "Orientable surfaces",
-      "summary": "Closed orientable surfaces of genus two through six, each a connected sum of that many tori, with free homology and a zero cellular differential.",
-      "chromatic_relevance": "The genus filtration grows the rank of a degree-one class while keeping the differential zero, separating additive growth from multiplicative structure.",
-      "model_formula": "orientable_surface_connected_sum",
-      "parameters": {"genus": [2, 3, 4, 5, 6]},
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.36, p. 141, the closed orientable surface of genus g and its cellular chain complex"}]
-    },
-    {
-      "id": "nonorientable_surface",
-      "label": "Nonorientable surfaces",
-      "summary": "Closed nonorientable surfaces of genus three through six, each a connected sum of that many projective planes, carrying a single order-two class.",
-      "chromatic_relevance": "The crosscap word gives a degree-two cellular boundary whose Smith reduction produces 2-primary torsion independent of the genus.",
-      "model_formula": "nonorientable_surface_connected_sum",
-      "parameters": {"genus": [3, 4, 5, 6]},
-      "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Example 2.37, p. 141, the closed nonorientable surface of genus g and its cellular chain complex"}]
+      "instances": [
+        {
+          "kind": "torus"
+        },
+        {
+          "kind": "orientable",
+          "genus": 2
+        },
+        {
+          "kind": "orientable",
+          "genus": 3
+        },
+        {
+          "kind": "orientable",
+          "genus": 4
+        },
+        {
+          "kind": "orientable",
+          "genus": 5
+        },
+        {
+          "kind": "orientable",
+          "genus": 6
+        },
+        {
+          "kind": "klein_bottle"
+        },
+        {
+          "kind": "nonorientable",
+          "genus": 3
+        },
+        {
+          "kind": "nonorientable",
+          "genus": 4
+        },
+        {
+          "kind": "nonorientable",
+          "genus": 5
+        },
+        {
+          "kind": "nonorientable",
+          "genus": 6
+        }
+      ],
+      "sources": [
+        {
+          "reference_id": "hatcher-at",
+          "role": "model_and_homology",
+          "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology",
+          "applies_to": {
+            "kind": "torus"
+          }
+        },
+        {
+          "reference_id": "hatcher-at",
+          "role": "model_and_homology",
+          "locator": "Examples 0.8 and 2.36-2.37, cell structures and cellular homology",
+          "applies_to": {
+            "kind": "klein_bottle"
+          }
+        },
+        {
+          "reference_id": "hatcher-at",
+          "role": "model_and_homology",
+          "locator": "Example 2.36, p. 141, the closed orientable surface of genus g and its cellular chain complex",
+          "applies_to": {
+            "kind": "orientable"
+          }
+        },
+        {
+          "reference_id": "hatcher-at",
+          "role": "model_and_homology",
+          "locator": "Example 2.37, p. 141, the closed nonorientable surface of genus g and its cellular chain complex",
+          "applies_to": {
+            "kind": "nonorientable"
+          }
+        }
+      ]
     },
     {
       "id": "real_projective_space",

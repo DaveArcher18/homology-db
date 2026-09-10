@@ -51,7 +51,7 @@ class ChromaticAtlasTests(unittest.TestCase):
                 "schubert_space": 2,
                 "sphere": 5,
                 "stunted_projective_space": 2,
-                "surface": 2, "orientable_surface": 5, "nonorientable_surface": 4,
+                "surface": 11,
                 "thom_space": 1,
                 "unitary_classifying_space": 1,
                 "wedge": 1,

@@ -77,7 +77,8 @@ CREATE TABLE space(
     summary TEXT NOT NULL,
     chromatic_relevance TEXT NOT NULL,
     equivalence_kind TEXT NOT NULL,
-    chain_sha256 TEXT NOT NULL
+    chain_sha256 TEXT NOT NULL,
+    sort_order INTEGER NOT NULL UNIQUE
 );
 CREATE TABLE alias(
     normalized_alias TEXT NOT NULL,
@@ -754,56 +755,60 @@ def _materialize_family(
                 computation_sketch="Smith reduction of the column (0,2) gives H_1=Z + Z/2 and H_2=0.",
                 tags=["surface", "nonorientable", "2_primary", "torsion"],
             )
+        if kind == "orientable":
+            genus = int(parameters["genus"])
+            if genus < 2:
+                raise ValueError(
+                    "the sphere and the torus are recorded separately from the genus series"
+                )
+            return _base_spec(
+                family,
+                parameters,
+                key=f"orientable_surface:{genus}",
+                label=f"Genus-{genus} orientable surface",
+                dimension=2,
+                aliases=[f"Sigma_{genus}", f"M_{genus}", f"connected sum of {genus} tori"],
+                ranks={0: 1, 1: 2 * genus, 2: 1},
+                nonzero=None,
+                attaching_map=(
+                    f"Attach the 2-cell to a wedge of {2 * genus} circles by the product of "
+                    f"{genus} commutators [a_1,b_1]...[a_{genus},b_{genus}]."
+                ),
+                boundary_formula="Each commutator abelianizes to zero, so d_2 = 0.",
+                computation_sketch=(
+                    f"The zero cellular differential gives H_0=Z, H_1=Z^{2 * genus} and H_2=Z."
+                ),
+                tags=["surface", "orientable", "torsion_free", "connected_sum"],
+            )
+        if kind == "nonorientable":
+            genus = int(parameters["genus"])
+            if genus < 3:
+                raise ValueError(
+                    "the projective plane and Klein bottle are recorded separately"
+                )
+            return _base_spec(
+                family,
+                parameters,
+                key=f"nonorientable_surface:{genus}",
+                label=f"Genus-{genus} nonorientable surface",
+                dimension=2,
+                aliases=[f"N_{genus}", f"connected sum of {genus} projective planes"],
+                ranks={0: 1, 1: genus, 2: 1},
+                nonzero={2: [(index, 0, 2) for index in range(genus)]},
+                attaching_map=(
+                    f"Attach the 2-cell to a wedge of {genus} circles by the crosscap word "
+                    f"a_1^2...a_{genus}^2."
+                ),
+                boundary_formula=(
+                    f"Abelianizing the crosscap word gives d_2(1) = 2(a_1 + ... + a_{genus})."
+                ),
+                computation_sketch=(
+                    f"Smith reduction of the column of {genus} twos has invariant factor 2, giving "
+                    f"H_1=Z^{genus - 1} + Z/2 and H_2=0."
+                ),
+                tags=["surface", "nonorientable", "2_primary", "torsion", "connected_sum"],
+            )
         raise ValueError(f"unknown surface kind {kind}")
-    if formula == "orientable_surface_connected_sum":
-        genus = int(parameters["genus"])
-        if genus < 2:
-            raise ValueError("genus-one and genus-zero orientable surfaces are recorded separately")
-        return _base_spec(
-            family,
-            parameters,
-            key=f"orientable_surface:{genus}",
-            label=f"Genus-{genus} orientable surface",
-            dimension=2,
-            aliases=[f"Sigma_{genus}", f"M_{genus}", f"connected sum of {genus} tori"],
-            ranks={0: 1, 1: 2 * genus, 2: 1},
-            nonzero=None,
-            attaching_map=(
-                f"Attach the 2-cell to a wedge of {2 * genus} circles by the product of "
-                f"{genus} commutators [a_1,b_1]...[a_{genus},b_{genus}]."
-            ),
-            boundary_formula="Each commutator abelianizes to zero, so d_2 = 0.",
-            computation_sketch=(
-                f"The zero cellular differential gives H_0=Z, H_1=Z^{2 * genus} and H_2=Z."
-            ),
-            tags=["surface", "orientable", "torsion_free", "connected_sum"],
-        )
-    if formula == "nonorientable_surface_connected_sum":
-        genus = int(parameters["genus"])
-        if genus < 3:
-            raise ValueError("the projective plane and Klein bottle are recorded separately")
-        return _base_spec(
-            family,
-            parameters,
-            key=f"nonorientable_surface:{genus}",
-            label=f"Genus-{genus} nonorientable surface",
-            dimension=2,
-            aliases=[f"N_{genus}", f"connected sum of {genus} projective planes"],
-            ranks={0: 1, 1: genus, 2: 1},
-            nonzero={2: [(index, 0, 2) for index in range(genus)]},
-            attaching_map=(
-                f"Attach the 2-cell to a wedge of {genus} circles by the crosscap word "
-                f"a_1^2...a_{genus}^2."
-            ),
-            boundary_formula=(
-                f"Abelianizing the crosscap word gives d_2(1) = 2(a_1 + ... + a_{genus})."
-            ),
-            computation_sketch=(
-                f"Smith reduction of the column of {genus} twos has invariant factor 2, giving "
-                f"H_1=Z^{genus - 1} + Z/2 and H_2=0."
-            ),
-            tags=["surface", "nonorientable", "2_primary", "torsion", "connected_sum"],
-        )
     if formula == "real_projective_standard_cw":
         n = int(parameters["n"])
         ranks = {degree: 1 for degree in range(n + 1)}
@@ -1350,10 +1355,10 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                     reference["source_kind"],
                 ),
             )
-        for spec in specs:
+        for space_order, spec in enumerate(specs):
             chain_sha256 = spec["model"]["chain_sha256"]
             connection.execute(
-                "INSERT INTO space VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO space VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     spec["key"],
                     spec["label"],
@@ -1367,6 +1372,7 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                     spec["chromatic_relevance"],
                     spec["equivalence"],
                     chain_sha256,
+                    space_order,
                 ),
             )
             for alias in sorted(

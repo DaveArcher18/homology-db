@@ -1135,10 +1135,10 @@ def conceptual_space_tex(space: dict[str, Any]) -> str:
             return r"T^{2}"
         if parameters["kind"] == "klein_bottle":
             return r"\mathrm{K}"
-    if family == "orientable_surface":
-        return rf"\Sigma_{{{int(parameters['genus'])}}}"
-    if family == "nonorientable_surface":
-        return rf"N_{{{int(parameters['genus'])}}}"
+        if parameters["kind"] == "orientable":
+            return rf"\Sigma_{{{int(parameters['genus'])}}}"
+        if parameters["kind"] == "nonorientable":
+            return rf"N_{{{int(parameters['genus'])}}}"
     if family == "real_projective_space":
         return rf"\mathbb{{R}}P^{{{int(parameters['n'])}}}"
     if family == "hopf_projective_plane":
@@ -1950,7 +1950,7 @@ def build_read_model(
                 """
                 SELECT s.*
                 FROM space s JOIN family f ON f.family_id = s.family
-                ORDER BY f.sort_order, s.label, s.space_id
+                ORDER BY f.sort_order, s.sort_order
                 """
             )
         ]
