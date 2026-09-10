@@ -14,6 +14,7 @@ import functools
 import hashlib
 import itertools
 import json
+import math
 import sqlite3
 from collections import Counter
 from contextlib import closing
@@ -664,6 +665,74 @@ def _poincare_artifact() -> tuple[str, list[dict[str, int]]]:
     ]
 
 
+def _imported_simplicial_spec(
+    family: dict[str, Any], parameters: dict[str, Any]
+) -> dict[str, Any]:
+    """A space whose simplicial model is identified by hash, never shipped."""
+    model = imported_models()[parameters["space"]]
+    descriptor = model["model"]
+    certificate = model["certificate_chain"]
+    ranks = {int(degree): rank for degree, rank in certificate["ranks"].items()}
+    nonzero = {
+        int(degree): [tuple(entry) for entry in entries]
+        for degree, entries in certificate["nonzero"].items()
+    }
+    dimension = int(model["dimension"])
+    retrieval = descriptor["retrieval"]
+    groups = {
+        int(row["degree"]): (int(row["free_rank"]), list(row["torsion_orders"]))
+        for row in model["integral_homology"]
+    }
+    return _base_spec(
+        family,
+        parameters,
+        key=model["space_id"],
+        label=model["label"],
+        dimension=dimension,
+        aliases=list(model["aliases"]),
+        ranks=ranks,
+        nonzero=nonzero or None,
+        attaching_map=(
+            f"The model is the {descriptor['vertices']}-vertex, "
+            f"{descriptor['facets']}-facet triangulation "
+            f"{retrieval['label']!r} in {retrieval['file']}, identified by the "
+            f"SHA-256 of its canonical facet list and not redistributed here."
+        ),
+        boundary_formula=(
+            "The stored chain complex is a calculation certificate for the imported "
+            "groups, not the simplicial boundary of that triangulation, which this "
+            "repository does not hold."
+        ),
+        computation_sketch=(
+            "Integral homology is imported; every other coefficient ring is derived "
+            "here from it by the universal coefficient theorem, and the imported "
+            "field homology is checked against that derivation."
+        ),
+        tags=list(model["tags"]),
+        model_kind="finite_simplicial_complex",
+        construction=(
+            f"Fetch {retrieval['label']!r} from {retrieval['file']} at "
+            f"{retrieval['url']} (retrieved {retrieval['date_accessed']}) and check "
+            f"its canonical facet list against the recorded hash."
+        ),
+        model_cell_degrees=[
+            {"degree": degree, "count": count}
+            for degree, count in enumerate(descriptor["f_vector"])
+        ],
+        model_scope=(
+            "The triangulation is named, counted and hash-pinned but not shipped: its "
+            "source states no licence. Nothing below the f-vector can be re-derived "
+            "here (ADR 0005, point 4)."
+        ),
+        artifact_sha256=descriptor["facets_sha256"],
+        redistribution="identified_only",
+        integral_override=_integral_rows(dimension, groups),
+        evidence_kind="external_engine_computation",
+        algorithm_id=f"cohomology-tables-import:{descriptor['model_id']}",
+        run_recorded=False,
+    )
+
+
 def _materialize_family(
     family: dict[str, Any], parameters: dict[str, Any], *, bound: int
 ) -> dict[str, Any]:
@@ -711,69 +780,10 @@ def _materialize_family(
             model_kind="finite_simplicial_complex" if n == 0 else "finite_cw",
         )
     if formula == "imported_simplicial_model":
-        model = imported_models()[parameters["space"]]
-        descriptor = model["model"]
-        certificate = model["certificate_chain"]
-        ranks = {int(degree): rank for degree, rank in certificate["ranks"].items()}
-        nonzero = {
-            int(degree): [tuple(entry) for entry in entries]
-            for degree, entries in certificate["nonzero"].items()
-        }
-        dimension = int(model["dimension"])
-        retrieval = descriptor["retrieval"]
-        groups = {
-            int(row["degree"]): (int(row["free_rank"]), list(row["torsion_orders"]))
-            for row in model["integral_homology"]
-        }
-        return _base_spec(
-            family,
-            parameters,
-            key=model["space_id"],
-            label=model["label"],
-            dimension=dimension,
-            aliases=list(model["aliases"]),
-            ranks=ranks,
-            nonzero=nonzero or None,
-            attaching_map=(
-                f"The model is the {descriptor['vertices']}-vertex, "
-                f"{descriptor['facets']}-facet triangulation "
-                f"{retrieval['label']!r} in {retrieval['file']}, identified by the "
-                f"SHA-256 of its canonical facet list and not redistributed here."
-            ),
-            boundary_formula=(
-                "The stored chain complex is a calculation certificate for the imported "
-                "groups, not the simplicial boundary of that triangulation, which this "
-                "repository does not hold."
-            ),
-            computation_sketch=(
-                "Integral homology is imported; every other coefficient ring is derived "
-                "here from it by the universal coefficient theorem, and the imported "
-                "field homology is checked against that derivation."
-            ),
-            tags=list(model["tags"]),
-            model_kind="finite_simplicial_complex",
-            construction=(
-                f"Fetch {retrieval['label']!r} from {retrieval['file']} at "
-                f"{retrieval['url']} (retrieved {retrieval['date_accessed']}) and check "
-                f"its canonical facet list against the recorded hash."
-            ),
-            model_cell_degrees=[
-                {"degree": degree, "count": count}
-                for degree, count in enumerate(descriptor["f_vector"])
-            ],
-            model_scope=(
-                "The triangulation is named, counted and hash-pinned but not shipped: its "
-                "source states no licence. Nothing below the f-vector can be re-derived "
-                "here (ADR 0005, point 4)."
-            ),
-            artifact_sha256=descriptor["facets_sha256"],
-            redistribution="identified_only",
-            integral_override=_integral_rows(dimension, groups),
-            evidence_kind="external_engine_computation",
-            algorithm_id=f"cohomology-tables-import:{descriptor['model_id']}",
-            run_recorded=False,
-        )
+        return _imported_simplicial_spec(family, parameters)
     if formula == "poincare_simplicial":
+        if "space" in parameters:
+            return _imported_simplicial_spec(family, parameters)
         artifact_sha256, cell_degrees = _poincare_artifact()
         return _base_spec(
             family,
@@ -985,8 +995,11 @@ def _materialize_family(
     if formula == "weighted_lens_cw":
         p = int(parameters["p"])
         weights = [int(weight) for weight in parameters["weights"]]
-        if not is_prime(p) or any(weight % p == 0 for weight in weights):
-            raise ValueError("lens weights must be units modulo the prime p")
+        # A lens space L^(2n-1)(p; l_1..l_n) needs only that each weight is a unit
+        # modulo p. Primality is not required and the catalogue includes composite
+        # moduli such as L(4,1) and L(10,3).
+        if p < 2 or any(math.gcd(weight, p) != 1 for weight in weights):
+            raise ValueError("lens weights must be units modulo p, and p at least 2")
         dimension = 2 * len(weights) - 1
         ranks = {degree: 1 for degree in range(dimension + 1)}
         nonzero = {degree: [(0, 0, p)] for degree in range(2, dimension + 1, 2)}
@@ -1008,7 +1021,7 @@ def _materialize_family(
             boundary_formula=f"The quotient CW differential is {p} in positive even degrees and 0 in odd degrees.",
             computation_sketch=f"The alternating 0/{p} chain gives Z/{p} in odd degrees below {dimension}.",
             tags=[
-                f"{p}_primary",
+                *(f"{prime}_primary" for prime, _ in prime_parts(p)),
                 "torsion",
                 "weighted_quotient",
                 *(["bcp_skeleton"] if len(set(weights)) == 1 else []),
@@ -1270,8 +1283,8 @@ def materialize_specs(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     space_ids = [spec["key"] for spec in specs]
     if len(space_ids) != len(set(space_ids)):
         raise ValueError("chromatic corpus contains duplicate Conceptual-space IDs")
-    if len(specs) != 191:
-        raise ValueError(f"expected the curated 191-space corpus, generated {len(specs)}")
+    if len(specs) != 212:
+        raise ValueError(f"expected the curated 212-space corpus, generated {len(specs)}")
     if any(len(spec["sources"]) == 0 for spec in specs):
         raise ValueError("every chromatic space must inherit at least one source")
     return specs
@@ -2243,7 +2256,7 @@ def demo(path: Path) -> None:
         lens = tools.read_homology("L^5(3;1,1,1)")
         projective = tools.read_homology("CP^2")
         evidence = tools.expand_evidence([moore["groups"][2]["evidence_id"]])
-        print(f"Chromatic Homology Atlas ready: 191 spaces, snapshot {snapshot_id}")
+        print(f"Chromatic Homology Atlas ready: 212 spaces, snapshot {snapshot_id}")
         print(f"Scratch database: {path} (safe to delete; rebuilt on every run)\n")
         print("Quick mathematical tour")
         print(f"  M(Z/5,2): H_2 = {moore['groups'][2]['value']['display']}")
@@ -2265,7 +2278,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Chromatic Homology Atlas")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("demo", help="rebuild the 191-space snapshot and show a tour")
+    subparsers.add_parser("demo", help="rebuild the 212-space snapshot and show a tour")
     tool_parser = subparsers.add_parser("tool", help="execute one stable JSON tool request")
     tool_parser.add_argument("request", help='JSON object with "tool" and "arguments"')
     args = parser.parse_args()

@@ -704,9 +704,9 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
             review_summary = json.loads(review.stdout)
             review_html, review_atlas = embedded_atlas(review_path)
             spectra = review_atlas["conceptual_spectra"]
-            self.assertEqual(review_summary["conceptual_space_count"], 191)
+            self.assertEqual(review_summary["conceptual_space_count"], 212)
             self.assertEqual(review_summary["conceptual_spectrum_count"], 49)
-            self.assertEqual(len(review_atlas["conceptual_spaces"]), 191)
+            self.assertEqual(len(review_atlas["conceptual_spaces"]), 212)
             self.assertEqual(len(spectra), 49)
             self.assertEqual(len({spectrum["id"] for spectrum in spectra}), 49)
             self.assertEqual(

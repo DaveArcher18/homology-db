@@ -7,8 +7,8 @@
    "julia": "1.12.7"
   },
   "exit_status": "succeeded",
-  "model_count": 150,
-  "record_count": 1764,
+  "model_count": 172,
+  "record_count": 2022,
   "run_id": "oscar-simplicial-cup-2026-09-09"
  },
  "corpus_id": "computed-rings-v1",
@@ -173,7 +173,7 @@
  },
  "review_state": "imported_unreviewed",
  "rings_path": "corpus/computed-rings-v1/rings.json",
- "rings_sha256": "6adc7d223731f365d11579f8ce3d4f6d76663dd681a71e18f727aa9059188413",
+ "rings_sha256": "206ed219409f6a16ba8a36c843ae04f3adb2f514a4a4f698c2a77946cb7feac1",
  "schema_version": "homology-db.computed-rings-manifest/1",
  "scope": "Ordinary unreduced cohomology rings and homology of eleven closed surfaces and the four closed S^2 x R 3-manifolds, computed from explicit finite simplicial models by an external computer algebra system. Coefficients Z, Q, F2, F3, F5 and F7. The surfaces' models are checked in; the S^2 x R models come from a catalogue that states no licence and are identified by hash rather than shipped. These are imported computations, not owned ones and not human-reviewed mathematics.",
  "title": "Cup-product rings from explicit triangulations",
@@ -185,6 +185,7 @@
    "four_manifold:k3",
    "hadamard_torsion_complex:32",
    "hom_complex:c6-compl-k5-small",
+   "orientable_surface:26",
    "random_2_complex:25"
   ]
  }

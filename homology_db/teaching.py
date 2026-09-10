@@ -123,7 +123,7 @@ def teaching_catalog() -> dict:
 
     add("point", "2.1 · First homology calculations", "A single point is the simplest nonempty space.",
         "Start here to distinguish ordinary degree-zero homology from reduced homology.", _source("Proposition 2.8, p. 110",110))
-    for n in range(5):
+    for n in range(7):
         add(f"sphere:{n}", "2.1 · First homology calculations",
             "The zero-sphere consists of two points." if n == 0 else f"The {n}-sphere is the unit sphere in real {n+1}-dimensional space.",
             "Count connected components before reducing degree zero." if n == 0 else "A sphere isolates one positive-degree homology class; its cup square vanishes by dimension.",
@@ -153,6 +153,20 @@ def teaching_catalog() -> dict:
             rf"The crosscap word $a_1^2\cdots a_{{{k}}}^2$ abelianizes to twice the sum of the generators, so one order-two class appears no matter how large the genus grows.",
             _source("Example 2.37, p. 141", 141),
             coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation and are not human-reviewed.")
+    for genus in (15, 26):
+        add(f"orientable_surface:{genus}", "2.2 / 3.2 . Surfaces",
+            rf"The genus-{genus} orientable surface is the connected sum of {genus} tori.",
+            "At this genus the first homology has rank in the dozens while the ring stays the same symplectic shape; growth in the groups is not growth in structure.",
+            _source("Example 2.36, p. 141", 141),
+            coverage=IMPORTED_COVERAGE)
+    for triple in ((2,3,7),(2,5,7),(3,4,5),(3,4,7),(3,5,7),(4,5,7)):
+        p_value, q_value, r_value = triple
+        add(f"brieskorn_sphere:{p_value}:{q_value}:{r_value}",
+            "Supplement . Homology does not identify a space",
+            rf"The Brieskorn sphere $\Sigma({p_value},{q_value},{r_value})$ is the link of a singularity, and has the integral homology of the 3-sphere.",
+            "Every group on this page agrees with those of S^3 and with the other Brieskorn spheres; homology cannot separate any of them.",
+            dict(_LUTZ, locator="homology_3spheres.txt: Sigma_%d_%d_%d" % triple),
+            coverage=IMPORTED_COVERAGE)
     for entry in _imported_teaching():
         add(entry["space_id"], entry["chapter"], entry["introduction"], entry["point"],
             dict(entry["source"]), coverage=IMPORTED_COVERAGE)
@@ -172,7 +186,7 @@ def teaching_catalog() -> dict:
     ):
         add(space, "Supplement . Geometric 3-manifolds", introduction, point, dict(LUTZ_S2XR),
             coverage="Homology and cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation on a hash-identified triangulation that is not redistributed here. Not human-reviewed.")
-    for n in (2,3,4):
+    for n in (2,3,4,5):
         add(f"real_projective_space:{n}", "2.2 / 3.2 · Projective spaces",
             rf"$\mathbb{{RP}}^{{{n}}}$ is the space of real lines through the origin in real {n+1}-dimensional space.",
             "Compare the integral torsion degrees in homology and cohomology, then change coefficients.", _source("Examples 0.4 and 2.42, pp. 6, 144; Theorem 3.19, p. 220",144))
@@ -187,7 +201,10 @@ def teaching_catalog() -> dict:
         add(f"moore:{m}:{n}", "2.2 · Moore spaces",
             f"Attach an ({n+1})-cell to an {n}-sphere by a degree-{m} map to obtain this Moore space.",
             rf"Its only nonzero reduced integral homology is $\mathbb{{Z}}/{m}\mathbb{{Z}}$ in degree {n}; compare prime coefficients dividing {m} with those that do not.", _source("Example 2.40, pp. 143–144",143))
-    for m,dimension,weights in ((3,3,"1-1"),(5,3,"1-1"),(5,3,"1-2"),(3,5,"1-1-1")):
+    for m,dimension,weights in ((3,3,"1-1"),(4,3,"1-1"),(5,3,"1-1"),(5,3,"1-2"),
+                                (6,3,"1-1"),(7,3,"1-1"),(7,3,"1-2"),(8,3,"1-1"),
+                                (8,3,"1-3"),(9,3,"1-1"),(9,3,"1-2"),(10,3,"1-1"),
+                                (10,3,"1-3"),(3,5,"1-1-1")):
         add(f"lens:{m}:{dimension}:{weights}", "2.2 · Lens spaces",
             f"This lens space is a quotient of the {dimension}-sphere by a free cyclic action of order {m}, with weights {weights.replace('-', ', ')}.",
             "Retain the weights: the cellular homology groups alone do not classify lens spaces.", _source("Example 2.43, pp. 144–146",144))
@@ -254,5 +271,5 @@ def teaching_catalog() -> dict:
          "sources":[_source("Projective rings, pp. 220–222; Hopf invariant examples, p. 427",427)]},
     ]
     return {"schema_version":SCHEMA_VERSION, "title":"A selected textbook trail",
-            "scope_note":"A selected Hatcher-oriented inventory of all 56 retained spaces, with clearly marked supplementary sources—not an exhaustive index of Hatcher. Teaching exposition and new records remain human-review-pending.",
+            "scope_note":"A selected Hatcher-oriented inventory of all 212 retained spaces, with clearly marked supplementary sources—not an exhaustive index of Hatcher. Teaching exposition and new records remain human-review-pending.",
             "entries":entries,"comparisons":comparisons}

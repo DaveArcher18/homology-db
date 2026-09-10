@@ -1,6 +1,6 @@
 {
  "schema_version": "homology-db.chromatic-corpus/3",
- "snapshot_name": "chromatic-gateway-56",
+ "snapshot_name": "chromatic-gateway-212",
  "title": "Chromatic gateway CW corpus",
  "materialized_through_degree": 24,
  "scope": "Fifty-one named CW spaces spanning calibration examples, torsion cofibers, closed surfaces of every genus through six, projective and lens filtrations, Lie and Schubert spaces, cyclic and elementary-abelian classifying spaces, complex orientations, and a universal Thom space. Finite-type formulas are materialized only through degree 24; the snapshot computes ordinary homology and does not claim Morava K-theory or chromatic type calculations.",
@@ -866,7 +866,9 @@
      1,
      2,
      3,
-     4
+     4,
+     5,
+     6
     ]
    },
    "sources": [
@@ -880,17 +882,43 @@
   {
    "id": "homology_sphere",
    "label": "Homology spheres",
-   "summary": "A triangulated Poincare homology sphere, deliberately paired with S^3 to prevent identity-by-homology.",
+   "summary": "Closed 3-manifolds with the integral homology of the 3-sphere: the Poincare dodecahedral space and six Brieskorn spheres. Homology cannot tell any of them from S^3, or from each other.",
    "chromatic_relevance": "It is an identity and model-integrity guard: ordinary homology agrees with S^3 while the fundamental group does not.",
    "model_formula": "poincare_simplicial",
    "instances": [
-    {}
+    {
+     "kind": "poincare"
+    },
+    {
+     "space": "brieskorn_sphere:2:3:7"
+    },
+    {
+     "space": "brieskorn_sphere:2:5:7"
+    },
+    {
+     "space": "brieskorn_sphere:3:4:5"
+    },
+    {
+     "space": "brieskorn_sphere:3:4:7"
+    },
+    {
+     "space": "brieskorn_sphere:3:5:7"
+    },
+    {
+     "space": "brieskorn_sphere:4:5:7"
+    }
    ],
    "sources": [
     {
      "reference_id": "sage-poincare-source",
      "role": "model_and_homology",
      "locator": "PoincareHomologyThreeSphere, lines 610-653 at pinned commit"
+    },
+    {
+     "reference_id": "lutz-manifold-page",
+     "role": "model",
+     "locator": "homology_3spheres.txt, Brieskorn spheres Sigma(p,q,r)",
+     "applies_to": {}
     }
    ]
   },
@@ -943,6 +971,14 @@
     {
      "kind": "orientable",
      "genus": 6
+    },
+    {
+     "kind": "orientable",
+     "genus": 15
+    },
+    {
+     "kind": "orientable",
+     "genus": 26
     },
     {
      "kind": "klein_bottle"
@@ -1009,7 +1045,8 @@
     "n": [
      2,
      3,
-     4
+     4,
+     5
     ]
    },
    "sources": [
@@ -1137,6 +1174,13 @@
      ]
     },
     {
+     "p": 4,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
      "p": 5,
      "weights": [
       1,
@@ -1148,6 +1192,69 @@
      "weights": [
       1,
       2
+     ]
+    },
+    {
+     "p": 6,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
+     "p": 7,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
+     "p": 7,
+     "weights": [
+      1,
+      2
+     ]
+    },
+    {
+     "p": 8,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
+     "p": 8,
+     "weights": [
+      1,
+      3
+     ]
+    },
+    {
+     "p": 9,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
+     "p": 9,
+     "weights": [
+      1,
+      2
+     ]
+    },
+    {
+     "p": 10,
+     "weights": [
+      1,
+      1
+     ]
+    },
+    {
+     "p": 10,
+     "weights": [
+      1,
+      3
      ]
     },
     {
