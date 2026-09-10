@@ -59,8 +59,8 @@ class ClassicalAtlasTest(unittest.TestCase):
 
     def test_noncore_and_integral_absence_is_not_zero(self):
         noncore = [space for space in self.atlas["conceptual_spaces"] if not space["classical_core"]]
-        self.assertEqual(len(noncore), 38)
-        self.assertEqual(sum(not space["cohomology"] for space in noncore), 27)
+        self.assertEqual(len(noncore), 43)
+        self.assertEqual(sum(not space["cohomology"] for space in noncore), 32)
         for space in self.atlas["conceptual_spaces"]:
             self.assertTrue(any(row["coefficient_ring"] == "Z" for row in space["homology"]))
             integral = [row for row in space["cohomology"] if row["coefficient"] == "Z"]

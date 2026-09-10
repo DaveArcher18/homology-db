@@ -1,6 +1,6 @@
 {
   "schema_version": "homology-db.chromatic-corpus/3",
-  "snapshot_name": "chromatic-gateway-51",
+  "snapshot_name": "chromatic-gateway-56",
   "title": "Chromatic gateway CW corpus",
   "materialized_through_degree": 24,
   "scope": "Fifty-one named CW spaces spanning calibration examples, torsion cofibers, closed surfaces of every genus through six, projective and lens filtrations, Lie and Schubert spaces, cyclic and elementary-abelian classifying spaces, complex orientations, and a universal Thom space. Finite-type formulas are materialized only through degree 24; the snapshot computes ordinary homology and does not claim Morava K-theory or chromatic type calculations.",
@@ -97,11 +97,32 @@
       "detail": "The standard RP^4 CW model is the 4-skeleton of RP^infinity = B(C_2)."
     },
     {
+      "id": "relation:rp3-sum-rp3:connected-sum:rp3",
+      "source_space_id": "s2xr:rp3-sum-rp3",
+      "type": "connected_sum_power_of",
+      "target_space_id": "real_projective_space:3",
+      "detail": "The prime decomposition of this S^2 x R manifold is the connected sum of 2 copies of RP^3; each summand contributes one order-two class to H_1."
+    },
+    {
       "id": "relation:cp2:finite-skeleton:cp-infinity",
       "source_space_id": "complex_projective_space:2",
       "type": "finite_skeleton_of",
       "target_space_id": "complex_projective_space:infinity",
       "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity."
+    },
+    {
+      "id": "relation:cp3:finite-skeleton:cp-infinity",
+      "source_space_id": "complex_projective_space:3",
+      "type": "finite_skeleton_of",
+      "target_space_id": "complex_projective_space:infinity",
+      "detail": "The standard four-cell CW model is the 6-skeleton of the projective filtration of CP^infinity."
+    },
+    {
+      "id": "relation:cp2:finite-skeleton:cp3",
+      "source_space_id": "complex_projective_space:2",
+      "type": "finite_skeleton_of",
+      "target_space_id": "complex_projective_space:3",
+      "detail": "CP^2 is the 4-skeleton of CP^3 in the same projective cell filtration."
     },
     {
       "id": "relation:lens-3-3:finite-skeleton:bc3",
@@ -177,6 +198,22 @@
       "year": 1997,
       "url": "https://math.mit.edu/~apost/papers/thesis.pdf",
       "source_kind": "author_owned_thesis"
+    },
+    {
+      "id": "lutz-sulanke-swartz-3manifolds",
+      "authors": ["Frank H. Lutz", "Thom Sulanke", "Ed Swartz"],
+      "title": "f-vectors of 3-manifolds",
+      "year": 2009,
+      "url": "https://doi.org/10.37236/68",
+      "source_kind": "peer_reviewed_article"
+    },
+    {
+      "id": "lutz-manifold-page",
+      "authors": ["Frank H. Lutz"],
+      "title": "The Manifold Page: geometric 3-manifold catalogues",
+      "url": "https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/",
+      "year": 2017,
+      "source_kind": "unlicensed_author_catalogue"
     },
     {
       "id": "sage-poincare-source",
@@ -350,6 +387,39 @@
       ]
     },
     {
+      "id": "s2xr_3manifold",
+      "label": "S^2 x R 3-manifolds",
+      "summary": "The four closed 3-manifolds modelled on S^2 x R: two sphere bundles over the circle, one product with the projective plane, and one connected sum. The list is complete.",
+      "chromatic_relevance": "A four-element geometry where orientability and 2-torsion vary independently, so the same coefficient change reads differently in each.",
+      "model_formula": "imported_simplicial_model",
+      "instances": [
+        {
+          "space": "s2xr:s2xs1"
+        },
+        {
+          "space": "s2xr:s2-twist-s1"
+        },
+        {
+          "space": "s2xr:rp2xs1"
+        },
+        {
+          "space": "s2xr:rp3-sum-rp3"
+        }
+      ],
+      "sources": [
+        {
+          "reference_id": "lutz-manifold-page",
+          "role": "model",
+          "locator": "S2xR_spaces.txt, the four closed S^2 x R manifolds"
+        },
+        {
+          "reference_id": "lutz-sulanke-swartz-3manifolds",
+          "role": "model_identity",
+          "locator": "Section 4, geometric 3-manifold catalogues and their vertex-minimal triangulations"
+        }
+      ]
+    },
+    {
       "id": "real_projective_space",
       "label": "Real projective spaces",
       "summary": "Finite skeleta of BC_2 with one cell in every degree and visible 2-primary torsion.",
@@ -362,12 +432,25 @@
       ]
     },
     {
+      "id": "complex_projective_space",
+      "label": "Complex projective spaces",
+      "summary": "Finite complex projective spaces carry one cell in every even degree, so every cellular differential vanishes and the homology is free.",
+      "chromatic_relevance": "The finite skeleta of CP-infinity are the standard complex-orientation test objects, and the first place where a cup product separates spaces that cellular homology cannot.",
+      "model_formula": "complex_projective_standard_cw",
+      "parameters": {"n": [2, 3]},
+      "sources": [
+        {"reference_id": "hatcher-at", "role": "model", "locator": "Example 0.6, pp. 6-8"},
+        {"reference_id": "hatcher-at", "role": "homology", "locator": "Example 2.35, p. 140"},
+        {"reference_id": "hatcher-at", "role": "attaching_maps", "locator": "Example 4.47, pp. 378-379"}
+      ]
+    },
+    {
       "id": "hopf_projective_plane",
-      "label": "Hopf projective planes",
-      "summary": "The complex, quaternionic, and octonionic projective planes retain the eta, nu, and sigma attaching maps.",
-      "chromatic_relevance": "These three Hopf-invariant-one cofibers are foundational finite complexes whose identical-looking zero cellular differentials hide different attaching maps.",
+      "label": "Quaternionic and octonionic projective planes",
+      "summary": "The quaternionic and octonionic projective planes retain the nu and sigma attaching maps; the complex member of the Hopf-invariant-one trio is CP^2, recorded with the complex projective spaces.",
+      "chromatic_relevance": "These Hopf-invariant-one cofibers are foundational finite complexes whose identical-looking zero cellular differentials hide different attaching maps.",
       "model_formula": "hopf_projective_plane",
-      "instances": [{"division_algebra": "complex"}, {"division_algebra": "quaternionic"}, {"division_algebra": "octonionic"}],
+      "instances": [{"division_algebra": "quaternionic"}, {"division_algebra": "octonionic"}],
       "sources": [{"reference_id": "hatcher-at", "role": "model_and_homology", "locator": "Examples 0.6 and 4.47; pp. 6-8 and 378-379"}]
     },
     {

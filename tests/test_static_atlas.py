@@ -110,7 +110,7 @@ console.log(JSON.stringify({
 
             self.assertEqual(completed.returncode, 0, completed.stderr)
             build_summary = json.loads(completed.stdout)
-            self.assertEqual(build_summary["relation_count"], 20)
+            self.assertEqual(build_summary["relation_count"], 23)
             self.assertGreater(build_summary["source_database_bytes"], 0)
             html = output_path.read_text(encoding="utf-8")
             embedded = re.search(
@@ -150,7 +150,6 @@ console.log(JSON.stringify({
                     "scripts/verify_steenrod_release.py",
                     "static_atlas/atlas.css",
                     "static_atlas/atlas.js",
-                    "static_atlas/data-store.js",
                     "static_atlas/index.template.html",
                     "static_atlas/presentation.js",
                     "static_atlas/families.js",
@@ -166,10 +165,10 @@ console.log(JSON.stringify({
                 atlas["snapshot"]["source_inputs_dirty"],
                 atlas["snapshot"]["source_tree_state"] == "dirty",
             )
-            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 51)
-            self.assertEqual(atlas["snapshot"]["relation_count"], 20)
-            self.assertEqual(len(atlas["conceptual_spaces"]), 51)
-            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 51)
+            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 56)
+            self.assertEqual(atlas["snapshot"]["relation_count"], 23)
+            self.assertEqual(len(atlas["conceptual_spaces"]), 56)
+            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 56)
             self.assertTrue(
                 all(
                     isinstance(item["name"]["tex"], str)
@@ -259,32 +258,34 @@ console.log(JSON.stringify({
                 for item in atlas["conceptual_spaces"]
                 if item["id"] == "complex_projective_space:2"
             )
-            self.assertEqual(
-                complex_projective_plane["parameters"],
-                {"division_algebra": "complex"},
-            )
+            self.assertEqual(complex_projective_plane["parameters"], {"n": 2})
+            # CP^2 browses with the complex projective spaces, but the Hopf-invariant-one
+            # trio stays discoverable by tag and the eta attaching map stays recorded.
             self.assertIn("hopf_invariant_one", complex_projective_plane["taxonomy"]["tags"])
-            self.assertIn("projective planes", complex_projective_plane["summary"])
-            self.assertIn("attaching maps", complex_projective_plane["chromatic_relevance"])
-            self.assertEqual(
+            self.assertIn("projective_plane", complex_projective_plane["taxonomy"]["tags"])
+            self.assertIn("one cell in every even degree", complex_projective_plane["summary"])
+            self.assertIn("complex-orientation", complex_projective_plane["chromatic_relevance"])
+            self.assertIn(
+                "the 4-cell is attached to S^2 by the Hopf map eta.",
                 complex_projective_plane["models"][0]["attaching_map"],
-                "Attach e^4 to S^2 by the Hopf map eta.",
             )
             self.assertTrue(complex_projective_plane["evidence"][0]["citations"])
             self.assertEqual(
+                {relation["target_id"] for relation in complex_projective_plane["relations"]},
+                {"complex_projective_space:3", "complex_projective_space:infinity"},
+            )
+            self.assertIn(
+                {
+                    "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity.",
+                    "evidence_ids": [
+                        "chromatic:evidence:complex_projective_space:2"
+                    ],
+                    "id": "relation:cp2:finite-skeleton:cp-infinity",
+                    "source_id": "complex_projective_space:2",
+                    "target_id": "complex_projective_space:infinity",
+                    "type": "finite_skeleton_of",
+                },
                 complex_projective_plane["relations"],
-                [
-                    {
-                        "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity.",
-                        "evidence_ids": [
-                            "chromatic:evidence:complex_projective_space:2"
-                        ],
-                        "id": "relation:cp2:finite-skeleton:cp-infinity",
-                        "source_id": "complex_projective_space:2",
-                        "target_id": "complex_projective_space:infinity",
-                        "type": "finite_skeleton_of",
-                    }
-                ],
             )
             self.assertTrue(all(
                 citation["url"].startswith("https://")
@@ -319,7 +320,7 @@ console.log(JSON.stringify({
                     item["homology_coverage"]["kind"] == "complete_finite_cw"
                     for item in atlas["conceptual_spaces"]
                 ),
-                41,
+                46,
             )
             self.assertEqual(
                 sum(
@@ -404,7 +405,7 @@ console.log(JSON.stringify({
             self.assertEqual(
                 presentation_result["coverageCounts"],
                 {
-                    "coverage-exhaustive": 41,
+                    "coverage-exhaustive": 46,
                     "coverage-bounded": 10,
                     "coverage-neutral": 0,
                 },
@@ -858,7 +859,7 @@ console.log(JSON.stringify({
         )
         self.assertIsNotNone(embedded)
         atlas = json.loads(embedded.group(1))
-        self.assertEqual(len(atlas["conceptual_spaces"]), 51)
+        self.assertEqual(len(atlas["conceptual_spaces"]), 56)
         if not review_path.is_file():
             self.assertEqual(summary["state"], "public_review_preview")
             self.assertEqual(len(atlas.get("conceptual_spectra", [])), 49)

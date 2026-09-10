@@ -1139,6 +1139,13 @@ def conceptual_space_tex(space: dict[str, Any]) -> str:
             return rf"\Sigma_{{{int(parameters['genus'])}}}"
         if parameters["kind"] == "nonorientable":
             return rf"N_{{{int(parameters['genus'])}}}"
+    if family == "s2xr_3manifold":
+        return {
+            "s2xr:s2xs1": r"S^{2}\times S^{1}",
+            "s2xr:s2-twist-s1": r"S^{2}\widetilde{\times}S^{1}",
+            "s2xr:rp2xs1": r"\mathbb{R}P^{2}\times S^{1}",
+            "s2xr:rp3-sum-rp3": r"\mathbb{R}P^{3}\#\mathbb{R}P^{3}",
+        }[parameters["space"]]
     if family == "real_projective_space":
         return rf"\mathbb{{R}}P^{{{int(parameters['n'])}}}"
     if family == "hopf_projective_plane":
@@ -1867,6 +1874,7 @@ def _model_projection(model: dict[str, Any], space_id: str) -> dict[str, Any]:
         "model_scope": model["model_scope"],
         "artifact_path": model["artifact_path"],
         "artifact_sha256": model["artifact_sha256"],
+        "redistribution": model["redistribution"],
     }
 
 
@@ -1921,11 +1929,24 @@ def build_read_model(
                 "Model/Evidence input mismatch: "
                 + repr([tuple(row) for row in model_evidence_mismatches])
             )
+        # A model that is checked in must carry both its path and its hash, so the
+        # bytes can be verified. A model whose source states no licence is
+        # identified by hash and never shipped (ADR 0005, point 2), so it must
+        # carry the hash and no path. A path without a hash is unverifiable either
+        # way.
         malformed_artifacts = connection.execute(
             """
             SELECT model_id
             FROM model
-            WHERE (artifact_path IS NULL) != (artifact_sha256 IS NULL)
+            WHERE CASE redistribution
+                WHEN 'checked_in'
+                    THEN artifact_path IS NULL OR artifact_sha256 IS NULL
+                WHEN 'identified_only'
+                    THEN artifact_path IS NOT NULL OR artifact_sha256 IS NULL
+                WHEN 'not_applicable'
+                    THEN artifact_path IS NOT NULL OR artifact_sha256 IS NOT NULL
+                ELSE 1
+            END
             ORDER BY model_id
             """
         ).fetchall()

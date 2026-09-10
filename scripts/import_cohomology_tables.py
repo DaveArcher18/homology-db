@@ -88,8 +88,10 @@ def plan_for(name, row):
     if name in ("S^2xS^1", "S^2twistS^1", "RP^2xS^1", "RP^3#RP^3"):
         label = {"S^2xS^1": "Product S^2 x S^1", "S^2twistS^1": "Twisted bundle S^2 x~ S^1",
                  "RP^2xS^1": "Product RP^2 x S^1", "RP^3#RP^3": "Connected sum RP^3 # RP^3"}[name]
+        extra = (["connected_sum"] if "#" in name
+                 else ["sphere_bundle"] if "twist" in name else ["product"])
         return (f"s2xr:{ident(name)}", "s2xr_3manifold", label, [name],
-                ["s2xr_geometry", *g3] + (["connected_sum"] if "#" in name else ["product"]))
+                ["s2xr_geometry", *g3] + extra)
     if m := re.fullmatch(r"(Sigma|N)_(\d+) x S\^1", name):
         kind, g = m.groups()
         surface = f"Sigma_{g}" if kind == "Sigma" else f"N_{g}"

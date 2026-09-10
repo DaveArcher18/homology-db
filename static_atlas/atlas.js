@@ -69,6 +69,7 @@
     sphere: "Unit spheres in Euclidean space, from the disconnected zero-sphere to higher-dimensional examples.",
     wedge: "Join pointed spaces at their chosen basepoints. Wedges give simple examples where cup products carry information beyond additive groups.",
     surface: "Every closed surface is a connected sum of tori or of projective planes. Orientability decides whether any torsion appears; the genus decides how many degree-one classes there are.",
+    s2xr_3manifold: "The four closed 3-manifolds built on S\u00b2 \u00d7 R. Two are sphere bundles over the circle, one is a product, one is a connected sum, and the list is complete.",
     real_projective_space: "Real lines through the origin, or spheres with antipodal points identified. Each has one cell in every dimension up to its dimension.",
     hopf_projective_plane: "The complex, quaternionic, and octonionic projective planes each have three cells, with different attaching maps.",
   });

@@ -14,6 +14,9 @@ def _source(locator: str, page: int, *, url: str = AT, title: str = "Hatcher, Al
     return {"title": title, "url": f"{url}#page={page+offset}", "locator": locator}
 
 
+LUTZ_S2XR = {'title': 'Frank H. Lutz, The Manifold Page (geometric 3-manifold catalogues)', 'url': 'https://www3.math.tu-berlin.de/IfM/Nachrufe/Frank_Lutz/stellar/', 'locator': 'S2xR_spaces.txt, the four closed S^2 x R manifolds'}
+
+
 def teaching_catalog() -> dict:
     entries = []
 
@@ -61,6 +64,22 @@ def teaching_catalog() -> dict:
             rf"The crosscap word $a_1^2\cdots a_{{{k}}}^2$ abelianizes to twice the sum of the generators, so one order-two class appears no matter how large the genus grows.",
             _source("Example 2.37, p. 141", 141),
             coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation and are not human-reviewed.")
+    for space, introduction, point in (
+        ("s2xr:s2xs1",
+         r"The product $S^{2}\times S^{1}$ is the orientable sphere bundle over the circle.",
+         "Kunneth gives a free class in every degree; compare it with the twisted bundle, which has the same first Betti number and different torsion."),
+        ("s2xr:s2-twist-s1",
+         r"Gluing $S^{2}\times[0,1]$ by a reflection gives the nonorientable sphere bundle over the circle.",
+         r"Reversing orientation replaces the top class by $\mathbb{Z}/2$ in degree two: orientability is visible in homology alone here."),
+        ("s2xr:rp2xs1",
+         r"The product $\mathbb{R}P^{2}\times S^{1}$ carries torsion in two consecutive degrees.",
+         "Change coefficients to F2 and watch both torsion classes and their universal-coefficient shadows appear at once."),
+        ("s2xr:rp3-sum-rp3",
+         r"The connected sum $\mathbb{R}P^{3}\mathbin{\#}\mathbb{R}P^{3}$ is the one reducible manifold in this geometry.",
+         "Each summand contributes one order-two class to the first homology; the sum is orientable although a single projective plane factor is not."),
+    ):
+        add(space, "Supplement . Geometric 3-manifolds", introduction, point, dict(LUTZ_S2XR),
+            coverage="Homology and cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation on a hash-identified triangulation that is not redistributed here. Not human-reviewed.")
     for n in (2,3,4):
         add(f"real_projective_space:{n}", "2.2 / 3.2 · Projective spaces",
             rf"$\mathbb{{RP}}^{{{n}}}$ is the space of real lines through the origin in real {n+1}-dimensional space.",
@@ -143,5 +162,5 @@ def teaching_catalog() -> dict:
          "sources":[_source("Projective rings, pp. 220–222; Hopf invariant examples, p. 427",427)]},
     ]
     return {"schema_version":SCHEMA_VERSION, "title":"A selected textbook trail",
-            "scope_note":"A selected Hatcher-oriented inventory of all 51 retained spaces, with clearly marked supplementary sources—not an exhaustive index of Hatcher. Teaching exposition and new records remain human-review-pending.",
+            "scope_note":"A selected Hatcher-oriented inventory of all 56 retained spaces, with clearly marked supplementary sources—not an exhaustive index of Hatcher. Teaching exposition and new records remain human-review-pending.",
             "entries":entries,"comparisons":comparisons}

@@ -10,6 +10,7 @@ all materialized together.
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import itertools
 import json
@@ -102,6 +103,7 @@ CREATE TABLE model(
     model_scope TEXT NOT NULL,
     artifact_path TEXT,
     artifact_sha256 TEXT,
+    redistribution TEXT NOT NULL,
     UNIQUE(space_id)
 );
 CREATE TABLE evidence(
@@ -336,6 +338,7 @@ def _base_spec(
     model_scope: str | None = None,
     artifact_path: str | None = None,
     artifact_sha256: str | None = None,
+    redistribution: str = "not_applicable",
     chain_override: dict[str, Any] | None = None,
     integral_override: list[dict[str, Any]] | None = None,
     evidence_kind: str = "owned_computation",
@@ -399,6 +402,7 @@ def _base_spec(
             ),
             "artifact_path": artifact_path,
             "artifact_sha256": artifact_sha256,
+            "redistribution": redistribution,
         },
         "sources": _applicable_sources(family, parameters),
         "computation_sketch": computation_sketch,
@@ -580,6 +584,50 @@ def _elementary_abelian_chain(
     return _sparse_chain(ranks, nonzero)
 
 
+IMPORTED_MODELS_PATH = (
+    REPOSITORY_ROOT / "corpus" / "computed-rings-v1" / "imported-models.json"
+)
+
+
+@functools.lru_cache(maxsize=1)
+def imported_models() -> dict[str, dict[str, Any]]:
+    """Descriptors for simplicial models identified by hash rather than shipped.
+
+    Their triangulations are not redistributed here (ADR 0005, point 2), so the
+    f-vector, vertex and facet counts, facet hash and retrieval citation are all
+    this repository holds of the model itself.
+    """
+    payload = json.loads(IMPORTED_MODELS_PATH.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != "homology-db.imported-models/1":
+        raise ValueError("unsupported imported-model schema version")
+    models = {}
+    for model in payload["models"]:
+        space_id = model["space_id"]
+        if space_id in models:
+            raise ValueError(f"imported model {space_id} is declared twice")
+        descriptor = model["model"]
+        f_vector = descriptor["f_vector"]
+        if descriptor["vertices"] != f_vector[0] or descriptor["facets"] != f_vector[-1]:
+            raise ValueError(f"imported model {space_id} has an inconsistent f-vector")
+        if len(descriptor["facets_sha256"]) != 64 or any(
+            character not in "0123456789abcdef" for character in descriptor["facets_sha256"]
+        ):
+            raise ValueError(f"imported model {space_id} has a malformed facet hash")
+        if descriptor.get("redistribution") != "identified_not_redistributed":
+            raise ValueError(f"imported model {space_id} does not declare its redistribution")
+        euler_faces = sum((-1) ** degree * count for degree, count in enumerate(f_vector))
+        euler_groups = sum(
+            (-1) ** row["degree"] * row["free_rank"] for row in model["integral_homology"]
+        )
+        if euler_faces != euler_groups:
+            raise ValueError(
+                f"imported model {space_id} has f-vector Euler characteristic "
+                f"{euler_faces} but recorded Betti numbers give {euler_groups}"
+            )
+        models[space_id] = model
+    return models
+
+
 def _poincare_artifact() -> tuple[str, list[dict[str, int]]]:
     path = REPOSITORY_ROOT / "corpus" / "chromatic-v1" / "poincare-sphere-facets.json"
     artifact = json.loads(path.read_text(encoding="utf-8"))
@@ -662,6 +710,69 @@ def _materialize_family(
             connected_components=2 if n == 0 else 1,
             model_kind="finite_simplicial_complex" if n == 0 else "finite_cw",
         )
+    if formula == "imported_simplicial_model":
+        model = imported_models()[parameters["space"]]
+        descriptor = model["model"]
+        certificate = model["certificate_chain"]
+        ranks = {int(degree): rank for degree, rank in certificate["ranks"].items()}
+        nonzero = {
+            int(degree): [tuple(entry) for entry in entries]
+            for degree, entries in certificate["nonzero"].items()
+        }
+        dimension = int(model["dimension"])
+        retrieval = descriptor["retrieval"]
+        groups = {
+            int(row["degree"]): (int(row["free_rank"]), list(row["torsion_orders"]))
+            for row in model["integral_homology"]
+        }
+        return _base_spec(
+            family,
+            parameters,
+            key=model["space_id"],
+            label=model["label"],
+            dimension=dimension,
+            aliases=list(model["aliases"]),
+            ranks=ranks,
+            nonzero=nonzero or None,
+            attaching_map=(
+                f"The model is the {descriptor['vertices']}-vertex, "
+                f"{descriptor['facets']}-facet triangulation "
+                f"{retrieval['label']!r} in {retrieval['file']}, identified by the "
+                f"SHA-256 of its canonical facet list and not redistributed here."
+            ),
+            boundary_formula=(
+                "The stored chain complex is a calculation certificate for the imported "
+                "groups, not the simplicial boundary of that triangulation, which this "
+                "repository does not hold."
+            ),
+            computation_sketch=(
+                "Integral homology is imported; every other coefficient ring is derived "
+                "here from it by the universal coefficient theorem, and the imported "
+                "field homology is checked against that derivation."
+            ),
+            tags=list(model["tags"]),
+            model_kind="finite_simplicial_complex",
+            construction=(
+                f"Fetch {retrieval['label']!r} from {retrieval['file']} at "
+                f"{retrieval['url']} (retrieved {retrieval['date_accessed']}) and check "
+                f"its canonical facet list against the recorded hash."
+            ),
+            model_cell_degrees=[
+                {"degree": degree, "count": count}
+                for degree, count in enumerate(descriptor["f_vector"])
+            ],
+            model_scope=(
+                "The triangulation is named, counted and hash-pinned but not shipped: its "
+                "source states no licence. Nothing below the f-vector can be re-derived "
+                "here (ADR 0005, point 4)."
+            ),
+            artifact_sha256=descriptor["facets_sha256"],
+            redistribution="identified_only",
+            integral_override=_integral_rows(dimension, groups),
+            evidence_kind="external_engine_computation",
+            algorithm_id=f"cohomology-tables-import:{descriptor['model_id']}",
+            run_recorded=False,
+        )
     if formula == "poincare_simplicial":
         artifact_sha256, cell_degrees = _poincare_artifact()
         return _base_spec(
@@ -691,6 +802,7 @@ def _materialize_family(
             model_cell_degrees=cell_degrees,
             artifact_path="corpus/chromatic-v1/poincare-sphere-facets.json",
             artifact_sha256=artifact_sha256,
+            redistribution="checked_in",
             integral_override=_integral_rows(
                 3,
                 {
@@ -1158,8 +1270,8 @@ def materialize_specs(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     space_ids = [spec["key"] for spec in specs]
     if len(space_ids) != len(set(space_ids)):
         raise ValueError("chromatic corpus contains duplicate Conceptual-space IDs")
-    if len(specs) != 51:
-        raise ValueError(f"expected the curated 51-space corpus, generated {len(specs)}")
+    if len(specs) != 56:
+        raise ValueError(f"expected the curated 56-space corpus, generated {len(specs)}")
     if any(len(spec["sources"]) == 0 for spec in specs):
         raise ValueError("every chromatic space must inherit at least one source")
     return specs
@@ -1385,7 +1497,7 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                 )
             model = spec["model"]
             connection.execute(
-                "INSERT INTO model VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO model VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     model["id"],
                     spec["key"],
@@ -1401,6 +1513,7 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                     model["model_scope"],
                     model["artifact_path"],
                     model["artifact_sha256"],
+                    model["redistribution"],
                 ),
             )
             integral = _require_explicit_integral_rows(
@@ -1981,7 +2094,7 @@ class ChromaticTools:
                    m.status AS model_status, m.construction,
                    m.cell_degrees_json, m.cell_formula, m.attaching_map,
                    m.boundary_formula, m.model_scope, m.artifact_path,
-                   m.artifact_sha256,
+                   m.artifact_sha256, m.redistribution,
                    c.computation_id, c.parameters_json,
                    c.output_scope, c.status AS computation_status
             FROM evidence e
@@ -2042,6 +2155,7 @@ class ChromaticTools:
                         "model_scope": row["model_scope"],
                         "artifact_path": row["artifact_path"],
                         "artifact_sha256": row["artifact_sha256"],
+                        "redistribution": row["redistribution"],
                     },
                     "references": references,
                     "computation": (
@@ -2129,7 +2243,7 @@ def demo(path: Path) -> None:
         lens = tools.read_homology("L^5(3;1,1,1)")
         projective = tools.read_homology("CP^2")
         evidence = tools.expand_evidence([moore["groups"][2]["evidence_id"]])
-        print(f"Chromatic Homology Atlas ready: 51 spaces, snapshot {snapshot_id}")
+        print(f"Chromatic Homology Atlas ready: 56 spaces, snapshot {snapshot_id}")
         print(f"Scratch database: {path} (safe to delete; rebuilt on every run)\n")
         print("Quick mathematical tour")
         print(f"  M(Z/5,2): H_2 = {moore['groups'][2]['value']['display']}")
@@ -2151,7 +2265,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Chromatic Homology Atlas")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("demo", help="rebuild the 51-space snapshot and show a tour")
+    subparsers.add_parser("demo", help="rebuild the 56-space snapshot and show a tour")
     tool_parser = subparsers.add_parser("tool", help="execute one stable JSON tool request")
     tool_parser.add_argument("request", help='JSON object with "tool" and "arguments"')
     args = parser.parse_args()
