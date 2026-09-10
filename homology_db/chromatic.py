@@ -972,10 +972,40 @@ def _materialize_family(
             computation_sketch=f"Apply the alternating 0/2 differential through degree {n} and reduce each 1x1 block.",
             tags=["2_primary", "projective", "torsion", "bc2_skeleton"],
         )
+    if formula == "complex_projective_standard_cw":
+        n = int(parameters["n"])
+        top = 2 * n
+        attaching = (
+            f"Attach e^{{2k}} to CP^(k-1) along the Hopf bundle projection "
+            f"S^(2k-1) -> CP^(k-1) for k=1..{n}"
+        )
+        if n == 2:
+            attaching += "; the 4-cell is attached to S^2 by the Hopf map eta."
+        else:
+            attaching += "."
+        return _base_spec(
+            family,
+            parameters,
+            key=f"complex_projective_space:{n}",
+            label=f"Complex projective space CP^{n}"
+            if n > 2
+            else "Complex projective plane CP^2",
+            dimension=top,
+            aliases=[f"CP^{n}", f"CP{n}"] + (["C_eta"] if n == 2 else []),
+            ranks={degree: 1 for degree in range(0, top + 1, 2)},
+            nonzero=None,
+            attaching_map=attaching,
+            boundary_formula="All cellular differentials vanish by the gaps between cell degrees.",
+            computation_sketch=(
+                f"The {n + 1} cells in even degrees 0 through {top} give one free class "
+                "in each even degree and nothing in odd degrees."
+            ),
+            tags=["torsion_free", "projective", "complex"]
+            + (["projective_plane", "hopf_invariant_one"] if n == 2 else []),
+        )
     if formula == "hopf_projective_plane":
         division_algebra = parameters["division_algebra"]
         data = {
-            "complex": ("complex_projective_space:2", "Complex projective plane CP^2", 2, 4, "eta", ["CP^2", "CP2", "C_eta"]),
             "quaternionic": ("quaternionic_projective_space:2", "Quaternionic projective plane HP^2", 4, 8, "nu", ["HP^2", "HP2", "C_nu"]),
             "octonionic": ("cayley_plane:2", "Cayley plane OP^2", 8, 16, "sigma", ["OP^2", "OP2", "C_sigma"]),
         }

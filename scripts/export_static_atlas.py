@@ -1146,9 +1146,10 @@ def conceptual_space_tex(space: dict[str, Any]) -> str:
         return imported_models()[parameters["space"]]["tex"]
     if family == "real_projective_space":
         return rf"\mathbb{{R}}P^{{{int(parameters['n'])}}}"
+    if family == "complex_projective_space":
+        return rf"\mathbb{{C}}P^{{{int(parameters['n'])}}}"
     if family == "hopf_projective_plane":
         algebra = {
-            "complex": "C",
             "quaternionic": "H",
             "octonionic": "O",
         }.get(parameters["division_algebra"])

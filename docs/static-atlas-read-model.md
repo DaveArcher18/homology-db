@@ -1,6 +1,6 @@
 # Static atlas read model
 
-Status: family workbench over retained `chromatic-gateway-51` and classical
+Status: family workbench over retained `chromatic-gateway-52` and classical
 cohomology records, with independently source-bound symbolic family rules
 
 Read-model version: `homology-db.static-atlas/5`
@@ -59,7 +59,7 @@ reduction setting never changes these unreduced ring records.
 ## Teaching exposition and scoped review
 
 The optional additive `teaching` catalog contains sourced introductions, a
-selected chapter/example inventory of the 51 retained spaces, and guided
+selected chapter/example inventory of the 52 retained spaces, and guided
 comparisons. It does not claim an exhaustive inventory of Hatcher's book.
 Coverage badges are derived from actual records/family redirects; exposition
 does not create assertions. `snapshot.teaching_sha256` binds exact content and
