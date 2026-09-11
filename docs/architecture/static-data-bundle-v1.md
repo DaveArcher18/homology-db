@@ -66,9 +66,10 @@ compact separators, and one trailing newline. It has this envelope:
 `payload` bytes, avoiding a self-referential document hash. The manifest records
 the SHA-256 and byte length of each complete file.
 
-The `bundle_id` is derived from the sorted sequence of `(path, sha256, bytes)`
-for all non-manifest documents plus the existing Snapshot and source-input
-identity. The manifest records that sequence and its own schema version; the
+The `bundle_id` is derived from the sorted sequence of canonical payload hashes
+and byte lengths for all non-manifest documents. This avoids making the bundle
+identity depend recursively on envelopes that themselves contain that identity.
+The manifest records the resulting complete-file hashes and its own schema version; the
 HTML shell embeds the expected bundle ID and manifest path. No timestamp or
 host-specific absolute path participates in identity.
 

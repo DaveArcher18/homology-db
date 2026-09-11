@@ -264,13 +264,21 @@
   <p id="action-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
   <script>/*__ATLAS_PRESENTATION_JS__*/</script>
   <script id="atlas-data" type="application/json">__ATLAS_JSON__</script>
+  <script>/*__DATA_STORE_JS__*/</script>
   <script>/*__FAMILIES_JS__*/</script>
   <script>/*__WORKBENCH_JS__*/</script>
   <script>/*__ATLAS_JS__*/</script>
   <script>
-    (() => {
+    (async () => {
       "use strict";
 
+      if (!window.HomologyAtlasMath) {
+        await new Promise((resolve) => window.addEventListener(
+          "homology-atlas-renderer-ready",
+          resolve,
+          { once: true },
+        ));
+      }
       const presentation = window.HomologyAtlasPresentation;
       const math = window.HomologyAtlasMath;
       if (!presentation || !math) {
@@ -286,7 +294,7 @@
         steenrodOperationTex,
       } = presentation;
       const { renderTex } = math;
-      const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
+      const atlas = await window.HomologyAtlasDataStore.loadAtlas();
       const conceptualSpectra = Array.isArray(atlas.conceptual_spectra)
         ? atlas.conceptual_spectra
         : [];
@@ -1092,7 +1100,9 @@
         return view;
       }
 
-      function renderSpectrumRoute(initial = false) {
+      let spectrumRouteRevision = 0;
+      async function renderSpectrumRoute(initial = false) {
+        const revision = ++spectrumRouteRevision;
         const route = parseSpectrumRoute();
         navSpectra.removeAttribute("aria-current");
         if (!route) return false;
@@ -1101,6 +1111,23 @@
           "aria-current",
           route.kind === "spectra" ? "page" : "location",
         );
+        if (route.kind === "spectrum") {
+          const loading = element("article", "route-view loading-view");
+          loading.setAttribute("aria-busy", "true");
+          loading.append(element("h1", "page-title", "Loading spectrum…"));
+          atlasDocument.replaceChildren(loading);
+          try {
+            await window.HomologyAtlasDataStore.loadSpectrum(route.spectrum);
+          } catch (error) {
+            if (revision !== spectrumRouteRevision) return true;
+            const failed = buildSpectrumNotFoundView(route.spectrum.slug);
+            failed.querySelector("h1").textContent = "Spectrum could not be loaded";
+            failed.querySelector(".page-lede").textContent = "The record is temporarily unavailable. Reload the page to retry; no missing data has been interpreted as zero.";
+            atlasDocument.replaceChildren(failed);
+            return true;
+          }
+          if (revision !== spectrumRouteRevision) return true;
+        }
         const view =
           route.kind === "spectra"
             ? buildSpectraView()

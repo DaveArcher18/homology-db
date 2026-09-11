@@ -15,7 +15,7 @@ async function main() {
     page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
     await page.goto(base);
     await page.locator('.workbench-view').waitFor();
-    const atlas=await page.locator('#atlas-data').evaluate(n=>JSON.parse(n.textContent));
+    const atlas=await page.evaluate(()=>window.HomologyAtlasDataStore.loadAtlas());
     assert.equal(atlas.family_rules.rules.length,3);
     let views=0;
     for(const family of ['sphere','real_projective_space','complex_projective_space']) {
@@ -80,10 +80,12 @@ async function main() {
     assert.ok((await page.locator('.cohomology-rendered').innerText()).includes('Multiplication'));
     for(const space of atlas.conceptual_spaces) {
       await page.goto(base+'#space='+space.slug);
+      await page.locator('.workbench-view,.space-page').waitFor();
       assert.equal(await page.locator('.workbench-view,.space-page').count(),1,space.id);
     }
     for(const spectrum of atlas.conceptual_spectra) {
       await page.goto(base+'#spectrum='+spectrum.slug);
+      await page.locator('.spectrum-view').waitFor();
       assert.equal(await page.locator('.spectrum-view').getAttribute('data-spectrum-id'),spectrum.id);
     }
     for(const width of [1440,390,320]) {

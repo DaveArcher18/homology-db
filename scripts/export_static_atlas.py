@@ -209,6 +209,7 @@ SOURCE_REVISION_INPUTS = (
     "scripts/verify_steenrod_release.py",
     "static_atlas/atlas.css",
     "static_atlas/atlas.js",
+    "static_atlas/data-store.js",
     "static_atlas/index.template.html",
     "static_atlas/presentation.js",
     "static_atlas/families.js",
@@ -2207,6 +2208,7 @@ def render_atlas(atlas: dict[str, Any]) -> str:
     replacements = {
         "/*__ATLAS_CSS__*/": css,
         "/*__ATLAS_PRESENTATION_JS__*/": presentation_javascript,
+        "/*__DATA_STORE_JS__*/": (SOURCE_DIRECTORY / "data-store.js").read_text(encoding="utf-8"),
         "/*__FAMILIES_JS__*/": (SOURCE_DIRECTORY / "families.js").read_text(encoding="utf-8"),
         "/*__WORKBENCH_JS__*/": (SOURCE_DIRECTORY / "workbench.js").read_text(encoding="utf-8"),
         "__ATLAS_JSON__": safe_embedded_json(atlas),

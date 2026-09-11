@@ -20,7 +20,7 @@ const fs=require('node:fs');
     assert.equal(await page.locator('.teaching-example').count(),42);
     assert.match(await page.locator('main').innerText(),/not an exhaustive/);
     assert.equal(await page.locator('.teaching-comparison-link').count(),3);
-    const atlas=await page.locator('#atlas-data').evaluate(n=>JSON.parse(n.textContent));
+    const atlas=await page.evaluate(()=>window.HomologyAtlasDataStore.loadAtlas());
     async function go(route){
       await page.goto(base+route);
       if(route==='#textbook')await page.locator('.teaching-inventory').waitFor();
@@ -94,8 +94,8 @@ const fs=require('node:fs');
       }
     }
     // Render fixture metadata in this isolated browser only; never publish it.
-    await page.evaluate(()=>{
-      const atlas=JSON.parse(document.querySelector('#atlas-data').textContent);
+    await page.evaluate(async()=>{
+      const atlas=await window.HomologyAtlasDataStore.loadAtlas();
       const rule=atlas.family_rules.rules.find(r=>r.family==='real_projective_space');
       rule.human_review_state='human_reviewed';rule.scoped_review_state='scoped_human_concern';
       rule.scoped_human_reviews=[{reviewer:'Fixture reviewer',verdict:'reject',scope:{parameters:{n:{min:'2',max:'2'}},coefficients:['F2'],degrees:{min:'0',max:'2'},components:['cohomology']},rationale:'Fixture concern',source_url:'https://github.com/DaveArcher18/homology-db/issues/1'}];

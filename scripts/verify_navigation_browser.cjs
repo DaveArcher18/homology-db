@@ -132,9 +132,18 @@ async function main(){
     await page.screenshot({path:'/tmp/homology-navigation-about.png'});
     await page.locator('#nav-home').click();
     await page.screenshot({path:'/tmp/homology-navigation-workbench.png'});
+    const failurePage=await browser.newPage({viewport:{width:390,height:900},reducedMotion:'reduce'});
+    await failurePage.route('**/data/spaces/klein-bottle.json*',route=>route.abort());
+    await failurePage.goto(base+'?failure-fixture=1#space=klein-bottle');
+    await failurePage.locator('.loading-view,.load-error-view').first().waitFor();
+    await failurePage.locator('.load-error-view').waitFor();
+    assert.match(await failurePage.locator('main').innerText(),/could not be loaded[\s\S]*must not|could not be loaded[\s\S]*not.*zero/i);
+    assert.equal(await failurePage.getByRole('button',{name:'Retry',exact:true}).isVisible(),true);
+    assert.equal(await failurePage.getByRole('link',{name:'Return to all spaces',exact:true}).isVisible(),true);
+    await failurePage.close();
     assert.deepEqual(errors,[]);
     const zoom=await verifyZoom(base);
-    console.log(JSON.stringify({ok:true,widths,pickerSelections:choices,keyboard:true,aboutHistoryReloadResize:true,zoom,errors}));
+    console.log(JSON.stringify({ok:true,widths,pickerSelections:choices,keyboard:true,aboutHistoryReloadResize:true,failureState:true,zoom,errors}));
   }finally{await browser.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

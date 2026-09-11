@@ -1,4 +1,4 @@
-(() => {
+(async () => {
   "use strict";
 
   const presentation = window.HomologyAtlasPresentation;
@@ -17,7 +17,8 @@
     parseTex,
     relationTex,
   } = presentation;
-  const atlas = JSON.parse(document.getElementById("atlas-data").textContent);
+  const dataStore = window.HomologyAtlasDataStore;
+  const atlas = await dataStore.loadAtlas();
   const snapshot = atlas.snapshot ?? {};
   const conceptualSpaces = Array.isArray(atlas.conceptual_spaces)
     ? atlas.conceptual_spaces
@@ -317,6 +318,7 @@
         properties: space.properties,
         models: modelRecords(space),
         evidence: evidenceRecords(space),
+        catalog_search: space.catalog_search,
       }),
     ].filter(Boolean);
   }
@@ -386,6 +388,7 @@
   }
 
   window.HomologyAtlasMath = Object.freeze({ renderTex });
+  window.dispatchEvent(new Event("homology-atlas-renderer-ready"));
 
   function mathName(space, className = "math-display") {
     return renderTex(
@@ -888,7 +891,7 @@
       card.append(links);
       groups.append(card);
     });
-    const coreCount = conceptualSpaces.filter((space) => asArray(space.cohomology).length > 0).length;
+    const coreCount = conceptualSpaces.filter((space) => Number(space.cohomology_record_count ?? asArray(space.cohomology).length) > 0).length;
     examples.append(heading, groups,
       element("p", "classical-coverage-note", coreCount
         ? `Cohomology rings over ℚ, 𝔽₂, 𝔽₃, 𝔽₅, and 𝔽₇ are recorded for ${coreCount} textbook spaces. Integral homology remains available. Human mathematical review is pending.`
@@ -2085,8 +2088,44 @@
     heading.focus({ preventScroll: true });
   }
 
-  function renderRoute({ initial = false } = {}) {
+  let routeRevision = 0;
+  async function renderRoute({ initial = false } = {}) {
+    const revision = ++routeRevision;
     const route = parseRoute();
+    if (route.kind === "space") {
+      const loading = element("article", "route-view loading-view");
+      loading.setAttribute("aria-busy", "true");
+      loading.append(
+        element("p", "page-kicker", "Loading one atlas record"),
+        element("h1", "page-title", route.space.name?.plain ?? "Loading space…"),
+        element("p", "page-lede", "Loading homology, cohomology, and provenance…"),
+      );
+      atlasDocument.replaceChildren(loading);
+      try {
+        await dataStore.loadSpace(route.space);
+      } catch (_error) {
+        if (revision !== routeRevision) return;
+        const failed = element("article", "route-view load-error-view");
+        failed.setAttribute("role", "alert");
+        failed.append(
+          element("h1", "page-title", "This record could not be loaded"),
+          element("p", "page-lede", "The atlas could not retrieve this space. No missing information has been interpreted as zero."),
+        );
+        const actions = element("div", "hero-actions");
+        const retry = element("button", "primary-action", "Retry");
+        retry.type = "button";
+        retry.addEventListener("click", () => renderRoute());
+        const all = element("a", "secondary-action", "Return to all spaces");
+        all.href = "#spaces";
+        actions.append(retry, all);
+        failed.append(actions);
+        atlasDocument.replaceChildren(failed);
+        document.title = "Record unavailable · Homology Atlas";
+        if (!initial) window.requestAnimationFrame(focusRouteHeading);
+        return;
+      }
+      if (revision !== routeRevision) return;
+    }
     state.route = route;
     if (route.kind === "space") Object.assign(homologyViewFor(route.space), route.viewState || {});
     if (["home", "workbench"].includes(route.kind) && validWorkbenchHash(window.location.hash || "#home")) {
@@ -2180,6 +2219,13 @@
     request.href = requestSpaceUrl(); request.target = "_blank"; request.rel = "noopener noreferrer";
     view.append(element("h2", "", "Contribute an example"), request);
     view.append(element("h2", "", "Snapshot details"), buildSnapshotDetail());
+    const offlinePath = atlas._bundle_manifest?.offline_artifact?.path;
+    if (offlinePath) {
+      const offline = element("a", "secondary-resource-link", "Download the complete offline atlas ↓");
+      offline.href = offlinePath;
+      offline.download = "";
+      view.append(offline);
+    }
     if (Number(snapshot.conceptual_spectrum_count) > 0) { const spectra = element("a", "secondary-resource-link", "Stable spectra preview →"); spectra.href = "#spectra"; view.append(spectra); }
     return view;
   }
@@ -2222,4 +2268,22 @@
   configureUtilities();
   renderRoute({ initial: isInitialRoute });
   isInitialRoute = false;
-})();
+})().catch(() => {
+  const host = document.getElementById("atlas-document");
+  const view = document.createElement("article");
+  view.className = "route-view load-error-view";
+  view.setAttribute("role", "alert");
+  const heading = document.createElement("h1");
+  heading.className = "page-title";
+  heading.textContent = "The atlas could not be loaded";
+  const note = document.createElement("p");
+  note.className = "page-lede";
+  note.textContent = "Its catalogue is temporarily unavailable. No missing information has been interpreted as zero.";
+  const retry = document.createElement("button");
+  retry.className = "primary-action";
+  retry.type = "button";
+  retry.textContent = "Retry";
+  retry.addEventListener("click", () => window.location.reload());
+  view.append(heading, note, retry);
+  host?.replaceChildren(view);
+});

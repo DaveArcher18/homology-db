@@ -13,7 +13,11 @@ const path=require('node:path');
     const page=await browser.newPage({viewport:{width:1100,height:900},reducedMotion:'reduce',permissions:['clipboard-read','clipboard-write']});
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto(base);
-    const spaces=await page.locator('#atlas-data').evaluate(n=>JSON.parse(n.textContent).conceptual_spaces);
+    const spaces=await page.evaluate(async()=>{
+      const atlas=await window.HomologyAtlasDataStore.loadAtlas();
+      await Promise.all(atlas.conceptual_spaces.map(space=>window.HomologyAtlasDataStore.loadSpace(space)));
+      return atlas.conceptual_spaces;
+    });
     for(const space of spaces){
       await page.goto(base+'#space='+space.slug);
       if(await page.locator('.space-page').count()){
