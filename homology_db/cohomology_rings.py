@@ -147,6 +147,13 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
         mirrored = normalize({k: sign * v for k, v in table.get((right, left), {}).items()})
         if table.get((left, right), {}) != mirrored:
             raise ValueError("multiplication violates graded commutativity")
+        value = table.get((left, right), {})
+        for factor in (left, right):
+            order = basis[factor]["order"]
+            if order and normalize({key: order * scalar for key, scalar in value.items()}):
+                raise ValueError(
+                    "multiplication does not respect the additive order of a torsion factor"
+                )
     for a, b, c in product(basis, repeat=3):
         if multiply(table.get((a, b), {}), {c: 1}) != multiply({a: 1}, table.get((b, c), {})):
             raise ValueError("multiplication violates associativity")
