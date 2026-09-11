@@ -1,7 +1,8 @@
 # Static atlas read model
 
-Status: family workbench over retained `chromatic-gateway-52` and classical
-cohomology records, with independently source-bound symbolic family rules
+Status: family workbench over 212 retained spaces, classical literature
+records, and imported computed rings, with independently source-bound symbolic
+family rules
 
 Read-model version: `homology-db.static-atlas/5`
 
@@ -59,7 +60,7 @@ reduction setting never changes these unreduced ring records.
 ## Teaching exposition and scoped review
 
 The optional additive `teaching` catalog contains sourced introductions, a
-selected chapter/example inventory of the 52 retained spaces, and guided
+selected chapter/example inventory of the 212 retained spaces, and guided
 comparisons. It does not claim an exhaustive inventory of Hatcher's book.
 Coverage badges are derived from actual records/family redirects; exposition
 does not create assertions. `snapshot.teaching_sha256` binds exact content and
@@ -84,17 +85,16 @@ The current database contains:
 | Record | Count |
 |---|---:|
 | Snapshot | 1 |
-| Families | 17 |
-| Conceptual spaces | 42 |
-| Aliases | 172 |
-| Qualified Models | 42 |
-| References | 9 |
-| Evidence records | 42 |
-| Evidence-to-reference links | 62 |
-| Space relationships | 11 |
-| Recorded computation runs | 41 |
-| Homology coverage records | 42 |
-| Homology assertions | 4,190 |
+| Families | 28 |
+| Conceptual spaces | 212 |
+| Aliases | 292 |
+| Qualified Models | 212 |
+| Citations | 640 |
+| Evidence records | 212 |
+| Space relationships | 100 |
+| Recorded computation runs | 66 |
+| Homology coverage records | 212 |
+| Homology rows | 12,668 |
 | Primary-summand rows | 252 |
 
 The historical spaces-only release described below has Snapshot ID

@@ -19,7 +19,7 @@ review a whole family—to help.
 - **Coefficients:** ℤ and ℚ, followed by 𝔽₂, 𝔽₃, 𝔽₅, 𝔽₇, and 𝔽₁₁ in the
   family workbench. Compare homology and cohomology degree by degree.
 - **Rings:** generators, degrees, relations, and expandable cup-product tables.
-- **A selected textbook trail:** all 52 retained spaces, sourced introductions,
+- **A selected textbook trail:** all 212 retained spaces, sourced introductions,
   three guided comparisons, and clearly labelled coverage gaps.
 - **Explanations:** a glossary and expandable inline definitions.
 - **Evidence:** citations, derivations, versioned rules, and JSON downloads.
@@ -29,7 +29,7 @@ their cup products differ. Then try **RP² over ℤ, ℚ, and 𝔽₂**.
 
 The original thirteen-space ring core is retained, with HP² and OP² added as a
 separate five-field extension. Coverage varies outside the three general
-families; 27 retained spaces do not yet have encoded cohomology rings. Ten
+families; 23 retained spaces do not yet have encoded cohomology rings. Ten
 infinite finite-type entries have stored homology only through degree 24.
 
 A separate [stable-spectrum preview](https://davearcher18.github.io/homology-db/#spectra)

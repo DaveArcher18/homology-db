@@ -3,8 +3,8 @@
 ## Decision
 
 The computed-ring corpus is staged for maintainer QA on
-`staging/gabriel-computed-rings`. It has not been merged into `main`, pushed,
-or published. The contributor branch was not merged wholesale because it also
+`staging/gabriel-computed-rings`. It has been pushed for draft-PR review but has
+not been merged into `main` or published. The contributor branch was not merged wholesale because it also
 replays obsolete application and deployment history; only the corpus-related
 commits were replayed onto current `origin/main`.
 
