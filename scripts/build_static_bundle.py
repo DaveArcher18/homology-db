@@ -62,15 +62,6 @@ def _catalog_space(space: dict[str, Any]) -> dict[str, Any]:
         }
         for record in space.get("cohomology", [])
     ]
-    result["catalog_search"] = json.dumps(
-        {
-            "citations": space.get("citations", []),
-            "models": space.get("models", []),
-            "evidence": space.get("evidence", []),
-        },
-        ensure_ascii=False,
-        sort_keys=True,
-    )
     result["_document_path"] = f"data/spaces/{space['slug']}.json"
     return result
 

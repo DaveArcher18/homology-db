@@ -331,7 +331,6 @@
         properties: space.properties,
         models: modelRecords(space),
         evidence: evidenceRecords(space),
-        catalog_search: space.catalog_search,
       }),
     ].filter(Boolean);
   }

@@ -33,6 +33,7 @@
     Lambda: "Λ",
     ast: "∗",
     ldots: "…",
+    cdots: "⋯",
   });
   const blackboardCharacters = Object.freeze({
     Z: "ℤ",
@@ -47,6 +48,7 @@
     "mathbb",
     "mathrm",
     "operatorname",
+    "mathbin",
     "widetilde",
     "text",
   ]);

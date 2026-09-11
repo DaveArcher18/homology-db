@@ -56,9 +56,11 @@ SOURCE_DIRECTORY = REPOSITORY_ROOT / "static_atlas"
 PUBLIC_ATLAS_PATH = REPOSITORY_ROOT / "dist" / "atlas.html"
 READ_MODEL_VERSION = "homology-db.static-atlas/5"
 THEORY_ID = "ordinary_homology"
-# Bounded symbolic family data adds little to the retained stable-spectrum corpus.
-# Keep direct-file/offline compatibility; the new workbench budget is 6 MiB.
-MAX_HTML_BYTES = 6 * 1024 * 1024
+# This ceiling now governs only the optional self-contained offline snapshot.
+# The hosted atlas is partitioned into a small shell and per-subject documents.
+# Keep enough room for the staged 212-space corpus without accepting the old
+# proposal to make a tens-of-megabytes monolithic page the public experience.
+MAX_HTML_BYTES = 24 * 1024 * 1024
 DEFINITION_REVISION = 1
 DEFINITIONS = (
     {

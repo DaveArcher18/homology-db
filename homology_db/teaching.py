@@ -220,6 +220,10 @@ def teaching_catalog() -> dict:
             f"The {name} projective plane has one cell in each of dimensions 0, {degree}, and {2*degree}.",
             f"Its degree-{degree} cup generator has a nonzero square: the attaching map matters beyond the cellular boundary.",
             _source("Projective rings, pp. 220–222; Example 4.47, p. 379; Hopf invariant examples, p. 427",page))
+    add("complex_projective_space:3", "3.2 · Cup products",
+        r"$\mathbb{CP}^{3}$ is the space of complex lines through the origin in complex four-dimensional space, with one cell in real dimensions zero, two, four, and six.",
+        "Its degree-two generator has nonzero square and cube; the ring truncates only at the fourth power, where dimension forces it.",
+        _source("Example 2.35, p. 140; Theorem 3.19, p. 220",220))
     for m,n in ((3,1),(4,1),(5,2),(7,3),(8,4),(9,2)):
         add(f"moore:{m}:{n}", "2.2 · Moore spaces",
             f"Attach an ({n+1})-cell to an {n}-sphere by a degree-{m} map to obtain this Moore space.",
