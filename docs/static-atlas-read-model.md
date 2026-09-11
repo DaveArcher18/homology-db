@@ -108,7 +108,7 @@ It embeds clean source commit
 `97452364ee60b05cfa9d320afba95a5e716cafeb7d8494e7e0c9ffd4dbc69146`.
 The artifact embeds Snapshot identity, generation time, database measurements,
 record counts, source commit, source-input hash, and clean/dirty input state.
-The one-file exporter enforces a 6 MiB cap and rejects external script,
+The one-file exporter enforces a 50 MiB cap and rejects external script,
 stylesheet, font, or image dependencies.
 
 ## Mapping
