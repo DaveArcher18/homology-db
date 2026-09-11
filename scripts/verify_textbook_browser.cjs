@@ -17,7 +17,8 @@ const fs=require('node:fs');
     await page.getByRole('link',{name:'Textbook map & comparisons'}).click();
     await page.locator('.teaching-example').first().waitFor();
     assert.match(page.url(),/#textbook$/);
-    assert.equal(await page.locator('.teaching-example').count(),42);
+    const inventoryCount=(await page.evaluate(()=>window.HomologyAtlasDataStore.loadAtlas())).conceptual_spaces.length;
+    assert.equal(await page.locator('.teaching-example').count(),inventoryCount);
     assert.match(await page.locator('main').innerText(),/not an exhaustive/);
     assert.equal(await page.locator('.teaching-comparison-link').count(),3);
     const atlas=await page.evaluate(()=>window.HomologyAtlasDataStore.loadAtlas());
@@ -123,6 +124,6 @@ const fs=require('node:fs');
     assert.match(await about.locator('.wb-title-row').innerText(),/Concern recorded in a narrower scope/);
     await about.close();
     assert.deepEqual(errors,[]);
-    console.log(JSON.stringify({ok:true,inventory:42,comparisons:3,recordCount:75,widths,scopedPacket:true,invalidScope:true,partialConcernFixture:true,errors}));
+    console.log(JSON.stringify({ok:true,inventory:inventoryCount,comparisons:3,recordCount:75,widths,scopedPacket:true,invalidScope:true,partialConcernFixture:true,errors}));
   }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

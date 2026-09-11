@@ -150,6 +150,7 @@ console.log(JSON.stringify({
                     "scripts/verify_steenrod_release.py",
                     "static_atlas/atlas.css",
                     "static_atlas/atlas.js",
+                    "static_atlas/data-store.js",
                     "static_atlas/index.template.html",
                     "static_atlas/presentation.js",
                     "static_atlas/families.js",
