@@ -23,7 +23,9 @@ than choosing a winner.
 from __future__ import annotations
 
 from collections import Counter
+from fractions import Fraction
 from itertools import product
+import re
 from typing import Any
 
 COHOMOLOGY_RING_SCHEMA_VERSION = "homology-db.cohomology-rings/1"
@@ -46,6 +48,33 @@ def _integer(value: Any, label: str, minimum: int | None = None) -> int:
     if type(value) is not int or (minimum is not None and value < minimum):
         raise ValueError(f"{label} must be an integer" + (f" >= {minimum}" if minimum is not None else ""))
     return value
+
+
+_RATIONAL = re.compile(r"-?[1-9][0-9]*/[1-9][0-9]*")
+
+
+def _scalar(value: Any, label: str, coefficient: str) -> Fraction:
+    """A structure constant, as an exact rational.
+
+    Integers stay JSON integers. A rational appears only over Q and only as a
+    string in lowest terms, "-1/2" say: some spaces have no basis of H^*(X;Q)
+    in which the cup product has integer structure constants, and rescaling the
+    producer's basis to force one would replace the computed answer with a
+    different presentation of it.
+    """
+    if type(value) is int:
+        return Fraction(value)
+    if coefficient == "Q" and isinstance(value, str) and _RATIONAL.fullmatch(value):
+        scalar = Fraction(value)
+        if scalar.denominator == 1:
+            raise ValueError(f"{label} with denominator one must be written as an integer")
+        if str(scalar) != value:
+            raise ValueError(f"{label} must be in lowest terms")
+        return scalar
+    raise ValueError(
+        f"{label} must be an integer" +
+        (", or a rational string in lowest terms" if coefficient == "Q" else "")
+    )
 
 
 def characteristic_of(coefficient: str) -> int:
@@ -102,7 +131,7 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
     def modulus(key: str) -> int:
         return basis[key]["order"] or characteristic
 
-    def normalize(vector: dict[str, int]) -> dict[str, int]:
+    def normalize(vector: dict[str, Fraction]) -> dict[str, Fraction]:
         reduced = {}
         for key, value in vector.items():
             bound = modulus(key)
@@ -120,7 +149,7 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
         value: dict[str, int] = {}
         for term in entry["result"]:
             key = term["basis"]
-            scalar = _integer(term["coefficient"], "product scalar")
+            scalar = _scalar(term["coefficient"], "product scalar", coefficient)
             if key not in basis or key in value:
                 raise ValueError("product result requires unique known basis elements")
             if basis[key]["degree"] != sum(basis[item]["degree"] for item in pair):
@@ -131,7 +160,7 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
             raise ValueError("sparse table must omit zero products")
         table[pair] = reduced
 
-    def multiply(left: dict[str, int], right: dict[str, int]) -> dict[str, int]:
+    def multiply(left: dict[str, Fraction], right: dict[str, Fraction]) -> dict[str, Fraction]:
         result: Counter[str] = Counter()
         for a, x in left.items():
             for b, y in right.items():
@@ -249,3 +278,35 @@ def _validate_presentation(record, algebra, basis, unit, multiply, normalize, ch
             raise ValueError("relation is not homogeneous")
         if normalize(dict(total)):
             raise ValueError("relation is not satisfied by the multiplication table")
+
+
+def check_corroborating_records(records: dict[str, list[dict[str, Any]]]) -> list[dict[str, Any]]:
+    """Report slots carrying more than one record, and refuse disagreement.
+
+    Two records for the same space and coefficient are independent assertions
+    about one slot, not duplicates to be reconciled.  They are kept side by
+    side and reported as corroboration; if their additive groups disagree the
+    slot is a conflict, and a conflict fails the build rather than being
+    settled by preferring one provenance over the other.
+    """
+    corroborated = []
+    for space_id in sorted(records):
+        by_coefficient: dict[str, list[dict[str, Any]]] = {}
+        for record in records[space_id]:
+            by_coefficient.setdefault(record["coefficient"], []).append(record)
+        for coefficient, entries in sorted(by_coefficient.items()):
+            if len(entries) < 2:
+                continue
+            groups = [entry["groups"] for entry in entries]
+            if any(item != groups[0] for item in groups[1:]):
+                raise ValueError(
+                    f"cohomology ring records for {space_id} over {coefficient} disagree on the "
+                    f"additive groups; this is a conflict and must be resolved upstream, not ranked"
+                )
+            corroborated.append({
+                "space_id": space_id,
+                "coefficient": coefficient,
+                "record_ids": sorted(entry["record_id"] for entry in entries),
+                "provenance_kinds": sorted({entry["provenance"]["kind"] for entry in entries}),
+            })
+    return corroborated

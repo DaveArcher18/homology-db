@@ -1,0 +1,193 @@
+{
+ "computation_run": {
+  "determinism_note": "All six coefficient rings for a given space were computed in one process from one build of its simplicial model, so every record for that space is bound to the single facets_sha256 recorded for it.",
+  "environment_lock": {
+   "Oscar": "1.8.2",
+   "SageMath": "10.3",
+   "julia": "1.12.7"
+  },
+  "exit_status": "succeeded",
+  "model_count": 193,
+  "record_count": 2274,
+  "run_id": "oscar-simplicial-cup-2026-09-09"
+ },
+ "corpus_id": "computed-rings-v1",
+ "engine": {
+  "algorithm": "Alexander-Whitney cup product on simplicial cochains via Oscar.SimplicialCochainComplex and Oscar.DGAlgCohRing; canonical graded bases obtained by Smith normal form of the relation matrix between a small generating set of each H^d.",
+  "algorithm_id": "cohomology-tables/oscar-simplicial-cup/1",
+  "language": "Julia",
+  "language_version": "1.12.7",
+  "license": "GPL-3.0-or-later",
+  "name": "OSCAR",
+  "version": "1.8.2"
+ },
+ "identified_models_path": "corpus/computed-rings-v1/imported-models.json",
+ "limits": [
+  "Cup products are imported, not recomputed by this repository. The loader re-derives the ring axioms and the additive groups; it does not re-derive the products from the triangulation.",
+  "Cocycle representatives are not imported: they belong to one vertex labelling and are not needed to state the ring.",
+  "No human mathematical review is claimed or recorded for any record in this corpus.",
+  "Imported homology is a second calculation, not the atlas's homology of record: the atlas computes that from its own cellular models and the two are checked against each other."
+ ],
+ "model_source": {
+  "constructors": {
+   "klein_bottle": "simplicial_complexes.KleinBottle()",
+   "nonorientable_surface:3": "simplicial_complexes.SurfaceOfGenus(3, orientable=False)",
+   "nonorientable_surface:4": "simplicial_complexes.SurfaceOfGenus(4, orientable=False)",
+   "nonorientable_surface:5": "simplicial_complexes.SurfaceOfGenus(5, orientable=False)",
+   "nonorientable_surface:6": "simplicial_complexes.SurfaceOfGenus(6, orientable=False)",
+   "orientable_surface:2": "simplicial_complexes.SurfaceOfGenus(2)",
+   "orientable_surface:3": "simplicial_complexes.SurfaceOfGenus(3)",
+   "orientable_surface:4": "simplicial_complexes.SurfaceOfGenus(4)",
+   "orientable_surface:5": "simplicial_complexes.SurfaceOfGenus(5)",
+   "orientable_surface:6": "simplicial_complexes.SurfaceOfGenus(6)",
+   "torus:2": "simplicial_complexes.Torus()"
+  },
+  "license": "GPL-2.0-or-later",
+  "name": "SageMath",
+  "redistribution_note": "The facet lists below are the output of running the named Sage constructors, retained here as mathematical data so that each imported ring is bound to an exact model. No licence is asserted over them. SurfaceOfGenus does not reproduce its vertex labelling between Sage processes, so pinning the recipe alone would not identify the model: the facets are therefore checked in, following the precedent of corpus/chromatic-v1/poincare-sphere-facets.json.",
+  "role": "generator of the simplicial models only; no Sage source code is included here",
+  "version": "SageMath version 10.3, Release Date: 2024-03-19"
+ },
+ "models": [
+  {
+   "facets": 16,
+   "facets_sha256": "ab5cc0284d39d4f3133aadceac2ac52140d143fb9e1f406e6b0bf5bcd8f7d80f",
+   "model_id": "simplicial:klein_bottle:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/klein_bottle.json",
+   "reproducible_labelling": true,
+   "sha256": "7b562b531b2b1dd613b23cdafcee31639dcebf9fd2048ed310b0a041bcc71fb9",
+   "space_id": "klein_bottle",
+   "vertices": 8
+  },
+  {
+   "facets": 26,
+   "facets_sha256": "e1b2a5394380bf1c23b9e853cced12a7298b71e5158e34ce050ade0d7b8ddc4c",
+   "model_id": "simplicial:nonorientable_surface:3:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/nonorientable_surface-3.json",
+   "reproducible_labelling": false,
+   "sha256": "ab5793ec8c8e27a4a41c4ec544b9f41c6ea9de46ce1e2307bf0a746713d83341",
+   "space_id": "nonorientable_surface:3",
+   "vertices": 12
+  },
+  {
+   "facets": 34,
+   "facets_sha256": "f50ecd30f7634803ef18181f26579a10cdb33e8ede0e74b3cd3ecf0eb1ac1601",
+   "model_id": "simplicial:nonorientable_surface:4:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/nonorientable_surface-4.json",
+   "reproducible_labelling": false,
+   "sha256": "7c1d8ad484fe8d34bc1b2ef7052936c2c52f6eb5250a763e3cbbab7d6a8a7d98",
+   "space_id": "nonorientable_surface:4",
+   "vertices": 15
+  },
+  {
+   "facets": 42,
+   "facets_sha256": "937c9c2692b0bce301c0a2484d17e0af86f67e882455059c81dc8cd6deb778f7",
+   "model_id": "simplicial:nonorientable_surface:5:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/nonorientable_surface-5.json",
+   "reproducible_labelling": false,
+   "sha256": "9f575569441d7abd54981d3eb191f1b1acec5dae0ee0f618f47951b2b4d0039e",
+   "space_id": "nonorientable_surface:5",
+   "vertices": 18
+  },
+  {
+   "facets": 50,
+   "facets_sha256": "dc7e62a0271a7b7dff4b0fc5b90f205a53d347d9e1de8afda6ae60b5fe4c23ff",
+   "model_id": "simplicial:nonorientable_surface:6:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/nonorientable_surface-6.json",
+   "reproducible_labelling": false,
+   "sha256": "7be0359d007db2f646341e4801f8ffa640be06682c3471178273f6a59b045fdb",
+   "space_id": "nonorientable_surface:6",
+   "vertices": 21
+  },
+  {
+   "facets": 26,
+   "facets_sha256": "17762860a9c23878411e787c717c690dd0f4893a079779878c95000d3574cb68",
+   "model_id": "simplicial:orientable_surface:2:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/orientable_surface-2.json",
+   "reproducible_labelling": false,
+   "sha256": "9275f56171ede113d7af1185197d1f3df81ffbf8e40b5e17913831da34e90a41",
+   "space_id": "orientable_surface:2",
+   "vertices": 11
+  },
+  {
+   "facets": 38,
+   "facets_sha256": "e79ede5ee464ebb930c328a427069679bdc7320428988726b5ac6cc42e5515ab",
+   "model_id": "simplicial:orientable_surface:3:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/orientable_surface-3.json",
+   "reproducible_labelling": false,
+   "sha256": "23f1cd7a62c280f2021686f84f4c10f958f07a8eed58a8077ec159a0c25c9648",
+   "space_id": "orientable_surface:3",
+   "vertices": 15
+  },
+  {
+   "facets": 50,
+   "facets_sha256": "724ba531ac92b93028e6942ed794c392c4eb88d7aac7c687440987a69e2f0f6f",
+   "model_id": "simplicial:orientable_surface:4:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/orientable_surface-4.json",
+   "reproducible_labelling": false,
+   "sha256": "be6df659f051cbec7ae8193ba1f90163cd6dbefd0889a6f620588bbdb2c6b1be",
+   "space_id": "orientable_surface:4",
+   "vertices": 19
+  },
+  {
+   "facets": 62,
+   "facets_sha256": "75e9e16eaa76a0934d9a3f4552757874caa897e0c9a6c208de92dbb6b9cf2e35",
+   "model_id": "simplicial:orientable_surface:5:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/orientable_surface-5.json",
+   "reproducible_labelling": false,
+   "sha256": "a2e89eebf8a9770d3ca61ec7c6d719223c8b2ce3d6c78e18b728f8ef3842ba51",
+   "space_id": "orientable_surface:5",
+   "vertices": 23
+  },
+  {
+   "facets": 74,
+   "facets_sha256": "c7e0384d909726a876e89add8be0944b829a72c9c094d60b94c6fda8fd038797",
+   "model_id": "simplicial:orientable_surface:6:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/orientable_surface-6.json",
+   "reproducible_labelling": false,
+   "sha256": "af9357b7b663042338386d85310d2af6289842112b940b5ad53316c85c20f48d",
+   "space_id": "orientable_surface:6",
+   "vertices": 27
+  },
+  {
+   "facets": 14,
+   "facets_sha256": "6e38b4688ce8f661a8e3b6048c60e939c1d082840e3a972f886a11455a7b55f1",
+   "model_id": "simplicial:torus:2:sage-10.3",
+   "path": "corpus/computed-rings-v1/triangulations/torus-2.json",
+   "reproducible_labelling": true,
+   "sha256": "6da055e7473a0e5e8543664aa6e09a1f03af87b5fbe1b1734ba86f5401f77fec",
+   "space_id": "torus:2",
+   "vertices": 7
+  }
+ ],
+ "producer": {
+  "author": "Wern Juin Gabriel Ong",
+  "citation": "Wern Juin Gabriel Ong, cohomology-tables 0.1.0 (2026), https://github.com/wgabrielong/cohomology-tables",
+  "commit": "5ae5870b3aa67d89f29d14f850e38186dd231898",
+  "data_license": "CC0-1.0",
+  "data_license_scope": "records/** in the producing repository; the ring records imported here",
+  "name": "cohomology-tables",
+  "repository": "https://github.com/wgabrielong/cohomology-tables",
+  "software_license": "GPL-3.0-or-later",
+  "version": "0.1.0"
+ },
+ "review_state": "imported_unreviewed",
+ "rings_path": "corpus/computed-rings-v1/rings.json",
+ "rings_sha256": "099879ab2e13c19357f820600b332f4a71b46e16f56dbf4892816140f892f7ce",
+ "schema_version": "homology-db.computed-rings-manifest/1",
+ "scope": "Ordinary unreduced cohomology rings and homology of eleven closed surfaces and the four closed S^2 x R 3-manifolds, computed from explicit finite simplicial models by an external computer algebra system. Coefficients Z, Q, F2, F3, F5 and F7. The surfaces' models are checked in; the S^2 x R models come from a catalogue that states no licence and are identified by hash rather than shipped. These are imported computations, not owned ones and not human-reviewed mathematics.",
+ "title": "Cup-product rings from explicit triangulations",
+ "withheld_rings": {
+  "basis_above_producer_cutoff": "The producer's multiplication table is incomplete because the basis exceeded its cutoff, and this atlas records a multiplication only when it is complete.",
+  "spaces": {
+   "connected_sum:s2-twist-s1-sum-20": "basis_above_producer_cutoff",
+   "connected_sum:s2xs1-sum-20": "basis_above_producer_cutoff",
+   "hadamard_torsion_complex:32": "basis_above_producer_cutoff",
+   "hom_complex:c6-compl-k5-small": "basis_above_producer_cutoff",
+   "orientable_surface:26": "basis_above_producer_cutoff",
+   "random_2_complex:25": "basis_above_producer_cutoff",
+   "sphere:0": "unit_is_not_a_basis_element"
+  },
+  "unit_is_not_a_basis_element": "S^0 is disconnected, so H^0 has rank two and the unit is a sum of orthogonal idempotents rather than a named basis element. This ring schema requires the unit to be a basis element, and rewriting the computed basis to supply one would publish a different presentation than the one that was computed. Its literature ring is unaffected."
+ }
+}

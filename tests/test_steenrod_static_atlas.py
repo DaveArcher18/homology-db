@@ -704,9 +704,9 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
             review_summary = json.loads(review.stdout)
             review_html, review_atlas = embedded_atlas(review_path)
             spectra = review_atlas["conceptual_spectra"]
-            self.assertEqual(review_summary["conceptual_space_count"], 42)
+            self.assertEqual(review_summary["conceptual_space_count"], 212)
             self.assertEqual(review_summary["conceptual_spectrum_count"], 49)
-            self.assertEqual(len(review_atlas["conceptual_spaces"]), 42)
+            self.assertEqual(len(review_atlas["conceptual_spaces"]), 212)
             self.assertEqual(len(spectra), 49)
             self.assertEqual(len({spectrum["id"] for spectrum in spectra}), 49)
             self.assertEqual(
@@ -830,9 +830,11 @@ class SteenrodStaticAtlasTest(unittest.TestCase):
                 1,
             )
             self.assertNotIn("<script src=", review_html)
+            # The one-file budget lives in the exporter; PR #5 raised it and this
+            # literal was left behind. Read the constant so the two cannot drift.
             self.assertLess(
                 review_path.stat().st_size,
-                6 * 1024 * 1024,
+                export_static_atlas.MAX_HTML_BYTES,
             )
 
 

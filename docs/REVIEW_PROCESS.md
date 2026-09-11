@@ -65,7 +65,7 @@ accepted-release path admits the stable-spectrum artifact only when that
 external record says `accept` and every binding can be independently
 reconstructed from the artifact and pinned source. On acceptance, those
 reviews and admissions are
-materialized in a separate AtlasSchema v5 ledger. The 42-space Chromatic source
+materialized in a separate AtlasSchema v5 ledger. The 212-space Chromatic source
 retains its `/1` logical identity, while the finalized spectrum ledger receives
 a distinct `homology-db.sqlite-logical/2` identity that excludes only the
 physical migration-application timestamp. The deployment gate rematerializes

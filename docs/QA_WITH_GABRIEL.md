@@ -1,5 +1,8 @@
 # David + Gabriel: first QA session
 
+> Historical QA record for the 52-space release. The current staged corpus has
+> 212 spaces; use the current PR audit and checks for new acceptance decisions.
+
 Status: live and ready for human QA, 2026-09-06. Source 63116513; release 5bf19f8.
 All 211 tests completed successfully (3 optional skips), with independent
 mathematical, workflow and integration reviews. Deterministic rebuild and four
@@ -8,7 +11,7 @@ were unavailable while the Mac was locked; those are not claimed as passed.
 This checklist invites human QA; it is not a record of acceptance.
 
 Start with the [textbook map](https://davearcher18.github.io/homology-db/#textbook).
-The selected map covers all 42 retained spaces; 27 still have no encoded
+The selected map covers all 52 retained spaces; 28 still have no encoded
 cohomology ring and remain explicitly labelled. It is not an exhaustive textbook
 inventory. The original 13-space ring core is preserved, with HP²/OP² added as a
 separate sourced five-field extension.

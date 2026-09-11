@@ -1,6 +1,6 @@
 # Chromatic Homology Atlas test drive
 
-This is the shortest path from a clean checkout to the current 42-space
+This is the shortest path from a clean checkout to the current 212-space
 development corpus. It uses only the Python standard library and writes a
 disposable SQLite database under `/tmp` by default.
 
@@ -12,7 +12,7 @@ python3 -m homology_db chromatic demo
 
 Expected headline facts:
 
-- the Snapshot contains exactly 42 named CW spaces in 17 families;
+- the Snapshot contains exactly 212 named CW spaces in 28 families;
 - 21 spaces have integral torsion, across primes 2, 3, 5, and 7, including
   `Z/4`, `Z/8`, and `Z/9` examples;
 - `M(Z/5,2)` has `H_2 = Z/5`;
@@ -102,7 +102,7 @@ python3 scripts/export_static_atlas.py \
 
 The first command includes the frozen preview regression suite and the current
 chromatic corpus. The second verifies the older planned release manifest; it is
-not the source of the 42-space Snapshot. The exporter builds and validates the
+not the source of the 212-space Snapshot. The exporter builds and validates the
 self-contained browser atlas.
 
 ## What this corpus is—and is not

@@ -14,6 +14,7 @@
     firstRecorded,
     groupPresentation,
     monomialTex,
+    basisLabelTex,
     parseTex,
     relationTex,
   } = presentation;
@@ -61,15 +62,27 @@
     "real_projective_space:3": "The space of lines through the origin in four-dimensional real space, equivalently the three-sphere with antipodal points identified.",
     "real_projective_space:4": "The space of lines through the origin in five-dimensional real space, equivalently the four-sphere with antipodal points identified.",
     "complex_projective_space:2": "The space of complex lines through the origin in complex three-dimensional space. It has one cell in real dimensions zero, two, and four.",
+    "complex_projective_space:3": "The space of complex lines through the origin in complex four-dimensional space. It has one cell in real dimensions zero, two, four, and six.",
     "sphere_wedge:2:4": "A two-sphere and a four-sphere joined at one chosen point. Its additive groups agree with those of the complex projective plane; its cup products do not.",
   });
   const classicalFamilyDescriptions = Object.freeze({
     point: "The one-point space is the starting example for ordinary homology and cohomology.",
     sphere: "Unit spheres in Euclidean space, from the disconnected zero-sphere to higher-dimensional examples.",
     wedge: "Join pointed spaces at their chosen basepoints. Wedges give simple examples where cup products carry information beyond additive groups.",
-    surface: "The torus and Klein bottle illustrate orientability, torsion, and the effect of changing coefficients.",
+    surface: "Every closed surface is a connected sum of tori or of projective planes. Orientability decides whether any torsion appears; the genus decides how many degree-one classes there are.",
+    prism_polyhedral_3manifold: "Quotients of the 3-sphere by binary dihedral and binary polyhedral groups. The other spherical quotients \u2014 lens spaces, RP\u00b3, S\u00b3 and the Poincar\u00e9 sphere \u2014 are recorded in their own families.",
+    flat_3manifold: "All ten closed flat 3-manifolds: six orientable, four not. Whether the top homology is Z or zero is exactly whether the quotient is orientable.",
+    nil_3manifold: "Circle bundles over the torus with nonzero Euler number. That number appears directly as the order of the torsion class in first homology.",
+    h2xr_3manifold: "A closed hyperbolic surface times a circle. K\u00fcnneth predicts every group here from the surface factor.",
+    hyperbolic_3manifold: "Closed hyperbolic 3-manifolds of small volume. Volume determines the manifold; homology does not, and several of these share it.",
+    connected_sum_3manifold: "Reducible 3-manifolds. By Kneser\u2013Milnor each has a unique prime decomposition, and every entry links to the summands it is built from.",
+    four_manifold: "In dimension four the cup product on the middle degree is the intersection form. It is the only thing separating CP\u00b2 # CP\u00b2 from S\u00b2 \u00d7 S\u00b2, which have identical homology.",
+    five_manifold: "Two products and the Wu manifold SU(3)/SO(3), the standard non-spin example in dimension five.",
+    combinatorial_complex: "Complexes built from combinatorics rather than geometry. Their torsion is large and arbitrary rather than structural \u2014 one of these has Z/32 in its first homology.",
+    s2xr_3manifold: "The four closed 3-manifolds built on S\u00b2 \u00d7 R. Two are sphere bundles over the circle, one is a product, one is a connected sum, and the list is complete.",
     real_projective_space: "Real lines through the origin, or spheres with antipodal points identified. Each has one cell in every dimension up to its dimension.",
-    hopf_projective_plane: "The complex, quaternionic, and octonionic projective planes each have three cells, with different attaching maps.",
+    complex_projective_space: "Complex lines through the origin, with one cell in every even dimension. The degree-two generator has nonzero powers all the way to the top.",
+    hopf_projective_plane: "The quaternionic and octonionic projective planes each have three cells. The complex member of the same trio is the projective plane CP\u00b2, recorded with the complex projective spaces.",
   });
 
   const spacesById = new Map(conceptualSpaces.map((space) => [space.id, space]));
@@ -318,7 +331,6 @@
         properties: space.properties,
         models: modelRecords(space),
         evidence: evidenceRecords(space),
-        catalog_search: space.catalog_search,
       }),
     ].filter(Boolean);
   }
@@ -1115,13 +1127,21 @@
     const coefficient = homologyViewFor(space).coefficient;
     const records = asArray(space.cohomology)
       .filter((record) => record.coefficient === coefficient);
-    const record = records.length === 1 ? records[0] : null;
-    const hasRing = Boolean(record?.knowledge_state === "exact" && record.presentation?.tex && Array.isArray(record.groups));
+    // A slot can carry more than one record: a sourced ring and an independently
+    // computed one corroborate each other and are never merged. A cited text takes
+    // precedence over a machine computation wherever one exists, so the displayed
+    // ring and its table come from the literature record when there is one. The
+    // others are named rather than hidden.
+    const record = records.find((item) => item.provenance?.kind === "literature")
+      ?? records.find((item) => item.presentation?.tex)
+      ?? records[0]
+      ?? null;
+    const corroborating = records.filter((item) => item !== record);
+    const hasRing = Boolean(record?.knowledge_state === "exact" && Array.isArray(record.groups) && record.algebra);
     host.classList.toggle("cohomology-unrecorded", !hasRing);
     host.closest(".space-theory-results")?.classList.toggle("has-cohomology-ring", hasRing);
     const content = element("div", "cohomology-rendered");
-    if (!record || record.knowledge_state !== "exact"
-      || !record.presentation?.tex || !Array.isArray(record.groups)) {
+    if (!hasRing) {
       content.append(
         element("p", "cohomology-missing", `Cohomology is not recorded with ${coefficientDisplay(coefficient)} coefficients. This does not mean it is zero.`),
       );
@@ -1134,11 +1154,23 @@
     formula.append(
       renderTex(`H^{*}(${space.name.tex};${coefficientTex(coefficient)})`,
         `Ordinary cohomology ring of ${space.name.plain} with ${coefficientDisplay(coefficient)} coefficients`, "cohomology-formula"),
-      renderTex(`\\cong ${record.presentation.tex}`,
-        `is isomorphic to ${record.presentation.plain}`, "ring-formula"),
     );
+    if (record.presentation?.tex) {
+      formula.append(renderTex(`\\cong ${record.presentation.tex}`,
+        `is isomorphic to ${record.presentation.plain}`, "ring-formula"));
+    }
     content.append(formula,
       element("p", "ring-convention", "Ordinary, unreduced cohomology · multiplication is the cup product · unit 1 in degree 0"));
+    if (record.provenance?.kind === "external_engine_computation") {
+      content.append(element("p", "ring-provenance cohomology-imported",
+        `Computed by ${record.provenance.engine ?? "an external system"} from a pinned simplicial model, and imported. Not independently verified here and not human-reviewed.`));
+    }
+    if (corroborating.length) {
+      const kinds = corroborating.map((item) => item.provenance?.kind === "external_engine_computation"
+        ? "an independent machine computation" : "a literature source");
+      content.append(element("p", "ring-corroboration",
+        `Also recorded by ${[...new Set(kinds)].join(" and ")}, agreeing on the additive groups.`));
+    }
 
     const definitionsLine = element("p", "ring-definitions");
     definitionsLine.append(buildKnowl("cup-product", "Cup product"), document.createTextNode(" · "),
@@ -1147,6 +1179,11 @@
     content.append(definitionsLine);
 
     const structure = element("dl", "ring-structure");
+    if (algebra.kind === "graded_structure_constants") {
+      structure.append(element("dt", "", "Presentation"));
+      structure.append(element("dd", "ring-generators",
+        "Recorded as an additive basis with its full cup-product table. No generators-and-relations presentation is claimed."));
+    } else {
     structure.append(element("dt", "", "Generators"));
     const generators = element("dd", "ring-generators");
     if (!asArray(algebra.generators).length) {
@@ -1170,9 +1207,10 @@
       });
     }
     structure.append(relations);
+    }
     content.append(structure);
     const notes = element("div", "ring-meaning");
-    asArray(record.presentation.notes).forEach((note) => notes.append(element("p", "", note)));
+    asArray(record.presentation?.notes).forEach((note) => notes.append(element("p", "", note)));
     content.append(notes, element("h3", "cohomology-groups-heading", "Groups by degree"));
 
     const tableWrap = element("div", "homology-table-wrap cohomology-table-wrap");
@@ -1193,18 +1231,21 @@
       degree.scope = "row";
       degree.append(renderTex(`H^{${group.degree}}`, `Cohomology degree ${group.degree}`, "math-inline"));
       const groupCell = element("td", "group-cell");
-      const value = groupPresentation({ coefficient_ring: coefficient, knowledge_state: "exact", group: { state: "exact", dimension: group.dimension } });
+      const value = groupPresentation({ coefficient_ring: coefficient, knowledge_state: "exact", group: { state: "exact", ...group } });
       groupCell.append(value.exact ? renderTex(value.tex, value.plain, "group-math") : document.createTextNode(value.plain));
       const basisCell = element("td", "cohomology-basis");
       const basis = asArray(algebra.basis).filter((item) => item.degree === group.degree);
-      if (group.dimension === 0) {
+      const summands = Number.isInteger(group.dimension)
+        ? group.dimension
+        : (group.free_rank ?? 0) + asArray(group.torsion_orders).length;
+      if (summands === 0) {
         basisCell.textContent = "—";
-      } else if (basis.length !== group.dimension) {
+      } else if (basis.length !== summands) {
         basisCell.textContent = "Not recorded";
       } else {
         basis.forEach((item, index) => {
           if (index) basisCell.append(document.createTextNode(", "));
-          basisCell.append(renderTex(monomialTex(item.powers), item.id, "math-inline"));
+          basisCell.append(renderTex(basisLabelTex(item), item.id, "math-inline"));
         });
       }
       row.append(degree, groupCell, basisCell);
@@ -1220,7 +1261,7 @@
     products.append(element("p", "wb-muted", complete ? "Multiplication: complete for all additive basis pairs." : "Multiplication: not recorded completely. Missing products are not zero."));
     const basis = asArray(algebra.basis);
     const basisById = new Map(basis.map(item => [item.id,item]));
-    const basisTex = item => monomialTex(item.powers);
+    const basisTex = basisLabelTex;
     const list = element("ul", "wb-generator-list");
     basis.forEach(item => {const row=element("li");row.append(renderTex(basisTex(item),item.id,"math-inline"),document.createTextNode(` · degree ${item.degree}`));list.append(row);});
     products.append(list);
@@ -1231,7 +1272,7 @@
       const recorded=asArray(algebra.products).find(product=>product.left===left.id&&product.right===right.id);
       let tex;
       if(left.id===algebra.unit)tex=basisTex(right);else if(right.id===algebra.unit)tex=basisTex(left);
-      else if(recorded)tex=recorded.result.map(term=>`${term.coefficient===1?"":term.coefficient===-1?"-":term.coefficient}${basisTex(basisById.get(term.basis))}`).join("+").replaceAll("+-","-") || "0";
+      else if(recorded)tex=recorded.result.map(term=>`${term.coefficient===1?"":term.coefficient===-1?"-":typeof term.coefficient==="string"?`${term.coefficient}\\,`:term.coefficient}${basisTex(basisById.get(term.basis))}`).join("+").replaceAll("+-","-") || "0";
       else if(complete&&algebra.multiplication.omitted_products==="zero")tex="0";
       const cell=element("td");cell.append(tex===undefined?document.createTextNode("Not recorded"):renderTex(tex,tex,"math-inline"));row.append(cell);
     });productBody.append(row);});productTable.append(productHead,productBody);wrap.append(productTable);products.append(wrap);content.append(products);
@@ -1240,14 +1281,21 @@
     sources.append(element("h3", "", "Sources & review"));
     const citations = element("ul", "citation-list");
     asArray(record.sources).forEach((reference) => {
-      const catalog = atlas.classical?.sources;
+      const catalog = { ...(atlas.classical?.sources ?? {}), ...(atlas.computed_rings?.sources ?? {}) };
       const source = Array.isArray(catalog)
         ? catalog.find((item) => item.id === reference.source_id || item.source_id === reference.source_id)
         : catalog?.[reference.source_id];
       citations.append(renderCitation({ ...source, ...reference, year: source?.publication_year ?? source?.year }));
     });
     if (!citations.children.length) citations.append(element("li", "", "Source not recorded."));
-    sources.append(citations, element("p", "human-review-note", "Literature-based presentation · human mathematical review pending."));
+    // Say how this particular record was established. Calling a machine
+    // computation literature-based is a false claim about its evidence, and the
+    // two differ in what is still unverified: a citation has not been re-derived
+    // here, an import has not been checked to be the cup product of its model.
+    const reviewNote = record.provenance?.kind === "external_engine_computation"
+      ? "Machine-computed from a pinned simplicial model · imported, not verified here · human mathematical review pending."
+      : "Literature-based presentation · human mathematical review pending.";
+    sources.append(citations, element("p", "human-review-note", reviewNote));
     if (record.provenance?.derivation) {
       const derivation = detailsBlock("How this record is supported");
       derivation.content.append(element("p", "", record.provenance.derivation));
@@ -1443,6 +1491,40 @@
       .join("; ");
     if (formula && cells) return `${formula}; materialized cells: ${cells}`;
     return displayValue(firstRecorded(formula, cells || degrees));
+  }
+
+  // A computed ring is only as identified as the model it was computed on, so the
+  // technical block shows that model too: its size, its pinned hash, and the
+  // constructor that produced it. Where the constructor does not reproduce its
+  // own vertex labelling, the facets are the identity and that is said plainly.
+  function renderSimplicialModels(space, content) {
+    const models = asArray(atlas.computed_rings?.models)
+      .filter((model) => model.space_id === space.id);
+    if (!models.length) return;
+    content.append(element("h4", "", "Simplicial models used for computed rings"));
+    models.forEach((model) => {
+      const list = element("dl", "record-fields");
+      const rows = [
+        ["Model", model.model_id],
+        ["Kind", model.kind],
+        ["Size", `${model.vertices} vertices · ${model.facets} facets · f-vector (${asArray(model.f_vector).join(", ")})`],
+        ["Constructed by", `${String(model.generator_version ?? "").startsWith(model.generator)
+          ? model.generator_version
+          : `${model.generator} ${model.generator_version}`} · ${model.constructor}`],
+        ["Computed by", `${model.engine} ${model.engine_version}`],
+        ["Facets SHA-256", model.facets_sha256],
+        ["Artifact", model.artifact_path],
+        ["Artifact SHA-256", model.artifact_sha256],
+        ["Labelling", model.reproducible_labelling
+          ? "The constructor reproduces this vertex labelling."
+          : "The constructor does not reproduce this vertex labelling between runs; the checked-in facets are the model of record."],
+      ];
+      rows.forEach(([label, value]) => {
+        if (!value) return;
+        list.append(element("dt", "", label), element("dd", "", String(value)));
+      });
+      content.append(list);
+    });
   }
 
   function renderModels(space, content) {
@@ -1697,11 +1779,56 @@
     const references = evidenceRecords(space).flatMap(record => citationRecords(record));
     const seen = new Set();
     return references.filter(reference => {
-      if (!reference || typeof reference !== "object" || !String(reference.role ?? "").split("_").includes("homology")) return false;
+      // Everything attached to the homology evidence supports it: the model, the
+      // paper identifying that model, the engine that ran the computation, and
+      // the record of the computation itself. Only "..._context" citations are
+      // there to say why a space is interesting rather than what establishes its
+      // groups. Filtering on the word "homology" dropped the model and the
+      // engine, so an imported space cited one source for its homology and three
+      // for its ring.
+      if (!reference || typeof reference !== "object") return false;
+      if (String(reference.role ?? "").endsWith("_context")) return false;
       const key = JSON.stringify([reference.url, reference.title, reference.locator, reference.role]);
       if (seen.has(key)) return false;
       seen.add(key); return true;
     });
+  }
+
+  // The cohomology section shows the sources for whichever coefficient is
+  // selected. This is the whole set for the space, so a reader looking at
+  // "Sources and details" does not have to change coefficient to find them.
+  function cohomologyCitations(space) {
+    const catalog = { ...(atlas.classical?.sources ?? {}), ...(atlas.computed_rings?.sources ?? {}) };
+    const groups = new Map();
+    asArray(space.cohomology).forEach((record) => {
+      asArray(record.sources).forEach((reference) => {
+        const source = catalog?.[reference.source_id];
+        const merged = { ...source, ...reference, year: source?.publication_year ?? source?.year };
+        const key = JSON.stringify([merged.url, merged.title, merged.role]);
+        const group = groups.get(key);
+        if (group) {
+          if (!group.locators.includes(merged.locator)) group.locators.push(merged.locator);
+        } else {
+          groups.set(key, { reference: merged, locators: [merged.locator] });
+        }
+      });
+    });
+    // One source cited once per coefficient would otherwise repeat six times over,
+    // identical but for the tail of the locator. Fold those into a single line.
+    return Array.from(groups.values()).map(({ reference, locators }) => ({
+      ...reference,
+      locator: locators.length > 1 ? foldLocators(locators) : locators[0],
+    }));
+  }
+
+  function foldLocators(locators) {
+    let prefix = locators[0];
+    locators.forEach((locator) => {
+      while (prefix && !String(locator).startsWith(prefix)) prefix = prefix.slice(0, -1);
+    });
+    if (prefix.length < 4) return locators.join("; ");
+    const tails = locators.map((locator) => String(locator).slice(prefix.length)).filter(Boolean);
+    return tails.length ? `${prefix}${tails.join(", ")}` : prefix;
   }
 
   function buildProvenanceSummary(space) {
@@ -1916,11 +2043,21 @@
     citations.forEach(reference => citationList.append(renderCitation(reference)));
     readableSources.append(citations.length ? citationList : element("p", "", "Supporting homology sources are not recorded."));
     records.append(readableSources);
+    const ringCitations = cohomologyCitations(space);
+    if (ringCitations.length) {
+      const ringSources = element("section", "space-readable-sources");
+      ringSources.append(element("h3", "", "Supporting cohomology sources"));
+      const ringList = element("ul", "citation-list");
+      ringCitations.forEach((reference) => ringList.append(renderCitation(reference)));
+      ringSources.append(ringList);
+      records.append(ringSources);
+    }
     const modelBlock = detailsBlock("Technical model and evidence records");
     const modelDefinition = element("p", "detail-definition");
     modelDefinition.append(buildKnowl("model", "What is a Model?"));
     modelBlock.content.append(modelDefinition, metadata);
     renderModels(space, modelBlock.content);
+    renderSimplicialModels(space, modelBlock.content);
     renderEvidence(space, modelBlock.content);
     records.append(modelBlock.details);
 

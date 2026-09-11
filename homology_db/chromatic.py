@@ -10,9 +10,11 @@ all materialized together.
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import itertools
 import json
+import math
 import sqlite3
 from collections import Counter
 from contextlib import closing
@@ -77,7 +79,8 @@ CREATE TABLE space(
     summary TEXT NOT NULL,
     chromatic_relevance TEXT NOT NULL,
     equivalence_kind TEXT NOT NULL,
-    chain_sha256 TEXT NOT NULL
+    chain_sha256 TEXT NOT NULL,
+    sort_order INTEGER NOT NULL UNIQUE
 );
 CREATE TABLE alias(
     normalized_alias TEXT NOT NULL,
@@ -101,6 +104,7 @@ CREATE TABLE model(
     model_scope TEXT NOT NULL,
     artifact_path TEXT,
     artifact_sha256 TEXT,
+    redistribution TEXT NOT NULL,
     UNIQUE(space_id)
 );
 CREATE TABLE evidence(
@@ -335,6 +339,7 @@ def _base_spec(
     model_scope: str | None = None,
     artifact_path: str | None = None,
     artifact_sha256: str | None = None,
+    redistribution: str = "not_applicable",
     chain_override: dict[str, Any] | None = None,
     integral_override: list[dict[str, Any]] | None = None,
     evidence_kind: str = "owned_computation",
@@ -398,6 +403,7 @@ def _base_spec(
             ),
             "artifact_path": artifact_path,
             "artifact_sha256": artifact_sha256,
+            "redistribution": redistribution,
         },
         "sources": _applicable_sources(family, parameters),
         "computation_sketch": computation_sketch,
@@ -579,6 +585,50 @@ def _elementary_abelian_chain(
     return _sparse_chain(ranks, nonzero)
 
 
+IMPORTED_MODELS_PATH = (
+    REPOSITORY_ROOT / "corpus" / "computed-rings-v1" / "imported-models.json"
+)
+
+
+@functools.lru_cache(maxsize=1)
+def imported_models() -> dict[str, dict[str, Any]]:
+    """Descriptors for simplicial models identified by hash rather than shipped.
+
+    Their triangulations are not redistributed here (ADR 0005, point 2), so the
+    f-vector, vertex and facet counts, facet hash and retrieval citation are all
+    this repository holds of the model itself.
+    """
+    payload = json.loads(IMPORTED_MODELS_PATH.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != "homology-db.imported-models/1":
+        raise ValueError("unsupported imported-model schema version")
+    models = {}
+    for model in payload["models"]:
+        space_id = model["space_id"]
+        if space_id in models:
+            raise ValueError(f"imported model {space_id} is declared twice")
+        descriptor = model["model"]
+        f_vector = descriptor["f_vector"]
+        if descriptor["vertices"] != f_vector[0] or descriptor["facets"] != f_vector[-1]:
+            raise ValueError(f"imported model {space_id} has an inconsistent f-vector")
+        if len(descriptor["facets_sha256"]) != 64 or any(
+            character not in "0123456789abcdef" for character in descriptor["facets_sha256"]
+        ):
+            raise ValueError(f"imported model {space_id} has a malformed facet hash")
+        if descriptor.get("redistribution") != "identified_not_redistributed":
+            raise ValueError(f"imported model {space_id} does not declare its redistribution")
+        euler_faces = sum((-1) ** degree * count for degree, count in enumerate(f_vector))
+        euler_groups = sum(
+            (-1) ** row["degree"] * row["free_rank"] for row in model["integral_homology"]
+        )
+        if euler_faces != euler_groups:
+            raise ValueError(
+                f"imported model {space_id} has f-vector Euler characteristic "
+                f"{euler_faces} but recorded Betti numbers give {euler_groups}"
+            )
+        models[space_id] = model
+    return models
+
+
 def _poincare_artifact() -> tuple[str, list[dict[str, int]]]:
     path = REPOSITORY_ROOT / "corpus" / "chromatic-v1" / "poincare-sphere-facets.json"
     artifact = json.loads(path.read_text(encoding="utf-8"))
@@ -613,6 +663,95 @@ def _poincare_artifact() -> tuple[str, list[dict[str, int]]]:
         {"degree": degree, "count": count}
         for degree, count in enumerate(f_vector)
     ]
+
+
+def _model_citation(retrieval: dict[str, Any]) -> str:
+    """How to name this model in prose, in the terms its own catalogue uses."""
+    if retrieval["how"] == "file":
+        return f"{retrieval['label']!r} in {retrieval['file']}"
+    if retrieval["how"] == "eprint":
+        return f"read from arXiv:{retrieval['eprint']}"
+    return f"built by {retrieval['constructor']}"
+
+
+def _model_recipe(retrieval: dict[str, Any]) -> str:
+    """The instruction that reproduces the model, without shipping it."""
+    accessed = retrieval.get("date_accessed")
+    if retrieval["how"] == "file":
+        return (f"Fetch {retrieval['label']!r} from {retrieval['file']} at "
+                f"{retrieval['url']} (retrieved {accessed}).")
+    if retrieval["how"] == "eprint":
+        return (f"Read the facet list from the source of arXiv:{retrieval['eprint']} at "
+                f"{retrieval['url']} (retrieved {accessed}).")
+    where = retrieval.get("version") or "cohomology-tables itself"
+    return f"Run {retrieval['constructor']} in {where}."
+
+
+def _imported_simplicial_spec(
+    family: dict[str, Any], parameters: dict[str, Any]
+) -> dict[str, Any]:
+    """A space whose simplicial model is identified by hash, never shipped."""
+    model = imported_models()[parameters["space"]]
+    descriptor = model["model"]
+    certificate = model["certificate_chain"]
+    ranks = {int(degree): rank for degree, rank in certificate["ranks"].items()}
+    nonzero = {
+        int(degree): [tuple(entry) for entry in entries]
+        for degree, entries in certificate["nonzero"].items()
+    }
+    dimension = int(model["dimension"])
+    retrieval = descriptor["retrieval"]
+    groups = {
+        int(row["degree"]): (int(row["free_rank"]), list(row["torsion_orders"]))
+        for row in model["integral_homology"]
+    }
+    return _base_spec(
+        family,
+        parameters,
+        key=model["space_id"],
+        label=model["label"],
+        dimension=dimension,
+        aliases=list(model["aliases"]),
+        ranks=ranks,
+        nonzero=nonzero or None,
+        attaching_map=(
+            f"The model is the {descriptor['vertices']}-vertex, "
+            f"{descriptor['facets']}-facet triangulation "
+            f"{_model_citation(retrieval)}, identified by the "
+            f"SHA-256 of its canonical facet list and not redistributed here."
+        ),
+        boundary_formula=(
+            "The stored chain complex is a calculation certificate for the imported "
+            "groups, not the simplicial boundary of that triangulation, which this "
+            "repository does not hold."
+        ),
+        computation_sketch=(
+            "Integral homology is imported; every other coefficient ring is derived "
+            "here from it by the universal coefficient theorem, and the imported "
+            "field homology is checked against that derivation."
+        ),
+        tags=list(model["tags"]),
+        model_kind="finite_simplicial_complex",
+        construction=(
+            f"{_model_recipe(retrieval)} Check its canonical facet "
+            f"list against the recorded hash."
+        ),
+        model_cell_degrees=[
+            {"degree": degree, "count": count}
+            for degree, count in enumerate(descriptor["f_vector"])
+        ],
+        model_scope=(
+            "The triangulation is named, counted and hash-pinned but not shipped: its "
+            "source states no licence. Nothing below the f-vector can be re-derived "
+            "here (ADR 0005, point 4)."
+        ),
+        artifact_sha256=descriptor["facets_sha256"],
+        redistribution="identified_only",
+        integral_override=_integral_rows(dimension, groups),
+        evidence_kind="external_engine_computation",
+        algorithm_id=f"cohomology-tables-import:{descriptor['model_id']}",
+        run_recorded=False,
+    )
 
 
 def _materialize_family(
@@ -661,7 +800,11 @@ def _materialize_family(
             connected_components=2 if n == 0 else 1,
             model_kind="finite_simplicial_complex" if n == 0 else "finite_cw",
         )
+    if formula == "imported_simplicial_model":
+        return _imported_simplicial_spec(family, parameters)
     if formula == "poincare_simplicial":
+        if "space" in parameters:
+            return _imported_simplicial_spec(family, parameters)
         artifact_sha256, cell_degrees = _poincare_artifact()
         return _base_spec(
             family,
@@ -690,6 +833,7 @@ def _materialize_family(
             model_cell_degrees=cell_degrees,
             artifact_path="corpus/chromatic-v1/poincare-sphere-facets.json",
             artifact_sha256=artifact_sha256,
+            redistribution="checked_in",
             integral_override=_integral_rows(
                 3,
                 {
@@ -754,6 +898,59 @@ def _materialize_family(
                 computation_sketch="Smith reduction of the column (0,2) gives H_1=Z + Z/2 and H_2=0.",
                 tags=["surface", "nonorientable", "2_primary", "torsion"],
             )
+        if kind == "orientable":
+            genus = int(parameters["genus"])
+            if genus < 2:
+                raise ValueError(
+                    "the sphere and the torus are recorded separately from the genus series"
+                )
+            return _base_spec(
+                family,
+                parameters,
+                key=f"orientable_surface:{genus}",
+                label=f"Genus-{genus} orientable surface",
+                dimension=2,
+                aliases=[f"Sigma_{genus}", f"M_{genus}", f"connected sum of {genus} tori"],
+                ranks={0: 1, 1: 2 * genus, 2: 1},
+                nonzero=None,
+                attaching_map=(
+                    f"Attach the 2-cell to a wedge of {2 * genus} circles by the product of "
+                    f"{genus} commutators [a_1,b_1]...[a_{genus},b_{genus}]."
+                ),
+                boundary_formula="Each commutator abelianizes to zero, so d_2 = 0.",
+                computation_sketch=(
+                    f"The zero cellular differential gives H_0=Z, H_1=Z^{2 * genus} and H_2=Z."
+                ),
+                tags=["surface", "orientable", "torsion_free", "connected_sum"],
+            )
+        if kind == "nonorientable":
+            genus = int(parameters["genus"])
+            if genus < 3:
+                raise ValueError(
+                    "the projective plane and Klein bottle are recorded separately"
+                )
+            return _base_spec(
+                family,
+                parameters,
+                key=f"nonorientable_surface:{genus}",
+                label=f"Genus-{genus} nonorientable surface",
+                dimension=2,
+                aliases=[f"N_{genus}", f"connected sum of {genus} projective planes"],
+                ranks={0: 1, 1: genus, 2: 1},
+                nonzero={2: [(index, 0, 2) for index in range(genus)]},
+                attaching_map=(
+                    f"Attach the 2-cell to a wedge of {genus} circles by the crosscap word "
+                    f"a_1^2...a_{genus}^2."
+                ),
+                boundary_formula=(
+                    f"Abelianizing the crosscap word gives d_2(1) = 2(a_1 + ... + a_{genus})."
+                ),
+                computation_sketch=(
+                    f"Smith reduction of the column of {genus} twos has invariant factor 2, giving "
+                    f"H_1=Z^{genus - 1} + Z/2 and H_2=0."
+                ),
+                tags=["surface", "nonorientable", "2_primary", "torsion", "connected_sum"],
+            )
         raise ValueError(f"unknown surface kind {kind}")
     if formula == "real_projective_standard_cw":
         n = int(parameters["n"])
@@ -775,10 +972,40 @@ def _materialize_family(
             computation_sketch=f"Apply the alternating 0/2 differential through degree {n} and reduce each 1x1 block.",
             tags=["2_primary", "projective", "torsion", "bc2_skeleton"],
         )
+    if formula == "complex_projective_standard_cw":
+        n = int(parameters["n"])
+        top = 2 * n
+        attaching = (
+            f"Attach e^{{2k}} to CP^(k-1) along the Hopf bundle projection "
+            f"S^(2k-1) -> CP^(k-1) for k=1..{n}"
+        )
+        if n == 2:
+            attaching += "; the 4-cell is attached to S^2 by the Hopf map eta."
+        else:
+            attaching += "."
+        return _base_spec(
+            family,
+            parameters,
+            key=f"complex_projective_space:{n}",
+            label=f"Complex projective space CP^{n}"
+            if n > 2
+            else "Complex projective plane CP^2",
+            dimension=top,
+            aliases=[f"CP^{n}", f"CP{n}"] + (["C_eta"] if n == 2 else []),
+            ranks={degree: 1 for degree in range(0, top + 1, 2)},
+            nonzero=None,
+            attaching_map=attaching,
+            boundary_formula="All cellular differentials vanish by the gaps between cell degrees.",
+            computation_sketch=(
+                f"The {n + 1} cells in even degrees 0 through {top} give one free class "
+                "in each even degree and nothing in odd degrees."
+            ),
+            tags=["torsion_free", "projective", "complex"]
+            + (["projective_plane", "hopf_invariant_one"] if n == 2 else []),
+        )
     if formula == "hopf_projective_plane":
         division_algebra = parameters["division_algebra"]
         data = {
-            "complex": ("complex_projective_space:2", "Complex projective plane CP^2", 2, 4, "eta", ["CP^2", "CP2", "C_eta"]),
             "quaternionic": ("quaternionic_projective_space:2", "Quaternionic projective plane HP^2", 4, 8, "nu", ["HP^2", "HP2", "C_nu"]),
             "octonionic": ("cayley_plane:2", "Cayley plane OP^2", 8, 16, "sigma", ["OP^2", "OP2", "C_sigma"]),
         }
@@ -819,8 +1046,11 @@ def _materialize_family(
     if formula == "weighted_lens_cw":
         p = int(parameters["p"])
         weights = [int(weight) for weight in parameters["weights"]]
-        if not is_prime(p) or any(weight % p == 0 for weight in weights):
-            raise ValueError("lens weights must be units modulo the prime p")
+        # A lens space L^(2n-1)(p; l_1..l_n) needs only that each weight is a unit
+        # modulo p. Primality is not required and the catalogue includes composite
+        # moduli such as L(4,1) and L(10,3).
+        if p < 2 or any(math.gcd(weight, p) != 1 for weight in weights):
+            raise ValueError("lens weights must be units modulo p, and p at least 2")
         dimension = 2 * len(weights) - 1
         ranks = {degree: 1 for degree in range(dimension + 1)}
         nonzero = {degree: [(0, 0, p)] for degree in range(2, dimension + 1, 2)}
@@ -842,7 +1072,7 @@ def _materialize_family(
             boundary_formula=f"The quotient CW differential is {p} in positive even degrees and 0 in odd degrees.",
             computation_sketch=f"The alternating 0/{p} chain gives Z/{p} in odd degrees below {dimension}.",
             tags=[
-                f"{p}_primary",
+                *(f"{prime}_primary" for prime, _ in prime_parts(p)),
                 "torsion",
                 "weighted_quotient",
                 *(["bcp_skeleton"] if len(set(weights)) == 1 else []),
@@ -1104,8 +1334,8 @@ def materialize_specs(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     space_ids = [spec["key"] for spec in specs]
     if len(space_ids) != len(set(space_ids)):
         raise ValueError("chromatic corpus contains duplicate Conceptual-space IDs")
-    if len(specs) != 42:
-        raise ValueError(f"expected the curated 42-space corpus, generated {len(specs)}")
+    if len(specs) != 212:
+        raise ValueError(f"expected the curated 212-space corpus, generated {len(specs)}")
     if any(len(spec["sources"]) == 0 for spec in specs):
         raise ValueError("every chromatic space must inherit at least one source")
     return specs
@@ -1301,10 +1531,10 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                     reference["source_kind"],
                 ),
             )
-        for spec in specs:
+        for space_order, spec in enumerate(specs):
             chain_sha256 = spec["model"]["chain_sha256"]
             connection.execute(
-                "INSERT INTO space VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO space VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     spec["key"],
                     spec["label"],
@@ -1318,6 +1548,7 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                     spec["chromatic_relevance"],
                     spec["equivalence"],
                     chain_sha256,
+                    space_order,
                 ),
             )
             for alias in sorted(
@@ -1330,7 +1561,7 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                 )
             model = spec["model"]
             connection.execute(
-                "INSERT INTO model VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO model VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     model["id"],
                     spec["key"],
@@ -1346,6 +1577,7 @@ def build_database(path: Path, manifest_path: Path = MANIFEST_PATH) -> str:
                     model["model_scope"],
                     model["artifact_path"],
                     model["artifact_sha256"],
+                    model["redistribution"],
                 ),
             )
             integral = _require_explicit_integral_rows(
@@ -1926,7 +2158,7 @@ class ChromaticTools:
                    m.status AS model_status, m.construction,
                    m.cell_degrees_json, m.cell_formula, m.attaching_map,
                    m.boundary_formula, m.model_scope, m.artifact_path,
-                   m.artifact_sha256,
+                   m.artifact_sha256, m.redistribution,
                    c.computation_id, c.parameters_json,
                    c.output_scope, c.status AS computation_status
             FROM evidence e
@@ -1987,6 +2219,7 @@ class ChromaticTools:
                         "model_scope": row["model_scope"],
                         "artifact_path": row["artifact_path"],
                         "artifact_sha256": row["artifact_sha256"],
+                        "redistribution": row["redistribution"],
                     },
                     "references": references,
                     "computation": (
@@ -2074,7 +2307,7 @@ def demo(path: Path) -> None:
         lens = tools.read_homology("L^5(3;1,1,1)")
         projective = tools.read_homology("CP^2")
         evidence = tools.expand_evidence([moore["groups"][2]["evidence_id"]])
-        print(f"Chromatic Homology Atlas ready: 42 spaces, snapshot {snapshot_id}")
+        print(f"Chromatic Homology Atlas ready: 212 spaces, snapshot {snapshot_id}")
         print(f"Scratch database: {path} (safe to delete; rebuilt on every run)\n")
         print("Quick mathematical tour")
         print(f"  M(Z/5,2): H_2 = {moore['groups'][2]['value']['display']}")
@@ -2096,7 +2329,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Chromatic Homology Atlas")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("demo", help="rebuild the 42-space snapshot and show a tour")
+    subparsers.add_parser("demo", help="rebuild the 212-space snapshot and show a tour")
     tool_parser = subparsers.add_parser("tool", help="execute one stable JSON tool request")
     tool_parser.add_argument("request", help='JSON object with "tool" and "arguments"')
     args = parser.parse_args()
