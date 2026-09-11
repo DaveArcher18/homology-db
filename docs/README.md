@@ -16,6 +16,7 @@ You do not need to read the design archive to contribute.
 - [Publishing a scoped human family review](reviews/FAMILY_REVIEW_GUIDE.md)
 - [Stable-spectrum preview and review records](reviews/README.md)
 - [Static atlas read-model](static-atlas-read-model.md)
+- [Accepted static data bundle design](architecture/static-data-bundle-v1.md)
 - [Domain vocabulary](../CONTEXT.md)
 
 The current focus is a static reference for ordinary homology and cohomology.
