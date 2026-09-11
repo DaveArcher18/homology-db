@@ -133,6 +133,7 @@ console.log(JSON.stringify({
                     "homology_db/atlas_schema.py",
                     "homology_db/chromatic.py",
                     "homology_db/classical.py",
+                "homology_db/cohomology_rings.py",
                     "homology_db/families.py",
                     "homology_db/family_reviews.py",
                     "homology_db/teaching.py",
