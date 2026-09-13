@@ -409,7 +409,7 @@ console.log(JSON.stringify({
             self.assertEqual(
                 presentation_result["coverageCounts"],
                 {
-                    "coverage-exhaustive": 202,
+                    "coverage-exhaustive": 203,
                     "coverage-bounded": 10,
                     "coverage-neutral": 0,
                 },

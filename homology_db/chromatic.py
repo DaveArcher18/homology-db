@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from .preview import (
-    COEFFICIENTS,
+    COEFFICIENTS as PREVIEW_COEFFICIENTS,
     canonical_json,
     compute_integral_homology,
     digest,
@@ -584,6 +584,15 @@ def _elementary_abelian_chain(
     ranks = {degree: len(basis) for degree, basis in bases.items()}
     return _sparse_chain(ranks, nonzero)
 
+
+# The coefficients this atlas records homology over, as label -> characteristic.
+#
+# Deliberately not the preview module's list, which this once borrowed. The
+# zero-install preview is a frozen 60-space product with its own recorded
+# adversarial audit pinning that module byte for byte; the atlas is the current
+# one and grows. Sharing one tuple meant widening the atlas silently invalidated
+# that audit. They are separate products and now say so.
+COEFFICIENTS = {**PREVIEW_COEFFICIENTS, "F11": 11}
 
 # The catalogue is curated, so its size is pinned: a family whose instances
 # silently multiply, or a manifest edit that drops one, should fail the build

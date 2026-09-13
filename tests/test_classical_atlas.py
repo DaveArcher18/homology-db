@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from homology_db.chromatic import ChromaticDatabase
+from homology_db.cohomology_rings import COHOMOLOGY_RING_COEFFICIENTS
 from scripts.export_static_atlas import build_read_model, validate_read_model
 
 
@@ -26,7 +27,7 @@ class ClassicalAtlasTest(unittest.TestCase):
         self.assertEqual(len(core), 13)
         self.assertEqual(self.atlas["classical"]["record_count"], 75)
         recorded = [space for space in self.atlas["conceptual_spaces"] if space["cohomology"]]
-        self.assertEqual(len(recorded), 189)
+        self.assertEqual(len(recorded), 190)
         for space in recorded:
             sourced = {row["coefficient"] for row in space["cohomology"]
                        if row["provenance"]["kind"] == "literature"}
@@ -36,7 +37,10 @@ class ClassicalAtlasTest(unittest.TestCase):
             if sourced:
                 self.assertEqual(sourced, {"Q", "F2", "F3", "F5", "F7"})
             if computed:
-                self.assertEqual(computed, {"Z", "Q", "F2", "F3", "F5", "F7"})
+                # The computed corpus is the whole grid, not a chosen subset:
+                # read it from the schema so a new coefficient cannot pass here
+                # while silently missing from some space.
+                self.assertEqual(computed, set(COHOMOLOGY_RING_COEFFICIENTS))
             for record in space["cohomology"]:
                 rows = {
                     row["degree"]: row["group"]
@@ -59,7 +63,7 @@ class ClassicalAtlasTest(unittest.TestCase):
 
     def test_noncore_and_integral_absence_is_not_zero(self):
         noncore = [space for space in self.atlas["conceptual_spaces"] if not space["classical_core"]]
-        self.assertEqual(len(noncore), 199)
+        self.assertEqual(len(noncore), 200)
         self.assertEqual(sum(not space["cohomology"] for space in noncore), 23)
         for space in self.atlas["conceptual_spaces"]:
             self.assertTrue(any(row["coefficient_ring"] == "Z" for row in space["homology"]))
