@@ -279,9 +279,25 @@
   function monomialTex(powers) {
     return Object.entries(powers ?? {})
       .filter(([, power]) => power !== 0)
-      .map(([generator, power]) => power === 1
-        ? generator : `${generator}^{${power}}`)
+      // A generator is named the same way a basis element is: the computed
+      // corpus calls them x2_1, and read literally that is x2 subscript 1
+      // followed by a stray 0 once the index reaches ten. Literature generators
+      // are single letters, which basisNameTex passes through unchanged.
+      .map(([generator, power]) => {
+        const name = basisNameTex(generator) || generator;
+        return power === 1 ? name : `${name}^{${power}}`;
+      })
       .join(" ") || "1";
+  }
+
+  // A structure constant is an integer, or a lowest-terms rational string over Q
+  // where no basis makes the products integral. Math.abs on "1/2" is NaN, so the
+  // sign and magnitude are read off the string rather than the number.
+  function scalarParts(value) {
+    const text = String(value);
+    const negative = text.startsWith("-");
+    const magnitude = negative ? text.slice(1) : text;
+    return { negative, magnitude, fraction: magnitude.includes("/") };
   }
 
   // A basis element of a presented ring is a monomial in the generators. One
@@ -297,12 +313,11 @@
     const terms = Array.isArray(relation?.terms) ? relation.terms : [];
     if (!terms.length) return "";
     return terms.map((term, index) => {
-      const value = term.coefficient;
       const monomial = monomialTex(term.powers);
-      const magnitude = Math.abs(value);
-      const coefficient = magnitude === 1 && monomial !== "1"
-        ? "" : String(magnitude);
-      const sign = value < 0 ? (index ? " - " : "-") : (index ? " + " : "");
+      const { negative, magnitude, fraction } = scalarParts(term.coefficient);
+      const coefficient = magnitude === "1" && monomial !== "1"
+        ? "" : (fraction ? `(${magnitude})` : magnitude);
+      const sign = negative ? (index ? " - " : "-") : (index ? " + " : "");
       return `${sign}${coefficient}${monomial === "1" ? "" : monomial}`;
     }).join("") + " = 0";
   }
