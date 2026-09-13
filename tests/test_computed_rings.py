@@ -205,7 +205,7 @@ class ComputedRingsTest(unittest.TestCase):
         """
         presented = [record for entries in self.corpus["records"].values()
                      for record in entries if "presentation" in record]
-        self.assertEqual(len(presented), 1076)
+        self.assertEqual(len(presented), 1094)
         relations = sum(len(r["algebra"]["relations"]) for r in presented)
         self.assertGreater(relations, 7000)
 

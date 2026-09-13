@@ -164,7 +164,7 @@
  "producer": {
   "author": "Wern Juin Gabriel Ong",
   "citation": "Wern Juin Gabriel Ong, cohomology-tables 0.1.0 (2026), https://github.com/wgabrielong/cohomology-tables",
-  "commit": "6869d647e99beb286e6e8d963256ea99861896f2",
+  "commit": "cfed2bc2532c3432f971f0da5921932a96d212f0",
   "data_license": "CC0-1.0",
   "data_license_scope": "records/** in the producing repository; the ring records imported here",
   "name": "cohomology-tables",
@@ -174,7 +174,7 @@
  },
  "review_state": "imported_unreviewed",
  "rings_path": "corpus/computed-rings-v1/rings.json",
- "rings_sha256": "35d30ff43f12605e6675bacc3b86103cace59efa9a701185cec5e4dd956f996a",
+ "rings_sha256": "3c824598f76eb4bf5a72e8f2710771d8c70c8db5acb8b55cbc60adc831a03553",
  "schema_version": "homology-db.computed-rings-manifest/1",
  "scope": "Ordinary unreduced cohomology rings and homology, computed from explicit finite simplicial models by an external computer algebra system, over Z, Q, F2, F3, F5, F7 and F11. Eleven closed surfaces are checked in as facet lists; every other model comes from a catalogue that states no licence and is identified by hash rather than shipped. F11 is a control: no integral invariant factor in this corpus has 11 in it, so every space but M(Z/11,2) must agree with Q there, and a deviation is a bug rather than a discovery. These are imported computations, not owned ones and not human-reviewed mathematics.",
  "title": "Cup-product rings from explicit triangulations",
