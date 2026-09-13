@@ -38,10 +38,19 @@ class StaticBundleTest(unittest.TestCase):
             )
 
             manifest = json.loads((first / "data" / "manifest.json").read_text())
-            self.assertEqual(manifest["counts"]["spaces"], 42)
-            self.assertEqual(manifest["counts"]["spectra"], 49)
+            # Derive the expected counts from the atlas under test. Pinning them
+            # to today's corpus makes every subject added upstream look like a
+            # bundler regression.
+            self.assertEqual(
+                manifest["counts"]["spaces"], len(original["conceptual_spaces"])
+            )
+            self.assertEqual(
+                manifest["counts"]["spectra"], len(original["conceptual_spectra"])
+            )
             catalog = json.loads((first / "data" / "catalog.json").read_text())["payload"]
-            self.assertEqual(len(catalog["conceptual_spaces"]), 42)
+            self.assertEqual(
+                len(catalog["conceptual_spaces"]), len(original["conceptual_spaces"])
+            )
             self.assertNotIn("homology", catalog["conceptual_spaces"][0])
 
             reconstructed_spaces = []
