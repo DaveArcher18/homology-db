@@ -41,14 +41,23 @@ review.
    over each field agrees with the universal-coefficient consequence of the imported
    integral homology, which compares two computations the engine performed separately; that
    the additive groups of the ring records agree with the homology records; and the
-   graded-ring axioms of the imported table. The chain complex stored alongside such a
+   graded-ring axioms of the imported table.
+4a. Where the engine also supplies a **presentation** -- generators and relations alongside
+   the multiplication table -- one half of it is re-derived here and the other half is not,
+   and a record says which. Re-derived: that every generator names a basis class of the
+   stated degree, and that every stated relation evaluates to zero in the imported table.
+   That check is possible precisely because the table was imported with the presentation,
+   and it is the same check `_validate_presentation` already applies to a literature record.
+   Not re-derived, and imported like the products themselves: that the stated generators
+   generate the ring, and that the stated relations are all of them. Neither is visible from
+   a multiplication table, and no amount of agreement between the two makes them checked. The chain complex stored alongside such a
    record is a **calculation certificate** built from the recorded groups, so reducing it
    and recovering them tests this repository's converter, not the engine's answer, and is
    never reported as corroboration.
 5. What is not re-derived -- that the structure constants are the cup product of that model,
-   and for an identified-only model that the recorded groups are the homology of the named
-   triangulation -- is recorded as imported evidence, with engine, engine version, and
-   source locator.
+   for an identified-only model that the recorded groups are the homology of the named
+   triangulation, and for a presented record the generation and completeness of point 4a --
+   is recorded as imported evidence, with engine, engine version, and source locator.
 6. A slot may carry both a sourced and a computed record. They are corroborating
    assertions, exposed side by side and never merged. If their additive groups disagree the
    slot is a conflict and the build fails; provenance does not settle a disagreement.

@@ -1,15 +1,15 @@
 {
  "computation_run": {
-  "determinism_note": "All six coefficient rings for a given space were computed in one process from one build of its simplicial model, so every record for that space is bound to the single facets_sha256 recorded for it.",
+  "determinism_note": "All seven coefficient rings for a given space were computed from one build of its simplicial model, so every record for that space is bound to the single facets_sha256 recorded for it. Sage's SurfaceOfGenus does not reproduce its vertex labelling between processes, so the eleven surfaces are pinned to the labellings checked in here and the producer rebuilds them from those rather than from a fresh call.",
   "environment_lock": {
    "Oscar": "1.8.2",
    "SageMath": "10.3",
    "julia": "1.12.7"
   },
   "exit_status": "succeeded",
-  "model_count": 193,
-  "record_count": 2274,
-  "run_id": "oscar-simplicial-cup-2026-09-09"
+  "model_count": 194,
+  "record_count": 2667,
+  "run_id": "oscar-simplicial-cup-2026-09-13"
  },
  "corpus_id": "computed-rings-v1",
  "engine": {
@@ -26,7 +26,8 @@
   "Cup products are imported, not recomputed by this repository. The loader re-derives the ring axioms and the additive groups; it does not re-derive the products from the triangulation.",
   "Cocycle representatives are not imported: they belong to one vertex labelling and are not needed to state the ring.",
   "No human mathematical review is claimed or recorded for any record in this corpus.",
-  "Imported homology is a second calculation, not the atlas's homology of record: the atlas computes that from its own cellular models and the two are checked against each other."
+  "Imported homology is a second calculation, not the atlas's homology of record: the atlas computes that from its own cellular models and the two are checked against each other.",
+  "Where a ring carries a presentation, the generators and relations were computed by the engine alongside the multiplication table. This repository re-derives that every stated relation holds in that table; that the generators generate and that the relations are complete are imported, not checked here."
  ],
  "model_source": {
   "constructors": {
@@ -163,7 +164,7 @@
  "producer": {
   "author": "Wern Juin Gabriel Ong",
   "citation": "Wern Juin Gabriel Ong, cohomology-tables 0.1.0 (2026), https://github.com/wgabrielong/cohomology-tables",
-  "commit": "5ae5870b3aa67d89f29d14f850e38186dd231898",
+  "commit": "6869d647e99beb286e6e8d963256ea99861896f2",
   "data_license": "CC0-1.0",
   "data_license_scope": "records/** in the producing repository; the ring records imported here",
   "name": "cohomology-tables",
@@ -173,9 +174,9 @@
  },
  "review_state": "imported_unreviewed",
  "rings_path": "corpus/computed-rings-v1/rings.json",
- "rings_sha256": "099879ab2e13c19357f820600b332f4a71b46e16f56dbf4892816140f892f7ce",
+ "rings_sha256": "35d30ff43f12605e6675bacc3b86103cace59efa9a701185cec5e4dd956f996a",
  "schema_version": "homology-db.computed-rings-manifest/1",
- "scope": "Ordinary unreduced cohomology rings and homology of eleven closed surfaces and the four closed S^2 x R 3-manifolds, computed from explicit finite simplicial models by an external computer algebra system. Coefficients Z, Q, F2, F3, F5 and F7. The surfaces' models are checked in; the S^2 x R models come from a catalogue that states no licence and are identified by hash rather than shipped. These are imported computations, not owned ones and not human-reviewed mathematics.",
+ "scope": "Ordinary unreduced cohomology rings and homology, computed from explicit finite simplicial models by an external computer algebra system, over Z, Q, F2, F3, F5, F7 and F11. Eleven closed surfaces are checked in as facet lists; every other model comes from a catalogue that states no licence and is identified by hash rather than shipped. F11 is a control: no integral invariant factor in this corpus has 11 in it, so every space but M(Z/11,2) must agree with Q there, and a deviation is a bug rather than a discovery. These are imported computations, not owned ones and not human-reviewed mathematics.",
  "title": "Cup-product rings from explicit triangulations",
  "withheld_rings": {
   "basis_above_producer_cutoff": "The producer's multiplication table is incomplete because the basis exceeded its cutoff, and this atlas records a multiplication only when it is complete.",

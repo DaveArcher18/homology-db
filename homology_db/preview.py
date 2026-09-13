@@ -21,7 +21,7 @@ from typing import Any, Iterable
 
 
 DEFAULT_DB = Path("/tmp/homology-db-preview.sqlite3")
-COEFFICIENTS = {"Z": None, "F2": 2, "F3": 3, "F5": 5, "F7": 7}
+COEFFICIENTS = {"Z": None, "F2": 2, "F3": 3, "F5": 5, "F7": 7, "F11": 11}
 ALGORITHM_ID = "owned-smith-minors-and-modular-rank/0-preview"
 SCHEMA_VERSION = "homology-db.preview/1"
 

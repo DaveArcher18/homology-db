@@ -2,13 +2,16 @@
 
 import copy
 import json
+import os
 import re
 import shutil
 import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
 from homology_db.cohomology_rings import (
+    MAX_PRESENTATION_TEX,
     check_corroborating_records,
     validate_cohomology_ring_record,
 )
@@ -34,12 +37,12 @@ class ComputedRingsTest(unittest.TestCase):
         cls.model = json.loads((CORPUS / "triangulations" / "orientable_surface-3.json").read_text())
 
     def test_corpus_covers_every_surface_over_every_coefficient(self):
-        self.assertEqual(len(self.corpus["models"]), 193)
-        self.assertEqual(sum(len(v) for v in self.corpus["records"].values()), 1116)
+        self.assertEqual(len(self.corpus["models"]), 194)
+        self.assertEqual(sum(len(v) for v in self.corpus["records"].values()), 1309)
         for space_id, entries in self.corpus["records"].items():
             self.assertEqual(
                 sorted(record["coefficient"] for record in entries),
-                sorted(["Z", "Q", "F2", "F3", "F5", "F7"]),
+                sorted(["Z", "Q", "F2", "F3", "F5", "F7", "F11"]),
             )
             for record in entries:
                 self.assertEqual(record["provenance"]["review_state"], "imported_unreviewed")
@@ -193,6 +196,94 @@ class ComputedRingsTest(unittest.TestCase):
         """
         subprocess.run([NODE, "-e", script], cwd=ROOT, check=True)
 
+    def test_every_stated_relation_holds_in_the_imported_table(self):
+        """The one thing about an imported presentation this repository checks.
+
+        The generators and relations come from the engine.  That the relations
+        are *satisfied* does not have to be taken on faith: the multiplication
+        table was imported beside them, so each relation can be evaluated in it.
+        """
+        presented = [record for entries in self.corpus["records"].values()
+                     for record in entries if "presentation" in record]
+        self.assertEqual(len(presented), 1076)
+        relations = sum(len(r["algebra"]["relations"]) for r in presented)
+        self.assertGreater(relations, 7000)
+
+        # Loading validated every one of them. Break one and the loader must say
+        # so. Perturb a relation with more than one term: rescaling a lone square
+        # that is already zero leaves it zero, which would not test anything.
+        broken, index = None, None
+        for record in presented:
+            for position, relation in enumerate(record["algebra"]["relations"]):
+                if len(relation["terms"]) > 1 and all(
+                        isinstance(term["coefficient"], int) for term in relation["terms"]):
+                    broken, index = copy.deepcopy(record), position
+                    break
+            if broken:
+                break
+        self.assertIsNotNone(broken, "expected a relation with several terms")
+        broken["algebra"]["relations"][index]["terms"][0]["coefficient"] += 1
+        with self.assertRaisesRegex(ValueError, "not satisfied by the imported multiplication"):
+            validate_cohomology_ring_record(broken, COMPUTED_RING_SOURCES)
+
+    def test_a_presentation_names_generators_that_are_basis_classes(self):
+        for entries in self.corpus["records"].values():
+            for record in entries:
+                algebra = record["algebra"]
+                if "generators" not in algebra:
+                    continue
+                basis = {item["id"]: item for item in algebra["basis"]}
+                for generator in algebra["generators"]:
+                    self.assertIn(generator["id"], basis)
+                    self.assertEqual(generator["degree"], basis[generator["id"]]["degree"])
+                    self.assertNotEqual(generator["id"], "1")
+                # An empty generator list is a claim, not a default: it says the
+                # ring is the coefficient ring, and only a one-class basis may.
+                if not algebra["generators"]:
+                    self.assertEqual(list(basis), ["1"])
+
+    def test_generator_order_is_the_koszul_convention(self):
+        """A relation's exponent map is read in declared-generator order.
+
+        The map is unordered, so the importer has to fix an order and pay the
+        Koszul sign for it. Reading the same relation in a different order is
+        what goes wrong silently, so pin one that would notice.
+        """
+        record = next(r for r in self.corpus["records"]["torus:2"] if r["coefficient"] == "Z")
+        generators = [g["id"] for g in record["algebra"]["generators"]]
+        self.assertEqual(generators, sorted(generators),
+                         "the producer declares generators in name order")
+        self.assertTrue(all(g["degree"] == 1 for g in record["algebra"]["generators"]))
+        # The torus is exterior on two odd classes: the relations are the squares.
+        self.assertEqual(
+            [relation["terms"] for relation in record["algebra"]["relations"]],
+            [[{"coefficient": 1, "powers": {name: 2}}] for name in generators])
+        self.assertEqual(record["presentation"]["plain"],
+                         f"Exterior_Z({','.join(generators)})")
+
+    @unittest.skipUnless(NODE, "node is required to exercise the shipped display code")
+    def test_every_shipped_presentation_renders(self):
+        shown = [record["presentation"]["tex"]
+                 for entries in self.corpus["records"].values() for record in entries
+                 if record.get("presentation", {}).get("tex")]
+        self.assertEqual(len(shown), 968)
+        self.assertTrue(all(len(tex) <= MAX_PRESENTATION_TEX for tex in shown))
+        script = """
+        const assert = require('node:assert/strict');
+        const p = require('./static_atlas/presentation.js');
+        const shown = JSON.parse(require('node:fs').readFileSync(process.argv[1], 'utf8'));
+        for (const tex of shown) {
+          assert.ok(p.isSupportedTex(tex), 'the atlas parser refuses: ' + tex);
+        }
+        """
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
+            json.dump(shown, handle)
+            path = handle.name
+        try:
+            subprocess.run([NODE, "-e", script, "--", path], cwd=ROOT, check=True)
+        finally:
+            os.unlink(path)
+
     def test_imported_homology_covers_every_surface_and_coefficient(self):
         homology = self.corpus["homology"]
         # Rings imply homology, not the reverse: a space whose upstream table was
@@ -203,10 +294,10 @@ class ComputedRingsTest(unittest.TestCase):
             "hadamard_torsion_complex:32", "hom_complex:c6-compl-k5-small",
             "orientable_surface:26", "random_2_complex:25", "sphere:0",
         ])
-        self.assertEqual(sum(len(v) for v in homology.values()), 1158)
+        self.assertEqual(sum(len(v) for v in homology.values()), 1358)
         for entries in homology.values():
             self.assertEqual(sorted(record["coefficient"] for record in entries),
-                             sorted(["Z", "Q", "F2", "F3", "F5", "F7"]))
+                             sorted(["Z", "Q", "F2", "F3", "F5", "F7", "F11"]))
 
     def test_imported_homology_matches_this_repositorys_own(self):
         """The point of importing it is that it could disagree. It must not."""
@@ -240,7 +331,7 @@ class ComputedRingsTest(unittest.TestCase):
                 checked += 1
         connection.close()
         database.unlink()
-        self.assertEqual(checked, 1158)
+        self.assertEqual(checked, 1358)
 
     def test_a_disagreeing_homology_is_a_conflict_not_a_ranking(self):
         imported = {("orientable_surface:2", "Z"): [{"degree": 0, "free_rank": 1,

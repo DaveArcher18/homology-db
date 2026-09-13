@@ -226,7 +226,12 @@ def load_computed_rings() -> dict[str, Any]:
 
     records: dict[str, list[dict[str, Any]]] = {}
     for record in corpus["records"]:
-        validate_cohomology_ring_record(record, COMPUTED_RING_SOURCES)
+        # Name the record. Over a thousand of them reach this line, and a bare
+        # "relation 3 is not satisfied" says nothing about which ring broke.
+        try:
+            validate_cohomology_ring_record(record, COMPUTED_RING_SOURCES)
+        except ValueError as error:
+            raise ValueError(f"{record.get('record_id')}: {error}") from error
         space_id = record["space_id"]
         if space_id not in models:
             raise ValueError(f"computed ring for {space_id} has no pinned model")
@@ -367,7 +372,10 @@ def validate_computed_projection(records: dict[str, list[dict[str, Any]]]) -> di
                 raise ValueError("computed record is attached to the wrong space")
             if record["provenance"]["kind"] != "external_engine_computation":
                 raise ValueError("the computed corpus is the machine-computed subset")
-            validate_cohomology_ring_record(record, COMPUTED_RING_SOURCES)
+            try:
+                validate_cohomology_ring_record(record, COMPUTED_RING_SOURCES)
+            except ValueError as error:
+                raise ValueError(f"{record.get('record_id')}: {error}") from error
     return {
         "space_count": len(records),
         "record_count": sum(len(items) for items in records.values()),

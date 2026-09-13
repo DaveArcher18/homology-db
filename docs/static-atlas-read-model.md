@@ -1,6 +1,6 @@
 # Static atlas read model
 
-Status: family workbench over 212 retained spaces, classical literature
+Status: family workbench over 213 retained spaces, classical literature
 records, and imported computed rings, with independently source-bound symbolic
 family rules
 
@@ -60,7 +60,7 @@ reduction setting never changes these unreduced ring records.
 ## Teaching exposition and scoped review
 
 The optional additive `teaching` catalog contains sourced introductions, a
-selected chapter/example inventory of the 212 retained spaces, and guided
+selected chapter/example inventory of the 213 retained spaces, and guided
 comparisons. It does not claim an exhaustive inventory of Hatcher's book.
 Coverage badges are derived from actual records/family redirects; exposition
 does not create assertions. `snapshot.teaching_sha256` binds exact content and
@@ -86,16 +86,16 @@ The current database contains:
 |---|---:|
 | Snapshot | 1 |
 | Families | 28 |
-| Conceptual spaces | 212 |
-| Aliases | 292 |
-| Qualified Models | 212 |
-| Citations | 640 |
-| Evidence records | 212 |
+| Conceptual spaces | 213 |
+| Aliases | 692 |
+| Qualified Models | 213 |
+| Citations | 642 |
+| Evidence records | 213 |
 | Space relationships | 100 |
-| Recorded computation runs | 66 |
-| Homology coverage records | 212 |
-| Homology rows | 12,668 |
-| Primary-summand rows | 252 |
+| Recorded computation runs | 67 |
+| Homology coverage records | 213 |
+| Homology rows | 13,332 |
+| Primary-summand rows | 562 |
 
 The historical spaces-only release described below has Snapshot ID
 `chromatic-16e4f2be46edd93a`. Its disposable SQLite database is 2,535,424

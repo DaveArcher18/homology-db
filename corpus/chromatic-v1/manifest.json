@@ -1288,7 +1288,7 @@
   {
    "id": "moore_space",
    "label": "Moore spaces",
-   "summary": "Degree-m two-cell cofibers isolate torsion at chosen primes, prime powers, and degrees.",
+   "summary": "Degree-m two-cell cofibers isolate torsion at chosen primes, prime powers, and degrees. M(Z/11,2) is the one space in the atlas whose F11 cohomology differs from its rational cohomology.",
    "chromatic_relevance": "After stabilization, prime Moore spaces supply V(0), the first finite torsion input to the chromatic type filtration.",
    "model_formula": "cyclic_moore_degree_m",
    "instances": [
@@ -1306,6 +1306,10 @@
     },
     {
      "m": 9,
+     "n": 2
+    },
+    {
+     "m": 11,
      "n": 2
     },
     {

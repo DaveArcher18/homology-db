@@ -19,6 +19,7 @@ from typing import Any
 
 from .cohomology_rings import (
     COHOMOLOGY_RING_SCHEMA_VERSION,
+    presentation_strings,
     validate_cohomology_ring_record,
 )
 
@@ -85,31 +86,12 @@ def validate_classical_records(records: dict[str, list[dict[str, Any]]] | None =
 
 
 def _presentation(algebra: dict[str, Any], coefficient: str) -> tuple[str, str]:
-    field = r"\mathbb{Q}" if coefficient == "Q" else rf"\mathbb{{F}}_{{{coefficient[1:]}}}"
-    generators, relations = algebra["generators"], algebra["relations"]
-    if not generators:
-        return field, coefficient
-    names = ",".join(g["id"] for g in generators)
-    exterior_relations = [{"terms": [{"coefficient": 1, "powers": {g["id"]: 2}}]} for g in generators]
-    if all(g["degree"] % 2 for g in generators) and relations == exterior_relations:
-        return rf"\Lambda_{{{field}}}({names})", f"Exterior_{coefficient}({names})"
+    """The display strings for a literature record.
 
-    def polynomial(relation: dict[str, Any], tex: bool) -> str:
-        rendered = ""
-        for term in relation["terms"]:
-            scalar = term["coefficient"]
-            pieces = []
-            for generator in generators:
-                key, exponent = generator["id"], term["powers"].get(generator["id"], 0)
-                if exponent:
-                    pieces.append(key if exponent == 1 else (f"{key}^{{{exponent}}}" if tex else f"{key}^{exponent}"))
-            body = "".join(pieces) if tex else "*".join(pieces)
-            body = (str(abs(scalar)) if abs(scalar) != 1 or not body else "") + body
-            rendered += ((" - " if scalar < 0 else " + ") if rendered else ("-" if scalar < 0 else "")) + body
-        return rendered
-
-    return (f"{field}[{names}]/(" + ",".join(polynomial(r, True) for r in relations) + ")",
-            f"{coefficient}[{names}]/(" + ", ".join(polynomial(r, False) for r in relations) + ")")
+    Shared with the computed corpus so that one generator answers for both, and
+    a presentation is never authored beside the algebra it claims to describe.
+    """
+    return presentation_strings(algebra, coefficient)
 
 
 def _relation(*terms: tuple[int, dict[str, int]]) -> dict[str, Any]:
