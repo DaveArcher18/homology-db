@@ -108,8 +108,12 @@ It embeds clean source commit
 `97452364ee60b05cfa9d320afba95a5e716cafeb7d8494e7e0c9ffd4dbc69146`.
 The artifact embeds Snapshot identity, generation time, database measurements,
 record counts, source commit, source-input hash, and clean/dirty input state.
-The one-file exporter enforces a 6 MiB cap and rejects external script,
-stylesheet, font, or image dependencies.
+The one-file exporter enforces a 24 MiB cap and rejects external script,
+stylesheet, font, or image dependencies. That ceiling bounds the offline
+snapshot alone: the hosted atlas is partitioned by `build_static_bundle.py`
+into a small shell and per-subject documents, and the monolith survives as the
+bundler's input and as the `file://` fallback, where `fetch()` cannot reach a
+neighbouring document.
 
 ## Mapping
 
