@@ -21,10 +21,21 @@
   const dataStore = window.HomologyAtlasDataStore;
   const atlas = await dataStore.loadAtlas();
   const snapshot = atlas.snapshot ?? {};
-  const conceptualSpaces = Array.isArray(atlas.conceptual_spaces)
+  const retainedConceptualSpaces = Array.isArray(atlas.conceptual_spaces)
     ? atlas.conceptual_spaces
     : [];
-  const sections = Array.isArray(atlas.sections) ? atlas.sections : [];
+  const conceptualSpaces = retainedConceptualSpaces.filter(
+    (space) => space.primary_atlas_eligible === true,
+  );
+  const primarySpaceIds = new Set(conceptualSpaces.map((space) => space.id));
+  const sections = (Array.isArray(atlas.sections) ? atlas.sections : [])
+    .map((section) => ({
+      ...section,
+      conceptual_space_ids: (section.conceptual_space_ids ?? []).filter(
+        (id) => primarySpaceIds.has(id),
+      ),
+    }))
+    .filter((section) => section.conceptual_space_ids.length > 0);
   const definitions = Array.isArray(atlas.definitions) ? atlas.definitions : [];
   const supportedCoefficients =
     Array.isArray(snapshot.supported_coefficients)

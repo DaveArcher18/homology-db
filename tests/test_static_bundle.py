@@ -45,8 +45,12 @@ class StaticBundleTest(unittest.TestCase):
                 manifest["counts"]["spectra"], len(original["conceptual_spectra"])
             )
             catalog = json.loads((first / "data" / "catalog.json").read_text())["payload"]
+            primary = [
+                space for space in original["conceptual_spaces"]
+                if space["primary_atlas_eligible"]
+            ]
             self.assertEqual(
-                len(catalog["conceptual_spaces"]), len(original["conceptual_spaces"])
+                len(catalog["conceptual_spaces"]), len(primary)
             )
             self.assertNotIn("homology", catalog["conceptual_spaces"][0])
 
@@ -54,7 +58,12 @@ class StaticBundleTest(unittest.TestCase):
             for entry in catalog["conceptual_spaces"]:
                 document = json.loads((first / entry["_document_path"]).read_text())
                 reconstructed_spaces.append(document["payload"])
-            self.assertEqual(reconstructed_spaces, original["conceptual_spaces"])
+            self.assertEqual(reconstructed_spaces, primary)
+            space_documents = [
+                item for item in manifest["files"]
+                if item["document_kind"] == "space"
+            ]
+            self.assertEqual(len(space_documents), len(original["conceptual_spaces"]))
 
     def test_unsafe_slug_is_rejected(self) -> None:
         atlas_path = REPOSITORY_ROOT / "dist" / "atlas.html"
