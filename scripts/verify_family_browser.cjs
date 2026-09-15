@@ -78,11 +78,18 @@ async function main() {
     await page.locator('input[name="coefficient-klein-bottle"][value="F2"]').locator('..').click();
     await page.locator('.cohomology-rendered').getByText('Cup-product table',{exact:true}).click();
     assert.ok((await page.locator('.cohomology-rendered').innerText()).includes('Multiplication'));
-    for(const space of atlas.conceptual_spaces) {
+    const primarySpaces=atlas.conceptual_spaces.filter(space=>space.primary_atlas_eligible===true);
+    assert.equal(primarySpaces.length,atlas.primary_atlas.space_count);
+    for(const space of primarySpaces) {
       await page.goto(base+'#space='+space.slug);
       await page.locator('.workbench-view,.space-page').waitFor();
       assert.equal(await page.locator('.workbench-view,.space-page').count(),1,space.id);
     }
+    await page.goto(base+'#space=orientable-surface-26');
+    await page.locator('.space-page').waitFor();
+    assert.match(await page.locator('.cohomology-section').innerText(),/not recorded.*does not mean it is zero/i);
+    await page.goto(base+'#space=grassmannian-2-4-c');
+    await page.locator('.not-found-view').waitFor();
     for(const spectrum of atlas.conceptual_spectra) {
       await page.goto(base+'#spectrum='+spectrum.slug);
       await page.locator('.spectrum-view').waitFor();
@@ -98,7 +105,7 @@ async function main() {
       await page.screenshot({path:`/tmp/homology-family-${width}.png`,fullPage:true});
     }
     assert.deepEqual(errors,[]);
-    console.log(JSON.stringify({ok:true,familyViews:views,legacySpaces:atlas.conceptual_spaces.length,spectra:atlas.conceptual_spectra.length,responsiveCases:21,consoleErrors:errors}));
+    console.log(JSON.stringify({ok:true,familyViews:views,primarySpaces:primarySpaces.length,retainedSpaces:atlas.conceptual_spaces.length,spectra:atlas.conceptual_spectra.length,responsiveCases:21,consoleErrors:errors}));
   } finally {await browser.close();}
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

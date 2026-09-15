@@ -279,6 +279,16 @@ def computed_ring_records() -> dict[str, list[dict[str, Any]]]:
     return load_computed_rings()["records"]
 
 
+def primary_atlas_space_ids(corpus: dict[str, Any]) -> list[str]:
+    """Spaces backed by Gabriel's imported computational model provenance.
+
+    Eligibility deliberately follows models used by a computed homology or ring
+    record, rather than ring availability: some valid computations have a ring
+    result that the current interchange schema cannot faithfully represent.
+    """
+    return sorted(corpus["models"])
+
+
 def validate_computed_homology_record(record: dict[str, Any], sources: dict[str, Any]) -> None:
     """Check an imported homology record for internal consistency.
 

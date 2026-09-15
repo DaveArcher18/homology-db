@@ -35,6 +35,7 @@ from homology_db.computed_rings import (
     COMPUTED_RINGS_REVIEW_STATE,
     compare_homology_to_owned,
     load_computed_rings,
+    primary_atlas_space_ids,
     validate_computed_projection,
 )
 from homology_db.classical import (
@@ -1410,6 +1411,19 @@ def validate_read_model(
 
     conceptual_spaces = atlas["conceptual_spaces"]
     conceptual_space_ids = [item["id"] for item in conceptual_spaces]
+    computed_corpus = load_computed_rings()
+    expected_primary_ids = primary_atlas_space_ids(computed_corpus)
+    primary = atlas.get("primary_atlas", {})
+    if primary != {
+        "eligibility_rule": "has_gabriel_imported_computational_model_provenance",
+        "space_ids": expected_primary_ids,
+        "space_count": len(expected_primary_ids),
+    }:
+        raise ValueError("primary atlas eligibility must match imported computational models")
+    if {
+        item["id"] for item in conceptual_spaces if item.get("primary_atlas_eligible")
+    } != set(expected_primary_ids):
+        raise ValueError("space eligibility markers disagree with the computed corpus")
     if "teaching" in atlas or "teaching_sha256" in atlas.get("snapshot", {}):
         expected_teaching = teaching_projection(conceptual_spaces)
         if atlas.get("teaching") != expected_teaching or atlas["snapshot"].get("teaching_sha256") != expected_teaching["content_sha256"]:
@@ -2230,6 +2244,7 @@ def build_read_model(
                 "homology_coverage": coverage,
                 "homology": homology,
                 "classical_core": space_id in CLASSICAL_SPACE_IDS,
+                "primary_atlas_eligible": space_id in computed_corpus["models"],
                 "cohomology": cohomology_records.get(space_id, []),
                 "models": models,
                 "relations": relations_by_space[space_id],
@@ -2304,6 +2319,7 @@ def build_read_model(
 
     classical_metadata = classical_projection_metadata(classical_cohomology_records)
     computed_metadata = computed_projection_metadata(computed_cohomology_records)
+    primary_space_ids = primary_atlas_space_ids(computed_corpus)
     teaching = teaching_projection(conceptual_spaces)
 
     atlas = {
@@ -2361,6 +2377,11 @@ def build_read_model(
         ],
         "sections": sections,
         "conceptual_spaces": conceptual_spaces,
+        "primary_atlas": {
+            "eligibility_rule": "has_gabriel_imported_computational_model_provenance",
+            "space_ids": primary_space_ids,
+            "space_count": len(primary_space_ids),
+        },
         "conceptual_spectra": conceptual_spectra,
         "classical": {**classical_metadata, "sources": CLASSICAL_SOURCES},
         "computed_rings": {**computed_metadata, "sources": COMPUTED_RING_SOURCES,
