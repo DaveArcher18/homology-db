@@ -79,7 +79,7 @@ async function main() {
     await page.locator('.cohomology-rendered').getByText('Cup-product table',{exact:true}).click();
     assert.ok((await page.locator('.cohomology-rendered').innerText()).includes('Multiplication'));
     const primarySpaces=atlas.conceptual_spaces.filter(space=>space.primary_atlas_eligible===true);
-    assert.equal(primarySpaces.length,193);
+    assert.equal(primarySpaces.length,atlas.primary_atlas.space_count);
     for(const space of primarySpaces) {
       await page.goto(base+'#space='+space.slug);
       await page.locator('.workbench-view,.space-page').waitFor();

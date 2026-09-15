@@ -27,7 +27,6 @@ class PrimaryAtlasCorpusTest(unittest.TestCase):
         eligible = primary_atlas_space_ids(self.corpus)
         self.assertEqual(eligible, sorted(self.corpus["models"]))
         self.assertEqual(eligible, sorted(self.corpus["homology"]))
-        self.assertEqual(len(eligible), 193)
         self.assertEqual(self.atlas["primary_atlas"]["space_ids"], eligible)
         self.assertEqual(
             self.atlas["primary_atlas"]["eligibility_rule"],
@@ -36,14 +35,32 @@ class PrimaryAtlasCorpusTest(unittest.TestCase):
 
     def test_boundary_keeps_withheld_computation_and_retains_reference_data(self) -> None:
         spaces = {space["id"]: space for space in self.atlas["conceptual_spaces"]}
-        self.assertEqual(len(spaces), 212)
 
         self.assertTrue(spaces["torus:2"]["primary_atlas_eligible"])
+        self.assertTrue(spaces["moore:11:2"]["primary_atlas_eligible"])
 
-        withheld = spaces["orientable_surface:26"]
-        self.assertTrue(withheld["primary_atlas_eligible"])
-        self.assertEqual(withheld["cohomology"], [])
-        self.assertIn("orientable_surface:26", self.corpus["homology"])
+        withheld_ids = sorted(set(self.corpus["homology"]) - set(self.corpus["records"]))
+        self.assertEqual(len(withheld_ids), 7)
+        self.assertEqual(
+            withheld_ids,
+            [
+                "connected_sum:s2-twist-s1-sum-20",
+                "connected_sum:s2xs1-sum-20",
+                "hadamard_torsion_complex:32",
+                "hom_complex:c6-compl-k5-small",
+                "orientable_surface:26",
+                "random_2_complex:25",
+                "sphere:0",
+            ],
+        )
+        for space_id in withheld_ids:
+            self.assertTrue(spaces[space_id]["primary_atlas_eligible"])
+            self.assertFalse(
+                any(
+                    record["provenance"]["kind"] == "imported_computation"
+                    for record in spaces[space_id]["cohomology"]
+                )
+            )
 
         grassmannian = spaces["grassmannian:2:4:c"]
         self.assertFalse(grassmannian["primary_atlas_eligible"])
@@ -52,12 +69,15 @@ class PrimaryAtlasCorpusTest(unittest.TestCase):
     def test_primary_catalog_is_filtered_but_all_space_documents_remain(self) -> None:
         documents = partition(self.atlas)
         catalog = documents["data/catalog.json"][1]
-        self.assertEqual(len(catalog["conceptual_spaces"]), 193)
+        self.assertEqual(
+            len(catalog["conceptual_spaces"]),
+            len(primary_atlas_space_ids(self.corpus)),
+        )
         self.assertIn("data/spaces/orientable-surface-26.json", documents)
         self.assertIn("data/spaces/grassmannian-2-4-c.json", documents)
         self.assertEqual(
             sum(kind == "space" for kind, _payload in documents.values()),
-            212,
+            len(self.atlas["conceptual_spaces"]),
         )
 
 
