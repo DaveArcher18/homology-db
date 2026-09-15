@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Iterable
 
 
-DEFAULT_SHARD_COUNT = 4
+DEFAULT_SHARD_COUNT = 6
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
