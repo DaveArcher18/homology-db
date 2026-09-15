@@ -25,7 +25,7 @@ jobs:
           python-version: "3.12"
 
       - name: Prove complete deterministic partition
-        run: python3 scripts/run_unittest_shard.py --shard-count 6 --verify-partition
+        run: python3 scripts/run_unittest_shard.py --shard-count 8 --verify-partition
 
   test-shard:
     needs: suite-plan
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Check out the repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -47,7 +47,7 @@ jobs:
           python-version: "3.12"
 
       - name: Run regression shard ${{ matrix.shard }}
-        run: python3 scripts/run_unittest_shard.py --shard-count 6 --shard-index ${{ matrix.shard }}
+        run: python3 scripts/run_unittest_shard.py --shard-count 8 --shard-index ${{ matrix.shard }}
 
   release-build:
     needs: suite-plan

@@ -6,9 +6,9 @@ from scripts.run_unittest_shard import build_plan, discover_tests, verify_partit
 
 
 class CiShardingTest(unittest.TestCase):
-    def test_six_shards_cover_exactly_the_discovered_suite(self) -> None:
+    def test_eight_shards_cover_exactly_the_discovered_suite(self) -> None:
         discovered = discover_tests()
-        plan = build_plan(discovered, 6)
+        plan = build_plan(discovered, 8)
         verify_partition(discovered, plan)
 
         discovered_ids = {test.id() for test in discovered}
@@ -18,8 +18,8 @@ class CiShardingTest(unittest.TestCase):
 
     def test_plan_is_deterministic_and_preserves_modules(self) -> None:
         discovered = discover_tests()
-        first = build_plan(discovered, 6)
-        second = build_plan(discovered, 6)
+        first = build_plan(discovered, 8)
+        second = build_plan(discovered, 8)
         self.assertEqual(first, second)
 
         module_shards: dict[str, set[int]] = {}
