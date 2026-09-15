@@ -29,8 +29,7 @@ import re
 from typing import Any
 
 COHOMOLOGY_RING_SCHEMA_VERSION = "homology-db.cohomology-rings/1"
-COHOMOLOGY_RING_COEFFICIENTS = ("Z", "Q", "F2", "F3", "F5", "F7")
-FIELD_COEFFICIENTS = ("Q", "F2", "F3", "F5", "F7")
+COHOMOLOGY_RING_COEFFICIENTS = ("Z", "Q", "F2", "F3", "F5", "F7", "F11")
 ALGEBRA_KINDS = ("graded_commutative", "graded_structure_constants")
 PROVENANCE_KINDS = ("literature", "external_engine_computation")
 REVIEW_STATES = {
@@ -38,6 +37,8 @@ REVIEW_STATES = {
     "external_engine_computation": "imported_unreviewed",
 }
 RECORD_PREFIX = {"literature": "classical", "external_engine_computation": "computed"}
+# The atlas parser caps the TeX source it will read; see static_atlas/presentation.js.
+MAX_PRESENTATION_TEX = 500
 MULTIPLICATION_SCOPE = {
     "complete": True, "omitted_products": "zero",
     "scope": "all_nonunit_ordered_basis_pairs", "unit_products": "identity",
@@ -78,7 +79,20 @@ def _scalar(value: Any, label: str, coefficient: str) -> Fraction:
 
 
 def characteristic_of(coefficient: str) -> int:
-    return 0 if coefficient in ("Z", "Q") else int(coefficient[1:])
+    """The characteristic of a coefficient label, which must name a prime field.
+
+    The label is parsed rather than looked up, so a new prime costs nothing. A
+    prime power would parse just as willingly and then reduce modulo a composite,
+    which is not a field and would make the ring axioms below quietly wrong, so
+    the primality is checked here rather than assumed of the caller.
+    """
+    if coefficient in ("Z", "Q"):
+        return 0
+    characteristic = int(coefficient[1:])
+    if characteristic < 2 or any(characteristic % d == 0
+                                 for d in range(2, int(characteristic ** 0.5) + 1)):
+        raise ValueError(f"{coefficient} does not name a prime field")
+    return characteristic
 
 
 def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, Any]) -> None:
@@ -189,6 +203,9 @@ def validate_cohomology_ring_record(record: dict[str, Any], sources: dict[str, A
 
     if algebra["kind"] == "graded_commutative":
         _validate_presentation(record, algebra, basis, unit, multiply, normalize, characteristic)
+    elif "generators" in algebra:
+        _validate_imported_presentation(record, algebra, basis, unit, multiply,
+                                        normalize, characteristic, coefficient)
 
     coverage = record["coverage"]
     through = _integer(coverage.get("through_degree"), "coverage through_degree", 0)
@@ -236,6 +253,84 @@ def expected_groups(basis_list: list[dict[str, Any]], through: int, coefficient:
     return groups
 
 
+_BASIS_NAME = re.compile(r"x(\d+)(?:_(\d+))?")
+
+
+def _label_tex(name: str) -> str:
+    """A generator name as TeX, matching `basisNamePresentation` in presentation.js.
+
+    The producer names classes `x2` and `x2_1`, which read as one and two
+    subscripts.  Anything else is passed through: the literature records use
+    single letters, and the atlas parser takes those literally.
+    """
+    match = _BASIS_NAME.fullmatch(name)
+    if not match:
+        return name
+    return f"x_{{{match[1]}}}" if match[2] is None else f"x_{{{match[1]},{match[2]}}}"
+
+
+def _coefficient_tex(coefficient: str) -> str:
+    if coefficient == "Z":
+        return r"\mathbb{Z}"
+    if coefficient == "Q":
+        return r"\mathbb{Q}"
+    return rf"\mathbb{{F}}_{{{coefficient[1:]}}}"
+
+
+def presentation_strings(algebra: dict[str, Any], coefficient: str) -> tuple[str, str]:
+    """The display strings for a presented ring, derived from its own structure.
+
+    One generator for both corpora, so a presentation is never authored beside
+    the data it claims to describe.  The TeX is restricted to what
+    `static_atlas/presentation.js` parses.
+    """
+    field = _coefficient_tex(coefficient)
+    generators, relations = algebra["generators"], algebra["relations"]
+    if not generators:
+        return field, coefficient
+    names_tex = ",".join(_label_tex(g["id"]) for g in generators)
+    names = ",".join(g["id"] for g in generators)
+
+    # An exterior algebra is the free graded-commutative algebra on odd classes.
+    # Where 2 is invertible the squares vanish by graded commutativity and the
+    # producer omits them, so an empty relation list means the same thing there
+    # as an explicit list of squares does over Z and F2 -- where it does not,
+    # because 2x^2 = 0 says x^2 is 2-torsion rather than zero.
+    squares = [{"terms": [{"coefficient": 1, "powers": {g["id"]: 2}}]} for g in generators]
+    halves = coefficient == "Q" or characteristic_of(coefficient) % 2 == 1
+    if all(g["degree"] % 2 for g in generators) and (
+            relations == squares or (not relations and halves)):
+        return rf"\Lambda_{{{field}}}({names_tex})", f"Exterior_{coefficient}({names})"
+
+    def scalar_text(scalar: Any) -> tuple[bool, str]:
+        """(negative, magnitude) for a structure constant that may be rational."""
+        value = Fraction(scalar) if not isinstance(scalar, Fraction) else scalar
+        magnitude = abs(value)
+        if magnitude.denominator != 1:
+            return value < 0, f"({magnitude})"
+        return value < 0, str(magnitude.numerator)
+
+    def polynomial(relation: dict[str, Any], tex: bool) -> str:
+        rendered = ""
+        for term in relation["terms"]:
+            negative, magnitude = scalar_text(term["coefficient"])
+            pieces = []
+            for generator in generators:
+                key, exponent = generator["id"], term["powers"].get(generator["id"], 0)
+                if not exponent:
+                    continue
+                name = _label_tex(key) if tex else key
+                pieces.append(name if exponent == 1 else
+                              (f"{name}^{{{exponent}}}" if tex else f"{name}^{exponent}"))
+            body = "".join(pieces) if tex else "*".join(pieces)
+            body = (magnitude if magnitude != "1" or not body else "") + body
+            rendered += ((" - " if negative else " + ") if rendered else ("-" if negative else "")) + body
+        return rendered
+
+    return (f"{field}[{names_tex}]/(" + ",".join(polynomial(r, True) for r in relations) + ")",
+            f"{coefficient}[{names}]/(" + ", ".join(polynomial(r, False) for r in relations) + ")")
+
+
 def _validate_presentation(record, algebra, basis, unit, multiply, normalize, characteristic):
     """Generators, relations and a monomial basis, for records that claim one."""
     generators = {item["id"]: item for item in algebra["generators"]}
@@ -278,6 +373,85 @@ def _validate_presentation(record, algebra, basis, unit, multiply, normalize, ch
             raise ValueError("relation is not homogeneous")
         if normalize(dict(total)):
             raise ValueError("relation is not satisfied by the multiplication table")
+
+
+def _validate_imported_presentation(record, algebra, basis, unit, multiply,
+                                   normalize, characteristic, coefficient):
+    """A presentation imported alongside a structure-constant table.
+
+    The engine computed the generators and relations with the table, and this
+    repository does not recompute them.  What it does re-derive is that every
+    stated relation actually holds in the table that was imported with it, and
+    that each generator names a class of the stated degree.  What stays imported,
+    and is stated as such in the record and in ADR 0005, is that the generators
+    generate and that the relations are complete: neither is visible from the
+    multiplication table alone.
+
+    Unlike `_validate_presentation` this does not demand a monomial basis.  The
+    producer's basis is the canonical Smith-normal-form basis of each graded
+    piece, not a basis of monomials in the generators, so asking each element to
+    name a monomial would reject every record it computed.
+    """
+    generator_list = algebra["generators"]
+    generators = {item["id"]: item for item in generator_list}
+    if len(generators) != len(generator_list):
+        raise ValueError("generator IDs must be unique")
+    if not generator_list:
+        # Otherwise an empty list would silently claim "no generators" for a ring
+        # that has some, which reads as a far stronger statement than it is.
+        if set(basis) != {unit}:
+            raise ValueError("only the unit ring may be presented with no generators")
+        if algebra["relations"]:
+            raise ValueError("a ring with no generators has no relations")
+    for key, generator in generators.items():
+        _integer(generator["degree"], "generator degree", 0)
+        if key == unit or key not in basis or generator["degree"] != basis[key]["degree"]:
+            raise ValueError("generator must name a non-unit basis element of the same degree")
+
+    def monomial(powers: dict[str, int]) -> tuple[int, dict[str, Fraction]]:
+        if not isinstance(powers, dict) or any(key not in generators for key in powers):
+            raise ValueError("monomial contains an unknown generator")
+        result, degree = {unit: Fraction(1)}, 0
+        for key in generators:
+            exponent = _integer(powers.get(key, 0), "monomial exponent", 0)
+            degree += generators[key]["degree"] * exponent
+            for _ in range(exponent):
+                result = multiply(result, {key: Fraction(1)})
+        return degree, result
+
+    for index, relation in enumerate(algebra["relations"]):
+        if not relation.get("terms"):
+            raise ValueError("relation must have terms")
+        degrees: set[int] = set()
+        total: Counter[str] = Counter()
+        for term in relation["terms"]:
+            scalar = _scalar(term["coefficient"], "relation scalar", coefficient)
+            if characteristic:
+                if scalar.denominator != 1 or scalar.numerator % characteristic == 0:
+                    raise ValueError("relation scalar must be nonzero in the coefficient ring")
+            elif not scalar:
+                raise ValueError("relation scalar must be nonzero in the coefficient ring")
+            degree, value = monomial(term["powers"])
+            degrees.add(degree)
+            for key, value_scalar in value.items():
+                total[key] += scalar * value_scalar
+        if len(degrees) != 1:
+            raise ValueError("relation is not homogeneous")
+        if normalize(dict(total)):
+            raise ValueError(
+                f"relation {index} is not satisfied by the imported multiplication table")
+
+    presentation = record.get("presentation")
+    if not isinstance(presentation, dict):
+        raise ValueError("an imported presentation must carry its display strings")
+    tex, plain = presentation_strings(algebra, coefficient)
+    # The atlas parser refuses a source longer than it will read, and a ring with
+    # eighty relations is not a legible formula anyway, so the record withholds
+    # the TeX rather than storing something that cannot be displayed. The
+    # generators and relations are still shown, and so is the whole table.
+    expected_tex = tex if len(tex) <= MAX_PRESENTATION_TEX else ""
+    if presentation.get("plain") != plain or presentation.get("tex") != expected_tex:
+        raise ValueError("display presentation must be generated from the structured algebra")
 
 
 def check_corroborating_records(records: dict[str, list[dict[str, Any]]]) -> list[dict[str, Any]]:

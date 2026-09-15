@@ -450,8 +450,8 @@
       ],
     );
     const core = space.classical_core || asArray(space.cohomology).length > 0;
-    if (core) ["Q", "F2", "F3", "F5", "F7", "Z"].forEach((item) => recorded.add(item));
-    const order = core ? ["Q", "F2", "F3", "F5", "F7", "Z"] : supportedCoefficients;
+    if (core) ["Q", "F2", "F3", "F5", "F7", "F11", "Z"].forEach((item) => recorded.add(item));
+    const order = core ? ["Q", "F2", "F3", "F5", "F7", "F11", "Z"] : supportedCoefficients;
     return [...new Set([...order.filter((item) => recorded.has(item)), ...recorded])];
   }
 
@@ -906,7 +906,7 @@
     const coreCount = conceptualSpaces.filter((space) => Number(space.cohomology_record_count ?? asArray(space.cohomology).length) > 0).length;
     examples.append(heading, groups,
       element("p", "classical-coverage-note", coreCount
-        ? `Cohomology rings over ℚ, 𝔽₂, 𝔽₃, 𝔽₅, and 𝔽₇ are recorded for ${coreCount} textbook spaces. Integral homology remains available. Human mathematical review is pending.`
+        ? `Cohomology rings are recorded for ${coreCount} spaces: over ℚ, 𝔽₂, 𝔽₃, 𝔽₅ and 𝔽₇ from the literature, and additionally over ℤ and 𝔽₁₁ wherever a machine computation supplies them. Integral homology remains available. Human mathematical review is pending.`
         : "Explore the existing homology collection. Cohomology-ring coverage is not recorded in this snapshot."));
     view.append(hero, buildSpaceSearch(conceptualSpaces, "home", "Find a space", { showAllOnEmpty: false }), examples);
     return view;
@@ -1164,6 +1164,14 @@
     if (record.provenance?.kind === "external_engine_computation") {
       content.append(element("p", "ring-provenance cohomology-imported",
         `Computed by ${record.provenance.engine ?? "an external system"} from a pinned simplicial model, and imported. Not independently verified here and not human-reviewed.`));
+      // Say which half of an imported presentation this repository can stand
+      // behind. The relations are re-derived against the table below; that the
+      // generators generate, and that the relations are all of them, are the
+      // engine's claims and are shown as such.
+      if (asArray(algebra.generators).length || asArray(algebra.relations).length) {
+        content.append(element("p", "ring-provenance ring-presentation-imported",
+          "The generators and relations were computed with the table and imported with it. Each relation below is re-derived here to hold in that table; that the generators generate it, and that the relations are complete, are imported and not checked here."));
+      }
     }
     if (corroborating.length) {
       const kinds = corroborating.map((item) => item.provenance?.kind === "external_engine_computation"
@@ -1179,7 +1187,7 @@
     content.append(definitionsLine);
 
     const structure = element("dl", "ring-structure");
-    if (algebra.kind === "graded_structure_constants") {
+    if (algebra.kind === "graded_structure_constants" && !asArray(algebra.generators).length) {
       structure.append(element("dt", "", "Presentation"));
       structure.append(element("dd", "ring-generators",
         "Recorded as an additive basis with its full cup-product table. No generators-and-relations presentation is claimed."));

@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from .preview import (
-    COEFFICIENTS,
+    COEFFICIENTS as PREVIEW_COEFFICIENTS,
     canonical_json,
     compute_integral_homology,
     digest,
@@ -584,6 +584,20 @@ def _elementary_abelian_chain(
     ranks = {degree: len(basis) for degree, basis in bases.items()}
     return _sparse_chain(ranks, nonzero)
 
+
+# The coefficients this atlas records homology over, as label -> characteristic.
+#
+# Deliberately not the preview module's list, which this once borrowed. The
+# zero-install preview is a frozen 60-space product with its own recorded
+# adversarial audit pinning that module byte for byte; the atlas is the current
+# one and grows. Sharing one tuple meant widening the atlas silently invalidated
+# that audit. They are separate products and now say so.
+COEFFICIENTS = {**PREVIEW_COEFFICIENTS, "F11": 11}
+
+# The catalogue is curated, so its size is pinned: a family whose instances
+# silently multiply, or a manifest edit that drops one, should fail the build
+# rather than quietly change what the atlas claims to cover.
+CURATED_SPACE_COUNT = 213
 
 IMPORTED_MODELS_PATH = (
     REPOSITORY_ROOT / "corpus" / "computed-rings-v1" / "imported-models.json"
@@ -1334,8 +1348,9 @@ def materialize_specs(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     space_ids = [spec["key"] for spec in specs]
     if len(space_ids) != len(set(space_ids)):
         raise ValueError("chromatic corpus contains duplicate Conceptual-space IDs")
-    if len(specs) != 212:
-        raise ValueError(f"expected the curated 212-space corpus, generated {len(specs)}")
+    if len(specs) != CURATED_SPACE_COUNT:
+        raise ValueError(
+            f"expected the curated {CURATED_SPACE_COUNT}-space corpus, generated {len(specs)}")
     if any(len(spec["sources"]) == 0 for spec in specs):
         raise ValueError("every chromatic space must inherit at least one source")
     return specs
@@ -2307,7 +2322,9 @@ def demo(path: Path) -> None:
         lens = tools.read_homology("L^5(3;1,1,1)")
         projective = tools.read_homology("CP^2")
         evidence = tools.expand_evidence([moore["groups"][2]["evidence_id"]])
-        print(f"Chromatic Homology Atlas ready: 212 spaces, snapshot {snapshot_id}")
+        # Counted, not quoted: a literal here went stale the moment the corpus grew.
+        print(f"Chromatic Homology Atlas ready: {CURATED_SPACE_COUNT} spaces, "
+              f"snapshot {snapshot_id}")
         print(f"Scratch database: {path} (safe to delete; rebuilt on every run)\n")
         print("Quick mathematical tour")
         print(f"  M(Z/5,2): H_2 = {moore['groups'][2]['value']['display']}")

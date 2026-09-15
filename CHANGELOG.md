@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Extended the imported cohomology-ring corpus to 𝔽₁₁ and to explicit
+  presentations: 1309 ring and 1358 homology records over 187 spaces and 194
+  models, seven coefficient rings each. 1076 records now carry generators and
+  relations beside their cup-product table, and each stated relation is
+  re-derived here to hold in that table. Added M(ℤ/11,2), the one space whose
+  𝔽₁₁ cohomology differs from its rational cohomology.
 - Added a zero-install local Homology DB preview over 60 common manifolds.
 - Added the four structured QA tools with snapshot, assertion, and evidence IDs.
 - Added exact small-chain integral and finite-field computation plus indexed

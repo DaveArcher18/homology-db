@@ -22,7 +22,7 @@ LUTZ_S2XR = {'title': 'Frank H. Lutz, The Manifold Page (geometric 3-manifold ca
 
 
 IMPORTED_COVERAGE = (
-    "Homology and cup-product rings over Z, Q, F2, F3, F5 and F7 are imported from an "
+    "Homology and cup-product rings over Z, Q, F2, F3, F5, F7 and F11 are imported from an "
     "external computation on a simplicial model identified by hash. That model's source "
     "states no licence, so it is named and counted here but not redistributed, and nothing "
     "below its f-vector is re-derived. Not human-reviewed."
@@ -137,7 +137,7 @@ def teaching_catalog() -> dict:
             if space_id in CLASSICAL_SPACE_IDS:
                 coverage = "Original thirteen-space ring core: five-field records retained. General-family instances additionally open the all-degree workbench."
             elif space_id in CLASSICAL_EXTENSION_SPACE_IDS:
-                coverage = "Selected projective-plane extension: rings recorded over Q, F2, F3, F5, F7; integral and F11 ring records are not added here."
+                coverage = "Selected projective-plane extension: literature rings recorded over Q, F2, F3, F5 and F7. Any integral or F11 record beside them is imported computation, not a reading of the cited text."
             else:
                 coverage = "Homology retained; cohomology-ring records are not yet included. Not recorded does not mean zero."
         entries.append({"space_id": space_id, "chapter": chapter, "locator": source["locator"],
@@ -169,13 +169,13 @@ def teaching_catalog() -> dict:
             rf"The genus-{g} orientable surface is the connected sum of {g} tori, the classification of closed surfaces naming it $\Sigma_{{{g}}}$.",
             rf"Its one 2-cell is attached by a product of {g} commutators, which abelianize to zero, so the cellular differential vanishes and $H_1$ is free of rank {2*g}.",
             _source("Example 2.36, p. 141", 141),
-            coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation and are not human-reviewed.")
+            coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 and F11 are imported from an external computation and are not human-reviewed.")
     for k in range(3, 7):
         add(f"nonorientable_surface:{k}", "2.2 / 3.2 · Surfaces",
             rf"The genus-{k} nonorientable surface is the connected sum of {k} projective planes, written $N_{{{k}}}$ in the classification of closed surfaces.",
             rf"The crosscap word $a_1^2\cdots a_{{{k}}}^2$ abelianizes to twice the sum of the generators, so one order-two class appears no matter how large the genus grows.",
             _source("Example 2.37, p. 141", 141),
-            coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation and are not human-reviewed.")
+            coverage="Homology retained; cup-product rings over Z, Q, F2, F3, F5, F7 and F11 are imported from an external computation and are not human-reviewed.")
     for genus in (15, 26):
         add(f"orientable_surface:{genus}", "2.2 / 3.2 . Surfaces",
             rf"The genus-{genus} orientable surface is the connected sum of {genus} tori.",
@@ -208,7 +208,7 @@ def teaching_catalog() -> dict:
          "Each summand contributes one order-two class to the first homology; the sum is orientable although a single projective plane factor is not."),
     ):
         add(space, "Supplement . Geometric 3-manifolds", introduction, point, dict(LUTZ_S2XR),
-            coverage="Homology and cup-product rings over Z, Q, F2, F3, F5, F7 are imported from an external computation on a hash-identified triangulation that is not redistributed here. Not human-reviewed.")
+            coverage="Homology and cup-product rings over Z, Q, F2, F3, F5, F7 and F11 are imported from an external computation on a hash-identified triangulation that is not redistributed here. Not human-reviewed.")
     for n in (2,3,4,5):
         add(f"real_projective_space:{n}", "2.2 / 3.2 · Projective spaces",
             rf"$\mathbb{{RP}}^{{{n}}}$ is the space of real lines through the origin in real {n+1}-dimensional space.",
@@ -224,7 +224,7 @@ def teaching_catalog() -> dict:
         r"$\mathbb{CP}^{3}$ is the space of complex lines through the origin in complex four-dimensional space, with one cell in real dimensions zero, two, four, and six.",
         "Its degree-two generator has nonzero square and cube; the ring truncates only at the fourth power, where dimension forces it.",
         _source("Example 2.35, p. 140; Theorem 3.19, p. 220",220))
-    for m,n in ((3,1),(4,1),(5,2),(7,3),(8,4),(9,2)):
+    for m,n in ((3,1),(4,1),(5,2),(7,3),(8,4),(9,2),(11,2)):
         add(f"moore:{m}:{n}", "2.2 · Moore spaces",
             f"Attach an ({n+1})-cell to an {n}-sphere by a degree-{m} map to obtain this Moore space.",
             rf"Its only nonzero reduced integral homology is $\mathbb{{Z}}/{m}\mathbb{{Z}}$ in degree {n}; compare prime coefficients dividing {m} with those that do not.", _source("Example 2.40, pp. 143–144",143))

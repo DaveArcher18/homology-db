@@ -30,7 +30,7 @@ class ChromaticAtlasTests(unittest.TestCase):
 
     def test_builds_the_curated_forty_two_space_snapshot_deterministically(self) -> None:
         summary = self.tools.corpus_summary()
-        self.assertEqual(summary["subject_count"], 212)
+        self.assertEqual(summary["subject_count"], 213)
         self.assertEqual(
             summary["release_status"],
             "development_corpus_not_externally_reviewed",
@@ -53,7 +53,7 @@ class ChromaticAtlasTests(unittest.TestCase):
                 "hyperbolic_3manifold": 21,
                 "infinite_projective_space": 2,
                 "lens_space": 14,
-                "moore_space": 6,
+                "moore_space": 7,
                 "nil_3manifold": 5,
                 "point": 1,
                 "prism_polyhedral_3manifold": 11,
@@ -182,9 +182,9 @@ class ChromaticAtlasTests(unittest.TestCase):
             connection.row_factory = sqlite3.Row
             self.assertEqual(connection.execute("PRAGMA integrity_check").fetchone()[0], "ok")
             self.assertEqual(connection.execute("PRAGMA foreign_key_check").fetchall(), [])
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM space").fetchone()[0], 212)
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM model").fetchone()[0], 212)
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM evidence").fetchone()[0], 212)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM space").fetchone()[0], 213)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM model").fetchone()[0], 213)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM evidence").fetchone()[0], 213)
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM space_relation").fetchone()[0],
                 100,
@@ -223,7 +223,7 @@ class ChromaticAtlasTests(unittest.TestCase):
                       AND torsion_json != '[]'
                     """
                 ).fetchone()[0],
-                130,
+                131,
             )
             self.assertEqual(
                 {
@@ -232,7 +232,9 @@ class ChromaticAtlasTests(unittest.TestCase):
                         "SELECT DISTINCT prime FROM primary_summand"
                     )
                 },
-                {2, 3, 5, 7},
+                # M(Z/11,2) is the only 11-torsion space, and the reason F11 is
+                # not vacuous as a control ring.
+                {2, 3, 5, 7, 11},
             )
             self.assertEqual(
                 connection.execute(
