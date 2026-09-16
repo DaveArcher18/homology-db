@@ -66,12 +66,20 @@
         if (manifest.schema_version !== "homology-db.static-atlas-bundle/1" || manifest.bundle_id !== bootstrap.bundle_id) {
           throw new Error("Atlas manifest does not match the application shell");
         }
-        const [catalog, definitions, familyRules, teaching, classical] = await Promise.all([
+        const [
+          catalog,
+          definitions,
+          familyRules,
+          teaching,
+          classical,
+          computedRings,
+        ] = await Promise.all([
           fetchDocument("data/catalog.json", "catalog"),
           fetchDocument("data/shared/definitions.json", "definitions"),
           fetchDocument("data/shared/family-rules.json", "family_rules"),
           fetchDocument("data/shared/teaching.json", "teaching"),
           fetchDocument("data/shared/classical.json", "classical"),
+          fetchDocument("data/shared/computed-rings.json", "computed_rings"),
         ]);
         return {
           ...catalog,
@@ -79,6 +87,7 @@
           family_rules: familyRules,
           teaching,
           classical,
+          computed_rings: computedRings,
           _bundle_manifest: manifest,
         };
       })();

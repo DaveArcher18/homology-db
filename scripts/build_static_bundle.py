@@ -97,6 +97,10 @@ def partition(atlas: dict[str, Any]) -> dict[str, tuple[str, Any]]:
         "data/shared/family-rules.json": ("family_rules", atlas.get("family_rules", {})),
         "data/shared/teaching.json": ("teaching", atlas.get("teaching", {})),
         "data/shared/classical.json": ("classical", atlas.get("classical", {})),
+        "data/shared/computed-rings.json": (
+            "computed_rings",
+            atlas.get("computed_rings", {}),
+        ),
     }
     for space in spaces:
         documents[f"data/spaces/{space['slug']}.json"] = ("space", space)
