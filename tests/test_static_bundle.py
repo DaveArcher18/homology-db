@@ -64,6 +64,47 @@ class StaticBundleTest(unittest.TestCase):
             self.assertEqual(len(space_documents), len(original["conceptual_spaces"]))
             self.assertFalse((first / "data" / "spaces" / "cayley-plane-2.json").exists())
 
+            computed_document = json.loads(
+                (first / "data" / "shared" / "computed-rings.json").read_text()
+            )
+            self.assertEqual(computed_document["document_kind"], "computed_rings")
+            computed = computed_document["payload"]
+            self.assertEqual(computed, original["computed_rings"])
+            self.assertEqual(len(computed["models"]), 11)
+            self.assertEqual(computed["record_count"], 1309)
+            self.assertEqual(computed["space_count"], 187)
+
+            sources = {
+                **original["classical"]["sources"],
+                **computed["sources"],
+            }
+            shipped_source_ids = {
+                reference["source_id"]
+                for space in reconstructed_spaces
+                for record in space.get("cohomology", [])
+                for reference in record.get("sources", [])
+            }
+            self.assertEqual(shipped_source_ids - sources.keys(), set())
+            self.assertTrue(all(
+                source.get("title")
+                and source.get("url", "").startswith("https://")
+                for source_id, source in sources.items()
+                if source_id in shipped_source_ids
+            ))
+            self.assertIn("Wern Juin Gabriel Ong", sources["cohomology-tables"]["authors"])
+            self.assertIn("cohomology rings", sources["cohomology-tables"]["title"])
+            self.assertIn("The OSCAR Team", sources["oscar"]["authors"])
+            self.assertIn("OSCAR", sources["oscar"]["title"])
+            self.assertIn("f-vectors of 3-manifolds", sources["lutz-sulanke-swartz-3manifolds"]["title"])
+
+            computed_space_ids = set(computed["space_ids"])
+            shipped_space_ids = {space["id"] for space in reconstructed_spaces}
+            self.assertEqual(len(shipped_space_ids), 194)
+            self.assertEqual(len(computed_space_ids), 187)
+            self.assertEqual(len(shipped_space_ids - computed_space_ids), 7)
+            self.assertTrue(all(space["primary_atlas_eligible"] for space in reconstructed_spaces))
+            self.assertNotIn("cayley_plane:2", shipped_space_ids)
+
     def test_unsafe_slug_is_rejected(self) -> None:
         atlas_path = REPOSITORY_ROOT / "dist" / "atlas.html"
         html, atlas = read_atlas(atlas_path)
