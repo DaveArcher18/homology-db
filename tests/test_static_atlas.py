@@ -110,7 +110,7 @@ console.log(JSON.stringify({
 
             self.assertEqual(completed.returncode, 0, completed.stderr)
             build_summary = json.loads(completed.stdout)
-            self.assertEqual(build_summary["relation_count"], 100)
+            self.assertEqual(build_summary["relation_count"], 88)
             self.assertGreater(build_summary["source_database_bytes"], 0)
             html = output_path.read_text(encoding="utf-8")
             embedded = re.search(
@@ -184,16 +184,12 @@ console.log(JSON.stringify({
                 for item in atlas["conceptual_spaces"]
             }
             self.assertEqual(
-                names_by_id["classifying_space:elementary_abelian:2:2"],
-                r"B(C_{2}^{2})",
-            )
-            self.assertEqual(
                 names_by_id["moore:9:2"],
                 r"M(\mathbb{Z}/9,2)",
             )
             self.assertEqual(
-                names_by_id["universal_complex_thom:2"],
-                r"\operatorname{Th}(\gamma_{2}\to BU(2))",
+                names_by_id["moore:11:2"],
+                r"M(\mathbb{Z}/11,2)",
             )
             definitions = atlas["definitions"]
             self.assertEqual(
@@ -275,20 +271,7 @@ console.log(JSON.stringify({
             self.assertTrue(complex_projective_plane["evidence"][0]["citations"])
             self.assertEqual(
                 {relation["target_id"] for relation in complex_projective_plane["relations"]},
-                {"complex_projective_space:3", "complex_projective_space:infinity"},
-            )
-            self.assertIn(
-                {
-                    "detail": "The standard three-cell CW model is the 4-skeleton of the projective filtration of CP^infinity.",
-                    "evidence_ids": [
-                        "chromatic:evidence:complex_projective_space:2"
-                    ],
-                    "id": "relation:cp2:finite-skeleton:cp-infinity",
-                    "source_id": "complex_projective_space:2",
-                    "target_id": "complex_projective_space:infinity",
-                    "type": "finite_skeleton_of",
-                },
-                complex_projective_plane["relations"],
+                {"complex_projective_space:3"},
             )
             self.assertTrue(all(
                 citation["url"].startswith("https://")
@@ -296,28 +279,6 @@ console.log(JSON.stringify({
                 for citation in evidence["citations"]
             ))
 
-            cyclic_classifying_space = next(
-                item
-                for item in atlas["conceptual_spaces"]
-                if item["id"] == "classifying_space:cyclic:3"
-            )
-            self.assertIsNone(next(
-                property_["value"]
-                for property_ in cyclic_classifying_space["properties"]
-                if property_["key"] == "dimension"
-            ))
-            self.assertTrue(cyclic_classifying_space["infinite_finite_type"])
-            self.assertEqual(
-                cyclic_classifying_space["homology_coverage"]["kind"],
-                "bounded_through_degree",
-            )
-            self.assertEqual(
-                cyclic_classifying_space["homology_coverage"]["computed_through_degree"],
-                24,
-            )
-            self.assertIsNone(
-                cyclic_classifying_space["homology_coverage"]["upper_vanishing_starts_at"]
-            )
             self.assertEqual(
                 sum(
                     item["homology_coverage"]["kind"] == "complete_finite_cw"
@@ -332,21 +293,21 @@ console.log(JSON.stringify({
                 ),
                 0,
             )
-            elementary_abelian_rank_three = next(
+            hadamard_torsion = next(
                 item
                 for item in atlas["conceptual_spaces"]
-                if item["id"] == "classifying_space:elementary_abelian:2:3"
+                if item["id"] == "hadamard_torsion_complex:32"
             )
             largest_repeated_sum = next(
                 row
-                for row in elementary_abelian_rank_three["homology"]
+                for row in hadamard_torsion["homology"]
                 if row["coefficient_ring"] == "Z"
                 and row["reduced"] is False
-                and row["degree"] == 24
+                and row["degree"] == 1
             )
             self.assertEqual(
                 largest_repeated_sum["group"]["torsion_orders"],
-                [2] * 168,
+                [2] * 5 + [4] * 10 + [8] * 10 + [16] * 5 + [32],
             )
             presentation_check = subprocess.run(
                 [
@@ -378,13 +339,13 @@ for (const space of atlas.conceptual_spaces) {
       && !presentation.groupPresentation(row).exact
   ).length;
 }
-const elementary = atlas.conceptual_spaces.find(
-  (space) => space.id === "classifying_space:elementary_abelian:2:3"
+const hadamard = atlas.conceptual_spaces.find(
+  (space) => space.id === "hadamard_torsion_complex:32"
 );
-const largest = elementary.homology.find(
+const largest = hadamard.homology.find(
   (row) => row.coefficient_ring === "Z"
     && row.reduced === false
-    && row.degree === 24
+    && row.degree === 1
 );
 console.log(JSON.stringify({
   unsupportedNames: atlas.conceptual_spaces
@@ -411,15 +372,15 @@ console.log(JSON.stringify({
             self.assertEqual(
                 presentation_result["coverageCounts"],
                 {
-                    "coverage-exhaustive": 203,
-                    "coverage-bounded": 10,
+                    "coverage-exhaustive": 194,
+                    "coverage-bounded": 0,
                     "coverage-neutral": 0,
                 },
             )
             self.assertEqual(presentation_result["malformedExactGroups"], 0)
             self.assertEqual(
                 presentation_result["largestDisplay"],
-                r"(\mathbb{Z}/2\mathbb{Z})^{\oplus 168}",
+                r"(\mathbb{Z}/2\mathbb{Z})^{\oplus 5}\oplus (\mathbb{Z}/4\mathbb{Z})^{\oplus 10}\oplus (\mathbb{Z}/8\mathbb{Z})^{\oplus 10}\oplus (\mathbb{Z}/16\mathbb{Z})^{\oplus 5}\oplus \mathbb{Z}/32\mathbb{Z}",
             )
 
             poincare_sphere = next(
@@ -887,6 +848,31 @@ console.log(JSON.stringify({
                 )
             )
 
+    def test_nonexact_homology_state_is_not_presented_as_zero(self) -> None:
+        completed = subprocess.run(
+            [
+                "node",
+                "-e",
+                r"""
+const presentation = require("./static_atlas/presentation.js");
+const shown = presentation.groupPresentation({
+  coefficient_ring: "Z",
+  knowledge_state: "not_computed",
+  group: {state: "not_computed", plain: "not computed"},
+});
+console.log(JSON.stringify(shown));
+""",
+            ],
+            cwd=REPOSITORY_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        shown = json.loads(completed.stdout)
+        self.assertFalse(shown["exact"])
+        self.assertEqual(shown["plain"], "not computed")
+        self.assertNotEqual(shown["plain"], "0")
+
     def test_export_fails_when_homology_evidence_integrity_is_broken(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
@@ -958,8 +944,8 @@ console.log(JSON.stringify({
                 connection.execute(
                     """
                     UPDATE space_relation
-                    SET evidence_id = 'chromatic:evidence:complex_projective_space:infinity'
-                    WHERE relation_id = 'relation:cp2:finite-skeleton:cp-infinity'
+                    SET evidence_id = 'chromatic:evidence:complex_projective_space:2'
+                    WHERE relation_id = 'relation:connected_sum-l31-sum-l31:summand:lens-3-3-1-1'
                     """
                 )
                 connection.commit()
