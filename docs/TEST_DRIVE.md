@@ -1,8 +1,9 @@
 # Chromatic Homology Atlas test drive
 
-This is the shortest path from a clean checkout to the current 42-space
-development corpus. It uses only the Python standard library and writes a
-disposable SQLite database under `/tmp` by default.
+This is the shortest path from a clean checkout to the 213-space source ledger.
+It uses only the Python standard library and writes a disposable SQLite database
+under `/tmp` by default. The shipped browser atlas is a provenance-derived
+projection containing only the 194 Gabriel-computed spaces.
 
 ## One-command tour
 
@@ -12,8 +13,8 @@ python3 -m homology_db chromatic demo
 
 Expected headline facts:
 
-- the Snapshot contains exactly 42 named CW spaces in 17 families;
-- 21 spaces have integral torsion, across primes 2, 3, 5, and 7, including
+- the Snapshot contains exactly 213 named CW spaces in 28 families;
+- 131 spaces have integral torsion, across primes 2, 3, 5, 7, and 11, including
   `Z/4`, `Z/8`, and `Z/9` examples;
 - `M(Z/5,2)` has `H_2 = Z/5`;
 - `L^5(3;1,1,1)` has `H_3 = Z/3`;
@@ -23,7 +24,8 @@ Expected headline facts:
   Snapshot.
 
 The unprefixed CLI remains the frozen 60-space preview used by the historical
-adversarial audit. Use the `chromatic` prefix for the current product.
+adversarial audit. Use the `chromatic` prefix to inspect the construction ledger;
+the static product boundary is the 194-space Gabriel-computed projection.
 
 ## Ask the four tools directly
 
@@ -102,7 +104,7 @@ python3 scripts/export_static_atlas.py \
 
 The first command includes the frozen preview regression suite and the current
 chromatic corpus. The second verifies the older planned release manifest; it is
-not the source of the 42-space Snapshot. The exporter builds and validates the
+not the source of the 213-space Snapshot. The exporter builds and validates the
 self-contained browser atlas.
 
 ## What this corpus is—and is not

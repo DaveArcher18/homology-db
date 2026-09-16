@@ -1,7 +1,7 @@
 # Static atlas read model
 
-Status: family workbench over retained `chromatic-gateway-42` and classical
-cohomology records, with independently source-bound symbolic family rules
+Status: family workbench over 194 Gabriel-computed spaces and imported computed
+rings, with independently source-bound symbolic family rules
 
 Read-model version: `homology-db.static-atlas/5`
 
@@ -59,8 +59,9 @@ reduction setting never changes these unreduced ring records.
 ## Teaching exposition and scoped review
 
 The optional additive `teaching` catalog contains sourced introductions, a
-selected chapter/example inventory of the 42 retained spaces, and guided
-comparisons. It does not claim an exhaustive inventory of Hatcher's book.
+selected chapter/example inventory of the 194 shipped spaces, and guided
+comparison material whose routes remain inside that corpus. It does not claim
+an exhaustive inventory of Hatcher's book.
 Coverage badges are derived from actual records/family redirects; exposition
 does not create assertions. `snapshot.teaching_sha256` binds exact content and
 derived coverage. The Python teaching source also participates in source-input
@@ -79,23 +80,24 @@ by `homology_db.chromatic.ChromaticDatabase`. The older
 `local-preview-60` database remains a frozen regression fixture and is not the
 source of this frontend.
 
-The current database contains:
+The disposable source database contains the broader construction ledger below.
+The shipped atlas projects only the 194 spaces selected by Gabriel imported
+computational-model provenance; legacy-only source rows are not shipped.
 
 | Record | Count |
 |---|---:|
 | Snapshot | 1 |
-| Families | 17 |
-| Conceptual spaces | 42 |
-| Aliases | 172 |
-| Qualified Models | 42 |
-| References | 9 |
-| Evidence records | 42 |
-| Evidence-to-reference links | 62 |
-| Space relationships | 11 |
-| Recorded computation runs | 41 |
-| Homology coverage records | 42 |
-| Homology assertions | 4,190 |
-| Primary-summand rows | 252 |
+| Families | 28 |
+| Conceptual spaces | 213 |
+| Aliases | 692 |
+| Qualified Models | 213 |
+| Citations | 642 |
+| Evidence records | 213 |
+| Space relationships | 100 |
+| Recorded computation runs | 67 |
+| Homology coverage records | 213 |
+| Homology rows | 13,332 |
+| Primary-summand rows | 562 |
 
 The historical spaces-only release described below has Snapshot ID
 `chromatic-16e4f2be46edd93a`. Its disposable SQLite database is 2,535,424

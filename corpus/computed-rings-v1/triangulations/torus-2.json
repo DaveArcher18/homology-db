@@ -1,0 +1,86 @@
+{
+ "canonicalization": "cohomology-tables/canonical-facets/1",
+ "facets": [
+  [
+   0,
+   1,
+   2
+  ],
+  [
+   0,
+   1,
+   5
+  ],
+  [
+   0,
+   2,
+   6
+  ],
+  [
+   0,
+   3,
+   4
+  ],
+  [
+   0,
+   3,
+   5
+  ],
+  [
+   0,
+   4,
+   6
+  ],
+  [
+   1,
+   2,
+   4
+  ],
+  [
+   1,
+   3,
+   4
+  ],
+  [
+   1,
+   3,
+   6
+  ],
+  [
+   1,
+   5,
+   6
+  ],
+  [
+   2,
+   3,
+   5
+  ],
+  [
+   2,
+   3,
+   6
+  ],
+  [
+   2,
+   4,
+   5
+  ],
+  [
+   4,
+   5,
+   6
+  ]
+ ],
+ "facets_sha256": "6e38b4688ce8f661a8e3b6048c60e939c1d082840e3a972f886a11455a7b55f1",
+ "model_id": "simplicial:torus:2:sage-10.3",
+ "schema_version": "homology-db.simplicial-model/1",
+ "source": {
+  "invocation": "simplicial_complexes.Torus()",
+  "kind": "sage",
+  "reproducible_labelling": true,
+  "sage_version": "SageMath version 10.3, Release Date: 2024-03-19"
+ },
+ "space_id": "torus:2",
+ "vertices": 7
+}

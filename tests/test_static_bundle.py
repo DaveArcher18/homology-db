@@ -38,17 +38,31 @@ class StaticBundleTest(unittest.TestCase):
             )
 
             manifest = json.loads((first / "data" / "manifest.json").read_text())
-            self.assertEqual(manifest["counts"]["spaces"], 42)
-            self.assertEqual(manifest["counts"]["spectra"], 49)
+            self.assertEqual(
+                manifest["counts"]["spaces"], len(original["conceptual_spaces"])
+            )
+            self.assertEqual(
+                manifest["counts"]["spectra"], len(original["conceptual_spectra"])
+            )
             catalog = json.loads((first / "data" / "catalog.json").read_text())["payload"]
-            self.assertEqual(len(catalog["conceptual_spaces"]), 42)
+            primary = original["conceptual_spaces"]
+            self.assertTrue(all(space["primary_atlas_eligible"] for space in primary))
+            self.assertEqual(
+                len(catalog["conceptual_spaces"]), len(primary)
+            )
             self.assertNotIn("homology", catalog["conceptual_spaces"][0])
 
             reconstructed_spaces = []
             for entry in catalog["conceptual_spaces"]:
                 document = json.loads((first / entry["_document_path"]).read_text())
                 reconstructed_spaces.append(document["payload"])
-            self.assertEqual(reconstructed_spaces, original["conceptual_spaces"])
+            self.assertEqual(reconstructed_spaces, primary)
+            space_documents = [
+                item for item in manifest["files"]
+                if item["document_kind"] == "space"
+            ]
+            self.assertEqual(len(space_documents), len(original["conceptual_spaces"]))
+            self.assertFalse((first / "data" / "spaces" / "cayley-plane-2.json").exists())
 
     def test_unsafe_slug_is_rejected(self) -> None:
         atlas_path = REPOSITORY_ROOT / "dist" / "atlas.html"

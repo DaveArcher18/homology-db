@@ -112,6 +112,7 @@ async function main(){
       assert.equal(await page.locator('#nav-spaces').getAttribute('aria-current'),'page');
     }
     await page.goto(base+'#home');
+    await page.locator('.workbench-view').waitFor();
     const picker=page.getByRole('combobox',{name:'Family',exact:true});
     await picker.focus();
     await picker.press('c');

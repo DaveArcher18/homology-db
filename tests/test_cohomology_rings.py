@@ -19,13 +19,11 @@ def integral_torsion_ring(*, product_order: int) -> dict:
         "knowledge_state": "exact",
         "algebra": {
             "kind": "graded_structure_constants",
-            "generators": [],
-            "relations": [],
             "unit": "1",
             "basis": [
-                {"id": "1", "degree": 0, "order": 0, "powers": {}},
-                {"id": "a", "degree": 2, "order": 2, "powers": {}},
-                {"id": "b", "degree": 4, "order": product_order, "powers": {}},
+                {"id": "1", "degree": 0, "order": 0},
+                {"id": "a", "degree": 2, "order": 2},
+                {"id": "b", "degree": 4, "order": product_order},
             ],
             "products": [
                 {

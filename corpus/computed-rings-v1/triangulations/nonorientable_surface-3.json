@@ -1,0 +1,146 @@
+{
+ "canonicalization": "cohomology-tables/canonical-facets/1",
+ "facets": [
+  [
+   0,
+   1,
+   4
+  ],
+  [
+   0,
+   1,
+   11
+  ],
+  [
+   0,
+   2,
+   5
+  ],
+  [
+   0,
+   2,
+   9
+  ],
+  [
+   0,
+   3,
+   5
+  ],
+  [
+   0,
+   3,
+   8
+  ],
+  [
+   0,
+   4,
+   6
+  ],
+  [
+   0,
+   6,
+   7
+  ],
+  [
+   0,
+   7,
+   8
+  ],
+  [
+   0,
+   9,
+   10
+  ],
+  [
+   0,
+   10,
+   11
+  ],
+  [
+   1,
+   2,
+   3
+  ],
+  [
+   1,
+   2,
+   10
+  ],
+  [
+   1,
+   3,
+   5
+  ],
+  [
+   1,
+   4,
+   5
+  ],
+  [
+   1,
+   9,
+   10
+  ],
+  [
+   1,
+   9,
+   11
+  ],
+  [
+   2,
+   3,
+   4
+  ],
+  [
+   2,
+   4,
+   5
+  ],
+  [
+   2,
+   9,
+   11
+  ],
+  [
+   2,
+   10,
+   11
+  ],
+  [
+   3,
+   4,
+   7
+  ],
+  [
+   3,
+   6,
+   7
+  ],
+  [
+   3,
+   6,
+   8
+  ],
+  [
+   4,
+   6,
+   8
+  ],
+  [
+   4,
+   7,
+   8
+  ]
+ ],
+ "facets_sha256": "e1b2a5394380bf1c23b9e853cced12a7298b71e5158e34ce050ade0d7b8ddc4c",
+ "model_id": "simplicial:nonorientable_surface:3:sage-10.3",
+ "schema_version": "homology-db.simplicial-model/1",
+ "source": {
+  "invocation": "simplicial_complexes.SurfaceOfGenus(3, orientable=False)",
+  "kind": "sage",
+  "reproducible_labelling": false,
+  "sage_version": "SageMath version 10.3, Release Date: 2024-03-19"
+ },
+ "space_id": "nonorientable_surface:3",
+ "vertices": 12
+}

@@ -62,15 +62,6 @@ def _catalog_space(space: dict[str, Any]) -> dict[str, Any]:
         }
         for record in space.get("cohomology", [])
     ]
-    result["catalog_search"] = json.dumps(
-        {
-            "citations": space.get("citations", []),
-            "models": space.get("models", []),
-            "evidence": space.get("evidence", []),
-        },
-        ensure_ascii=False,
-        sort_keys=True,
-    )
     result["_document_path"] = f"data/spaces/{space['slug']}.json"
     return result
 
@@ -85,6 +76,7 @@ def _catalog_spectrum(spectrum: dict[str, Any]) -> dict[str, Any]:
 
 def partition(atlas: dict[str, Any]) -> dict[str, tuple[str, Any]]:
     spaces = atlas.get("conceptual_spaces", [])
+    primary_spaces = [space for space in spaces if space.get("primary_atlas_eligible") is True]
     spectra = atlas.get("conceptual_spectra", [])
     for subject in [*spaces, *spectra]:
         slug = subject.get("slug")
@@ -95,8 +87,9 @@ def partition(atlas: dict[str, Any]) -> dict[str, tuple[str, Any]]:
             "catalog",
             {
                 "snapshot": atlas["snapshot"],
+                "primary_atlas": atlas.get("primary_atlas", {}),
                 "sections": atlas.get("sections", []),
-                "conceptual_spaces": [_catalog_space(item) for item in spaces],
+                "conceptual_spaces": [_catalog_space(item) for item in primary_spaces],
                 "conceptual_spectra": [_catalog_spectrum(item) for item in spectra],
             },
         ),
@@ -175,6 +168,7 @@ def build_bundle(atlas_path: Path, output_directory: Path) -> dict[str, Any]:
         "supported_coefficients": snapshot.get("supported_coefficients", []),
         "counts": {
             "spaces": len(atlas.get("conceptual_spaces", [])),
+            "primary_atlas_spaces": atlas.get("primary_atlas", {}).get("space_count"),
             "spectra": len(atlas.get("conceptual_spectra", [])),
             "documents": len(encoded),
         },

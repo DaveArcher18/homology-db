@@ -16,21 +16,22 @@ review a whole family—to help.
 
 - **Families:** spheres, real projective spaces, and complex projective spaces
   for any finite nonnegative dimension parameter.
-- **Coefficients:** ℤ and ℚ, followed by 𝔽₂, 𝔽₃, 𝔽₅, 𝔽₇, and 𝔽₁₁ in the
-  family workbench. Compare homology and cohomology degree by degree.
+- **Coefficients:** ℤ and ℚ, followed by 𝔽₂, 𝔽₃, 𝔽₅, 𝔽₇, and 𝔽₁₁, in the family
+  workbench and across the computed rings. Compare homology and cohomology degree
+  by degree. 𝔽₁₁ is a control: no integral invariant factor in the computed corpus
+  has 11 in it, so every space but M(ℤ/11,2) must agree with ℚ there.
 - **Rings:** generators, degrees, relations, and expandable cup-product tables.
-- **A selected textbook trail:** all 42 retained spaces, sourced introductions,
-  three guided comparisons, and clearly labelled coverage gaps.
+- **A selected textbook trail:** all 194 Gabriel-computed spaces, sourced
+  introductions, a guided coefficient comparison, and clearly labelled coverage gaps.
 - **Explanations:** a glossary and expandable inline definitions.
 - **Evidence:** citations, derivations, versioned rules, and JSON downloads.
 
-Start with **CP² versus S² ∨ S⁴**: their additive groups agree over a field, but
-their cup products differ. Then try **RP² over ℤ, ℚ, and 𝔽₂**.
+Start with **RP² over ℤ, ℚ, and 𝔽₂** to see how changing coefficients changes
+both groups and cup products.
 
-The original thirteen-space ring core is retained, with HP² and OP² added as a
-separate five-field extension. Coverage varies outside the three general
-families; 27 retained spaces do not yet have encoded cohomology rings. Ten
-infinite finite-type entries have stored homology only through degree 24.
+The shipped product contains the 194 spaces selected by Gabriel imported
+computational-model provenance. Of these, 187 have 1,309 imported ring records;
+seven retain computed homology while their ring output is explicitly withheld.
 
 A separate [stable-spectrum preview](https://davearcher18.github.io/homology-db/#spectra)
 preserves the existing 49-spectrum collection. It is secondary to the

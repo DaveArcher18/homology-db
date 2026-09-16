@@ -10,6 +10,7 @@ from pathlib import Path
 
 from homology_db.chromatic import ChromaticDatabase
 from homology_db.steenrod import CW49_SPECTRUM_IDS
+from scripts.export_static_atlas import MAX_HTML_BYTES
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -591,11 +592,11 @@ class SteenrodReleaseGateTest(unittest.TestCase):
     def test_oversized_artifact_is_rejected(self) -> None:
         completed = self.run_gate(
             {"conceptual_spaces": [{"id": "sphere:1"}]},
-            padding_bytes=6 * 1024 * 1024,
+            padding_bytes=MAX_HTML_BYTES + 1,
         )
 
         self.assertNotEqual(completed.returncode, 0)
-        self.assertIn("6 MiB", completed.stderr)
+        self.assertIn(f"{MAX_HTML_BYTES // (1024 * 1024)} MiB", completed.stderr)
 
 
 if __name__ == "__main__":

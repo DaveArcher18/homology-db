@@ -18,6 +18,7 @@
     sigma: "σ",
     theta: "θ",
     Sigma: "Σ",
+    Delta: "Δ",
     vee: "∨",
     to: "→",
     oplus: "⊕",
@@ -32,6 +33,7 @@
     Lambda: "Λ",
     ast: "∗",
     ldots: "…",
+    cdots: "⋯",
   });
   const blackboardCharacters = Object.freeze({
     Z: "ℤ",
@@ -46,6 +48,7 @@
     "mathbb",
     "mathrm",
     "operatorname",
+    "mathbin",
     "widetilde",
     "text",
   ]);
@@ -276,23 +279,59 @@
   function monomialTex(powers) {
     return Object.entries(powers ?? {})
       .filter(([, power]) => power !== 0)
-      .map(([generator, power]) => power === 1
-        ? generator : `${generator}^{${power}}`)
+      // A generator is named the same way a basis element is: the computed
+      // corpus calls them x2_1, and read literally that is x2 subscript 1
+      // followed by a stray 0 once the index reaches ten. Literature generators
+      // are single letters, which basisNameTex passes through unchanged.
+      .map(([generator, power]) => {
+        const name = basisNameTex(generator) || generator;
+        return power === 1 ? name : `${name}^{${power}}`;
+      })
       .join(" ") || "1";
+  }
+
+  // A structure constant is an integer, or a lowest-terms rational string over Q
+  // where no basis makes the products integral. Math.abs on "1/2" is NaN, so the
+  // sign and magnitude are read off the string rather than the number.
+  function scalarParts(value) {
+    const text = String(value);
+    const negative = text.startsWith("-");
+    const magnitude = negative ? text.slice(1) : text;
+    return { negative, magnitude, fraction: magnitude.includes("/") };
+  }
+
+  // A basis element of a presented ring is a monomial in the generators. One
+  // recorded only by structure constants has no monomial, so it is named the way
+  // the Steenrod modules already name theirs: x1_2 reads as a double subscript.
+  function basisLabelTex(item) {
+    if (item?.powers) return monomialTex(item.powers);
+    const name = String(item?.id ?? "");
+    return basisNameTex(name) || name || "?";
   }
 
   function relationTex(relation) {
     const terms = Array.isArray(relation?.terms) ? relation.terms : [];
     if (!terms.length) return "";
     return terms.map((term, index) => {
-      const value = term.coefficient;
       const monomial = monomialTex(term.powers);
-      const magnitude = Math.abs(value);
-      const coefficient = magnitude === 1 && monomial !== "1"
-        ? "" : String(magnitude);
-      const sign = value < 0 ? (index ? " - " : "-") : (index ? " + " : "");
+      const { negative, magnitude, fraction } = scalarParts(term.coefficient);
+      const coefficient = magnitude === "1" && monomial !== "1"
+        ? "" : (fraction ? `(${magnitude})` : magnitude);
+      const sign = negative ? (index ? " - " : "-") : (index ? " + " : "");
       return `${sign}${coefficient}${monomial === "1" ? "" : monomial}`;
     }).join("") + " = 0";
+  }
+
+  // A recorded group is a dimension over a field, or a free rank with torsion
+  // over the integers. Requiring a dimension would silently refuse to state the
+  // vanishing an integral record does establish.
+  function isRecordedGroupRow(row) {
+    if (!row || typeof row !== "object") return false;
+    if (Number.isInteger(row.dimension)) return row.dimension >= 0;
+    return Number.isInteger(row.free_rank)
+      && row.free_rank >= 0
+      && Array.isArray(row.torsion_orders)
+      && row.torsion_orders.every((order) => Number.isInteger(order) && order >= 2);
   }
 
   function cohomologyCoveragePresentation(record) {
@@ -304,7 +343,7 @@
       && Number.isInteger(through) && through >= 0
       && Array.from({ length: through + 1 }, (_, degree) => {
         const row = rowsByDegree.get(degree);
-        return Number.isInteger(row?.dimension) && row.dimension >= 0;
+        return isRecordedGroupRow(row);
       }).every(Boolean);
     if (coverage.kind === "complete_finite" && exactThrough
       && Number.isInteger(coverage.upper_vanishing_starts_at)
@@ -428,6 +467,13 @@
             index += 2;
             continue;
           }
+          if (source[index + 1] === "#") {
+            // Connected sum. A literal escape, not a command: the atlas records
+            // connected sums as spaces in their own right.
+            appendText(nodes, "#");
+            index += 2;
+            continue;
+          }
           const commandMatch = source.slice(index + 1).match(/^[A-Za-z]+/);
           if (!commandMatch) throw new Error("Malformed TeX command");
           const command = commandMatch[0];
@@ -513,6 +559,7 @@
     groupPresentation,
     isSupportedTex,
     monomialTex,
+    basisLabelTex,
     parseTex,
     relationTex,
     simpleTexCommands,
