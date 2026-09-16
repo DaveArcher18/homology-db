@@ -1,5 +1,9 @@
 # Gabriel computed-rings staging audit — 2026-09-11
 
+> Historical staging evidence. David's later product decision supersedes the
+> combined-corpus scope: the shipped atlas now contains only the 194 spaces
+> selected by Gabriel imported computational-model provenance.
+
 ## Decision
 
 The computed-ring corpus is staged for maintainer QA on

@@ -1,7 +1,7 @@
 # David + Gabriel: first QA session
 
 > Historical QA record for the 52-space release. The current staged corpus has
-> 213 spaces; use the current PR audit and checks for new acceptance decisions.
+> 194 Gabriel-computed spaces; use the current PR audit and checks for new acceptance decisions.
 
 Status: live and ready for human QA, 2026-09-06. Source 63116513; release 5bf19f8.
 All 211 tests completed successfully (3 optional skips), with independent

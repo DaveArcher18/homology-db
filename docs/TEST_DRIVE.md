@@ -1,8 +1,9 @@
 # Chromatic Homology Atlas test drive
 
-This is the shortest path from a clean checkout to the current 213-space
-development corpus. It uses only the Python standard library and writes a
-disposable SQLite database under `/tmp` by default.
+This is the shortest path from a clean checkout to the 213-space source ledger.
+It uses only the Python standard library and writes a disposable SQLite database
+under `/tmp` by default. The shipped browser atlas is a provenance-derived
+projection containing only the 194 Gabriel-computed spaces.
 
 ## One-command tour
 
@@ -23,7 +24,8 @@ Expected headline facts:
   Snapshot.
 
 The unprefixed CLI remains the frozen 60-space preview used by the historical
-adversarial audit. Use the `chromatic` prefix for the current product.
+adversarial audit. Use the `chromatic` prefix to inspect the construction ledger;
+the static product boundary is the 194-space Gabriel-computed projection.
 
 ## Ask the four tools directly
 

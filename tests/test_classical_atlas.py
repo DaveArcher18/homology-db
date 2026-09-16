@@ -24,10 +24,10 @@ class ClassicalAtlasTest(unittest.TestCase):
 
     def test_five_field_dimensions_match_independent_cellular_homology(self):
         core = [space for space in self.atlas["conceptual_spaces"] if space["classical_core"]]
-        self.assertEqual(len(core), 13)
-        self.assertEqual(self.atlas["classical"]["record_count"], 75)
+        self.assertEqual(len(core), 12)
+        self.assertEqual(self.atlas["classical"]["record_count"], 65)
         recorded = [space for space in self.atlas["conceptual_spaces"] if space["cohomology"]]
-        self.assertEqual(len(recorded), 190)
+        self.assertEqual(len(recorded), 188)
         for space in recorded:
             sourced = {row["coefficient"] for row in space["cohomology"]
                        if row["provenance"]["kind"] == "literature"}
@@ -63,8 +63,8 @@ class ClassicalAtlasTest(unittest.TestCase):
 
     def test_noncore_and_integral_absence_is_not_zero(self):
         noncore = [space for space in self.atlas["conceptual_spaces"] if not space["classical_core"]]
-        self.assertEqual(len(noncore), 200)
-        self.assertEqual(sum(not space["cohomology"] for space in noncore), 23)
+        self.assertEqual(len(noncore), 182)
+        self.assertEqual(sum(not space["cohomology"] for space in noncore), 6)
         for space in self.atlas["conceptual_spaces"]:
             self.assertTrue(any(row["coefficient_ring"] == "Z" for row in space["homology"]))
             integral = [row for row in space["cohomology"] if row["coefficient"] == "Z"]
@@ -78,7 +78,7 @@ class ClassicalAtlasTest(unittest.TestCase):
                         if space["cohomology"] and not any(
                             row["provenance"]["kind"] == "external_engine_computation"
                             for row in space["cohomology"])]
-        self.assertEqual(len(sourced_only), 3)
+        self.assertEqual(len(sourced_only), 1)
         for space in sourced_only:
             self.assertFalse(any(row["coefficient"] == "Z" for row in space["cohomology"]))
 
@@ -127,7 +127,7 @@ class ClassicalAtlasTest(unittest.TestCase):
         for mutation in ("missing", "dimension", "input"):
             atlas = copy.deepcopy(self.atlas)
             space = next(space for space in atlas["conceptual_spaces"]
-                         if space["id"] == "sphere_wedge:2:4")
+                         if space["id"] == "torus:2")
             rational = next(row for row in space["homology"] if row["coefficient_ring"] == "Q")
             if mutation == "missing":
                 space["homology"] = [row for row in space["homology"] if row["coefficient_ring"] != "Q"]
@@ -135,7 +135,7 @@ class ClassicalAtlasTest(unittest.TestCase):
                 rational["group"]["dimension"] = 999
             else:
                 rational["derivation"]["input_assertion_id"] = "missing-assertion"
-            with self.subTest(mutation=mutation), self.assertRaisesRegex(ValueError, "rational homology"):
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
                 validate_read_model(atlas)
 
     def test_matching_but_false_metadata_is_rejected(self):

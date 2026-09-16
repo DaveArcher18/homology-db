@@ -45,10 +45,8 @@ class StaticBundleTest(unittest.TestCase):
                 manifest["counts"]["spectra"], len(original["conceptual_spectra"])
             )
             catalog = json.loads((first / "data" / "catalog.json").read_text())["payload"]
-            primary = [
-                space for space in original["conceptual_spaces"]
-                if space["primary_atlas_eligible"]
-            ]
+            primary = original["conceptual_spaces"]
+            self.assertTrue(all(space["primary_atlas_eligible"] for space in primary))
             self.assertEqual(
                 len(catalog["conceptual_spaces"]), len(primary)
             )
@@ -64,6 +62,7 @@ class StaticBundleTest(unittest.TestCase):
                 if item["document_kind"] == "space"
             ]
             self.assertEqual(len(space_documents), len(original["conceptual_spaces"]))
+            self.assertFalse((first / "data" / "spaces" / "cayley-plane-2.json").exists())
 
     def test_unsafe_slug_is_rejected(self) -> None:
         atlas_path = REPOSITORY_ROOT / "dist" / "atlas.html"

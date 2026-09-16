@@ -45,6 +45,7 @@ from homology_db.classical import (
     CLASSICAL_SPACE_IDS,
     CLASSICAL_EXTENSION_SPACE_IDS,
     classical_records,
+    validate_classical_record,
     validate_classical_records,
 )
 from homology_db.chromatic import imported_models
@@ -1252,11 +1253,12 @@ def rational_homology_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def classical_projection_metadata(records: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    record_ids = set(records)
     return {
         "schema_version": CLASSICAL_SCHEMA_VERSION,
         "space_ids": sorted(records),
-        "core_space_ids": list(CLASSICAL_SPACE_IDS),
-        "extension_space_ids": list(CLASSICAL_EXTENSION_SPACE_IDS),
+        "core_space_ids": [space_id for space_id in CLASSICAL_SPACE_IDS if space_id in record_ids],
+        "extension_space_ids": [space_id for space_id in CLASSICAL_EXTENSION_SPACE_IDS if space_id in record_ids],
         "coefficients": list(CLASSICAL_COEFFICIENTS),
         "space_count": len(records),
         "record_count": sum(len(items) for items in records.values()),
@@ -1325,7 +1327,24 @@ def teaching_projection(spaces: list[dict[str, Any]]) -> dict[str, Any]:
     """Bind exposition to actual recorded coverage, without inventing review."""
     catalog = copy.deepcopy(teaching_catalog())
     by_id = {space["id"]: space for space in spaces}
-    entries = catalog["entries"]
+    entries = [entry for entry in catalog["entries"] if entry["space_id"] in by_id]
+    catalog["entries"] = entries
+    shipped_slugs = {space["slug"] for space in spaces}
+    catalog["comparisons"] = [
+        comparison
+        for comparison in catalog["comparisons"]
+        if all(
+            not step["href"].startswith("#space=")
+            or step["href"].split("=", 1)[1] in shipped_slugs
+            for step in comparison["steps"]
+        )
+    ]
+    catalog["scope_note"] = (
+        f"A selected Hatcher-oriented inventory of all {len(by_id)} shipped "
+        "Gabriel-computed spaces, with clearly marked supplementary sources—not "
+        "an exhaustive index of Hatcher. Teaching exposition and new records "
+        "remain human-review-pending."
+    )
     family_rules = reviewed_family_catalog(family_catalog())["rules"]
     if len(entries) != len(by_id) or {entry["space_id"] for entry in entries} != set(by_id):
         raise ValueError("teaching inventory must cover each retained space exactly once")
@@ -1440,7 +1459,9 @@ def validate_read_model(
 
         projected_classical = _by_provenance("literature")
         projected_computed = _by_provenance("external_engine_computation")
-        validate_classical_records(projected_classical)
+        for entries in projected_classical.values():
+            for record in entries:
+                validate_classical_record(record)
         validate_computed_projection(projected_computed)
         computed = atlas.get("computed_rings", {})
         expected_computed = computed_projection_metadata(projected_computed)
@@ -2033,6 +2054,8 @@ def build_read_model(
             )
 
     conceptual_spaces: list[dict[str, Any]] = []
+    primary_space_ids = primary_atlas_space_ids(computed_corpus)
+    primary_space_id_set = set(primary_space_ids)
     evidence_total = 0
     homology_total = 0
     computation_total = 0
@@ -2045,6 +2068,8 @@ def build_read_model(
             raise ValueError("Snapshot subject count does not match enumerated spaces")
 
         for raw_space in spaces:
+            if raw_space["space_id"] not in primary_space_id_set:
+                continue
             space = dict(raw_space)
             space["infinite_finite_type"] = bool(
                 space["infinite_finite_type"]
@@ -2207,6 +2232,11 @@ def build_read_model(
                 )
                 if space.get(field) is None or space.get(field) == ""
             ]
+            shipped_relations = [
+                relation
+                for relation in relations_by_space[space_id]
+                if relation["target_id"] in primary_space_id_set
+            ]
             conceptual_space_record = {
                 "id": space_id,
                 "slug": slug_from_id(space_id),
@@ -2247,7 +2277,7 @@ def build_read_model(
                 "primary_atlas_eligible": space_id in computed_corpus["models"],
                 "cohomology": cohomology_records.get(space_id, []),
                 "models": models,
-                "relations": relations_by_space[space_id],
+                "relations": shipped_relations,
                 "evidence": evidence,
                 "citations": citations,
                 "computations": computations,
@@ -2262,7 +2292,7 @@ def build_read_model(
                     "homology_coverage": coverage,
                     "homology_responses": raw_homology,
                     "evidence_response": expanded,
-                    "relations": relations_by_space[space_id],
+                    "relations": shipped_relations,
                 },
             }
             conceptual_spaces.append(conceptual_space_record)
@@ -2271,7 +2301,7 @@ def build_read_model(
             computation_total += len(computations)
             model_total += len(models)
             citation_total += len(citations)
-            relation_total += len(relations_by_space[space_id])
+            relation_total += len(shipped_relations)
 
     conceptual_space_ids_by_family: dict[str, list[str]] = defaultdict(list)
     for item in conceptual_spaces:
@@ -2317,9 +2347,13 @@ def build_read_model(
     }
     confirmed_homology = compare_homology_to_owned(imported_homology, owned_homology)
 
-    classical_metadata = classical_projection_metadata(classical_cohomology_records)
+    shipped_classical_records = {
+        space_id: records
+        for space_id, records in classical_cohomology_records.items()
+        if space_id in primary_space_id_set
+    }
+    classical_metadata = classical_projection_metadata(shipped_classical_records)
     computed_metadata = computed_projection_metadata(computed_cohomology_records)
-    primary_space_ids = primary_atlas_space_ids(computed_corpus)
     teaching = teaching_projection(conceptual_spaces)
 
     atlas = {

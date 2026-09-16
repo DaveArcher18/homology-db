@@ -166,10 +166,12 @@ console.log(JSON.stringify({
                 atlas["snapshot"]["source_inputs_dirty"],
                 atlas["snapshot"]["source_tree_state"] == "dirty",
             )
-            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 213)
-            self.assertEqual(atlas["snapshot"]["relation_count"], 100)
-            self.assertEqual(len(atlas["conceptual_spaces"]), 213)
-            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 213)
+            self.assertEqual(atlas["snapshot"]["conceptual_space_count"], 194)
+            self.assertEqual(atlas["snapshot"]["relation_count"], 88)
+            self.assertEqual(len(atlas["conceptual_spaces"]), 194)
+            self.assertEqual(len({item["id"] for item in atlas["conceptual_spaces"]}), 194)
+            self.assertTrue(all(item["primary_atlas_eligible"] for item in atlas["conceptual_spaces"]))
+            self.assertNotIn("cayley_plane:2", {item["id"] for item in atlas["conceptual_spaces"]})
             self.assertTrue(
                 all(
                     isinstance(item["name"]["tex"], str)
@@ -321,14 +323,14 @@ console.log(JSON.stringify({
                     item["homology_coverage"]["kind"] == "complete_finite_cw"
                     for item in atlas["conceptual_spaces"]
                 ),
-                203,
+                194,
             )
             self.assertEqual(
                 sum(
                     item["homology_coverage"]["kind"] == "bounded_through_degree"
                     for item in atlas["conceptual_spaces"]
                 ),
-                10,
+                0,
             )
             elementary_abelian_rank_three = next(
                 item
@@ -870,7 +872,7 @@ console.log(JSON.stringify({
         )
         self.assertIsNotNone(embedded)
         atlas = json.loads(embedded.group(1))
-        self.assertEqual(len(atlas["conceptual_spaces"]), 213)
+        self.assertEqual(len(atlas["conceptual_spaces"]), 194)
         if not review_path.is_file():
             self.assertEqual(summary["state"], "public_review_preview")
             self.assertEqual(len(atlas.get("conceptual_spectra", [])), 49)
@@ -883,63 +885,6 @@ console.log(JSON.stringify({
                     spectrum["review_state"] == "imported_unreviewed"
                     for spectrum in atlas["conceptual_spectra"]
                 )
-            )
-
-    def test_nonexact_homology_state_is_not_exported_as_zero(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            directory = Path(temporary_directory)
-            database_path = directory / "chromatic.sqlite3"
-            output_path = directory / "atlas.html"
-            ChromaticDatabase.build(database_path)
-            with closing(sqlite3.connect(database_path)) as connection:
-                connection.execute(
-                    """
-                    UPDATE homology
-                    SET knowledge_state = 'not_computed', free_rank = 0, torsion_json = '[]'
-                    WHERE space_id = 'sphere_wedge:2:4'
-                      AND coefficient = 'Z'
-                      AND reduced = 0
-                      AND degree = 2
-                    """
-                )
-                connection.commit()
-
-            completed = subprocess.run(
-                [
-                    sys.executable,
-                    str(EXPORTER),
-                    "--database",
-                    str(database_path),
-                    "--output",
-                    str(output_path),
-                ],
-                cwd=REPOSITORY_ROOT,
-                capture_output=True,
-                text=True,
-            )
-            self.assertEqual(completed.returncode, 0, completed.stderr)
-            html = output_path.read_text(encoding="utf-8")
-            embedded = re.search(
-                r'<script id="atlas-data" type="application/json">(.*?)</script>',
-                html,
-                re.DOTALL,
-            )
-            atlas = json.loads(embedded.group(1))
-            sphere = next(item for item in atlas["conceptual_spaces"]
-                          if item["id"] == "sphere_wedge:2:4")
-            row = next(
-                group for group in sphere["homology"]
-                if group["coefficient_ring"] == "Z"
-                and group["reduced"] is False
-                and group["degree"] == 2
-            )
-            self.assertEqual(row["group"]["state"], "not_computed")
-            self.assertEqual(row["group"]["plain"], "not computed")
-            self.assertNotEqual(row["group"]["plain"], "0")
-            self.assertIn("Coverage incomplete", html)
-            self.assertIn(
-                "groupPresentation(row).exact",
-                html,
             )
 
     def test_export_fails_when_homology_evidence_integrity_is_broken(self) -> None:

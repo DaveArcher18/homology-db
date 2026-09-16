@@ -52,7 +52,7 @@ const path=require('node:path');
         assert.equal(await page.locator('.space-page > .space-theory-results').count(),1);
       }else{
         assert.equal(await page.locator('.wb-rules[open]').count(),0);
-        assert.equal(await page.locator('.wb-finite-grid > .wb-coefficient').count(),5);
+        assert.equal(await page.locator('.wb-finite-grid > .wb-coefficient').count(),7);
         assert.ok(!(await page.locator('main h1').innerText()).includes('Choose a space'));
       }
       for(const width of [320,390,700,1100]){
