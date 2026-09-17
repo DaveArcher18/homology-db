@@ -13,7 +13,7 @@ async function main() {
     const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
     page.on('pageerror',error=>errors.push(error.message));
     page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
-    await page.goto(base);
+    await page.goto(base+'#workbench?family=real_projective_space&n=4&start=0');
     await page.locator('.workbench-view').waitFor();
     const atlas=await page.evaluate(()=>window.HomologyAtlasDataStore.loadAtlas());
     assert.equal(atlas.family_rules.rules.length,3);
@@ -82,8 +82,8 @@ async function main() {
     assert.equal(primarySpaces.length,atlas.primary_atlas.space_count);
     for(const space of primarySpaces) {
       await page.goto(base+'#space='+space.slug);
-      await page.locator('.workbench-view,.space-page').waitFor();
-      assert.equal(await page.locator('.workbench-view,.space-page').count(),1,space.id);
+      await page.locator('.space-page').waitFor();
+      assert.equal(await page.locator('.space-page').getAttribute('data-space-id'),space.id);
     }
     await page.goto(base+'#space=orientable-surface-26');
     await page.locator('.space-page').waitFor();

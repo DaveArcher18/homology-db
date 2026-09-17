@@ -72,7 +72,7 @@ const path=require('node:path');
     assert.match(await page.locator('.homology-section tbody th [role="math"]').first().getAttribute('aria-label'),/Reduced homology/);
     await page.goto(base+'#home');await page.goBack();
     assert.equal(await page.locator('.space-convention input:checked').inputValue(),'true');
-    await page.goto(base+'#home');
+    await page.goto(base+'#workbench?family=real_projective_space&n=4&start=0');
     await page.setViewportSize({width:390,height:900});
     const region=page.getByRole('region',{name:'Finite-field comparisons, horizontally scrollable'});
     await region.focus();await region.press('ArrowRight');

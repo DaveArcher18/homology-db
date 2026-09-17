@@ -28,9 +28,8 @@ const fs=require('node:fs');
       else if(route.startsWith('#comparison='))await page.getByRole('heading',{name:atlas.teaching.comparisons.find(c=>c.id===route.slice(12)).title,exact:true}).waitFor();
       else {
         const space=route.startsWith('#space=')?atlas.conceptual_spaces.find(s=>s.slug===route.slice(7)):null;
-        const family=space?.id.match(/^(sphere|real_projective_space|complex_projective_space):(\d+)$/);
-        if(space&&!family)await page.locator(`.space-page[data-space-id="${space.id}"]`).waitFor();
-        else {const p=new URLSearchParams(route.replace(/^#workbench\?/,''));const f=family?.[1]||p.get('family'),n=family?.[2]||p.get('n');await page.waitForFunction(({f,n})=>document.querySelector('.workbench-view')?.dataset.family===f&&document.querySelectorAll('.wb-controls input')[0]?.value===n,{f,n});}
+        if(space)await page.locator(`.space-page[data-space-id="${space.id}"]`).waitFor();
+        else {const p=new URLSearchParams(route.replace(/^#workbench\?/,''));const f=p.get('family'),n=p.get('n');await page.waitForFunction(({f,n})=>document.querySelector('.workbench-view')?.dataset.family===f&&document.querySelectorAll('.wb-controls input')[0]?.value===n,{f,n});}
       }
     }
     assert.equal(atlas.classical.record_count,75);
