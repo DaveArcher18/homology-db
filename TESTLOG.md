@@ -969,8 +969,14 @@ already removes parser duplication by sharing one renderer.
   its separately sourced literature-based ring record.
 - `verify_family_browser.cjs`: 21 family views, 194 canonical space routes,
   49 spectrum routes and 21 responsive cases passed with zero console errors.
-- Final clean-source rebuild, complete suite and release gate remain pending at
-  this checkpoint.
+- Frozen-source complete suite: 238 tests passed in 1,911.603 seconds; three
+  documented optional external-consumer checks skipped. Existing non-failing
+  SQLite `ResourceWarning`s remain visible.
+- Exact artifact: 20,152,910 bytes; SHA-256
+  `2bae48a5b8ef90aab40bb32f460bf2306357e9fbc96f839ae685043f7387fea7`;
+  embeds clean source commit `8cc5f5c681a73b389bb26f9bbeab606559f42813`.
+- Exact release gate with deterministic rebuild passed: 49 spectra, 48 finite
+  modules, one profile, state `public_review_preview`.
 # Classical student reference — 2026-09-06
 
 - Final deployment: Pages run `34025164986` succeeded from `0cc3e66`.
