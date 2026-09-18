@@ -28,6 +28,7 @@
     (space) => space.primary_atlas_eligible === true,
   );
   const primarySpaceIds = new Set(conceptualSpaces.map((space) => space.id));
+  const computedRingSpaceIds = new Set(atlas.computed_rings?.space_ids ?? []);
   const sections = (Array.isArray(atlas.sections) ? atlas.sections : [])
     .map((section) => ({
       ...section,
@@ -85,7 +86,7 @@
     flat_3manifold: "All ten closed flat 3-manifolds: six orientable, four not. Whether the top homology is Z or zero is exactly whether the quotient is orientable.",
     nil_3manifold: "Circle bundles over the torus with nonzero Euler number. That number appears directly as the order of the torsion class in first homology.",
     h2xr_3manifold: "A closed hyperbolic surface times a circle. K\u00fcnneth predicts every group here from the surface factor.",
-    hyperbolic_3manifold: "Closed hyperbolic 3-manifolds of small volume. Volume determines the manifold; homology does not, and several of these share it.",
+    hyperbolic_3manifold: "Closed hyperbolic 3-manifolds of small volume. Homology and volume do not in general determine the manifold, and several of these share homology.",
     connected_sum_3manifold: "Reducible 3-manifolds. By Kneser\u2013Milnor each has a unique prime decomposition, and every entry links to the summands it is built from.",
     four_manifold: "In dimension four the cup product on the middle degree is the intersection form. It is the only thing separating CP\u00b2 # CP\u00b2 from S\u00b2 \u00d7 S\u00b2, which have identical homology.",
     five_manifold: "Two products and the Wu manifold SU(3)/SO(3), the standard non-spin example in dimension five.",
@@ -124,21 +125,6 @@
   const actionStatus = document.getElementById("action-status");
 
   let knowlInstance = 0;
-  let lastWorkbenchHash = "#home";
-  const workbenchStorageKey = "homology-atlas-workbench-v1";
-  function validWorkbenchHash(hash) {
-    if (hash === "#home") return true;
-    if (typeof hash !== "string" || !hash.startsWith("#")) return false;
-    const route = parseRoute(hash);
-    return route.kind === "workbench"
-      && ["sphere", "real_projective_space", "complex_projective_space"].includes(route.family)
-      && /^\d+$/.test(route.n) && /^\d+$/.test(route.start);
-  }
-  try {
-    const remembered = sessionStorage.getItem(workbenchStorageKey);
-    if (validWorkbenchHash(remembered)) lastWorkbenchHash = remembered;
-  } catch (_error) { /* Session storage is optional for local-file viewing. */ }
-  navHome.href = lastWorkbenchHash;
   let isInitialRoute = true;
 
   function element(tagName, className = "", text) {
@@ -877,49 +863,38 @@
     const hero = element("section", "home-hero");
     const heroCopy = element("div", "home-hero-copy");
     heroCopy.append(
-      element("p", "page-kicker", "A classical topology reference"),
-      element("h1", "page-title", "Spaces, groups, and cup products."),
+      element("p", "page-kicker", "A topology reference"),
+      element("h1", "page-title", "Homology Atlas"),
       element(
         "p",
         "home-intro page-lede",
-        "Look up a familiar space. Compare coefficients, understand its cohomology ring, and follow the mathematics back to a source.",
+        "A reference for the homology and cohomology of topological spaces. Compare coefficients, inspect cohomology rings and cup products, and follow each result to its computations, references, and review provenance.",
       ),
     );
+    const actions = element("div", "hero-actions");
+    const browse = element("a", "primary-action", "Browse spaces");
+    browse.href = "#spaces";
+    actions.append(browse);
+    heroCopy.append(actions);
     hero.append(heroCopy);
     const examples = element("section", "textbook-examples home-section");
-    const heading = element("div", "section-heading");
-    heading.append(element("h2", "", "Start with these spaces"));
-    const allSpaces = element("a", "text-link", `Browse all ${conceptualSpaces.length} spaces →`);
-    allSpaces.href = "#spaces";
-    heading.append(allSpaces);
-    const groups = element("div", "textbook-groups");
-    textbookGroups.forEach((group) => {
-      const entries = group.ids.map((id) => spacesById.get(id)).filter(Boolean);
-      if (!entries.length) return;
-      const card = element("div", "textbook-group");
-      card.append(element("h3", "", group.title), element("p", "", group.note));
-      const links = element("ul", "textbook-links");
-      entries.forEach((space) => {
+    examples.append(element("h2", "", "Examples"));
+    const links = element("ul", "textbook-links");
+    ["torus:2", "sphere:0", "real_projective_space:4", "four_manifold:k3"]
+      .map((id) => spacesById.get(id)).filter(Boolean).forEach((space) => {
         const item = element("li");
         const link = element("a", "textbook-space-link");
         link.href = `#space=${encodeURIComponent(space.slug)}`;
         link.setAttribute("aria-label", space.name.plain);
         link.append(mathName(space, "math-inline"));
-        if (space.id === "point" || space.id === "klein_bottle") {
-          link.append(document.createTextNode(` ${space.name.plain}`));
-        }
         item.append(link);
         links.append(item);
       });
-      card.append(links);
-      groups.append(card);
-    });
-    const coreCount = conceptualSpaces.filter((space) => Number(space.cohomology_record_count ?? asArray(space.cohomology).length) > 0).length;
-    examples.append(heading, groups,
-      element("p", "classical-coverage-note", coreCount
-        ? `Cohomology rings are recorded for ${coreCount} spaces: over ℚ, 𝔽₂, 𝔽₃, 𝔽₅ and 𝔽₇ from the literature, and additionally over ℤ and 𝔽₁₁ wherever a machine computation supplies them. Integral homology remains available. Human mathematical review is pending.`
-        : "Explore the existing homology collection. Cohomology-ring coverage is not recorded in this snapshot."));
-    view.append(hero, buildSpaceSearch(conceptualSpaces, "home", "Find a space", { showAllOnEmpty: false }), examples);
+    examples.append(
+      links,
+      element("p", "classical-coverage-note", `The primary atlas contains ${conceptualSpaces.length} computed-space records. Unavailable and withheld results remain explicitly labelled; absence is never presented as zero.`),
+    );
+    view.append(hero, examples);
     return view;
   }
 
@@ -1963,6 +1938,19 @@
       actions.append(reviewToggle);
     }
     view.append(header);
+    if (space.primary_atlas_eligible && !computedRingSpaceIds.has(space.id)) {
+      const withheld = element(
+        "p",
+        "table-note computed-ring-withheld-note",
+        "The imported computed ring output for this space is withheld. This does not mean the ring is zero.",
+      );
+      if (space.id === "sphere:0" && asArray(space.cohomology).length) {
+        withheld.append(document.createTextNode(
+          " The separately sourced literature-based ring information below remains available and is not presented as a computed result.",
+        ));
+      }
+      view.append(withheld);
+    }
 
     const metadata = element("dl", "space-metadata");
     const dimension = spaceDimension(space);
@@ -2202,8 +2190,6 @@
         const viewState = {};
         if (availableCoefficients(space).includes(params.get("coefficient"))) viewState.coefficient = params.get("coefficient");
         if (["0", "1"].includes(params.get("reduced"))) viewState.reduced = params.get("reduced") === "1";
-        const legacy = window.HomologyWorkbench?.legacy(space);
-        if (legacy) return {...legacy, ...(viewState.reduced !== undefined ? {reduced:viewState.reduced} : {})};
         return { kind: "space", space, viewState };
       } catch (_error) {
         return { kind: "not-found", requested: hash };
@@ -2230,7 +2216,7 @@
 
   function updateNavigationCurrent(route) {
     document.querySelectorAll(".primary-nav a, #nav-spectra").forEach(link => link.removeAttribute("aria-current"));
-    const current = { home: "nav-home", workbench: "nav-home", spaces: "nav-spaces", family: "nav-spaces", space: "nav-spaces", glossary: "nav-glossary", about: "nav-about" }[route.kind];
+    const current = { home: "nav-home", spaces: "nav-spaces", family: "nav-spaces", space: "nav-spaces", glossary: "nav-glossary", about: "nav-about" }[route.kind];
     document.getElementById(current)?.setAttribute("aria-current", ["family", "space"].includes(route.kind) ? "location" : "page");
   }
 
@@ -2284,13 +2270,8 @@
     }
     state.route = route;
     if (route.kind === "space") Object.assign(homologyViewFor(route.space), route.viewState || {});
-    if (["home", "workbench"].includes(route.kind) && validWorkbenchHash(window.location.hash || "#home")) {
-      lastWorkbenchHash = window.location.hash || "#home";
-      navHome.href = lastWorkbenchHash;
-      try { sessionStorage.setItem(workbenchStorageKey, lastWorkbenchHash); } catch (_error) { /* Optional persistence. */ }
-    }
     let view;
-    if (["home", "workbench", "glossary"].includes(route.kind) && window.HomologyWorkbench) {
+    if (["workbench", "glossary"].includes(route.kind) && window.HomologyWorkbench) {
       view = window.HomologyWorkbench.create({atlas, renderTex, copyText, downloadRecord}, route);
     }
     else if (route.kind === "home") view = buildHomeView();
@@ -2370,7 +2351,7 @@
     });
     if (!rules.length) list.append(element("li", "", "Family human-review state not recorded."));
     view.append(list, element("p", "", "Use “Review this result” on the workbench to choose your exact scope and copy a review packet or open the public GitHub form. A maintainer validates submissions before publishing them as mathematical review."));
-    const back = element("a", "", "Return to your workbench →"); back.href = lastWorkbenchHash; view.append(back);
+    const back = element("a", "", "Return home →"); back.href = "#home"; view.append(back);
     const request = element("a", "about-request-link", "Request a space ↗");
     request.href = requestSpaceUrl(); request.target = "_blank"; request.rel = "noopener noreferrer";
     view.append(element("h2", "", "Contribute an example"), request);

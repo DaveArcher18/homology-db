@@ -953,6 +953,30 @@ assistive path and a weak Home acceptance predicate; both were corrected. Its
 possible three-file presentation-seam smell is deferred because the separate
 stable router predates this reversible presentation pass, while the change
 already removes parser duplication by sharing one renderer.
+
+# Atlas home and canonical space navigation — 2026-09-17
+
+- Baseline: production/main authority
+  `a694bc09e6de2355ed2f8e6b4d712dfcb8439675`, isolated from the unrelated dirty
+  checkout on `codex/atlas-home-navigation`.
+- Focused Python source/read-model checks: 51 tests passed in 849.649 seconds.
+- Dirty-source preview export: 194 spaces, 49 spectra, 10,934 homology rows,
+  612 citations, and zero unresolved references.
+- `verify_entry_navigation_browser.cjs`: Home, Spaces, S0, RP4, CP2, torus and
+  K3 routes passed; all five space routes remained canonical across reload;
+  1440, 390 and 320 pixel checks passed with zero console errors.
+- S0 explicitly distinguishes its withheld imported computed ring output from
+  its separately sourced literature-based ring record.
+- `verify_family_browser.cjs`: 21 family views, 194 canonical space routes,
+  49 spectrum routes and 21 responsive cases passed with zero console errors.
+- Frozen-source complete suite: 238 tests passed in 1,911.603 seconds; three
+  documented optional external-consumer checks skipped. Existing non-failing
+  SQLite `ResourceWarning`s remain visible.
+- Exact artifact: 20,152,910 bytes; SHA-256
+  `2bae48a5b8ef90aab40bb32f460bf2306357e9fbc96f839ae685043f7387fea7`;
+  embeds clean source commit `8cc5f5c681a73b389bb26f9bbeab606559f42813`.
+- Exact release gate with deterministic rebuild passed: 49 spectra, 48 finite
+  modules, one profile, state `public_review_preview`.
 # Classical student reference — 2026-09-06
 
 - Final deployment: Pages run `34025164986` succeeded from `0cc3e66`.

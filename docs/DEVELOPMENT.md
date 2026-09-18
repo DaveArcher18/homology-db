@@ -53,7 +53,7 @@ checks.
 
 ```sh
 node scripts/verify_family_browser.cjs dist/atlas.html
-node scripts/verify_navigation_browser.cjs dist/atlas.html
+node scripts/verify_entry_navigation_browser.cjs dist/atlas.html
 node scripts/verify_space_reading_browser.cjs dist/atlas.html
 node scripts/verify_textbook_browser.cjs dist/atlas.html
 ```
