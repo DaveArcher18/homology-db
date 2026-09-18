@@ -1606,9 +1606,11 @@ svg {
 .group-tex sub,
 [data-tex] sup,
 [data-tex] sub {
+  display: inline-block;
   position: relative;
   vertical-align: baseline;
-  line-height: 0;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .math-display sup,

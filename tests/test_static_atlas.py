@@ -748,6 +748,61 @@ console.log(JSON.stringify({
         self.assertTrue(result["supportedTex"])
         self.assertFalse(result["unsafeTex"])
 
+    def test_direct_sum_scripts_are_preserved_and_nonwrapping(self) -> None:
+        script = r"""
+const presentation = require("./static_atlas/presentation.js");
+const exact = (coefficient_ring, group) => presentation.groupPresentation({
+  coefficient_ring,
+  knowledge_state: "exact",
+  group: {state: "exact", ...group},
+});
+const groups = {
+  fields: ["F2", "F3", "F5", "F7", "F11"].map(coefficient_ring =>
+    exact(coefficient_ring, {dimension: 22})
+  ),
+  free: exact("Z", {free_rank: 22, torsion_orders: []}),
+  torsion: exact("Z", {free_rank: 0, torsion_orders: Array(168).fill(2)}),
+};
+console.log(JSON.stringify({
+  groups,
+  scripts: Object.values(groups).flat().map(group =>
+    presentation.parseTex(group.tex).filter(node => node.type === "sup")
+  ),
+}));
+"""
+        completed = subprocess.run(
+            ["node", "-e", script],
+            cwd=REPOSITORY_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        result = json.loads(completed.stdout)
+        self.assertEqual(
+            [group["tex"] for group in result["groups"]["fields"]],
+            [
+                rf"\mathbb{{F}}_{{{prime}}}^{{\oplus 22}}"
+                for prime in (2, 3, 5, 7, 11)
+            ],
+        )
+        self.assertEqual(result["groups"]["free"]["tex"], r"\mathbb{Z}^{\oplus 22}")
+        self.assertEqual(
+            result["groups"]["torsion"]["tex"],
+            r"(\mathbb{Z}/2\mathbb{Z})^{\oplus 168}",
+        )
+        self.assertTrue(all(scripts for scripts in result["scripts"]))
+
+        css = (REPOSITORY_ROOT / "static_atlas" / "atlas.css").read_text(
+            encoding="utf-8"
+        )
+        script_rule = re.search(
+            r"\[data-tex\] sub \{(?P<body>[^}]+)\}", css, re.DOTALL
+        )
+        self.assertIsNotNone(script_rule)
+        self.assertIn("display: inline-block", script_rule.group("body"))
+        self.assertIn("line-height: 1", script_rule.group("body"))
+        self.assertIn("white-space: nowrap", script_rule.group("body"))
+
     def test_export_is_deterministic_for_one_database_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             directory = Path(temporary_directory)
