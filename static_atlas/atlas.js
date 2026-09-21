@@ -1887,6 +1887,7 @@
   // records. The remainder of the corpus stays on the deployed presentation
   // until the page has had human review.
   const canonicalReviewSpaces = new Set([
+    "point",
     "sphere:0",
     "real_projective_space:4",
     "torus:2",
@@ -1941,23 +1942,27 @@
     return cell;
   }
 
-  function canonicalInvariantTable(space, coefficients) {
+  function canonicalTheoryTable(space, coefficients, theory) {
     const datasets = coefficients.map((coefficient) => canonicalSpaceData(space, coefficient));
-    const degrees = [...new Set(datasets.flatMap((data) => data.degrees))].sort((a, b) => a - b);
+    const rowsFor = theory === "homology"
+      ? (data) => data.homology
+      : (data) => asArray(data.cohomology?.groups);
+    const degrees = [...new Set(datasets.flatMap((data) =>
+      rowsFor(data).map((row) => Number(row.degree))))]
+      .filter(Number.isFinite)
+      .sort((a, b) => a - b);
     const table = element("table", "canonical-invariant-table");
     table.append(element("caption", "visually-hidden",
-      `Ordinary homology and cohomology of ${space.name.plain} by degree`));
+      `${theory === "homology" ? "Ordinary homology" : "Ordinary cohomology"} of ${space.name.plain} by degree`));
     const head = element("thead");
     const header = element("tr");
     const degreeHeader = element("th", "", "Degree");
     degreeHeader.scope = "col";
     header.append(degreeHeader);
     datasets.forEach((data) => {
-      ["Hₙ", "Hⁿ"].forEach((theory) => {
-        const th = element("th", "", `${theory} (${coefficientDisplay(data.coefficient)})`);
-        th.scope = "col";
-        header.append(th);
-      });
+      const th = element("th", "", coefficientDisplay(data.coefficient));
+      th.scope = "col";
+      header.append(th);
     });
     head.append(header);
     const body = element("tbody");
@@ -1967,18 +1972,25 @@
       label.scope = "row";
       row.append(label);
       datasets.forEach((data) => {
-        row.append(canonicalGroupCell(data.homology.find((item) => Number(item.degree) === degree), data.coefficient));
-        const cohomologyGroup = asArray(data.cohomology?.groups).find((item) => Number(item.degree) === degree);
-        row.append(canonicalGroupCell(cohomologyGroup && {
-          group: { state: "exact", ...cohomologyGroup }, knowledge_state: "exact",
-        }, data.coefficient));
+        if (theory === "homology") {
+          row.append(canonicalGroupCell(
+            data.homology.find((item) => Number(item.degree) === degree),
+            data.coefficient,
+          ));
+        } else {
+          const cohomologyGroup = asArray(data.cohomology?.groups)
+            .find((item) => Number(item.degree) === degree);
+          row.append(canonicalGroupCell(cohomologyGroup && {
+            group: { state: "exact", ...cohomologyGroup }, knowledge_state: "exact",
+          }, data.coefficient));
+        }
       });
       body.append(row);
     });
     if (!degrees.length) {
       const row = element("tr");
-      const cell = element("td", "canonical-unknown", "No groups are recorded for this coefficient.");
-      cell.colSpan = 1 + datasets.length * 2;
+      const cell = element("td", "canonical-unknown", "Not recorded for this coefficient.");
+      cell.colSpan = 1 + datasets.length;
       row.append(cell);
       body.append(row);
     }
@@ -2014,9 +2026,7 @@
     view.append(hero);
 
     const invariants = element("section", "canonical-section canonical-invariants");
-    invariants.append(element("h2", "", "Homology & cohomology"),
-      element("p", "canonical-section-intro",
-        "Ordinary, unreduced groups. A missing cohomology entry is not a zero group."));
+    invariants.append(element("h2", "", "Homology & cohomology"));
     const controls = element("div", "canonical-coefficients");
     const label = element("label", "", "Coefficients");
     const select = element("select", "canonical-select");
@@ -2036,21 +2046,37 @@
     compareLabel.append(compareSelect);
     compareLabel.hidden = true;
     controls.append(label, compareButton, compareLabel);
-    const tableHost = element("div", "canonical-table-scroll");
-    tableHost.tabIndex = 0;
-    tableHost.setAttribute("role", "region");
+    const tableHost = element("div", "canonical-theory-grid");
     tableHost.setAttribute("aria-label", "Homology and cohomology by degree");
-    const note = element("p", "canonical-coverage");
+    const coverage = detailsBlock("Coverage, conventions & availability");
     function update() {
       const coefficient = select.value;
       homologyViewFor(space).coefficient = coefficient;
       const compared = !compareLabel.hidden && compareSelect.value !== coefficient;
       const coefficients = compared ? [coefficient, compareSelect.value] : [coefficient];
-      tableHost.replaceChildren(canonicalInvariantTable(space, coefficients));
+      const tables = [
+        ["Homology", "homology"],
+        ["Cohomology", "cohomology"],
+      ].map(([title, theory]) => {
+        const block = element("section", "canonical-theory-table");
+        block.append(element("h3", "", title));
+        const scroll = element("div", "canonical-table-scroll");
+        scroll.tabIndex = 0;
+        scroll.setAttribute("role", "region");
+        scroll.setAttribute("aria-label", `${title} by degree`);
+        scroll.append(canonicalTheoryTable(space, coefficients, theory));
+        block.append(scroll);
+        return block;
+      });
+      tableHost.replaceChildren(...tables);
       const data = canonicalSpaceData(space, coefficient);
-      const coverage = cohomologyCoveragePresentation(data.cohomology ?? {});
+      const cohomologyCoverage = cohomologyCoveragePresentation(data.cohomology ?? {});
       const homologyCoverage = coveragePresentation(space, data.homology);
-      note.textContent = `Homology: ${homologyCoverage.detail} Cohomology: ${data.cohomology ? coverage.detail : "not recorded for this coefficient."}`;
+      coverage.content.replaceChildren(element("p", "", "Ordinary, unreduced groups are shown."),
+        element("p", "", `Homology: ${homologyCoverage.detail}`),
+        element("p", "", `Cohomology: ${data.cohomology
+          ? cohomologyCoverage.detail
+          : "not recorded for this coefficient; this is not a zero-group assertion."}`));
       renderRing();
     }
     select.addEventListener("change", update);
@@ -2061,13 +2087,12 @@
       compareButton.textContent = compareLabel.hidden ? "Compare coefficients" : "Close comparison";
       update();
     });
-    invariants.append(controls, tableHost, note);
+    invariants.append(controls, tableHost, coverage.details);
     view.append(invariants);
 
-    const ring = element("section", "canonical-section canonical-ring");
-    ring.append(element("h2", "", "Cohomology ring"));
-    const ringContent = element("div");
-    ring.append(ringContent);
+    const ring = detailsBlock("Cohomology ring & cup products");
+    ring.details.classList.add("canonical-detail", "canonical-ring");
+    const ringContent = ring.content;
     function renderRing() {
       const data = canonicalSpaceData(space, select.value);
       const record = data.cohomology;
@@ -2112,21 +2137,22 @@
       ringContent.replaceChildren(body);
     }
     update();
-    view.append(ring);
+    view.append(ring.details);
 
-    const provenance = element("section", "canonical-section canonical-provenance");
-    provenance.append(element("h2", "", "Sources & confidence"), buildProvenanceSummary(space));
+    const provenance = detailsBlock("Sources, models & provenance");
+    provenance.details.classList.add("canonical-detail", "canonical-provenance");
+    provenance.content.append(buildProvenanceSummary(space));
     const citations = [...supportingCitations(space), ...cohomologyCitations(space)];
     const shortList = element("ul", "citation-list");
     citations.slice(0, 3).forEach((citation) => shortList.append(renderCitation(citation)));
-    if (shortList.children.length) provenance.append(shortList);
+    if (shortList.children.length) provenance.content.append(shortList);
     const technical = detailsBlock("Models, evidence & record data");
     renderModels(space, technical.content);
     renderSimplicialModels(space, technical.content);
     renderEvidence(space, technical.content);
     technical.content.append(buildClassificationBlock(space));
-    provenance.append(technical.details);
-    view.append(provenance);
+    provenance.content.append(technical.details);
+    view.append(provenance.details);
     const feedback = outboundLink("Correct or improve this record ↗", spaceFeedbackUrl(space),
       `Give feedback on ${space.name.plain}`);
     if (feedback) view.append(feedback);

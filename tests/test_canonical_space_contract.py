@@ -1,4 +1,4 @@
-"""Guard the six genuinely different records used by the page review slice."""
+"""Guard the representative records used by the page review slice."""
 
 import json
 import re
@@ -25,6 +25,7 @@ class CanonicalSpaceContractTest(unittest.TestCase):
     def test_review_records_cover_distinct_states(self) -> None:
         self.assertEqual(len(self.spaces), 194)
         review_ids = {
+            "point",
             "sphere:0",
             "real_projective_space:4",
             "torus:2",
@@ -33,6 +34,7 @@ class CanonicalSpaceContractTest(unittest.TestCase):
             "orientable_surface:26",
         }
         self.assertTrue(review_ids <= self.spaces.keys())
+        self.assertEqual(self.spaces["point"]["properties"][0]["value"], 0)
         computed = set(self.atlas["computed_rings"]["space_ids"])
         self.assertIn("four_manifold:k3", computed)
         self.assertIn("real_projective_space:4", computed)

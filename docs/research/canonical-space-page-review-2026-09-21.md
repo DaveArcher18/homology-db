@@ -17,9 +17,9 @@ and family-specific explanatory text. The older builder also special-cases the
 CP²/wedge comparison. Its side-by-side theory layout and open ring details
 become substantially different reading experiences depending on record size.
 
-This review slice uses the same `buildCanonicalSpaceView` for six records:
-S⁰, RP⁴, torus, K3, connected sum of 19 copies of S²×S¹ (40 basis elements),
-and genus-26 orientable surface (computed ring withheld). The other recorded
+This review slice uses the same `buildCanonicalSpaceView` for seven records:
+the point, S⁰, RP⁴, torus, K3, connected sum of 19 copies of S²×S¹ (40 basis
+elements), and genus-26 orientable surface (computed ring withheld). The other recorded
 spaces retain the deployed page pending review. That temporary gate is the
 only route to a different primary page structure in the candidate; it must be
 removed as part of an approved corpus-wide rollout.
