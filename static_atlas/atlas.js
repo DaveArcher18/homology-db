@@ -1886,22 +1886,9 @@
     return block.details;
   }
 
-  // This review slice exercises one data contract on deliberately different
-  // records. The remainder of the corpus stays on the deployed presentation
-  // until the page has had human review.
-  const canonicalReviewSpaces = new Set([
-    "point",
-    "sphere:0",
-    "real_projective_space:4",
-    "torus:2",
-    "four_manifold:k3",
-    "connected_sum:s2xs1-sum-19",
-    "orientable_surface:26",
-  ]);
-
-  function canonicalSpaceData(space, coefficient) {
+  function canonicalSpaceData(space, coefficient, reduced = false) {
     const homology = asArray(space.homology).filter((row) =>
-      row.coefficient_ring === coefficient && row.reduced === false);
+      row.coefficient_ring === coefficient && row.reduced === reduced);
     const records = asArray(space.cohomology).filter((record) =>
       record.coefficient === coefficient);
     const cohomology = records.find((item) => item.provenance?.kind === "literature")
@@ -1945,8 +1932,8 @@
     return cell;
   }
 
-  function canonicalTheoryTable(space, coefficients, theory) {
-    const datasets = coefficients.map((coefficient) => canonicalSpaceData(space, coefficient));
+  function canonicalTheoryTable(space, coefficients, theory, reduced = false) {
+    const datasets = coefficients.map((coefficient) => canonicalSpaceData(space, coefficient, reduced));
     const rowsFor = theory === "homology"
       ? (data) => data.homology
       : (data) => asArray(data.cohomology?.groups);
@@ -1956,7 +1943,7 @@
       .sort((a, b) => a - b);
     const table = element("table", "canonical-invariant-table");
     table.append(element("caption", "visually-hidden",
-      `${theory === "homology" ? "Ordinary homology" : "Ordinary cohomology"} of ${space.name.plain} by degree`));
+      `${theory === "homology" ? (reduced ? "Reduced homology" : "Ordinary homology") : "Ordinary cohomology"} of ${space.name.plain} by degree`));
     const head = element("thead");
     const header = element("tr");
     const degreeHeader = element("th", "", "Degree");
@@ -2051,6 +2038,7 @@
     const tableHost = element("div", "canonical-theory-grid");
     tableHost.setAttribute("aria-label", "Homology and cohomology by degree");
     const coverage = detailsBlock("Coverage, conventions & availability");
+    if (homologyViewFor(space).reduced) coverage.details.open = true;
     function update() {
       const coefficient = select.value;
       homologyViewFor(space).coefficient = coefficient;
@@ -2079,9 +2067,18 @@
         element("p", "", `Cohomology: ${data.cohomology
           ? cohomologyCoverage.detail
           : "not recorded for this coefficient; this is not a zero-group assertion."}`));
+      if (asArray(space.homology).some((row) => row.coefficient_ring === coefficient && row.reduced === true)) {
+        const reduced = detailsBlock("Reduced homology by degree");
+        reduced.content.append(canonicalTheoryTable(space, [coefficient], "homology", true));
+        reduced.details.open = homologyViewFor(space).reduced;
+        coverage.content.append(reduced.details);
+      }
       renderRing();
     }
-    select.addEventListener("change", update);
+    select.addEventListener("change", () => {
+      update();
+      rememberSpaceView(space);
+    });
     compareSelect.addEventListener("change", update);
     compareButton.addEventListener("click", () => {
       compareLabel.hidden = !compareLabel.hidden;
@@ -2101,7 +2098,9 @@
       const body = element("div");
       if (data.computedRingState === "withheld") {
         body.append(element("p", "canonical-ring-state",
-          "Computed ring output withheld. This makes no claim that the ring is zero."));
+          "The imported computed ring output is withheld. This does not mean the ring is zero."));
+        if (record?.provenance?.kind === "literature") body.append(element("p", "canonical-ring-state",
+          "Separately sourced literature-based ring information remains available; it is not presented as a computed result."));
       }
       if (record?.knowledge_state === "exact" && record.algebra) {
         const formula = element("div", "canonical-ring-formula");
@@ -2149,9 +2148,15 @@
     citations.slice(0, 3).forEach((citation) => shortList.append(renderCitation(citation)));
     if (shortList.children.length) provenance.content.append(shortList);
     const technical = detailsBlock("Models, evidence & record data");
+    const copyLink = element("button", "text-button", "Copy link");
+    copyLink.type = "button";
+    copyLink.addEventListener("click", () => copyText(permalinkFor(space), copyLink));
+    technical.content.append(copyLink);
     renderModels(space, technical.content);
     renderSimplicialModels(space, technical.content);
     renderEvidence(space, technical.content);
+    renderComputations(space, technical.content);
+    renderRelations(space, technical.content);
     technical.content.append(buildClassificationBlock(space));
     provenance.content.append(technical.details);
     view.append(provenance.details);
@@ -2162,7 +2167,10 @@
   }
 
   function buildSpaceView(space) {
-    if (canonicalReviewSpaces.has(space.id)) return buildCanonicalSpaceView(space);
+    return buildCanonicalSpaceView(space);
+  }
+
+  function buildLegacySpaceView(space) {
     const family = familyFor(space);
     const view = element("article", "route-view space-view space-page");
     view.dataset.spaceId = space.id;

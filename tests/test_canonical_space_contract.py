@@ -70,6 +70,14 @@ class CanonicalSpaceContractTest(unittest.TestCase):
         self.assertIn('if (section?.id === "point")', renderer)
         self.assertIn('redirectHash: `#space=${point.slug}`', renderer)
 
+    def test_every_recorded_space_uses_the_table_first_page(self) -> None:
+        renderer = (ROOT / "static_atlas" / "atlas.js").read_text(encoding="utf-8")
+        self.assertIn("function buildSpaceView(space) {\n    return buildCanonicalSpaceView(space);", renderer)
+        self.assertNotIn("canonicalReviewSpaces", renderer)
+        self.assertIn('detailsBlock("Coverage, conventions & availability")', renderer)
+        self.assertIn('detailsBlock("Cohomology ring & cup products")', renderer)
+        self.assertIn('detailsBlock("Sources, models & provenance")', renderer)
+
 
 if __name__ == "__main__":
     unittest.main()
