@@ -2135,16 +2135,16 @@
           const otherId = space.id === "complex_projective_space:2"
             ? "sphere_wedge:2:4" : "complex_projective_space:2";
           const other = spacesById.get(otherId);
+          const comparison = detailsBlock("Why ring structure matters");
+          comparison.content.append(element("p", "",
+            "The complex projective plane and the wedge of a 2-sphere and a 4-sphere have the same cohomology groups over the displayed fields, but their cup products differ. In the complex projective plane, the square of a degree-2 generator is nonzero; in the wedge, every product of positive-degree classes is zero."));
           if (other) {
-            const comparison = detailsBlock("Why ring structure matters");
-            comparison.content.append(element("p", "",
-              "These spaces have the same cohomology groups over the displayed fields, but their cup products differ. In the complex projective plane, the square of a degree-2 generator is nonzero; in the wedge, every product of positive-degree classes is zero."));
             const link = element("a", "text-link related-example-link");
             link.href = `#space=${encodeURIComponent(other.slug)}`;
             link.append(document.createTextNode("Compare with "), mathName(other, "math-inline"), document.createTextNode(" →"));
             comparison.content.append(link);
-            body.append(comparison.details);
           }
+          body.append(comparison.details);
         }
       } else {
         body.append(element("p", "canonical-ring-state",
