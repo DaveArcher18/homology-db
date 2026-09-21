@@ -50,6 +50,13 @@ const path=require('node:path');
       await page.setViewportSize({width,height:900});
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${width}px`);
     }
+    await page.goto(base+'#space=complex-projective-space-2');
+    await page.locator('.canonical-ring > summary').click();
+    await page.getByText('Why ring structure matters',{exact:true}).click();
+    assert.match(await page.locator('.canonical-ring').innerText(),/cup products differ/);
+    await page.locator('.canonical-provenance > summary').click();
+    assert.ok(await page.locator('.canonical-provenance .citation-list > li').count()>3);
+    assert.equal(await page.getByText('What to notice',{exact:true}).count(),1);
     assert.deepEqual(errors,[]);
     console.log(JSON.stringify({ok:true,spaces:spaces.length,tableFirst:spaces.length,disclosures:true,widths:[320,390,700,1100],errors}));
   } finally {await browser.close();}

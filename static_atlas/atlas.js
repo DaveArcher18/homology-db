@@ -2131,6 +2131,21 @@
           }
         });
         body.append(detail.details);
+        if (space.id === "complex_projective_space:2" || space.id === "sphere_wedge:2:4") {
+          const otherId = space.id === "complex_projective_space:2"
+            ? "sphere_wedge:2:4" : "complex_projective_space:2";
+          const other = spacesById.get(otherId);
+          if (other) {
+            const comparison = detailsBlock("Why ring structure matters");
+            comparison.content.append(element("p", "",
+              "These spaces have the same cohomology groups over the displayed fields, but their cup products differ. In the complex projective plane, the square of a degree-2 generator is nonzero; in the wedge, every product of positive-degree classes is zero."));
+            const link = element("a", "text-link related-example-link");
+            link.href = `#space=${encodeURIComponent(other.slug)}`;
+            link.append(document.createTextNode("Compare with "), mathName(other, "math-inline"), document.createTextNode(" →"));
+            comparison.content.append(link);
+            body.append(comparison.details);
+          }
+        }
       } else {
         body.append(element("p", "canonical-ring-state",
           `No cohomology ring is recorded over ${coefficientDisplay(select.value)}. This is not a zero-ring assertion.`));
@@ -2144,9 +2159,21 @@
     provenance.details.classList.add("canonical-detail", "canonical-provenance");
     provenance.content.append(buildProvenanceSummary(space));
     const citations = [...supportingCitations(space), ...cohomologyCitations(space)];
-    const shortList = element("ul", "citation-list");
-    citations.slice(0, 3).forEach((citation) => shortList.append(renderCitation(citation)));
-    if (shortList.children.length) provenance.content.append(shortList);
+    const sourceList = element("ul", "citation-list");
+    citations.forEach((citation) => sourceList.append(renderCitation(citation)));
+    if (sourceList.children.length) provenance.content.append(sourceList);
+    const teaching = atlas.teaching?.entries?.find((entry) => entry.space_id === space.id);
+    if (teaching) {
+      const note = detailsBlock("What to notice");
+      note.content.append(teachingParagraph(teaching.teaching_point));
+      const reading = element("ul", "citation-list");
+      asArray(teaching.sources).forEach((reference) => reading.append(renderCitation(reference)));
+      if (reading.children.length) note.content.append(reading);
+      const map = element("a", "teaching-entry-link", "Place this example in the textbook map →");
+      map.href = "#textbook";
+      note.content.append(map);
+      provenance.content.append(note.details);
+    }
     const technical = detailsBlock("Models, evidence & record data");
     const copyLink = element("button", "text-button", "Copy link");
     copyLink.type = "button";

@@ -77,6 +77,10 @@ class CanonicalSpaceContractTest(unittest.TestCase):
         self.assertIn('detailsBlock("Coverage, conventions & availability")', renderer)
         self.assertIn('detailsBlock("Cohomology ring & cup products")', renderer)
         self.assertIn('detailsBlock("Sources, models & provenance")', renderer)
+        self.assertIn('citations.forEach((citation) => sourceList.append(renderCitation(citation)))', renderer)
+        self.assertNotIn('citations.slice(0, 3)', renderer)
+        self.assertIn('detailsBlock("What to notice")', renderer)
+        self.assertIn('detailsBlock("Why ring structure matters")', renderer)
 
 
 if __name__ == "__main__":
