@@ -458,7 +458,7 @@ console.log(JSON.stringify({
                 'kind: "not-found"',
                 "buildBreadcrumbs",
                 "buildSpaceSearch",
-                "Search all spaces",
+                "Search spaces",
                 "Search this family",
                 'href = `#family-${section.id}`',
                 'href = `#space=${encodeURIComponent(space.slug)}`',

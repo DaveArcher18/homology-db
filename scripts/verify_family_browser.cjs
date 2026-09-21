@@ -78,6 +78,7 @@ async function main() {
     await page.locator('.canonical-select').first().selectOption('F2');
     await page.locator('.canonical-ring > summary').click();
     await page.locator('.canonical-ring .detail-section > summary').click();
+    await page.locator('.canonical-ring .cohomology-rendered').waitFor();
     assert.ok((await page.locator('.canonical-ring').innerText()).includes('Cup-product table'));
     const primarySpaces=atlas.conceptual_spaces.filter(space=>space.primary_atlas_eligible===true);
     assert.equal(primarySpaces.length,atlas.primary_atlas.space_count);
