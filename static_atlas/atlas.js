@@ -941,20 +941,17 @@
       ]),
       pageHeader(
         "Spaces",
-        `${conceptualSpaces.length} spaces in ${browsableSections.length} families`,
-        "Search the collection or browse by family. The textbook core includes cohomology rings; every space retains its existing homology and sources.",
+        `${conceptualSpaces.length} spaces · ${browsableSections.length} families`,
+        "Find a space or explore a family.",
       ),
     );
-    const teachingLink = element("a", "teaching-entry-link", "Textbook map and guided comparisons →");
-    teachingLink.href = "#textbook"; view.append(teachingLink);
 
     const allSpaces = element("section", "all-spaces-section");
     allSpaces.append(
-      element("h2", "", "All spaces"),
       buildSpaceSearch(
         conceptualSpaces,
         "spaces",
-        "Search all spaces",
+        "Search spaces",
         { showAllOnEmpty: false },
       ),
     );
@@ -964,6 +961,8 @@
       buildFamilyDirectory(),
     );
     view.append(allSpaces, directory);
+    const teachingLink = element("a", "teaching-entry-link", "Textbook map and guided comparisons →");
+    teachingLink.href = "#textbook"; view.append(teachingLink);
     return view;
   }
 

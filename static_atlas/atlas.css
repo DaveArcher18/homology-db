@@ -1,17 +1,17 @@
 /* Family workbench layout is deliberately independent of the legacy record view. */
 :root {
-  --page: #f7f6f2;
-  --surface: #fffefa;
-  --surface-muted: #efeee9;
-  --surface-code: #eeede7;
-  --text: #20242a;
-  --text-muted: #626970;
-  --border: #d8d6cf;
-  --border-strong: #aaa9a3;
-  --control-border: #888984;
-  --accent: #315e95;
-  --accent-strong: #214a7c;
-  --accent-soft: #e3ecf7;
+  --page: #f4f7fa;
+  --surface: #ffffff;
+  --surface-muted: #edf2f6;
+  --surface-code: #e9eff5;
+  --text: #1b2733;
+  --text-muted: #576574;
+  --border: #d5dfe8;
+  --border-strong: #9eacb9;
+  --control-border: #8493a2;
+  --accent: #285b84;
+  --accent-strong: #17466d;
+  --accent-soft: #e4eff7;
   --success: #247044;
   --success-soft: #e3f2e8;
   --warning: #8a5a0a;
@@ -1042,7 +1042,100 @@ svg {
 
 .spaces-view .family-directory {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 2rem;
+  gap: 0.55rem;
+  max-width: none;
+  border: 0;
+}
+
+.spaces-view .breadcrumbs {
+  margin-bottom: 0.85rem;
+}
+
+.spaces-view .page-header {
+  margin-bottom: 1.2rem;
+}
+
+.spaces-view .page-title {
+  margin-bottom: 0.2rem;
+  font-size: clamp(2.15rem, 3vw, 3rem);
+}
+
+.spaces-view .page-lede {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+}
+
+.spaces-view .all-spaces-section,
+.spaces-view .directory-section {
+  margin-top: 0;
+}
+
+.spaces-view .space-search-section {
+  margin-top: 0;
+}
+
+.spaces-view .space-search {
+  max-width: none;
+  margin: 0;
+}
+
+.spaces-view .search-control {
+  max-width: none;
+}
+
+.spaces-view .route-search-wrap {
+  min-height: 2.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.spaces-view .route-search-wrap:focus-within {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 2px var(--focus);
+}
+
+.spaces-view .directory-status {
+  margin: 0.25rem 0 0;
+}
+
+.spaces-view .directory-section {
+  margin-top: 1.4rem;
+}
+
+.spaces-view .directory-section h2 {
+  margin: 0 0 0.55rem;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.spaces-view .family-directory-item {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.spaces-view .family-directory-link {
+  align-items: center;
+  min-height: 3.5rem;
+  padding: 0.65rem 0.9rem;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.spaces-view .family-directory-link:hover,
+.spaces-view .family-directory-link:focus-visible {
+  border-radius: inherit;
+  background: var(--accent-soft);
+}
+
+.spaces-view .family-count {
+  font-family: var(--sans);
+  font-size: 0.74rem;
+}
+
+.spaces-view > .teaching-entry-link {
+  margin-top: 1.5rem;
 }
 
 .family-count {
