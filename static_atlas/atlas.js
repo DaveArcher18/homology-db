@@ -37,6 +37,9 @@
       ),
     }))
     .filter((section) => section.conceptual_space_ids.length > 0);
+  // Point is a foundational space, not a family a reader should browse into.
+  // Keep the source taxonomy intact while omitting that singleton from family UI.
+  const browsableSections = sections.filter((section) => section.id !== "point");
   const definitions = Array.isArray(atlas.definitions) ? atlas.definitions : [];
   const supportedCoefficients =
     Array.isArray(snapshot.supported_coefficients)
@@ -684,7 +687,8 @@
   }
 
   function familyFor(space) {
-    return familiesById.get(space.taxonomy?.family);
+    const family = familiesById.get(space.taxonomy?.family);
+    return family?.id === "point" ? undefined : family;
   }
 
   function memberMeta(space) {
@@ -837,9 +841,9 @@
     return section;
   }
 
-  function buildFamilyDirectory(limit = sections.length) {
+  function buildFamilyDirectory(limit = browsableSections.length) {
     const list = element("ol", "family-directory");
-    sections.slice(0, limit).forEach((section) => {
+    browsableSections.slice(0, limit).forEach((section) => {
       const item = element("li", "family-directory-item");
       const link = element("a", "family-directory-link");
       link.href = `#family-${section.id}`;
@@ -937,7 +941,7 @@
       ]),
       pageHeader(
         "Spaces",
-        `${conceptualSpaces.length} spaces in ${sections.length} families`,
+        `${conceptualSpaces.length} spaces in ${browsableSections.length} families`,
         "Search the collection or browse by family. The textbook core includes cohomology rings; every space retains its existing homology and sources.",
       ),
     );
@@ -2002,11 +2006,10 @@
     const family = familyFor(space);
     const view = element("article", "route-view space-view space-page canonical-space-page");
     view.dataset.spaceId = space.id;
-    view.append(buildBreadcrumbs([
-      { label: "Spaces", href: "#spaces" },
-      { label: family?.label ?? "Family", href: family ? `#family-${family.id}` : "#spaces" },
-      { label: space.name.plain },
-    ]));
+    const breadcrumbs = [{ label: "Spaces", href: "#spaces" }];
+    if (family) breadcrumbs.push({ label: family.label, href: `#family-${family.id}` });
+    breadcrumbs.push({ label: space.name.plain });
+    view.append(buildBreadcrumbs(breadcrumbs));
     const hero = element("header", "canonical-hero");
     hero.append(element("p", "canonical-eyebrow", family?.label ?? "Recorded space"));
     const title = element("h1", "canonical-title");
@@ -2448,6 +2451,12 @@
       try {
         const id = decodeURIComponent(familyMatch[1]);
         const section = familiesById.get(id);
+        if (section?.id === "point") {
+          const point = spacesById.get("point");
+          return point
+            ? { kind: "space", space: point, viewState: {}, redirectHash: `#space=${point.slug}` }
+            : { kind: "not-found", requested: hash };
+        }
         return section
           ? { kind: "family", section }
           : { kind: "not-found", requested: hash };
@@ -2510,6 +2519,9 @@
   async function renderRoute({ initial = false } = {}) {
     const revision = ++routeRevision;
     const route = parseRoute();
+    if (route.redirectHash) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${route.redirectHash}`);
+    }
     if (route.kind === "space") {
       const loading = element("article", "route-view loading-view");
       loading.setAttribute("aria-busy", "true");

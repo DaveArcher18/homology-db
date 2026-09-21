@@ -64,6 +64,12 @@ class CanonicalSpaceContractTest(unittest.TestCase):
             40,
         )
 
+    def test_point_is_a_space_not_a_browsable_family(self) -> None:
+        renderer = (ROOT / "static_atlas" / "atlas.js").read_text(encoding="utf-8")
+        self.assertIn('const browsableSections = sections.filter((section) => section.id !== "point")', renderer)
+        self.assertIn('if (section?.id === "point")', renderer)
+        self.assertIn('redirectHash: `#space=${point.slug}`', renderer)
+
 
 if __name__ == "__main__":
     unittest.main()
