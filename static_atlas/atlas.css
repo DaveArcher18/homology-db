@@ -984,6 +984,10 @@ svg {
 .family-preview {
   min-width: 0;
   border-bottom: 1px solid var(--border);
+}
+
+.family-card,
+.family-preview {
   padding: 0.72rem 0 0.78rem;
 }
 
@@ -1017,14 +1021,14 @@ svg {
   line-height: 1.45;
 }
 
-.family-directory-heading {
+.family-directory-link {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-}
-
-.family-directory-link {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.72rem 0 0.78rem;
   color: var(--text);
   font-family: var(--serif);
   font-size: 1.05rem;

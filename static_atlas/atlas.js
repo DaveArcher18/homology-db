@@ -841,18 +841,17 @@
     const list = element("ol", "family-directory");
     sections.slice(0, limit).forEach((section) => {
       const item = element("li", "family-directory-item");
-      const heading = element("div", "family-directory-heading");
-      const link = element("a", "family-directory-link", section.label);
+      const link = element("a", "family-directory-link");
       link.href = `#family-${section.id}`;
-      heading.append(
-        link,
+      link.append(
+        element("span", "family-directory-label", section.label),
         element(
           "span",
           "family-count",
           `${asArray(section.conceptual_space_ids).length}`,
         ),
       );
-      item.append(heading);
+      item.append(link);
       list.append(item);
     });
     return list;
