@@ -1884,7 +1884,258 @@
     return block.details;
   }
 
+  // This review slice exercises one data contract on deliberately different
+  // records. The remainder of the corpus stays on the deployed presentation
+  // until the page has had human review.
+  const canonicalReviewSpaces = new Set([
+    "sphere:0",
+    "real_projective_space:4",
+    "torus:2",
+    "four_manifold:k3",
+    "connected_sum:s2xs1-sum-19",
+    "orientable_surface:26",
+  ]);
+
+  function canonicalSpaceData(space, coefficient) {
+    const homology = asArray(space.homology).filter((row) =>
+      row.coefficient_ring === coefficient && row.reduced === false);
+    const records = asArray(space.cohomology).filter((record) =>
+      record.coefficient === coefficient);
+    const cohomology = records.find((item) => item.provenance?.kind === "literature")
+      ?? records.find((item) => item.presentation?.tex)
+      ?? records[0] ?? null;
+    const degreeSet = new Set([
+      ...homology.map((row) => Number(row.degree)),
+      ...asArray(cohomology?.groups).map((row) => Number(row.degree)),
+    ]);
+    return {
+      space,
+      coefficient,
+      homology,
+      cohomology,
+      corroborating: records.filter((item) => item !== cohomology),
+      degrees: [...degreeSet].filter(Number.isFinite).sort((a, b) => a - b),
+      computedRingState: computedRingSpaceIds.has(space.id)
+        ? "recorded" : space.primary_atlas_eligible ? "withheld" : "not_recorded",
+    };
+  }
+
+  function canonicalGroupCell(row, coefficient) {
+    const cell = element("td", "canonical-group");
+    if (!row) {
+      cell.textContent = "Not recorded";
+      cell.classList.add("canonical-unknown");
+      return cell;
+    }
+    const presentation = groupPresentation({
+      ...row,
+      coefficient_ring: coefficient,
+      knowledge_state: row.knowledge_state ?? row.group?.state,
+      group: { ...row.group, state: row.group?.state ?? row.knowledge_state },
+    });
+    if (presentation.exact) {
+      cell.append(renderTex(presentation.tex, presentation.plain, "group-math"));
+    } else {
+      cell.textContent = presentation.plain;
+      cell.classList.add("canonical-unknown");
+    }
+    return cell;
+  }
+
+  function canonicalInvariantTable(space, coefficients) {
+    const datasets = coefficients.map((coefficient) => canonicalSpaceData(space, coefficient));
+    const degrees = [...new Set(datasets.flatMap((data) => data.degrees))].sort((a, b) => a - b);
+    const table = element("table", "canonical-invariant-table");
+    table.append(element("caption", "visually-hidden",
+      `Ordinary homology and cohomology of ${space.name.plain} by degree`));
+    const head = element("thead");
+    const header = element("tr");
+    const degreeHeader = element("th", "", "Degree");
+    degreeHeader.scope = "col";
+    header.append(degreeHeader);
+    datasets.forEach((data) => {
+      ["Hₙ", "Hⁿ"].forEach((theory) => {
+        const th = element("th", "", `${theory} (${coefficientDisplay(data.coefficient)})`);
+        th.scope = "col";
+        header.append(th);
+      });
+    });
+    head.append(header);
+    const body = element("tbody");
+    degrees.forEach((degree) => {
+      const row = element("tr");
+      const label = element("th", "canonical-degree", String(degree));
+      label.scope = "row";
+      row.append(label);
+      datasets.forEach((data) => {
+        row.append(canonicalGroupCell(data.homology.find((item) => Number(item.degree) === degree), data.coefficient));
+        const cohomologyGroup = asArray(data.cohomology?.groups).find((item) => Number(item.degree) === degree);
+        row.append(canonicalGroupCell(cohomologyGroup && {
+          group: { state: "exact", ...cohomologyGroup }, knowledge_state: "exact",
+        }, data.coefficient));
+      });
+      body.append(row);
+    });
+    if (!degrees.length) {
+      const row = element("tr");
+      const cell = element("td", "canonical-unknown", "No groups are recorded for this coefficient.");
+      cell.colSpan = 1 + datasets.length * 2;
+      row.append(cell);
+      body.append(row);
+    }
+    table.append(head, body);
+    return table;
+  }
+
+  function buildCanonicalSpaceView(space) {
+    const family = familyFor(space);
+    const view = element("article", "route-view space-view space-page canonical-space-page");
+    view.dataset.spaceId = space.id;
+    view.append(buildBreadcrumbs([
+      { label: "Spaces", href: "#spaces" },
+      { label: family?.label ?? "Family", href: family ? `#family-${family.id}` : "#spaces" },
+      { label: space.name.plain },
+    ]));
+    const hero = element("header", "canonical-hero");
+    hero.append(element("p", "canonical-eyebrow", family?.label ?? "Recorded space"));
+    const title = element("h1", "canonical-title");
+    title.append(mathName(space, "space-title-math"));
+    hero.append(title, element("p", "canonical-plain", space.name.plain));
+    hero.append(teachingParagraph(
+      atlas.teaching?.entries?.find((entry) => entry.space_id === space.id)?.introduction
+        ?? classicalDescriptions[space.id] ?? space.summary,
+      "canonical-introduction"));
+    const facts = element("p", "canonical-facts");
+    const dimension = isInfiniteFiniteType(space) ? "Infinite dimensional, finite type"
+      : `Dimension ${spaceDimension(space) ?? "not recorded"}`;
+    facts.textContent = [dimension,
+      asArray(space.aliases).length ? `Also: ${asArray(space.aliases).join(", ")}` : null,
+    ].filter(Boolean).join(" · ");
+    hero.append(facts);
+    view.append(hero);
+
+    const invariants = element("section", "canonical-section canonical-invariants");
+    invariants.append(element("h2", "", "Homology & cohomology"),
+      element("p", "canonical-section-intro",
+        "Ordinary, unreduced groups. A missing cohomology entry is not a zero group."));
+    const controls = element("div", "canonical-coefficients");
+    const label = element("label", "", "Coefficients");
+    const select = element("select", "canonical-select");
+    availableCoefficients(space).forEach((coefficient) => {
+      const option = element("option", "", coefficientDisplay(coefficient));
+      option.value = coefficient;
+      select.append(option);
+    });
+    select.value = homologyViewFor(space).coefficient;
+    label.append(select);
+    const compareButton = element("button", "text-button canonical-compare", "Compare coefficients");
+    compareButton.type = "button";
+    compareButton.setAttribute("aria-expanded", "false");
+    const compareLabel = element("label", "canonical-compare-label", "Compare with");
+    const compareSelect = select.cloneNode(true);
+    compareSelect.value = availableCoefficients(space).find((item) => item !== select.value) ?? select.value;
+    compareLabel.append(compareSelect);
+    compareLabel.hidden = true;
+    controls.append(label, compareButton, compareLabel);
+    const tableHost = element("div", "canonical-table-scroll");
+    tableHost.tabIndex = 0;
+    tableHost.setAttribute("role", "region");
+    tableHost.setAttribute("aria-label", "Homology and cohomology by degree");
+    const note = element("p", "canonical-coverage");
+    function update() {
+      const coefficient = select.value;
+      homologyViewFor(space).coefficient = coefficient;
+      const compared = !compareLabel.hidden && compareSelect.value !== coefficient;
+      const coefficients = compared ? [coefficient, compareSelect.value] : [coefficient];
+      tableHost.replaceChildren(canonicalInvariantTable(space, coefficients));
+      const data = canonicalSpaceData(space, coefficient);
+      const coverage = cohomologyCoveragePresentation(data.cohomology ?? {});
+      const homologyCoverage = coveragePresentation(space, data.homology);
+      note.textContent = `Homology: ${homologyCoverage.detail} Cohomology: ${data.cohomology ? coverage.detail : "not recorded for this coefficient."}`;
+      renderRing();
+    }
+    select.addEventListener("change", update);
+    compareSelect.addEventListener("change", update);
+    compareButton.addEventListener("click", () => {
+      compareLabel.hidden = !compareLabel.hidden;
+      compareButton.setAttribute("aria-expanded", String(!compareLabel.hidden));
+      compareButton.textContent = compareLabel.hidden ? "Compare coefficients" : "Close comparison";
+      update();
+    });
+    invariants.append(controls, tableHost, note);
+    view.append(invariants);
+
+    const ring = element("section", "canonical-section canonical-ring");
+    ring.append(element("h2", "", "Cohomology ring"));
+    const ringContent = element("div");
+    ring.append(ringContent);
+    function renderRing() {
+      const data = canonicalSpaceData(space, select.value);
+      const record = data.cohomology;
+      const body = element("div");
+      if (data.computedRingState === "withheld") {
+        body.append(element("p", "canonical-ring-state",
+          "Computed ring output withheld. This makes no claim that the ring is zero."));
+      }
+      if (record?.knowledge_state === "exact" && record.algebra) {
+        const formula = element("div", "canonical-ring-formula");
+        formula.append(renderTex(`H^{*}(${space.name.tex};${coefficientTex(select.value)})`,
+          `Cohomology ring over ${coefficientDisplay(select.value)}`, "math-inline"));
+        if (record.presentation?.tex) {
+          formula.append(renderTex(`\\cong ${record.presentation.tex}`,
+            record.presentation.plain, "math-inline"));
+        }
+        body.append(formula);
+        if (!record.presentation?.tex) {
+          body.append(element("p", "canonical-ring-state",
+            `Recorded by an additive basis of ${asArray(record.algebra.basis).length} elements and a cup-product table; no compact presentation is claimed.`));
+        }
+        body.append(element("p", "canonical-ring-state",
+          record.provenance?.kind === "literature"
+            ? "Separately sourced from the literature."
+            : "Computed from a pinned model and imported; human mathematical review pending."));
+        if (data.corroborating.length) body.append(element("p", "canonical-ring-state",
+          "An independently recorded result is available in the detailed record."));
+        const detail = detailsBlock("Basis, products & full record");
+        detail.details.addEventListener("toggle", () => {
+          if (detail.details.open && !detail.content.childElementCount) {
+            const host = element("div");
+            host.append(element("div", "cohomology-dynamic"));
+            detail.content.append(host);
+            renderCohomology(space, host);
+          }
+        });
+        body.append(detail.details);
+      } else {
+        body.append(element("p", "canonical-ring-state",
+          `No cohomology ring is recorded over ${coefficientDisplay(select.value)}. This is not a zero-ring assertion.`));
+      }
+      ringContent.replaceChildren(body);
+    }
+    update();
+    view.append(ring);
+
+    const provenance = element("section", "canonical-section canonical-provenance");
+    provenance.append(element("h2", "", "Sources & confidence"), buildProvenanceSummary(space));
+    const citations = [...supportingCitations(space), ...cohomologyCitations(space)];
+    const shortList = element("ul", "citation-list");
+    citations.slice(0, 3).forEach((citation) => shortList.append(renderCitation(citation)));
+    if (shortList.children.length) provenance.append(shortList);
+    const technical = detailsBlock("Models, evidence & record data");
+    renderModels(space, technical.content);
+    renderSimplicialModels(space, technical.content);
+    renderEvidence(space, technical.content);
+    technical.content.append(buildClassificationBlock(space));
+    provenance.append(technical.details);
+    view.append(provenance);
+    const feedback = outboundLink("Correct or improve this record ↗", spaceFeedbackUrl(space),
+      `Give feedback on ${space.name.plain}`);
+    if (feedback) view.append(feedback);
+    return view;
+  }
+
   function buildSpaceView(space) {
+    if (canonicalReviewSpaces.has(space.id)) return buildCanonicalSpaceView(space);
     const family = familyFor(space);
     const view = element("article", "route-view space-view space-page");
     view.dataset.spaceId = space.id;
