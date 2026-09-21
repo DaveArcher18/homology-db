@@ -38,14 +38,15 @@ const path=require('node:path');
       assert.ok(space,id);
       const route=base+'#space='+space.slug;
       await page.goto(route);
-      await page.locator(`.space-page[data-space-id="${id}"]`).waitFor();
+      await page.locator(`.canonical-space-page[data-space-id="${id}"]`).waitFor();
       assert.equal(await page.locator('.workbench-view').count(),0,id);
       await page.reload();
-      await page.locator(`.space-page[data-space-id="${id}"]`).waitFor();
+      await page.locator(`.canonical-space-page[data-space-id="${id}"]`).waitFor();
       assert.equal(page.url(),route,id);
     }
     await page.goto(base+'#space=sphere-0');
-    const s0=await page.locator('.space-page').innerText();
+    await page.locator('.canonical-ring > summary').click();
+    const s0=await page.locator('.canonical-ring').innerText();
     assert.match(s0,/imported computed ring output[\s\S]*withheld[\s\S]*does not mean the ring is zero/i);
     assert.match(s0,/separately sourced literature-based ring information[\s\S]*not presented as a computed result/i);
     await page.screenshot({path:path.join(output,'homology-atlas-s0.png'),fullPage:true,animations:'disabled'});

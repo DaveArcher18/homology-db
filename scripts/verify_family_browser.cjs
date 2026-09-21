@@ -75,19 +75,21 @@ async function main() {
     assert.match(await page.locator('.glossary-results').innerText(),/Exterior/);
     assert.equal(await page.locator('.glossary-view .math-fallback').count(),0);
     await page.goto(base+'#space=klein-bottle');
-    await page.locator('input[name="coefficient-klein-bottle"][value="F2"]').locator('..').click();
-    await page.locator('.cohomology-rendered').getByText('Cup-product table',{exact:true}).click();
-    assert.ok((await page.locator('.cohomology-rendered').innerText()).includes('Multiplication'));
+    await page.locator('.canonical-select').first().selectOption('F2');
+    await page.locator('.canonical-ring > summary').click();
+    await page.locator('.canonical-ring .detail-section > summary').click();
+    await page.locator('.canonical-ring .cohomology-rendered').waitFor();
+    assert.ok((await page.locator('.canonical-ring').innerText()).includes('Cup-product table'));
     const primarySpaces=atlas.conceptual_spaces.filter(space=>space.primary_atlas_eligible===true);
     assert.equal(primarySpaces.length,atlas.primary_atlas.space_count);
     for(const space of primarySpaces) {
       await page.goto(base+'#space='+space.slug);
-      await page.locator('.space-page').waitFor();
-      assert.equal(await page.locator('.space-page').getAttribute('data-space-id'),space.id);
+      await page.locator('.canonical-space-page').waitFor();
+      assert.equal(await page.locator('.canonical-space-page').getAttribute('data-space-id'),space.id);
     }
     await page.goto(base+'#space=orientable-surface-26');
     await page.locator('.space-page').waitFor();
-    assert.match(await page.locator('.cohomology-section').innerText(),/not recorded.*does not mean it is zero/i);
+    assert.match(await page.locator('.canonical-theory-table').last().innerText(),/not recorded/i);
     await page.goto(base+'#space=grassmannian-2-4-c');
     await page.locator('.not-found-view').waitFor();
     for(const spectrum of atlas.conceptual_spectra) {

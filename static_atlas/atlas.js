@@ -37,6 +37,9 @@
       ),
     }))
     .filter((section) => section.conceptual_space_ids.length > 0);
+  // Point is a foundational space, not a family a reader should browse into.
+  // Keep the source taxonomy intact while omitting that singleton from family UI.
+  const browsableSections = sections.filter((section) => section.id !== "point");
   const definitions = Array.isArray(atlas.definitions) ? atlas.definitions : [];
   const supportedCoefficients =
     Array.isArray(snapshot.supported_coefficients)
@@ -684,7 +687,8 @@
   }
 
   function familyFor(space) {
-    return familiesById.get(space.taxonomy?.family);
+    const family = familiesById.get(space.taxonomy?.family);
+    return family?.id === "point" ? undefined : family;
   }
 
   function memberMeta(space) {
@@ -837,22 +841,21 @@
     return section;
   }
 
-  function buildFamilyDirectory(limit = sections.length) {
+  function buildFamilyDirectory(limit = browsableSections.length) {
     const list = element("ol", "family-directory");
-    sections.slice(0, limit).forEach((section) => {
+    browsableSections.slice(0, limit).forEach((section) => {
       const item = element("li", "family-directory-item");
-      const heading = element("div", "family-directory-heading");
-      const link = element("a", "family-directory-link", section.label);
+      const link = element("a", "family-directory-link");
       link.href = `#family-${section.id}`;
-      heading.append(
-        link,
+      link.append(
+        element("span", "family-directory-label", section.label),
         element(
           "span",
           "family-count",
           `${asArray(section.conceptual_space_ids).length}`,
         ),
       );
-      item.append(heading);
+      item.append(link);
       list.append(item);
     });
     return list;
@@ -938,20 +941,17 @@
       ]),
       pageHeader(
         "Spaces",
-        `${conceptualSpaces.length} spaces in ${sections.length} families`,
-        "Search the collection or browse by family. The textbook core includes cohomology rings; every space retains its existing homology and sources.",
+        `${conceptualSpaces.length} spaces · ${browsableSections.length} families`,
+        "Find a space or explore a family.",
       ),
     );
-    const teachingLink = element("a", "teaching-entry-link", "Textbook map and guided comparisons →");
-    teachingLink.href = "#textbook"; view.append(teachingLink);
 
     const allSpaces = element("section", "all-spaces-section");
     allSpaces.append(
-      element("h2", "", "All spaces"),
       buildSpaceSearch(
         conceptualSpaces,
         "spaces",
-        "Search all spaces",
+        "Search spaces",
         { showAllOnEmpty: false },
       ),
     );
@@ -961,6 +961,8 @@
       buildFamilyDirectory(),
     );
     view.append(allSpaces, directory);
+    const teachingLink = element("a", "teaching-entry-link", "Textbook map and guided comparisons →");
+    teachingLink.href = "#textbook"; view.append(teachingLink);
     return view;
   }
 
@@ -1884,7 +1886,318 @@
     return block.details;
   }
 
+  function canonicalSpaceData(space, coefficient, reduced = false) {
+    const homology = asArray(space.homology).filter((row) =>
+      row.coefficient_ring === coefficient && row.reduced === reduced);
+    const records = asArray(space.cohomology).filter((record) =>
+      record.coefficient === coefficient);
+    const cohomology = records.find((item) => item.provenance?.kind === "literature")
+      ?? records.find((item) => item.presentation?.tex)
+      ?? records[0] ?? null;
+    const degreeSet = new Set([
+      ...homology.map((row) => Number(row.degree)),
+      ...asArray(cohomology?.groups).map((row) => Number(row.degree)),
+    ]);
+    return {
+      space,
+      coefficient,
+      homology,
+      cohomology,
+      corroborating: records.filter((item) => item !== cohomology),
+      degrees: [...degreeSet].filter(Number.isFinite).sort((a, b) => a - b),
+      computedRingState: computedRingSpaceIds.has(space.id)
+        ? "recorded" : space.primary_atlas_eligible ? "withheld" : "not_recorded",
+    };
+  }
+
+  function canonicalGroupCell(row, coefficient) {
+    const cell = element("td", "canonical-group");
+    if (!row) {
+      cell.textContent = "Not recorded";
+      cell.classList.add("canonical-unknown");
+      return cell;
+    }
+    const presentation = groupPresentation({
+      ...row,
+      coefficient_ring: coefficient,
+      knowledge_state: row.knowledge_state ?? row.group?.state,
+      group: { ...row.group, state: row.group?.state ?? row.knowledge_state },
+    });
+    if (presentation.exact) {
+      cell.append(renderTex(presentation.tex, presentation.plain, "group-math"));
+    } else {
+      cell.textContent = presentation.plain;
+      cell.classList.add("canonical-unknown");
+    }
+    return cell;
+  }
+
+  function canonicalTheoryTable(space, coefficients, theory, reduced = false) {
+    const datasets = coefficients.map((coefficient) => canonicalSpaceData(space, coefficient, reduced));
+    const rowsFor = theory === "homology"
+      ? (data) => data.homology
+      : (data) => asArray(data.cohomology?.groups);
+    const degrees = [...new Set(datasets.flatMap((data) =>
+      rowsFor(data).map((row) => Number(row.degree))))]
+      .filter(Number.isFinite)
+      .sort((a, b) => a - b);
+    const table = element("table", "canonical-invariant-table");
+    table.append(element("caption", "visually-hidden",
+      `${theory === "homology" ? (reduced ? "Reduced homology" : "Ordinary homology") : "Ordinary cohomology"} of ${space.name.plain} by degree`));
+    const head = element("thead");
+    const header = element("tr");
+    const degreeHeader = element("th", "", "Degree");
+    degreeHeader.scope = "col";
+    header.append(degreeHeader);
+    datasets.forEach((data) => {
+      const th = element("th", "", coefficientDisplay(data.coefficient));
+      th.scope = "col";
+      header.append(th);
+    });
+    head.append(header);
+    const body = element("tbody");
+    degrees.forEach((degree) => {
+      const row = element("tr");
+      const label = element("th", "canonical-degree", String(degree));
+      label.scope = "row";
+      row.append(label);
+      datasets.forEach((data) => {
+        if (theory === "homology") {
+          row.append(canonicalGroupCell(
+            data.homology.find((item) => Number(item.degree) === degree),
+            data.coefficient,
+          ));
+        } else {
+          const cohomologyGroup = asArray(data.cohomology?.groups)
+            .find((item) => Number(item.degree) === degree);
+          row.append(canonicalGroupCell(cohomologyGroup && {
+            group: { state: "exact", ...cohomologyGroup }, knowledge_state: "exact",
+          }, data.coefficient));
+        }
+      });
+      body.append(row);
+    });
+    if (!degrees.length) {
+      const row = element("tr");
+      const cell = element("td", "canonical-unknown", "Not recorded for this coefficient.");
+      cell.colSpan = 1 + datasets.length;
+      row.append(cell);
+      body.append(row);
+    }
+    table.append(head, body);
+    return table;
+  }
+
+  function buildCanonicalSpaceView(space) {
+    const family = familyFor(space);
+    const view = element("article", "route-view space-view space-page canonical-space-page");
+    view.dataset.spaceId = space.id;
+    const breadcrumbs = [{ label: "Spaces", href: "#spaces" }];
+    if (family) breadcrumbs.push({ label: family.label, href: `#family-${family.id}` });
+    breadcrumbs.push({ label: space.name.plain });
+    view.append(buildBreadcrumbs(breadcrumbs));
+    const hero = element("header", "canonical-hero");
+    hero.append(element("p", "canonical-eyebrow", family?.label ?? "Recorded space"));
+    const title = element("h1", "canonical-title");
+    title.append(mathName(space, "space-title-math"));
+    hero.append(title, element("p", "canonical-plain", space.name.plain));
+    hero.append(teachingParagraph(
+      atlas.teaching?.entries?.find((entry) => entry.space_id === space.id)?.introduction
+        ?? classicalDescriptions[space.id] ?? space.summary,
+      "canonical-introduction"));
+    const facts = element("p", "canonical-facts");
+    const dimension = isInfiniteFiniteType(space) ? "Infinite dimensional, finite type"
+      : `Dimension ${spaceDimension(space) ?? "not recorded"}`;
+    facts.textContent = [dimension,
+      asArray(space.aliases).length ? `Also: ${asArray(space.aliases).join(", ")}` : null,
+    ].filter(Boolean).join(" · ");
+    hero.append(facts);
+    view.append(hero);
+
+    const invariants = element("section", "canonical-section canonical-invariants");
+    invariants.append(element("h2", "", "Homology & cohomology"));
+    const controls = element("div", "canonical-coefficients");
+    const label = element("label", "", "Coefficients");
+    const select = element("select", "canonical-select");
+    availableCoefficients(space).forEach((coefficient) => {
+      const option = element("option", "", coefficientDisplay(coefficient));
+      option.value = coefficient;
+      select.append(option);
+    });
+    select.value = homologyViewFor(space).coefficient;
+    label.append(select);
+    const compareButton = element("button", "text-button canonical-compare", "Compare coefficients");
+    compareButton.type = "button";
+    compareButton.setAttribute("aria-expanded", "false");
+    const compareLabel = element("label", "canonical-compare-label", "Compare with");
+    const compareSelect = select.cloneNode(true);
+    compareSelect.value = availableCoefficients(space).find((item) => item !== select.value) ?? select.value;
+    compareLabel.append(compareSelect);
+    compareLabel.hidden = true;
+    controls.append(label, compareButton, compareLabel);
+    const tableHost = element("div", "canonical-theory-grid");
+    tableHost.setAttribute("aria-label", "Homology and cohomology by degree");
+    const coverage = detailsBlock("Coverage, conventions & availability");
+    if (homologyViewFor(space).reduced) coverage.details.open = true;
+    function update() {
+      const coefficient = select.value;
+      homologyViewFor(space).coefficient = coefficient;
+      const compared = !compareLabel.hidden && compareSelect.value !== coefficient;
+      const coefficients = compared ? [coefficient, compareSelect.value] : [coefficient];
+      const tables = [
+        ["Homology", "homology"],
+        ["Cohomology", "cohomology"],
+      ].map(([title, theory]) => {
+        const block = element("section", "canonical-theory-table");
+        block.append(element("h3", "", title));
+        const scroll = element("div", "canonical-table-scroll");
+        scroll.tabIndex = 0;
+        scroll.setAttribute("role", "region");
+        scroll.setAttribute("aria-label", `${title} by degree`);
+        scroll.append(canonicalTheoryTable(space, coefficients, theory));
+        block.append(scroll);
+        return block;
+      });
+      tableHost.replaceChildren(...tables);
+      const data = canonicalSpaceData(space, coefficient);
+      const cohomologyCoverage = cohomologyCoveragePresentation(data.cohomology ?? {});
+      const homologyCoverage = coveragePresentation(space, data.homology);
+      coverage.content.replaceChildren(element("p", "", "Ordinary, unreduced groups are shown."),
+        element("p", "", `Homology: ${homologyCoverage.detail}`),
+        element("p", "", `Cohomology: ${data.cohomology
+          ? cohomologyCoverage.detail
+          : "not recorded for this coefficient; this is not a zero-group assertion."}`));
+      if (asArray(space.homology).some((row) => row.coefficient_ring === coefficient && row.reduced === true)) {
+        const reduced = detailsBlock("Reduced homology by degree");
+        reduced.content.append(canonicalTheoryTable(space, [coefficient], "homology", true));
+        reduced.details.open = homologyViewFor(space).reduced;
+        coverage.content.append(reduced.details);
+      }
+      renderRing();
+    }
+    select.addEventListener("change", () => {
+      update();
+      rememberSpaceView(space);
+    });
+    compareSelect.addEventListener("change", update);
+    compareButton.addEventListener("click", () => {
+      compareLabel.hidden = !compareLabel.hidden;
+      compareButton.setAttribute("aria-expanded", String(!compareLabel.hidden));
+      compareButton.textContent = compareLabel.hidden ? "Compare coefficients" : "Close comparison";
+      update();
+    });
+    invariants.append(controls, tableHost, coverage.details);
+    view.append(invariants);
+
+    const ring = detailsBlock("Cohomology ring & cup products");
+    ring.details.classList.add("canonical-detail", "canonical-ring");
+    const ringContent = ring.content;
+    function renderRing() {
+      const data = canonicalSpaceData(space, select.value);
+      const record = data.cohomology;
+      const body = element("div");
+      if (data.computedRingState === "withheld") {
+        body.append(element("p", "canonical-ring-state",
+          "The imported computed ring output is withheld. This does not mean the ring is zero."));
+        if (record?.provenance?.kind === "literature") body.append(element("p", "canonical-ring-state",
+          "Separately sourced literature-based ring information remains available; it is not presented as a computed result."));
+      }
+      if (record?.knowledge_state === "exact" && record.algebra) {
+        const formula = element("div", "canonical-ring-formula");
+        formula.append(renderTex(`H^{*}(${space.name.tex};${coefficientTex(select.value)})`,
+          `Cohomology ring over ${coefficientDisplay(select.value)}`, "math-inline"));
+        if (record.presentation?.tex) {
+          formula.append(renderTex(`\\cong ${record.presentation.tex}`,
+            record.presentation.plain, "math-inline"));
+        }
+        body.append(formula);
+        if (!record.presentation?.tex) {
+          body.append(element("p", "canonical-ring-state",
+            `Recorded by an additive basis of ${asArray(record.algebra.basis).length} elements and a cup-product table; no compact presentation is claimed.`));
+        }
+        body.append(element("p", "canonical-ring-state",
+          record.provenance?.kind === "literature"
+            ? "Separately sourced from the literature."
+            : "Computed from a pinned model and imported; human mathematical review pending."));
+        if (data.corroborating.length) body.append(element("p", "canonical-ring-state",
+          "An independently recorded result is available in the detailed record."));
+        const detail = detailsBlock("Basis, products & full record");
+        detail.details.addEventListener("toggle", () => {
+          if (detail.details.open && !detail.content.childElementCount) {
+            const host = element("div");
+            host.append(element("div", "cohomology-dynamic"));
+            detail.content.append(host);
+            renderCohomology(space, host);
+          }
+        });
+        body.append(detail.details);
+        if (space.id === "complex_projective_space:2" || space.id === "sphere_wedge:2:4") {
+          const otherId = space.id === "complex_projective_space:2"
+            ? "sphere_wedge:2:4" : "complex_projective_space:2";
+          const other = spacesById.get(otherId);
+          const comparison = detailsBlock("Why ring structure matters");
+          comparison.content.append(element("p", "",
+            "The complex projective plane and the wedge of a 2-sphere and a 4-sphere have the same cohomology groups over the displayed fields, but their cup products differ. In the complex projective plane, the square of a degree-2 generator is nonzero; in the wedge, every product of positive-degree classes is zero."));
+          if (other) {
+            const link = element("a", "text-link related-example-link");
+            link.href = `#space=${encodeURIComponent(other.slug)}`;
+            link.append(document.createTextNode("Compare with "), mathName(other, "math-inline"), document.createTextNode(" →"));
+            comparison.content.append(link);
+          }
+          body.append(comparison.details);
+        }
+      } else {
+        body.append(element("p", "canonical-ring-state",
+          `No cohomology ring is recorded over ${coefficientDisplay(select.value)}. This is not a zero-ring assertion.`));
+      }
+      ringContent.replaceChildren(body);
+    }
+    update();
+    view.append(ring.details);
+
+    const provenance = detailsBlock("Sources, models & provenance");
+    provenance.details.classList.add("canonical-detail", "canonical-provenance");
+    provenance.content.append(buildProvenanceSummary(space));
+    const citations = [...supportingCitations(space), ...cohomologyCitations(space)];
+    const sourceList = element("ul", "citation-list");
+    citations.forEach((citation) => sourceList.append(renderCitation(citation)));
+    if (sourceList.children.length) provenance.content.append(sourceList);
+    const teaching = atlas.teaching?.entries?.find((entry) => entry.space_id === space.id);
+    if (teaching) {
+      const note = detailsBlock("What to notice");
+      note.content.append(teachingParagraph(teaching.teaching_point));
+      const reading = element("ul", "citation-list");
+      asArray(teaching.sources).forEach((reference) => reading.append(renderCitation(reference)));
+      if (reading.children.length) note.content.append(reading);
+      const map = element("a", "teaching-entry-link", "Place this example in the textbook map →");
+      map.href = "#textbook";
+      note.content.append(map);
+      provenance.content.append(note.details);
+    }
+    const technical = detailsBlock("Models, evidence & record data");
+    const copyLink = element("button", "text-button", "Copy link");
+    copyLink.type = "button";
+    copyLink.addEventListener("click", () => copyText(permalinkFor(space), copyLink));
+    technical.content.append(copyLink);
+    renderModels(space, technical.content);
+    renderSimplicialModels(space, technical.content);
+    renderEvidence(space, technical.content);
+    renderComputations(space, technical.content);
+    renderRelations(space, technical.content);
+    technical.content.append(buildClassificationBlock(space));
+    provenance.content.append(technical.details);
+    view.append(provenance.details);
+    const feedback = outboundLink("Correct or improve this record ↗", spaceFeedbackUrl(space),
+      `Give feedback on ${space.name.plain}`);
+    if (feedback) view.append(feedback);
+    return view;
+  }
+
   function buildSpaceView(space) {
+    return buildCanonicalSpaceView(space);
+  }
+
+  function buildLegacySpaceView(space) {
     const family = familyFor(space);
     const view = element("article", "route-view space-view space-page");
     view.dataset.spaceId = space.id;
@@ -2172,6 +2485,12 @@
       try {
         const id = decodeURIComponent(familyMatch[1]);
         const section = familiesById.get(id);
+        if (section?.id === "point") {
+          const point = spacesById.get("point");
+          return point
+            ? { kind: "space", space: point, viewState: {}, redirectHash: `#space=${point.slug}` }
+            : { kind: "not-found", requested: hash };
+        }
         return section
           ? { kind: "family", section }
           : { kind: "not-found", requested: hash };
@@ -2234,6 +2553,9 @@
   async function renderRoute({ initial = false } = {}) {
     const revision = ++routeRevision;
     const route = parseRoute();
+    if (route.redirectHash) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${route.redirectHash}`);
+    }
     if (route.kind === "space") {
       const loading = element("article", "route-view loading-view");
       loading.setAttribute("aria-busy", "true");
