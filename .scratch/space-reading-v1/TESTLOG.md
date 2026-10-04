@@ -1,5 +1,67 @@
 # Static space reading — verification
 
+## 2026-10-04 — reference polish candidate
+
+Baseline: `e845cd783c42b4dd223797ad530781ff473b81ed` (current main).
+Source commits:
+- `f0dd4c622bb894973bd1863f6e07a32b590e2d92`: reference UI/copy/tests.
+- `c2e08aa7980ef90823fd5565f23ec0cb193b03bb`: compact accessible basis keys.
+- `d2d08084a0a4beccaa594c70ab85578a944085bd`: keep short convention equations together.
+
+Candidate: 20,181,816 bytes; SHA-256
+`9751f42580077d2a72b2c2ea97235f38b432cb6bdb18b17147788c7be3488afd`.
+Local preview: `http://127.0.0.1:8765/`. No push/deployment or human acceptance.
+
+Verification:
+- `python3 scripts/run_unittest_shard.py --shard-count 8 --verify-partition`:
+  complete deterministic partition of 243 cases.
+- `python3 scripts/run_unittest_shard.py --shard-count 8 --shard-index N`,
+  for N=0 through 7: 240 passes and three optional-consumer skips after retries.
+  Two runs crossed a styling/source commit and correctly rejected changed source
+  bindings; shard 1 was rerun, and the failing current-snapshot determinism test
+  was rerun on frozen inputs. The final CSS-only equation-wrap change followed
+  this regression run; the focused checks and release rebuild below passed on
+  the final source above.
+- `python3 -m unittest tests.test_static_atlas tests.test_canonical_space_contract`:
+  22 cases initially, with two source-transition determinism failures; both
+  affected cases subsequently passed in the frozen-input checks.
+- `python3 -m unittest tests.test_static_atlas.StaticAtlasTest.test_current_snapshot_build_is_deterministic tests.test_canonical_space_contract`:
+  five passes on frozen c2e08aa inputs.
+- Final focused command: `python3 -m unittest tests.test_canonical_space_contract tests.test_static_atlas.StaticAtlasTest.test_direct_sum_scripts_are_preserved_and_nonwrapping tests.test_static_atlas.StaticAtlasTest.test_presentation_contracts_execute_as_pure_javascript tests.test_static_atlas.StaticAtlasTest.test_checked_in_artifact_remains_release_gated`:
+  seven passes.
+- `node --check static_atlas/atlas.js`,
+  `node --check scripts/verify_space_reading_browser.cjs`, and `git diff --check`:
+  pass. The standalone browser script was updated and syntax-checked; actual
+  browser interactions used Codex CUA, not that standalone runner.
+- Export: `python3 scripts/export_static_atlas.py --snapshot current --output dist/atlas.html --steenrod-review-candidate --allow-public-review-preview`.
+- Deterministic release gate: `python3 scripts/verify_steenrod_release.py --atlas dist/atlas.html --allow-public-review-preview --verify-rebuild`:
+  pass for the exact final artifact above.
+- Sharded local preview built with `python3 scripts/build_static_bundle.py --atlas dist/atlas.html --output <outside-repository-preview>`.
+- CUA Chrome: all 194 durable space routes retain two group tables, one visible
+  ring section, lazy products, and no math-rendering errors or page overflow.
+  Twelve representative routes checked at 1440x1000, 390x844 and 320x844:
+  Home, About, CP2, K3, L(5,2), S0, torus, genus-26 surface, 19-fold connected sum,
+  four-manifold family, lens family, and RP2. No console warnings/errors observed.
+- Interaction checks: global/family alias search and keyboard focus/Escape;
+  Z/F2 comparison on RP2; F5/F2/Z lens conventions and refreshed product tables;
+  product/full-record/provenance disclosures; 22 K3 generators/252 relations;
+  K3 and 40-element connected-sum table scrolling; withheld S0 literature versus
+  unavailable genus-26 data; current About and retained historical scope note.
+  Final screenshots re-captured on d2d0808; short sign formula stays on one line
+  at 390px and 320px without page overflow.
+- Data comparison: the entire embedded read model equals baseline except
+  snapshot source_commit, source_inputs_sha256 and generated_at. All 194 space
+  records, 49 spectra, formulas/products, teaching, sources and review bindings
+  are unchanged. No mathematical-source paths changed.
+
+Original screenshots, one ordered contact sheet, DOM/console evidence and logs
+are retained outside the repository in this chat's visualization directory.
+Review still required: visual preference and new graded-algebra/four-manifold
+wording. No geometric K3 interpretation, proofs, graph, new records or backend.
+
+## Historical verification — 2026-09-06
+
+
 Baseline: 2e11291. Scope: presentation only, no mathematical/schema changes.
 
 ## Design evidence

@@ -1,5 +1,5 @@
 Type: task
-Status: in-progress
+Status: complete
 Claimed by: /root (interactive chat)
 Claimed at: 2026-10-04
 Blocked by:
@@ -15,6 +15,10 @@ local candidate; no publication is authorized by this checkpoint.
 
 Root: JS, integration, builds and browser QA. Bounded agents: CSS, test contract,
 read-only mathematical-safety review. Baseline: main e845cd7.
+
+Completed 2026-10-04: source d2d0808, deterministic local artifact and browser QA
+verified. See ../TESTLOG.md for exact identities, checks and limits. Human visual
+and mathematical acceptance, and any later publication decision, remain open.
 
 ## Historical completed cycle (2026-09-06)
 
