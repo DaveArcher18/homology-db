@@ -91,7 +91,7 @@
     h2xr_3manifold: "A closed hyperbolic surface times a circle. K\u00fcnneth predicts every group here from the surface factor.",
     hyperbolic_3manifold: "Closed hyperbolic 3-manifolds of small volume. Homology and volume do not in general determine the manifold, and several of these share homology.",
     connected_sum_3manifold: "Reducible 3-manifolds. By Kneser\u2013Milnor each has a unique prime decomposition, and every entry links to the summands it is built from.",
-    four_manifold: "In dimension four the cup product on the middle degree is the intersection form. It is the only thing separating CP\u00b2 # CP\u00b2 from S\u00b2 \u00d7 S\u00b2, which have identical homology.",
+    four_manifold: "For a closed oriented 4-manifold, degree-two integral cup products, evaluated on its orientation class, define the intersection form on cohomology modulo torsion. Cup products can distinguish spaces with the same homology groups.",
     five_manifold: "Two products and the Wu manifold SU(3)/SO(3), the standard non-spin example in dimension five.",
     combinatorial_complex: "Complexes built from combinatorics rather than geometry. Their torsion is large and arbitrary rather than structural \u2014 one of these has Z/32 in its first homology.",
     s2xr_3manifold: "The four closed 3-manifolds built on S\u00b2 \u00d7 R. Two are sphere bundles over the circle, one is a product, one is a connected sum, and the list is complete.",
@@ -721,6 +721,23 @@
     return item;
   }
 
+  function naturalSpaceOrder(left, right) {
+    const tokens = (space) => space.name.plain.toLowerCase().match(/\d+|\D+/g) ?? [];
+    const a = tokens(left), b = tokens(right);
+    for (let index = 0; index < Math.min(a.length, b.length); index += 1) {
+      if (a[index] === b[index]) continue;
+      if (/^\d+$/.test(a[index]) && /^\d+$/.test(b[index])) {
+        const x = a[index].replace(/^0+(?=\d)/, "");
+        const y = b[index].replace(/^0+(?=\d)/, "");
+        if (x.length !== y.length) return x.length - y.length;
+        if (x !== y) return x < y ? -1 : 1;
+      } else {
+        return a[index] < b[index] ? -1 : 1;
+      }
+    }
+    return a.length - b.length || (left.id < right.id ? -1 : left.id > right.id ? 1 : 0);
+  }
+
   function rankedSpaces(spaces, query) {
     const ranked = spaces
       .map((space) => ({ space, rank: searchRank(space, query) }))
@@ -745,7 +762,7 @@
     spaces,
     scopeKey,
     label,
-    { showAllOnEmpty = true } = {},
+    { showAllOnEmpty = true, showFamily = true, naturalOrder = false } = {},
   ) {
     const section = element("section", "space-search-section");
     const form = element("form", "space-search directory-tools");
@@ -779,12 +796,13 @@
     function renderResults() {
       const query = input.value;
       state.queriesByScope.set(scopeKey, query);
-      const matches = rankedSpaces(spaces, query);
+      const matches = naturalOrder && !query.trim()
+        ? [...spaces].sort(naturalSpaceOrder) : rankedSpaces(spaces, query);
       const visibleMatches =
         (query.trim() || showAllOnEmpty) ? matches : [];
       results.replaceChildren();
       visibleMatches.forEach((space) =>
-        results.append(buildSpaceResultItem(space)),
+        results.append(buildSpaceResultItem(space, { showFamily })),
       );
       status.textContent = query.trim()
         ? `${matches.length} match${matches.length === 1 ? "" : "es"}`
@@ -928,8 +946,17 @@
     const chapterLabel=element("label", "wb-field", "Chapter or topic");const chapter=element("select");const all=element("option", "", "All chapters and topics");all.value="";chapter.append(all);
     [...new Set(asArray(catalog.entries).map(item=>item.chapter))].filter(Boolean).forEach(value=>{const option=element("option", "", value);option.value=value;chapter.append(option);});chapterLabel.append(chapter);filters.append(searchLabel,chapterLabel);view.append(filters);
     const count=element("p", "table-note");count.setAttribute("role","status");const results=element("div", "teaching-inventory");view.append(count,results);
-    function draw(){results.replaceChildren();let number=0;asArray(catalog.entries).forEach(entry=>{const space=spacesById.get(entry.space_id);if(!space)return;const text=[space.name.plain,entry.chapter,entry.introduction,entry.locator,entry.coverage?.label].join(" ").toLowerCase();if((chapter.value&&chapter.value!==entry.chapter)||!text.includes(search.value.toLowerCase()))return;number++;const card=element("article", "teaching-example");card.dataset.spaceId=space.id;const title=element("h2");const a=element("a");a.href="#space="+encodeURIComponent(space.slug);a.append(mathName(space,"math-inline"));title.append(a);card.append(element("p", "page-kicker",entry.chapter),title,teachingParagraph(entry.introduction),element("p", "teaching-coverage",entry.coverage?.label || entry.coverage_note || "Coverage: see the space record."));if(entry.coverage?.label&&entry.coverage_note)card.append(teachingParagraph(entry.coverage_note,"table-note"));const details=element("details", "teaching-source");details.append(element("summary", "", "Reading and sources"),teachingParagraph(entry.teaching_point));const sources=element("ul","citation-list");asArray(entry.sources).forEach(ref=>sources.append(renderCitation(ref)));details.append(sources);card.append(details);results.append(card);});count.textContent=`${number} of ${asArray(catalog.entries).length} retained examples. Selected inventory; not an exhaustive textbook index.`;if(!number)results.append(element("p","","No examples match. Try another topic or clear the search."));}
+    function draw(){results.replaceChildren();let number=0;asArray(catalog.entries).forEach(entry=>{const space=spacesById.get(entry.space_id);if(!space)return;const text=[space.name.plain,entry.chapter,entry.introduction,entry.locator,entry.coverage?.label].join(" ").toLowerCase();if((chapter.value&&chapter.value!==entry.chapter)||!text.includes(search.value.toLowerCase()))return;number++;const card=element("article", "teaching-example");card.dataset.spaceId=space.id;const title=element("h2");const a=element("a");a.href="#space="+encodeURIComponent(space.slug);a.append(mathName(space,"math-inline"));title.append(a);card.append(element("p", "page-kicker",entry.chapter),title,teachingParagraph(entry.introduction),element("p", "teaching-coverage",entry.coverage?.label || entry.coverage_note || "Coverage: see the space record."));if(entry.coverage?.label&&entry.coverage_note)card.append(teachingParagraph(entry.coverage_note,"table-note"));const details=element("details", "teaching-source");details.append(element("summary", "", "Reading and sources"),teachingParagraph(teachingPointText(entry)));const sources=element("ul","citation-list");asArray(entry.sources).forEach(ref=>sources.append(renderCitation(ref)));details.append(sources);card.append(details);results.append(card);});count.textContent=`${number} of ${asArray(catalog.entries).length} retained examples. Selected inventory; not an exhaustive textbook index.`;if(!number)results.append(element("p","","No examples match. Try another topic or clear the search."));}
     search.addEventListener("input",draw);chapter.addEventListener("change",draw);draw();return view;
+  }
+
+  function teachingPointText(entry) {
+    // Qualify the historical four-manifold teaching copy at the display seam;
+    // its retained source record and citations remain unchanged.
+    const historical = "In dimension four the cup product on the middle degree is the intersection form, and it separates spaces this table cannot.";
+    return entry.teaching_point === historical
+      && spacesById.get(entry.space_id)?.taxonomy?.family === "four_manifold"
+      ? classicalFamilyDescriptions.four_manifold : entry.teaching_point;
   }
 
   function buildSpacesView() {
@@ -1003,11 +1030,12 @@
           members,
           `family-${section.id}`,
           "Search this family",
+          { showFamily: false, naturalOrder: true },
         ),
       );
     } else {
       const memberList = element("ol", "space-results space-list");
-      members.forEach((space) =>
+      [...members].sort(naturalSpaceOrder).forEach((space) =>
         memberList.append(buildSpaceResultItem(space, { showFamily: false })),
       );
       browse.append(memberList);
@@ -1110,7 +1138,58 @@
     return controls;
   }
 
-  function renderCohomology(space, host) {
+  function buildCupProductDisclosure(record) {
+    const algebra = record.algebra;
+    const products = element("details", "wb-products classical-products");
+    products.append(element("summary", "", "Cup-product table"));
+    products.addEventListener("toggle", () => {
+      if (!products.open || products.childElementCount > 1) return;
+      const complete = algebra.multiplication?.complete === true;
+      products.append(element("p", "wb-muted", complete ? "Multiplication: complete for all additive basis pairs." : "Multiplication: not recorded completely. Missing products are not zero."));
+      const basis = asArray(algebra.basis);
+      const basisById = new Map(basis.map(item => [item.id,item]));
+      const basisTex = basisLabelTex;
+      const list = element("ul", "wb-generator-list");
+      basis.forEach(item => {const row=element("li");row.append(renderTex(basisTex(item),item.id,"math-inline"),document.createTextNode(` · degree ${item.degree}`));list.append(row);});
+      products.append(list);
+      const wrap = element("div", "wb-table-scroll");wrap.tabIndex=0;wrap.setAttribute("role","region");wrap.setAttribute("aria-label","Cup-product table");
+      const productTable=element("table","wb-multiplication");const productHead=element("thead");const productHeader=element("tr");productHeader.append(element("th","","∪"));
+      basis.forEach(item=>{const cell=element("th");cell.scope="col";cell.append(renderTex(basisTex(item),item.id,"math-inline"));productHeader.append(cell);});productHead.append(productHeader);
+      const productBody=element("tbody");basis.forEach(left=>{const row=element("tr");const title=element("th");title.scope="row";title.append(renderTex(basisTex(left),left.id,"math-inline"));row.append(title);basis.forEach(right=>{
+        const recorded=asArray(algebra.products).find(product=>product.left===left.id&&product.right===right.id);
+        let tex;
+        if(left.id===algebra.unit)tex=basisTex(right);else if(right.id===algebra.unit)tex=basisTex(left);
+        else if(recorded)tex=recorded.result.map(term=>`${term.coefficient===1?"":term.coefficient===-1?"-":typeof term.coefficient==="string"?`${term.coefficient}\\,`:term.coefficient}${basisTex(basisById.get(term.basis))}`).join("+").replaceAll("+-","-") || "0";
+        else if(complete&&algebra.multiplication.omitted_products==="zero")tex="0";
+        const cell=element("td");cell.append(tex===undefined?document.createTextNode("Not recorded"):renderTex(tex,tex,"math-inline"));row.append(cell);
+      });productBody.append(row);});productTable.append(productHead,productBody);wrap.append(productTable);products.append(wrap);
+    });
+    return products;
+  }
+
+  function ringAlgebraConvention(record) {
+    if (!record.presentation?.tex || record.provenance?.kind !== "external_engine_computation") return null;
+    const note = element("p", "ring-algebra-convention");
+    note.append(document.createTextNode("Quotient of the free graded-commutative algebra: "),
+      renderTex("ab=(-1)^{|a||b|}ba", "a b equals negative one to the product of the degrees times b a", "math-inline"),
+      document.createTextNode("."));
+    const hasOddGenerator = asArray(record.algebra?.generators).some((generator) => generator.degree % 2 === 1);
+    if (hasOddGenerator && record.coefficient === "Z") {
+      note.append(document.createTextNode(" For odd-degree x, "),
+        renderTex("2x^2=0", "twice x squared is zero", "math-inline"),
+        document.createTextNode("; this does not force its square to be zero."));
+    } else if (hasOddGenerator && record.coefficient === "F2") {
+      note.append(document.createTextNode(" In characteristic 2, the sign rule does not force odd-degree squares to be zero."));
+    } else if (hasOddGenerator) {
+      note.append(document.createTextNode(" Over this field, odd-degree squares are zero."));
+    }
+    if (record.presentation.tex.includes("\\Lambda")) {
+      note.append(document.createTextNode(" Exterior generators (Λ) have square zero."));
+    }
+    return note;
+  }
+
+  function renderCohomology(space, host, { includeProducts = true } = {}) {
     const dynamic = host.querySelector(".cohomology-dynamic");
     const coefficient = homologyViewFor(space).coefficient;
     const records = asArray(space.cohomology)
@@ -1149,6 +1228,8 @@
     }
     content.append(formula,
       element("p", "ring-convention", "Ordinary, unreduced cohomology · multiplication is the cup product · unit 1 in degree 0"));
+    const algebraConvention = ringAlgebraConvention(record);
+    if (algebraConvention) content.append(algebraConvention);
     if (record.provenance?.kind === "external_engine_computation") {
       content.append(element("p", "ring-provenance cohomology-imported",
         `Computed by ${record.provenance.engine ?? "an external system"} from a pinned simplicial model, and imported. Not independently verified here and not human-reviewed.`));
@@ -1187,7 +1268,7 @@
     } else {
       asArray(algebra.generators).forEach((generator, index) => {
         if (index) generators.append(document.createTextNode("; "));
-        generators.append(renderTex(generator.id, generator.id, "math-inline"),
+        generators.append(renderTex(basisLabelTex(generator), generator.id, "math-inline"),
           document.createTextNode(` in degree ${generator.degree}`));
       });
     }
@@ -1251,27 +1332,7 @@
     tableWrap.append(table);
     const coverage = cohomologyCoveragePresentation(record);
     content.append(tableWrap, element("p", "cohomology-coverage table-note", `${coverage.label}. ${coverage.detail}`));
-    const products = element("details", "wb-products classical-products");
-    products.append(element("summary", "", "Cup-product table"));
-    const complete = algebra.multiplication?.complete === true;
-    products.append(element("p", "wb-muted", complete ? "Multiplication: complete for all additive basis pairs." : "Multiplication: not recorded completely. Missing products are not zero."));
-    const basis = asArray(algebra.basis);
-    const basisById = new Map(basis.map(item => [item.id,item]));
-    const basisTex = basisLabelTex;
-    const list = element("ul", "wb-generator-list");
-    basis.forEach(item => {const row=element("li");row.append(renderTex(basisTex(item),item.id,"math-inline"),document.createTextNode(` · degree ${item.degree}`));list.append(row);});
-    products.append(list);
-    const wrap = element("div", "wb-table-scroll");wrap.tabIndex=0;wrap.setAttribute("role","region");wrap.setAttribute("aria-label","Cup-product table");
-    const productTable=element("table","wb-multiplication");const productHead=element("thead");const productHeader=element("tr");productHeader.append(element("th","","∪"));
-    basis.forEach(item=>{const cell=element("th");cell.scope="col";cell.append(renderTex(basisTex(item),item.id,"math-inline"));productHeader.append(cell);});productHead.append(productHeader);
-    const productBody=element("tbody");basis.forEach(left=>{const row=element("tr");const title=element("th");title.scope="row";title.append(renderTex(basisTex(left),left.id,"math-inline"));row.append(title);basis.forEach(right=>{
-      const recorded=asArray(algebra.products).find(product=>product.left===left.id&&product.right===right.id);
-      let tex;
-      if(left.id===algebra.unit)tex=basisTex(right);else if(right.id===algebra.unit)tex=basisTex(left);
-      else if(recorded)tex=recorded.result.map(term=>`${term.coefficient===1?"":term.coefficient===-1?"-":typeof term.coefficient==="string"?`${term.coefficient}\\,`:term.coefficient}${basisTex(basisById.get(term.basis))}`).join("+").replaceAll("+-","-") || "0";
-      else if(complete&&algebra.multiplication.omitted_products==="zero")tex="0";
-      const cell=element("td");cell.append(tex===undefined?document.createTextNode("Not recorded"):renderTex(tex,tex,"math-inline"));row.append(cell);
-    });productBody.append(row);});productTable.append(productHead,productBody);wrap.append(productTable);products.append(wrap);content.append(products);
+    if (includeProducts) content.append(buildCupProductDisclosure(record));
 
     const sources = element("div", "cohomology-sources");
     sources.append(element("h3", "", "Sources & review"));
@@ -1997,10 +2058,11 @@
     breadcrumbs.push({ label: space.name.plain });
     view.append(buildBreadcrumbs(breadcrumbs));
     const hero = element("header", "canonical-hero");
-    hero.append(element("p", "canonical-eyebrow", family?.label ?? "Recorded space"));
+    const identity = element("div", "canonical-identity");
     const title = element("h1", "canonical-title");
     title.append(mathName(space, "space-title-math"));
-    hero.append(title, element("p", "canonical-plain", space.name.plain));
+    identity.append(title, element("p", "canonical-plain", space.name.plain));
+    hero.append(identity);
     hero.append(teachingParagraph(
       atlas.teaching?.entries?.find((entry) => entry.space_id === space.id)?.introduction
         ?? classicalDescriptions[space.id] ?? space.summary,
@@ -2089,9 +2151,9 @@
     invariants.append(controls, tableHost, coverage.details);
     view.append(invariants);
 
-    const ring = detailsBlock("Cohomology ring & cup products");
-    ring.details.classList.add("canonical-detail", "canonical-ring");
-    const ringContent = ring.content;
+    const ring = element("section", "canonical-section canonical-ring");
+    const ringContent = element("div", "canonical-ring-content");
+    ring.append(element("h2", "", "Cohomology ring"), ringContent);
     function renderRing() {
       const data = canonicalSpaceData(space, select.value);
       const record = data.cohomology;
@@ -2111,6 +2173,25 @@
             record.presentation.plain, "math-inline"));
         }
         body.append(formula);
+        const generators = asArray(record.algebra.generators);
+        if (generators.length) {
+          const degrees = element("p", "canonical-generator-degrees");
+          if (generators.length <= 4) {
+            generators.forEach((generator, index) => {
+              if (index) degrees.append(document.createTextNode(" · "));
+              degrees.append(renderTex(basisLabelTex(generator), generator.id, "math-inline"),
+                document.createTextNode(` in degree ${generator.degree}`));
+            });
+          } else {
+            const counts = new Map();
+            generators.forEach(({ degree }) => counts.set(degree, (counts.get(degree) ?? 0) + 1));
+            degrees.textContent = [...counts].sort(([a], [b]) => a - b)
+              .map(([degree, count]) => `${count} recorded generator${count === 1 ? "" : "s"} in degree ${degree}`).join(" · ");
+          }
+          body.append(degrees);
+        }
+        const algebraConvention = ringAlgebraConvention(record);
+        if (algebraConvention) body.append(algebraConvention);
         if (!record.presentation?.tex) {
           body.append(element("p", "canonical-ring-state",
             `Recorded by an additive basis of ${asArray(record.algebra.basis).length} elements and a cup-product table; no compact presentation is claimed.`));
@@ -2121,13 +2202,14 @@
             : "Computed from a pinned model and imported; human mathematical review pending."));
         if (data.corroborating.length) body.append(element("p", "canonical-ring-state",
           "An independently recorded result is available in the detailed record."));
-        const detail = detailsBlock("Basis, products & full record");
+        body.append(buildCupProductDisclosure(record));
+        const detail = detailsBlock("Generators, relations & full record");
         detail.details.addEventListener("toggle", () => {
           if (detail.details.open && !detail.content.childElementCount) {
             const host = element("div");
             host.append(element("div", "cohomology-dynamic"));
             detail.content.append(host);
-            renderCohomology(space, host);
+            renderCohomology(space, host, { includeProducts: false });
           }
         });
         body.append(detail.details);
@@ -2153,7 +2235,7 @@
       ringContent.replaceChildren(body);
     }
     update();
-    view.append(ring.details);
+    view.append(ring);
 
     const provenance = detailsBlock("Sources, models & provenance");
     provenance.details.classList.add("canonical-detail", "canonical-provenance");
@@ -2165,7 +2247,7 @@
     const teaching = atlas.teaching?.entries?.find((entry) => entry.space_id === space.id);
     if (teaching) {
       const note = detailsBlock("What to notice");
-      note.content.append(teachingParagraph(teaching.teaching_point));
+      note.content.append(teachingParagraph(teachingPointText(teaching)));
       const reading = element("ul", "citation-list");
       asArray(teaching.sources).forEach((reference) => reading.append(renderCitation(reference)));
       if (reading.children.length) note.content.append(reading);
@@ -2279,7 +2361,7 @@
     const teaching = atlas.teaching?.entries?.find(entry => entry.space_id === space.id);
     if (teaching) {
       const readerNote = element("details", "space-teaching-note");
-      readerNote.append(element("summary", "", "What to notice"), teachingParagraph(teaching.teaching_point));
+      readerNote.append(element("summary", "", "What to notice"), teachingParagraph(teachingPointText(teaching)));
       const sources = element("ul", "citation-list"); asArray(teaching.sources).forEach(ref => sources.append(renderCitation(ref)));
       readerNote.append(sources); titleCopy.append(readerNote);
       const map = element("a", "teaching-entry-link", "Place this example in the textbook map →"); map.href="#textbook"; titleCopy.append(map);
@@ -2620,11 +2702,9 @@
 
   function buildSnapshotDetail() {
     const snapshotDetail = element("div", "snapshot-detail");
-    const summary = element(
-      "p",
-      "",
-      snapshot.scope_note ?? "No scope note is recorded.",
-    );
+    const historicalScope = detailsBlock("Original snapshot scope note");
+    historicalScope.content.append(element("p", "", "Historical description retained for provenance; it may describe an earlier corpus. Current counts are listed above."),
+      element("p", "", snapshot.scope_note ?? "No scope note is recorded."));
     const facts = element("dl", "snapshot-facts");
     [
       ["Snapshot", snapshot.snapshot_name],
@@ -2637,7 +2717,7 @@
       ["Evidence records", snapshot.evidence_count],
       ["Source commit", snapshot.source_commit],
     ].forEach(([term, value]) => appendDefinition(facts, term, value));
-    snapshotDetail.append(summary, facts);
+    snapshotDetail.append(facts, historicalScope.details);
     if (Number(snapshot.conceptual_spectrum_count) > 0) {
       const foundations = element("p", "snapshot-foundations-note");
       foundations.append(
@@ -2658,9 +2738,17 @@
     const view = element("article", "route-view about-view");
     const textbook = element("a", "teaching-entry-link", "Textbook map and guided comparisons →"); textbook.href="#textbook"; view.append(textbook);
     view.append(element("p", "page-kicker", "A reference, with its workings visible"), element("h1", "page-title", "About Homology Atlas"));
-    view.append(element("p", "page-lede", "Explore ordinary homology and cohomology rings of familiar spaces, compare coefficients, and follow each result back to its sources."));
-    view.append(element("h2", "", "What is covered"), element("p", "", "The family workbench evaluates sourced rules for spheres, real projective spaces, and complex projective spaces at every finite nonnegative dimension parameter. Its degree window limits the display, not the mathematical coverage."));
-    view.append(element("p", "", "All spaces retains the earlier catalogue. Coverage and coefficient availability vary by record; missing information is labelled, never treated as zero. Stable spectra remain a separate, secondary resource."));
+    view.append(element("p", "page-lede", "A reference for the homology, cohomology rings and cup products of important spaces. Compare coefficients and follow results to their sources; this is a focused mathematical reference, not a general topology encyclopedia."));
+    view.append(element("h2", "", "Current coverage"), element("p", "",
+      `The catalogue contains ${conceptualSpaces.length} spaces across ${browsableSections.length} families, each with a durable reference page. Coverage and coefficient availability vary by record; missing information is labelled, never treated as zero.`));
+    const importedCount = conceptualSpaces.filter((space) => computedRingSpaceIds.has(space.id)).length;
+    view.append(element("p", "", `${importedCount} spaces have imported computed ring records. These remain distinct from separately sourced literature records and are not human-reviewed. Stable spectra are a separate, secondary resource.`));
+    const browse = element("a", "teaching-entry-link", "Browse the current spaces →");
+    browse.href = "#spaces";
+    view.append(browse, element("h2", "", "Parameterized family workbench"), element("p", "", "The family workbench evaluates sourced rules for spheres, real projective spaces, and complex projective spaces at every finite nonnegative dimension parameter. Its degree window limits the display, not the mathematical coverage."));
+    const workbench = element("a", "teaching-entry-link", "Open the family workbench →");
+    workbench.href = "#workbench";
+    view.append(workbench);
     view.append(element("h2", "", "Review and provenance"), element("p", "", "Coverage, automated checks, agent review, and human review are distinct. A completeness label is not a human sign-off. Human reviews bind an exact rule version and scope, and changes require fresh review."));
     const rules = atlas.family_rules?.rules || [];
     const list = element("ul", "about-review-list");
@@ -2672,7 +2760,7 @@
       list.append(item);
     });
     if (!rules.length) list.append(element("li", "", "Family human-review state not recorded."));
-    view.append(list, element("p", "", "Use “Review this result” on the workbench to choose your exact scope and copy a review packet or open the public GitHub form. A maintainer validates submissions before publishing them as mathematical review."));
+    view.append(element("h3", "", "Family-rule review"), list, element("p", "", "Use “Review this result” on the workbench to choose your exact scope and copy a review packet or open the public GitHub form. A maintainer validates submissions before publishing them as mathematical review."));
     const back = element("a", "", "Return home →"); back.href = "#home"; view.append(back);
     const request = element("a", "about-request-link", "Request a space ↗");
     request.href = requestSpaceUrl(); request.target = "_blank"; request.rel = "noopener noreferrer";

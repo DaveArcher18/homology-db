@@ -6,10 +6,12 @@ change coefficients, see the evidence and knowledge limits, and report a precise
 correction. Published mathematics remains human-review-pending until actual
 named, maintainer-validated evidence is received.
 
-This cycle is explicitly authorized to improve three things: coherent textbook
-coverage, teaching-focused static UX, and a usable scoped human-review loop.
-Success is a verified release ready for David and Gabriel to QA, not their
-acceptance. Retain every existing space/spectrum route and download. Keep spectra
+The 2026-10-04 cycle is a small reference polish: compact answers, clearer
+imported graded-algebra conventions and recorded degrees, direct product-table
+access, natural family ordering, and truthful current-scope copy. Keep complete
+relations and provenance available. No new mathematics or K3 interpretation.
+Success is a verified local candidate ready for David to QA; deployment and human
+acceptance remain separate. Retain every existing space/spectrum route and download. Keep spectra
 secondary, GitHub Pages static, and missing values distinct from zero.
 
 Out of scope: settings/AI agents in the product, backend, accounts beyond existing
