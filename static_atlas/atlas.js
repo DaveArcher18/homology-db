@@ -1150,6 +1150,7 @@
       const basisById = new Map(basis.map(item => [item.id,item]));
       const basisTex = basisLabelTex;
       const list = element("ul", "wb-generator-list");
+      list.setAttribute("role", "list");
       basis.forEach(item => {const row=element("li");row.append(renderTex(basisTex(item),item.id,"math-inline"),document.createTextNode(` · degree ${item.degree}`));list.append(row);});
       products.append(list);
       const wrap = element("div", "wb-table-scroll");wrap.tabIndex=0;wrap.setAttribute("role","region");wrap.setAttribute("aria-label","Cup-product table");
