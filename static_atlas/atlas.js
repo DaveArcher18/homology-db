@@ -16,6 +16,7 @@
     triangulationIntroductionPresentation,
     spaceLabelPresentation,
     notationTextPresentation,
+    presentationPlainText,
     monomialTex,
     basisLabelTex,
     parseTex,
@@ -421,10 +422,14 @@
     return host;
   }
 
+  function readableSpaceName(space) {
+    return presentationPlainText(spaceLabelPresentation(space));
+  }
+
   function mathName(space, className = "math-display") {
     return renderTex(
       space.name?.tex,
-      space.name?.plain ?? space.id,
+      readableSpaceName(space) || space.id,
       className,
     );
   }
@@ -725,7 +730,7 @@
     const primary = element("a", "space-result-link");
     primary.href = `#space=${encodeURIComponent(space.slug)}`;
     primary.append(mathName(space, "space-result-math"));
-    const plainName = element("span", "space-result-plain", space.name?.plain);
+    const plainName = spaceLabel(space, space.name?.plain, "space-result-plain");
     plainName.setAttribute("aria-hidden", "true");
     primary.append(plainName);
     const meta = element("p", "space-result-meta");
@@ -925,7 +930,7 @@
         const item = element("li");
         const link = element("a", "textbook-space-link");
         link.href = `#space=${encodeURIComponent(space.slug)}`;
-        link.setAttribute("aria-label", space.name.plain);
+        link.setAttribute("aria-label", readableSpaceName(space));
         link.append(mathName(space, "math-inline"));
         item.append(link);
         links.append(item);
@@ -1114,7 +1119,7 @@
       renderCohomology(space, cohomology);
       renderHomology(space, homology);
       rememberSpaceView(space);
-      announce(`${space.name.plain}: cohomology and homology with ${coefficientDisplay(current.coefficient)} coefficients.`);
+      announce(`${readableSpaceName(space)}: cohomology and homology with ${coefficientDisplay(current.coefficient)} coefficients.`);
     });
     return controls;
   }
@@ -1161,7 +1166,7 @@
       renderHomology(space, host);
       rememberSpaceView(space);
       announce(
-        `${space.name.plain}: ${current.reduced ? "reduced" : "unreduced"} homology with ${coefficientDisplay(current.coefficient)} coefficients.`,
+        `${readableSpaceName(space)}: ${current.reduced ? "reduced" : "unreduced"} homology with ${coefficientDisplay(current.coefficient)} coefficients.`,
       );
     });
     controls.append(conventionFieldset);
@@ -1251,7 +1256,7 @@
     const formula = element("div", "ring-presentation");
     formula.append(
       renderTex(`H^{*}(${space.name.tex};${coefficientTex(coefficient)})`,
-        `Ordinary cohomology ring of ${space.name.plain} with ${coefficientDisplay(coefficient)} coefficients`, "cohomology-formula"),
+        `Ordinary cohomology ring of ${readableSpaceName(space)} with ${coefficientDisplay(coefficient)} coefficients`, "cohomology-formula"),
     );
     if (record.presentation?.tex) {
       formula.append(renderTex(`\\cong ${record.presentation.tex}`,
@@ -1323,7 +1328,7 @@
 
     const tableWrap = element("div", "homology-table-wrap cohomology-table-wrap");
     const table = element("table", "homology-table cohomology-table");
-    table.append(element("caption", "visually-hidden", `Cohomology groups and a vector-space basis for ${space.name.plain} over ${coefficientDisplay(coefficient)}`));
+    table.append(element("caption", "visually-hidden", `Cohomology groups and a vector-space basis for ${readableSpaceName(space)} over ${coefficientDisplay(coefficient)}`));
     const head = element("thead");
     const header = element("tr");
     ["Degree", "Group", "Basis"].forEach((label) => {
@@ -1416,7 +1421,7 @@
     content.append(
       renderTex(
         formulaTex,
-        `${view.reduced ? "Reduced" : "Unreduced"} homology of ${space.name.plain} with ${coefficientDisplay(view.coefficient)} coefficients`,
+        `${view.reduced ? "Reduced" : "Unreduced"} homology of ${readableSpaceName(space)} with ${coefficientDisplay(view.coefficient)} coefficients`,
         "homology-formula",
       ),
     );
@@ -1465,7 +1470,7 @@
     const caption = element(
       "caption",
       "visually-hidden",
-      `${view.reduced ? "Reduced" : "Unreduced"} ordinary homology groups for ${space.name.plain} with ${coefficientDisplay(view.coefficient)} coefficients`,
+      `${view.reduced ? "Reduced" : "Unreduced"} ordinary homology groups for ${readableSpaceName(space)} with ${coefficientDisplay(view.coefficient)} coefficients`,
     );
     const head = element("thead");
     const headerRow = element("tr");
@@ -1967,7 +1972,7 @@
     const rawPre = element("pre", "raw-record");
     rawPre.setAttribute(
       "aria-label",
-      `Raw JSON record for ${space.name.plain}`,
+      `Raw JSON record for ${readableSpaceName(space)}`,
     );
     block.details.addEventListener("toggle", () => {
       if (block.details.open && !rawPre.textContent) {
@@ -2035,7 +2040,7 @@
       .sort((a, b) => a - b);
     const table = element("table", "canonical-invariant-table");
     table.append(element("caption", "visually-hidden",
-      `${theory === "homology" ? (reduced ? "Reduced homology" : "Ordinary homology") : "Ordinary cohomology"} of ${space.name.plain} by degree`));
+      `${theory === "homology" ? (reduced ? "Reduced homology" : "Ordinary homology") : "Ordinary cohomology"} of ${readableSpaceName(space)} by degree`));
     const head = element("thead");
     const header = element("tr");
     const degreeHeader = element("th", "", "Degree");
@@ -2306,7 +2311,7 @@
     provenance.content.append(technical.details);
     view.append(provenance.details);
     const feedback = outboundLink("Correct or improve this record ↗", spaceFeedbackUrl(space),
-      `Give feedback on ${space.name.plain}`);
+      `Give feedback on ${readableSpaceName(space)}`);
     if (feedback) view.append(feedback);
     return view;
   }
@@ -2343,7 +2348,7 @@
     const feedback = outboundLink(
       "Correct or improve ↗",
       spaceFeedbackUrl(space),
-      `Give feedback on ${space.name.plain}`,
+      `Give feedback on ${readableSpaceName(space)}`,
     );
     if (feedback) {
       feedback.classList.add("context-feedback-link");
@@ -2564,8 +2569,8 @@
       });
       announce(
         enabled
-          ? `Review details opened for ${space.name.plain}.`
-          : `Review details closed for ${space.name.plain}.`,
+          ? `Review details opened for ${readableSpaceName(space)}.`
+          : `Review details closed for ${readableSpaceName(space)}.`,
       );
     });
     return view;
@@ -2654,7 +2659,7 @@
       return `${route.section.label} · Homology Atlas`;
     }
     if (route.kind === "space") {
-      return `${route.space.name.plain} · Homology Atlas`;
+      return `${readableSpaceName(route.space)} · Homology Atlas`;
     }
     return "Page not found · Homology Atlas";
   }
@@ -2738,7 +2743,7 @@
       window.requestAnimationFrame(focusRouteHeading);
       announce(
         route.kind === "space"
-          ? `${route.space.name.plain} page`
+          ? `${readableSpaceName(route.space)} page`
           : `${view.querySelector("h1")?.textContent ?? "Atlas"} page`,
       );
     }

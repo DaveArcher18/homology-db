@@ -242,6 +242,24 @@
     return parts;
   }
 
+  function presentationPlainText(parts) {
+    const superscripts = Object.fromEntries([..."0123456789+-=()"].map((c, i) => [c, [..."⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾"][i]]));
+    const subscripts = Object.fromEntries([..."0123456789+-=()"].map((c, i) => [c, [..."₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎"][i]]));
+    function flatten(nodes) {
+      return nodes.map(node => {
+        if (node.type === "text") return node.value;
+        const body = flatten(node.children);
+        if (node.type === "sup" || node.type === "sub") {
+          const map = node.type === "sup" ? superscripts : subscripts;
+          return [...body].every(c => map[c]) ? [...body].map(c => map[c]).join("")
+            : `${node.type === "sup" ? " to the power " : " subscript "}${body}`;
+        }
+        return node.command === "widetilde" ? `${body}̃` : body;
+      }).join("");
+    }
+    return parts.map(part => part.tex ? flatten(parseTex(part.tex) ?? [{type:"text", value:part.plain}]) : part.text).join("");
+  }
+
   function triangulationIntroductionPresentation(space, text) {
     const name = space?.name?.plain;
     if (!name || !space.name.tex || !text?.startsWith(name)) return null;
@@ -639,6 +657,7 @@
     triangulationIntroductionPresentation,
     spaceLabelPresentation,
     notationTextPresentation,
+    presentationPlainText,
     isSupportedTex,
     monomialTex,
     basisLabelTex,
