@@ -45,7 +45,7 @@ vm.runInContext([
   "element", "asArray", "humanize", "displayValue", "appendDefinition",
   "appendRecordedDefinition", "modelRecords", "renderCellDescription",
   "renderModels", "safeHttpsUrl", "outboundLink", "citationTitle", "renderCitation",
-  "renderTex", "appendNotation", "notationElement", "spaceLabel",
+  "renderTex", "renderGroup", "appendNotation", "notationElement", "spaceLabel",
   "readableSpaceName", "mathName", "distinctSpaceAliases",
 ].map(productionFunction).join("\n"), context);
 function mathNodes(node) {
@@ -66,12 +66,15 @@ const connected = {name: {plain: "Connected sum (S^2twistS^1)#2", tex: "2(S^2\\w
 const before = JSON.stringify([brieskorn, connected]);
 const display = [brieskorn, connected].map(space => ({tex: context.mathName(space).dataset.tex,
   readable: context.readableSpaceName(space), aliases: context.distinctSpaceAliases(space)}));
+const group = context.renderGroup(p.groupPresentation({coefficient_ring: "Z", knowledge_state: "exact", group: {state: "exact", free_rank: 2, torsion_orders: []}}), "math-inline");
 const classes = node => [node.className, ...node.children.flatMap(n => typeof n === "string" ? [] : classes(n))];
 console.log(JSON.stringify({modelText: models.textContent, modelMath: mathNodes(models).length,
   citationText: citation.textContent, citationMath: mathNodes(citation).length,
   authoredTex: mathNodes(narrative).map(n => n.dataset.tex),
   authoredText: narrative.textContent, operatorClasses: classes(operator), display,
-  sourceUnchanged: before === JSON.stringify([brieskorn, connected])}));
+  sourceUnchanged: before === JSON.stringify([brieskorn, connected]),
+  groupClass: group.className, groupTex: group.dataset.tex,
+  workbenchGroupClass: context.renderTex(group.dataset.tex, "group", "group-math").className}));
 '''
         completed = subprocess.run(["node", "-e", script], cwd=ROOT, text=True,
                                    capture_output=True, check=False)
@@ -93,6 +96,10 @@ console.log(JSON.stringify({modelText: models.textContent, modelMath: mathNodes(
         self.assertIn("Connected sum of 2 copies", result["display"][1]["readable"])
         self.assertEqual([item["aliases"] for item in result["display"]], [[], []])
         self.assertTrue(result["sourceUnchanged"])
+        self.assertIn("math-group", result["groupClass"].split())
+        self.assertIn("math-inline", result["groupClass"].split())
+        self.assertIn("math-group", result["workbenchGroupClass"].split())
+        self.assertEqual(result["groupTex"], r"\mathbb{Z}^{\oplus 2}")
 
     def test_all_explicit_space_formula_seams_use_the_shared_canonical_name(self):
         source = (ROOT / "static_atlas" / "atlas.js").read_text()

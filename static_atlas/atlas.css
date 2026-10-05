@@ -1766,7 +1766,7 @@ svg {
 
 /* The multiplication sign sits below a capital letter's cap height. */
 .tex-widetilde-operator {
-  --tilde-height: 0.77em;
+  --tilde-height: 0.82em;
 }
 
 .math-fallback {
@@ -2327,6 +2327,16 @@ svg {
 
 .math-visual {
   white-space: normal;
+}
+
+/* A group and its scripts form one inline unit; space formulas may still wrap. */
+.math-group {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.math-group .math-visual {
+  white-space: nowrap;
 }
 
 .knowl {

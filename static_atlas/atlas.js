@@ -363,6 +363,9 @@
 
   function renderTex(tex, fallback, className = "math-display") {
     const math = element("span", className);
+    // The family workbench uses the same renderer and marks group values with
+    // group-math; carry that semantic signal into the shared wrapping rule.
+    if (className.split(/\s+/).includes("group-math")) math.classList.add("math-group");
     math.dataset.tex = String(tex ?? "");
     const spoken = String(fallback ?? "").trim() || "Mathematical expression";
     math.setAttribute("aria-label", spoken);
@@ -412,6 +415,12 @@
 
   window.HomologyAtlasMath = Object.freeze({ renderTex });
   window.dispatchEvent(new Event("homology-atlas-renderer-ready"));
+
+  function renderGroup(group, className = "group-math") {
+    // A group and its scripts form one reading unit, including in prose. Space
+    // formulas retain their own wrapping behavior on narrow viewports.
+    return renderTex(group.tex, group.plain, `${className} math-group`);
+  }
 
   function appendNotation(host, text) {
     notationTextPresentation(text).forEach(part => host.append(part.tex
@@ -960,7 +969,7 @@
         document.createTextNode(introduction.prose));
       introduction.groups.forEach((group, index) => {
         if (index) node.append(document.createTextNode(", "));
-        node.append(renderTex(group.tex, group.plain, "math-inline"));
+        node.append(renderGroup(group, "math-inline"));
       });
       node.append(document.createTextNode("."));
     } else {
@@ -1354,7 +1363,7 @@
       degree.append(renderTex(`H^{${group.degree}}`, `Cohomology degree ${group.degree}`, "math-inline"));
       const groupCell = element("td", "group-cell");
       const value = groupPresentation({ coefficient_ring: coefficient, knowledge_state: "exact", group: { state: "exact", ...group } });
-      groupCell.append(value.exact ? renderTex(value.tex, value.plain, "group-math") : document.createTextNode(value.plain));
+      groupCell.append(value.exact ? renderGroup(value) : document.createTextNode(value.plain));
       const basisCell = element("td", "cohomology-basis");
       const basis = asArray(algebra.basis).filter((item) => item.degree === group.degree);
       const summands = Number.isInteger(group.dimension)
@@ -1520,7 +1529,7 @@
         const presentation = groupPresentation(row);
         if (presentation.exact) {
           groupCell.append(
-            renderTex(presentation.tex, presentation.plain, "group-math"),
+            renderGroup(presentation),
           );
         } else {
           groupCell.textContent = presentation.plain;
@@ -2030,7 +2039,7 @@
       group: { ...row.group, state: row.group?.state ?? row.knowledge_state },
     });
     if (presentation.exact) {
-      cell.append(renderTex(presentation.tex, presentation.plain, "group-math"));
+      cell.append(renderGroup(presentation));
     } else {
       cell.textContent = presentation.plain;
       cell.classList.add("canonical-unknown");

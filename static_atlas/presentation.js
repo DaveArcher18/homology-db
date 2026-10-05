@@ -275,8 +275,8 @@
       tex,
       parts,
       explanation: factors.some(factor => factor.count > 2)
-        ? "# denotes connected sum. A superscript on # gives the number of copies of the following parenthesized space, joined by connected sum rather than multiplication."
-        : "# denotes connected sum. The two repeated parenthesized factors are copies of the same space, joined by connected sum rather than multiplication.",
+        ? "# denotes connected sum. Its superscript gives the number of copies of the following parenthesized space."
+        : "# denotes connected sum; the two factors are copies of the same space.",
     };
   }
 
