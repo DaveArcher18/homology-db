@@ -13,6 +13,7 @@
     coveragePresentation: pureCoveragePresentation,
     firstRecorded,
     groupPresentation,
+    triangulationIntroductionPresentation,
     monomialTex,
     basisLabelTex,
     parseTex,
@@ -919,9 +920,20 @@
     return view;
   }
 
-  function teachingParagraph(text, className = "") {
+  function teachingParagraph(text, className = "", space = null) {
     const node = element("p", className);
-    window.HomologyWorkbench.mathText(node, text || "", renderTex);
+    const introduction = triangulationIntroductionPresentation(space, text);
+    if (introduction) {
+      node.append(renderTex(introduction.nameTex, introduction.namePlain, "math-inline"),
+        document.createTextNode(introduction.prose));
+      introduction.groups.forEach((group, index) => {
+        if (index) node.append(document.createTextNode(", "));
+        node.append(renderTex(group.tex, group.plain, "math-inline"));
+      });
+      node.append(document.createTextNode("."));
+    } else {
+      window.HomologyWorkbench.mathText(node, text || "", renderTex);
+    }
     return node;
   }
 
@@ -946,7 +958,7 @@
     const chapterLabel=element("label", "wb-field", "Chapter or topic");const chapter=element("select");const all=element("option", "", "All chapters and topics");all.value="";chapter.append(all);
     [...new Set(asArray(catalog.entries).map(item=>item.chapter))].filter(Boolean).forEach(value=>{const option=element("option", "", value);option.value=value;chapter.append(option);});chapterLabel.append(chapter);filters.append(searchLabel,chapterLabel);view.append(filters);
     const count=element("p", "table-note");count.setAttribute("role","status");const results=element("div", "teaching-inventory");view.append(count,results);
-    function draw(){results.replaceChildren();let number=0;asArray(catalog.entries).forEach(entry=>{const space=spacesById.get(entry.space_id);if(!space)return;const text=[space.name.plain,entry.chapter,entry.introduction,entry.locator,entry.coverage?.label].join(" ").toLowerCase();if((chapter.value&&chapter.value!==entry.chapter)||!text.includes(search.value.toLowerCase()))return;number++;const card=element("article", "teaching-example");card.dataset.spaceId=space.id;const title=element("h2");const a=element("a");a.href="#space="+encodeURIComponent(space.slug);a.append(mathName(space,"math-inline"));title.append(a);card.append(element("p", "page-kicker",entry.chapter),title,teachingParagraph(entry.introduction),element("p", "teaching-coverage",entry.coverage?.label || entry.coverage_note || "Coverage: see the space record."));if(entry.coverage?.label&&entry.coverage_note)card.append(teachingParagraph(entry.coverage_note,"table-note"));const details=element("details", "teaching-source");details.append(element("summary", "", "Reading and sources"),teachingParagraph(teachingPointText(entry)));const sources=element("ul","citation-list");asArray(entry.sources).forEach(ref=>sources.append(renderCitation(ref)));details.append(sources);card.append(details);results.append(card);});count.textContent=`${number} of ${asArray(catalog.entries).length} retained examples. Selected inventory; not an exhaustive textbook index.`;if(!number)results.append(element("p","","No examples match. Try another topic or clear the search."));}
+    function draw(){results.replaceChildren();let number=0;asArray(catalog.entries).forEach(entry=>{const space=spacesById.get(entry.space_id);if(!space)return;const text=[space.name.plain,entry.chapter,entry.introduction,entry.locator,entry.coverage?.label].join(" ").toLowerCase();if((chapter.value&&chapter.value!==entry.chapter)||!text.includes(search.value.toLowerCase()))return;number++;const card=element("article", "teaching-example");card.dataset.spaceId=space.id;const title=element("h2");const a=element("a");a.href="#space="+encodeURIComponent(space.slug);a.append(mathName(space,"math-inline"));title.append(a);card.append(element("p", "page-kicker",entry.chapter),title,teachingParagraph(entry.introduction, "", space),element("p", "teaching-coverage",entry.coverage?.label || entry.coverage_note || "Coverage: see the space record."));if(entry.coverage?.label&&entry.coverage_note)card.append(teachingParagraph(entry.coverage_note,"table-note"));const details=element("details", "teaching-source");details.append(element("summary", "", "Reading and sources"),teachingParagraph(teachingPointText(entry)));const sources=element("ul","citation-list");asArray(entry.sources).forEach(ref=>sources.append(renderCitation(ref)));details.append(sources);card.append(details);results.append(card);});count.textContent=`${number} of ${asArray(catalog.entries).length} retained examples. Selected inventory; not an exhaustive textbook index.`;if(!number)results.append(element("p","","No examples match. Try another topic or clear the search."));}
     search.addEventListener("input",draw);chapter.addEventListener("change",draw);draw();return view;
   }
 
@@ -2067,7 +2079,7 @@
     hero.append(teachingParagraph(
       atlas.teaching?.entries?.find((entry) => entry.space_id === space.id)?.introduction
         ?? classicalDescriptions[space.id] ?? space.summary,
-      "canonical-introduction"));
+      "canonical-introduction", space));
     const facts = element("p", "canonical-facts");
     const dimension = isInfiniteFiniteType(space) ? "Infinite dimensional, finite type"
       : `Dimension ${spaceDimension(space) ?? "not recorded"}`;
@@ -2303,7 +2315,7 @@
     titleCopy.append(
       heading,
       element("p", "space-plain-name", space.name.plain),
-      teachingParagraph(atlas.teaching?.entries?.find(entry => entry.space_id === space.id)?.introduction ?? classicalDescriptions[space.id] ?? space.summary, "space-summary"),
+      teachingParagraph(atlas.teaching?.entries?.find(entry => entry.space_id === space.id)?.introduction ?? classicalDescriptions[space.id] ?? space.summary, "space-summary", space),
     );
     const feedback = outboundLink(
       "Correct or improve ↗",

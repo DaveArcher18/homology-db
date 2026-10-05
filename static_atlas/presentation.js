@@ -192,6 +192,35 @@
     return `\\operatorname{Sq}^{${degree}}`;
   }
 
+  function triangulationIntroductionPresentation(space, text) {
+    const name = space?.name?.plain;
+    if (!name || !space.name.tex || !text?.startsWith(name)) return null;
+    const match = text.slice(name.length).match(
+      /^( is recorded here from a \d+-vertex, \d+-facet triangulation, with integral homology )(.+)\.$/,
+    );
+    if (!match) return null;
+    const groups = [];
+    for (const raw of match[2].split(", ")) {
+      if (!/^(?:0|Z(?:\^[1-9]\d*)?(?: \+ Z\/[1-9]\d*)*|Z\/[1-9]\d*(?: \+ Z\/[1-9]\d*)*)$/.test(raw)) return null;
+      let freeRank = 0;
+      const torsionOrders = [];
+      if (raw !== "0") {
+        for (const term of raw.split(" + ")) {
+          if (term.startsWith("Z/")) torsionOrders.push(Number(term.slice(2)));
+          else freeRank = term === "Z" ? 1 : Number(term.slice(2));
+        }
+      }
+      if (!Number.isSafeInteger(freeRank) || torsionOrders.some((order) => !Number.isSafeInteger(order) || order < 2)) return null;
+      const group = groupPresentation({
+        coefficient_ring: "Z", knowledge_state: "exact",
+        group: { state: "exact", free_rank: freeRank, torsion_orders: torsionOrders },
+      });
+      if (!group.exact) return null;
+      groups.push(group);
+    }
+    return { nameTex: space.name.tex, namePlain: name, prose: match[1], groups };
+  }
+
   function incompleteExactGroup(kind) {
     return {
       exact: false,
@@ -557,6 +586,7 @@
     coveragePresentation,
     firstRecorded,
     groupPresentation,
+    triangulationIntroductionPresentation,
     isSupportedTex,
     monomialTex,
     basisLabelTex,

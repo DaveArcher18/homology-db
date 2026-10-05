@@ -2,6 +2,7 @@
 
 import json
 import re
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -69,6 +70,37 @@ class CanonicalSpaceContractTest(unittest.TestCase):
         self.assertIn('const browsableSections = sections.filter((section) => section.id !== "point")', renderer)
         self.assertIn('if (section?.id === "point")', renderer)
         self.assertIn('redirectHash: `#space=${point.slug}`', renderer)
+
+    def test_triangulation_introductions_render_math_without_guessing_unknown_data(self) -> None:
+        completed = subprocess.run(["node", "-e", r"""
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const p = require('./static_atlas/presentation.js');
+const html = fs.readFileSync('dist/atlas.html', 'utf8');
+const atlas = JSON.parse(html.match(/<script id="atlas-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+const spaces = new Map(atlas.conceptual_spaces.map(s => [s.id, s]));
+let checked = 0;
+for (const entry of atlas.teaching.entries) {
+  if (!entry.introduction.includes('-facet triangulation, with integral homology ')) continue;
+  const result = p.triangulationIntroductionPresentation(spaces.get(entry.space_id), entry.introduction);
+  assert.ok(result, entry.space_id);
+  assert.ok(result.groups.length);
+  result.groups.forEach(g => assert.ok(p.isSupportedTex(g.tex), g.tex));
+  checked++;
+}
+assert.ok(checked > 100, 'Cover the imported triangulation introductions');
+const space = spaces.get('connected_sum:s2-twist-s1-sum-2');
+const intro = atlas.teaching.entries.find(e => e.space_id === space.id).introduction;
+const result = p.triangulationIntroductionPresentation(space, intro);
+assert.deepEqual(result.groups.map(g => g.tex), ['\\mathbb{Z}', '\\mathbb{Z}^{\\oplus 2}', '\\mathbb{Z}\\oplus \\mathbb{Z}/2\\mathbb{Z}', '0']);
+assert.equal(result.nameTex, space.name.tex);
+assert.equal(p.triangulationIntroductionPresentation(space, intro.replace('Z^2', 'not recorded')), null);
+assert.equal(p.triangulationIntroductionPresentation(space, intro.replace('Z/2', 'Z/1')), null);
+assert.equal(p.triangulationIntroductionPresentation(space, intro.replace('Z^2', 'Z^9007199254740993')), null);
+assert.equal(p.triangulationIntroductionPresentation(space, 'An ordinary prose introduction.'), null);
+console.log(`Checked ${checked} imported introductions, mixed groups and unknown-state rejection.`);
+"""], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
 
     def test_every_recorded_space_uses_the_table_first_page(self) -> None:
         renderer = (ROOT / "static_atlas" / "atlas.js").read_text(encoding="utf-8")
