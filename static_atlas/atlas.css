@@ -2329,13 +2329,13 @@ svg {
   white-space: normal;
 }
 
-/* A group and its scripts form one inline unit; space formulas may still wrap. */
-.math-group {
+/* Keep each direct-sum factor and its scripts together. */
+.math-group-term {
   display: inline-block;
   white-space: nowrap;
 }
 
-.math-group .math-visual {
+.group-math.math-group .math-visual {
   white-space: nowrap;
 }
 

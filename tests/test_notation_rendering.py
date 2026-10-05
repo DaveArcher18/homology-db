@@ -46,7 +46,7 @@ vm.runInContext([
   "appendRecordedDefinition", "modelRecords", "renderCellDescription",
   "renderModels", "safeHttpsUrl", "outboundLink", "citationTitle", "renderCitation",
   "renderTex", "renderGroup", "appendNotation", "notationElement", "spaceLabel",
-  "readableSpaceName", "mathName", "distinctSpaceAliases",
+  "readableSpaceName", "mathName", "distinctSpaceAliases", "buildBreadcrumbs", "pageHeader",
 ].map(productionFunction).join("\n"), context);
 function mathNodes(node) {
   return [node, ...node.children.flatMap(n => typeof n === "string" ? [] : mathNodes(n))]
@@ -66,7 +66,16 @@ const connected = {name: {plain: "Connected sum (S^2twistS^1)#2", tex: "2(S^2\\w
 const before = JSON.stringify([brieskorn, connected]);
 const display = [brieskorn, connected].map(space => ({tex: context.mathName(space).dataset.tex,
   readable: context.readableSpaceName(space), aliases: context.distinctSpaceAliases(space)}));
+const breadcrumb = context.buildBreadcrumbs([{label: "Spaces", href: "#spaces"},
+  {label: "H^2 x R 3-manifolds", href: "#family-h2xr_3manifold"},
+  {label: "S^2 x R 3-manifolds"}]);
+const header = context.pageHeader("H^2 x R 3-manifolds", "family", "A product family.");
 const group = context.renderGroup(p.groupPresentation({coefficient_ring: "Z", knowledge_state: "exact", group: {state: "exact", free_rank: 2, torsion_orders: []}}), "math-inline");
+const longGroup = context.renderGroup(p.groupPresentation({coefficient_ring: "Z", knowledge_state: "exact", group: {state: "exact", free_rank: 0,
+  torsion_orders: [...Array(5).fill(2), ...Array(10).fill(4), 8, 16]}}), "math-inline");
+const terms = longGroup.children[0].children.filter(n => n.className.split(/\s+/).includes("math-group-term"));
+const separators = longGroup.children[0].children.filter(n => n.tagName === "#text").map(n => n.textContent);
+const singleGroupTerms = group.children[0].children.filter(n => n.className.split(/\s+/).includes("math-group-term"));
 const classes = node => [node.className, ...node.children.flatMap(n => typeof n === "string" ? [] : classes(n))];
 console.log(JSON.stringify({modelText: models.textContent, modelMath: mathNodes(models).length,
   citationText: citation.textContent, citationMath: mathNodes(citation).length,
@@ -74,7 +83,11 @@ console.log(JSON.stringify({modelText: models.textContent, modelMath: mathNodes(
   authoredText: narrative.textContent, operatorClasses: classes(operator), display,
   sourceUnchanged: before === JSON.stringify([brieskorn, connected]),
   groupClass: group.className, groupTex: group.dataset.tex,
-  workbenchGroupClass: context.renderTex(group.dataset.tex, "group", "group-math").className}));
+  workbenchGroupClass: context.renderTex(group.dataset.tex, "group", "group-math").className,
+  breadcrumbText: breadcrumb.textContent, breadcrumbTex: mathNodes(breadcrumb).map(n => n.dataset.tex),
+  headerTex: mathNodes(header).map(n => n.dataset.tex),
+  groupTerms: terms.map(n => n.textContent), groupSeparators: separators,
+  multiplicityTerms: singleGroupTerms.map(n => n.textContent)}));
 '''
         completed = subprocess.run(["node", "-e", script], cwd=ROOT, text=True,
                                    capture_output=True, check=False)
@@ -100,6 +113,12 @@ console.log(JSON.stringify({modelText: models.textContent, modelMath: mathNodes(
         self.assertIn("math-inline", result["groupClass"].split())
         self.assertIn("math-group", result["workbenchGroupClass"].split())
         self.assertEqual(result["groupTex"], r"\mathbb{Z}^{\oplus 2}")
+        self.assertEqual(result["breadcrumbTex"], [r"H^{2}\times R", r"S^{2}\times R"])
+        self.assertNotIn("^", result["breadcrumbText"])
+        self.assertEqual(result["headerTex"], [r"H^{2}\times R"])
+        self.assertEqual(result["groupTerms"], ["(ℤ/2ℤ)⊕ 5", "(ℤ/4ℤ)⊕ 10", "ℤ/8ℤ", "ℤ/16ℤ"])
+        self.assertEqual(result["groupSeparators"], [" ⊕ ", " ⊕ ", " ⊕ "])
+        self.assertEqual(result["multiplicityTerms"], ["ℤ⊕ 2"])
 
     def test_all_explicit_space_formula_seams_use_the_shared_canonical_name(self):
         source = (ROOT / "static_atlas" / "atlas.js").read_text()

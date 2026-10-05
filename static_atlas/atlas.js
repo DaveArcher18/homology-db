@@ -365,7 +365,9 @@
     const math = element("span", className);
     // The family workbench uses the same renderer and marks group values with
     // group-math; carry that semantic signal into the shared wrapping rule.
-    if (className.split(/\s+/).includes("group-math")) math.classList.add("math-group");
+    const semanticClasses = className.split(/\s+/);
+    const isGroup = semanticClasses.includes("math-group") || semanticClasses.includes("group-math");
+    if (isGroup) math.classList.add("math-group");
     math.dataset.tex = String(tex ?? "");
     const spoken = String(fallback ?? "").trim() || "Mathematical expression";
     math.setAttribute("aria-label", spoken);
@@ -405,7 +407,40 @@
 
     const parsed = parseTex(tex);
     if (parsed) {
-      appendNodes(visual, parsed);
+      if (isGroup) {
+        // Direct-sum terms may wrap between summands, while each base and its
+        // scripts stay together. Only split top-level text: the same operator
+        // inside a multiplicity superscript belongs to that term.
+        let termNodes = [];
+        function appendTerm() {
+          if (!termNodes.length) return;
+          const first = termNodes[0];
+          if (first.type === "text") termNodes[0] = { ...first, value: first.value.trimStart() };
+          const last = termNodes[termNodes.length - 1];
+          if (last.type === "text") termNodes[termNodes.length - 1] = { ...last, value: last.value.trimEnd() };
+          const term = element("span", "math-group-term");
+          appendNodes(term, termNodes);
+          visual.append(term);
+          termNodes = [];
+        }
+        parsed.forEach((node) => {
+          if (node.type !== "text" || !node.value.includes("⊕")) {
+            termNodes.push(node);
+            return;
+          }
+          const pieces = node.value.split("⊕");
+          pieces.forEach((value, index) => {
+            if (value) termNodes.push({ type: "text", value });
+            if (index < pieces.length - 1) {
+              appendTerm();
+              visual.append(document.createTextNode(" ⊕ "));
+            }
+          });
+        });
+        appendTerm();
+      } else {
+        appendNodes(visual, parsed);
+      }
     } else {
       visual.replaceChildren(document.createTextNode(spoken));
       math.classList.add("math-fallback");
@@ -417,8 +452,8 @@
   window.dispatchEvent(new Event("homology-atlas-renderer-ready"));
 
   function renderGroup(group, className = "group-math") {
-    // A group and its scripts form one reading unit, including in prose. Space
-    // formulas retain their own wrapping behavior on narrow viewports.
+    // Group summands and their scripts form atomic reading units in prose.
+    // Space formulas retain their own wrapping behavior on narrow viewports.
     return renderTex(group.tex, group.plain, `${className} math-group`);
   }
 
@@ -704,11 +739,11 @@
     items.forEach((item, index) => {
       const listItem = element("li");
       if (item.href && index < items.length - 1) {
-        const link = element("a", "", item.label);
+        const link = notationElement("a", "", item.label);
         link.href = item.href;
         listItem.append(link);
       } else {
-        const current = item.space ? spaceLabel(item.space) : element("span", "", item.label);
+        const current = item.space ? spaceLabel(item.space) : notationElement("span", "", item.label);
         if (index === items.length - 1) {
           current.setAttribute("aria-current", "page");
         }
@@ -723,7 +758,7 @@
   function pageHeader(title, eyebrow, description) {
     const header = element("header", "page-header");
     if (eyebrow) header.append(element("p", "page-kicker", eyebrow));
-    header.append(element("h1", "page-title", title));
+    header.append(notationElement("h1", "page-title", title));
     if (description) header.append(notationElement("p", "page-lede", description));
     return header;
   }
@@ -753,7 +788,7 @@
     primary.append(plainName);
     const meta = element("p", "space-result-meta");
     if (family && showFamily) {
-      const familyLink = element("a", "family-inline-link", family.label);
+      const familyLink = notationElement("a", "family-inline-link", family.label);
       familyLink.href = `#family-${family.id}`;
       meta.append(familyLink, document.createTextNode(" · "));
     }
@@ -908,7 +943,7 @@
       const link = element("a", "family-directory-link");
       link.href = `#family-${section.id}`;
       link.append(
-        element("span", "family-directory-label", section.label),
+        notationElement("span", "family-directory-label", section.label),
         element(
           "span",
           "family-count",
@@ -1067,7 +1102,7 @@
     const feedback = outboundLink(
       "Correct or improve this family ↗",
       familyFeedbackUrl(section),
-      `Give feedback on ${section.label}`,
+      `Give feedback on ${presentationPlainText(notationTextPresentation(section.label))}`,
     );
     if (feedback) {
       feedback.classList.add("feedback-action");
@@ -1076,7 +1111,7 @@
     view.append(header);
 
     const browse = element("section", "family-members-section home-section");
-    browse.append(element("h2", "", `Spaces in ${section.label}`));
+    browse.append(notationElement("h2", "", `Spaces in ${section.label}`));
     if (members.length > familySearchThreshold) {
       browse.append(
         buildSpaceSearch(
@@ -1962,7 +1997,8 @@
     block.details.classList.add("classification-disclosure");
     const list = element("dl", "record-list classification-record-list");
     appendDefinition(list, "Stable ID", space.id);
-    appendDefinition(list, "Family", familyFor(space)?.label);
+    list.append(element("dt", "", "Family"),
+      notationElement("dd", "", displayValue(familyFor(space)?.label)));
     appendDefinition(list, "Parameters", space.parameters);
     appendDefinition(
       list,
@@ -2696,7 +2732,7 @@
     if (route.kind === "home") return "Homology Atlas";
     if (route.kind === "spaces") return "Spaces · Homology Atlas";
     if (route.kind === "family") {
-      return `${route.section.label} · Homology Atlas`;
+      return `${presentationPlainText(notationTextPresentation(route.section.label))} · Homology Atlas`;
     }
     if (route.kind === "space") {
       return `${readableSpaceName(route.space)} · Homology Atlas`;
