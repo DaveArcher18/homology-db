@@ -1,5 +1,40 @@
 # Test log
 
+## 2026-10-05 — notation audit findings cleared locally
+
+- Source `2e053fc25c723ef8345b1e72f832081c4f899c68`: six Brieskorn displays use
+  their recorded tuples; literal provenance stays literal; all 49 repeated-sum
+  expressions use explicit connected-sum notation and explanatory copy; tilde
+  accents attach to their base. Family navigation is explicitly typeset, and
+  long direct sums wrap between atomic terms on mobile. Three bounded agents
+  implemented/reviewed the shared layers. The previous repair below left these
+  four findings unresolved; this checkpoint supersedes its readiness claim.
+- Nineteen focused canonical/presentation/rendering/static-atlas tests pass.
+  JavaScript syntax and diff checks pass. This is not a full regression-suite run.
+- Codex in-app browser: 194 space routes, 49 spectrum routes and 24 public/family
+  routes at 1440x1000 and 320x844; no checked loading failures, math fallbacks or
+  page overflow. Ten representative spaces with expanded detail panels pass all
+  seven coefficient/comparison views (70 checks). All six Brieskorn headings
+  and ring names agree with their tuples; source identifiers remain literal.
+  Original notation search ranks the reported route first. No console warnings/errors.
+- Visual originals cover connected sums, mixed repeated factors, Brieskorn
+  identity/provenance and reduced-H accents in dark theme; screenshots at
+  1440x1000 and 390x844. Originals and ordered readable contact sheet retained
+  outside Git in the existing visualization folder under
+  `polish/notation-closure-2026-10-05`; JSON route/interaction results accompany them.
+- Frozen corpus outside snapshot build metadata is unchanged, SHA-256
+  `8ca0dc6d0a905dc182b2347f93ea5ec79ea7d3cda4514c7866a6b086e4cf9635`.
+  Final artifact: 20,197,769 bytes, SHA-256
+  `12455986a12a616826e39f34e390729312812fbf09a844aec8ccedfceee11a53`.
+  Official `verify_steenrod_release.py --allow-public-review-preview --verify-rebuild`
+  passes with an exact clean rebuild. Snapshot `chromatic-faa85e6395b060cc`.
+- Local preview `http://127.0.0.1:8765/`: HTTP bytes match the final manifest for
+  all 249 documents, shell and offline artifact (251 files). Source assets in the
+  route sweep are identical to the final source-bound packaging. Viewport override
+  reset and System theme restored. No push/deployment. Human notation/readability
+  review and mathematical validation remain pending; these checks do not prove
+  the absence of every possible application defect.
+
 ## 2026-10-05 — shared application notation repair
 
 - Source `ccb3529e9c17f3a5600b86013ac0fade391eadf4`: shared label and prose presentation preserves descriptive words and typesets recorded notation across canonical/legacy pages, breadcrumbs, aliases, family/search results, teaching content and browser titles. Source identifiers remain searchable and downloadable.

@@ -1,10 +1,25 @@
 Type: task
 Status: complete
 Claimed by: /root (interactive chat)
-Claimed at: 2026-10-04
+Claimed at: 2026-10-05
+Released at: 2026-10-05
 Blocked by:
 
 # Audit and improve static space reading
+
+Current scope (2026-10-05): close the four confirmed local rendering audit
+findings across shared presentation: Brieskorn symbols, preservation of literal
+provenance identifiers, explicit connected-sum multiplicity and accent layout.
+Preserve stored records, routes and review bindings. Root integrates bounded
+name, rendering-context and CSS agents, focused tests and local browser QA.
+No deployment is authorized; human review remains pending.
+
+Completed 2026-10-05: source `2e053fc`; all four findings and shared family/
+mobile wrapping edge cases are cleared. Nineteen focused tests, deterministic
+rebuild, all 194 spaces/49 spectra/24 public routes at desktop and narrow mobile,
+and 70 coefficient/comparison interactions pass. Stored records remain unchanged.
+Final HTTP bundle matches its manifest. See root TESTLOG.md for artifact identity,
+evidence and limits. No push/deployment; David's review remains pending.
 
 Current scope (2026-10-04): polish the existing 194-space reference. Surface
 compact rings and recorded generator degrees, explain imported graded algebra,
