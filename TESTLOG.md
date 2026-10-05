@@ -1,5 +1,11 @@
 # Test log
 
+## 2026-10-05 — local introduction math repair
+
+- Source `b310f6ba5044748f460277214f039c5f795b35fb`: generated triangulation introductions render space names and explicit integral groups through existing math helpers; unfamiliar formats retain their original text.
+- Six canonical/pure-presentation tests pass; public-review-preview export and deterministic rebuild gate pass. Embedded data equals the prior candidate except snapshot build provenance.
+- Chrome local reported connected-sum route at 1512x772: rendered name and four groups, no math errors, console warnings/errors or horizontal overflow. Original and contact sheet retained outside Git in the local visualization folder `polish/intro-repair-2026-10-05`. Desktop-only correction QA; human review pending. No push or deployment.
+
 ## 2026-09-06 — family workbench release candidate
 
 - Final publication: release `58a37e435baac5c7ff8d1955bf4c410d06823001` pushed
