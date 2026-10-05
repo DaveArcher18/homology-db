@@ -14,6 +14,8 @@
     firstRecorded,
     groupPresentation,
     triangulationIntroductionPresentation,
+    spaceLabelPresentation,
+    notationTextPresentation,
     monomialTex,
     basisLabelTex,
     parseTex,
@@ -134,7 +136,11 @@
   function element(tagName, className = "", text) {
     const node = document.createElement(tagName);
     if (className) node.className = className;
-    if (text !== undefined) node.textContent = text;
+    if (text !== undefined) {
+      if (["pre", "code", "script", "style", "textarea", "option"].includes(tagName)
+          || /^[{[]/.test(String(text))) node.textContent = text;
+      else appendNotation(node, text);
+    }
     return node;
   }
 
@@ -403,6 +409,18 @@
   window.HomologyAtlasMath = Object.freeze({ renderTex });
   window.dispatchEvent(new Event("homology-atlas-renderer-ready"));
 
+  function appendNotation(host, text) {
+    notationTextPresentation(text).forEach(part => host.append(part.tex
+      ? renderTex(part.tex, part.plain, "math-inline") : document.createTextNode(part.text)));
+  }
+
+  function spaceLabel(space, label = space.name.plain, className = "") {
+    const host = element("span", className);
+    spaceLabelPresentation(space, label).forEach(part => host.append(part.tex
+      ? renderTex(part.tex, part.plain, "math-inline") : document.createTextNode(part.text)));
+    return host;
+  }
+
   function mathName(space, className = "math-display") {
     return renderTex(
       space.name?.tex,
@@ -667,7 +685,7 @@
         link.href = item.href;
         listItem.append(link);
       } else {
-        const current = element("span", "", item.label);
+        const current = item.space ? spaceLabel(item.space) : element("span", "", item.label);
         if (index === items.length - 1) {
           current.setAttribute("aria-current", "page");
         }
@@ -2068,13 +2086,13 @@
     view.dataset.spaceId = space.id;
     const breadcrumbs = [{ label: "Spaces", href: "#spaces" }];
     if (family) breadcrumbs.push({ label: family.label, href: `#family-${family.id}` });
-    breadcrumbs.push({ label: space.name.plain });
+    breadcrumbs.push({ label: space.name.plain, space });
     view.append(buildBreadcrumbs(breadcrumbs));
     const hero = element("header", "canonical-hero");
     const identity = element("div", "canonical-identity");
     const title = element("h1", "canonical-title");
     title.append(mathName(space, "space-title-math"));
-    identity.append(title, element("p", "canonical-plain", space.name.plain));
+    identity.append(title, spaceLabel(space, space.name.plain, "canonical-plain"));
     hero.append(identity);
     hero.append(teachingParagraph(
       atlas.teaching?.entries?.find((entry) => entry.space_id === space.id)?.introduction
@@ -2083,9 +2101,14 @@
     const facts = element("p", "canonical-facts");
     const dimension = isInfiniteFiniteType(space) ? "Infinite dimensional, finite type"
       : `Dimension ${spaceDimension(space) ?? "not recorded"}`;
-    facts.textContent = [dimension,
-      asArray(space.aliases).length ? `Also: ${asArray(space.aliases).join(", ")}` : null,
-    ].filter(Boolean).join(" · ");
+    facts.append(document.createTextNode(dimension));
+    if (asArray(space.aliases).length) {
+      facts.append(document.createTextNode(" · Also: "));
+      space.aliases.forEach((alias, index) => {
+        if (index) facts.append(document.createTextNode(", "));
+        facts.append(spaceLabel(space, alias));
+      });
+    }
     hero.append(facts);
     view.append(hero);
 
@@ -2304,7 +2327,7 @@
           label: family?.label ?? "Family",
           href: family ? `#family-${family.id}` : "#spaces",
         },
-        { label: space.name.plain },
+        { label: space.name.plain, space },
       ]),
     );
 
@@ -2314,7 +2337,7 @@
     heading.append(mathName(space, "space-title-math"));
     titleCopy.append(
       heading,
-      element("p", "space-plain-name", space.name.plain),
+      spaceLabel(space, space.name.plain, "space-plain-name"),
       teachingParagraph(atlas.teaching?.entries?.find(entry => entry.space_id === space.id)?.introduction ?? classicalDescriptions[space.id] ?? space.summary, "space-summary", space),
     );
     const feedback = outboundLink(
@@ -2387,7 +2410,15 @@
       const item = element("div");
       item.append(
         element("dt", "", term),
-        element("dd", "", description),
+        term === "Aliases" ? (() => {
+          const aliases = element("dd");
+          if (!space.aliases?.length) aliases.append("None recorded");
+          else space.aliases.forEach((alias, index) => {
+            if (index) aliases.append(", ");
+            aliases.append(spaceLabel(space, alias));
+          });
+          return aliases;
+        })() : element("dd", "", description),
       );
       metadata.append(item);
     });

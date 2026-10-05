@@ -192,6 +192,56 @@
     return `\\operatorname{Sq}^{${degree}}`;
   }
 
+  // Source labels are searchable identifiers, not typeset display strings.
+  // Keep descriptive words and use the record's explicit TeX for its notation.
+  function spaceLabelPresentation(space, label = space?.name?.plain) {
+    const text = String(label ?? "");
+    const name = space?.name;
+    if (!name?.tex || !parseTex(name.tex)) return [{ text }];
+    const notation = /[\^_]|twist|\bx~/;
+    if (!notation.test(text)) return [{ text }];
+    if (text === name.plain) {
+      const first = text.search(/(?:[A-Za-z]+(?:\^|_)|\([^)]*\^)/);
+      const prefix = first > 0 ? text.slice(0, first) : "";
+      return [{ text: prefix }, { tex: name.tex, plain: text }];
+    }
+    // An alias is an explicit alternative name for this same record. Never
+    // infer an equivalence from a substring of another record's identifier.
+    if ((space.aliases ?? []).includes(text)) {
+      if (String(name.plain).endsWith(text)) return [{ tex: name.tex, plain: text }];
+      const parts = notationTextPresentation(text);
+      return parts.some(part => part.text && /[A-Z]\^\d|twist|[A-Z]_\d/.test(part.text))
+        ? [{ tex: name.tex, plain: text }] : parts;
+    }
+    return [{ text }];
+  }
+
+  function notationTextPresentation(text) {
+    const parts = [];
+    // Delimited TeX is authoritative. Legacy ASCII scripts are restricted to
+    // explicit symbol tokens; ordinary prose and unknown notation stay intact.
+    String(text ?? "").split(/(\$[^$]+\$)/g).forEach(part => {
+      if (part.startsWith("$") && part.endsWith("$")) {
+        parts.push({ tex: part.slice(1, -1), plain: part.slice(1, -1) });
+        return;
+      }
+      const token = /\b(?:RP|CP|HP|Sigma|[A-Z])(?:[\^_](?:\{[\d,]+\}|\d+|eta|nu|P))+(?:(?:twist|\s*x~?\s*|x)(?:RP|CP|HP|[A-Z])(?:[\^_]\d+)+)*/g;
+      let start = 0;
+      for (const match of part.matchAll(token)) {
+        parts.push({ text: part.slice(start, match.index) });
+        const tex = match[0].replace(/twist|x~/g, "\\widetilde{\\times}")
+          .replace(/\s*x\s*/g, "\\times ")
+          .replace(/Sigma/g, "\\Sigma")
+          .replace(/RP/g, "\\mathbb{R}P").replace(/CP/g, "\\mathbb{C}P").replace(/HP/g, "\\mathbb{H}P")
+          .replace(/([\^_])(\d+|eta|nu|P)/g, (_, script, value) => `${script}{${value === "eta" || value === "nu" ? "\\" + value : value}}`);
+        parts.push(parseTex(tex) ? { tex, plain: match[0] } : { text: match[0] });
+        start = match.index + match[0].length;
+      }
+      parts.push({ text: part.slice(start) });
+    });
+    return parts;
+  }
+
   function triangulationIntroductionPresentation(space, text) {
     const name = space?.name?.plain;
     if (!name || !space.name.tex || !text?.startsWith(name)) return null;
@@ -587,6 +637,8 @@
     firstRecorded,
     groupPresentation,
     triangulationIntroductionPresentation,
+    spaceLabelPresentation,
+    notationTextPresentation,
     isSupportedTex,
     monomialTex,
     basisLabelTex,

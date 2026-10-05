@@ -35,7 +35,8 @@
   }
   function hashFor(state) { return "#workbench?" + new URLSearchParams({family:state.family,n:state.n,start:state.start,...(state.reduced ? {reduced:"1"} : {})}); }
   function mathText(host, text, math) {
-    String(text).split(/(\$[^$]+\$)/g).forEach(part => host.append(part.startsWith("$") && part.endsWith("$") ? math(part.slice(1,-1),part.slice(1,-1),"math-inline") : document.createTextNode(part)));
+    window.HomologyAtlasPresentation.notationTextPresentation(text).forEach(part =>
+      host.append(part.tex ? math(part.tex, part.plain, "math-inline") : document.createTextNode(part.text)));
   }
   function knowl(id, math, labelTex) {
     const entry = glossary.find(item => item[0] === id);

@@ -23,6 +23,36 @@ class CanonicalSpaceContractTest(unittest.TestCase):
         cls.atlas = json.loads(match.group(1))
         cls.spaces = {space["id"]: space for space in cls.atlas["conceptual_spaces"]}
 
+    def test_shared_notation_display_covers_all_space_labels(self) -> None:
+        script = r"""
+const assert = require('assert');
+const p = require('./static_atlas/presentation.js');
+const atlas = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+let count = 0;
+for (const space of atlas.conceptual_spaces) {
+  for (const label of [space.name.plain, ...space.aliases]) {
+    const parts = p.spaceLabelPresentation(space, label);
+    for (const part of parts) {
+      if (part.tex) { assert(p.parseTex(part.tex), label); count++; }
+      else assert(!/[A-Z]\^\d|twist|[A-Z]_\d/.test(part.text), label);
+    }
+  }
+}
+assert(count > 150);
+const twisted = atlas.conceptual_spaces.find(s => s.slug === 'connected-sum-s2-twist-s1-sum-2');
+assert.deepStrictEqual(p.spaceLabelPresentation(twisted)[0], {text:'Connected sum '});
+assert.equal(p.spaceLabelPresentation(twisted, twisted.aliases[0])[0].tex, twisted.name.tex);
+for (const text of ['Sphere S^12', 'Product S^2xS^1', 'Twisted S^3twistS^1', 'T^2', 'M_26', '$H^2(X)$']) {
+  const parts = p.notationTextPresentation(text);
+  assert(parts.some(part => part.tex && p.parseTex(part.tex)), text);
+  assert(!parts.some(part => part.text && /\^|twist/.test(part.text)), text);
+}
+assert.deepStrictEqual(p.notationTextPresentation('unknown data remain unknown'), [{text:'unknown data remain unknown'}]);
+assert.deepStrictEqual(p.spaceLabelPresentation(twisted, 'a different record'), [{text:'a different record'}]);
+"""
+        subprocess.run(["node", "-e", script], input=json.dumps(self.atlas),
+                       text=True, cwd=ROOT, check=True, capture_output=True)
+
     def test_review_records_cover_distinct_states(self) -> None:
         self.assertEqual(len(self.spaces), 194)
         review_ids = {
