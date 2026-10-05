@@ -43,6 +43,12 @@ const twisted = atlas.conceptual_spaces.find(s => s.slug === 'connected-sum-s2-t
 assert.deepStrictEqual(p.spaceLabelPresentation(twisted)[0], {text:'Connected sum '});
 assert.equal(p.spaceLabelPresentation(twisted, twisted.aliases[0])[0].tex, twisted.name.tex);
 assert.equal(p.presentationPlainText(p.spaceLabelPresentation(twisted)), 'Connected sum 2(S²×̃S¹)');
+for (const [id, prefix] of [['flat:kxs1', 'Klein bottle times circle '], ['hom_complex:c6-compl-k5-small', 'Hom complex ']]) {
+  const space = atlas.conceptual_spaces.find(s => s.id === id);
+  const parts = p.spaceLabelPresentation(space);
+  assert.equal(parts[0].text, prefix);
+  assert.equal(parts[1].tex, space.name.tex);
+}
 for (const text of ['Sphere S^12', 'Product S^2xS^1', 'Twisted S^3twistS^1', 'T^2', 'M_26', 'S^2 x R', 'H^2 x R', '$H^2(X)$']) {
   const parts = p.notationTextPresentation(text);
   assert(parts.some(part => part.tex && p.parseTex(part.tex)), text);

@@ -201,7 +201,7 @@
     const notation = /[\^_]|twist|\bx~/;
     if (!notation.test(text)) return [{ text }];
     if (text === name.plain) {
-      const first = text.search(/(?:[A-Za-z]+(?:\^|_)|\([^)]*\^)/);
+      const first = text.search(/(?:[A-Z][A-Za-z]*\([^)]*[\^_]|[A-Z]\s+x~?\s+[A-Z]|[A-Za-z]+(?:\^|_)|\([^)]*\^)/);
       const prefix = first > 0 ? text.slice(0, first) : "";
       return [{ text: prefix }, { tex: name.tex, plain: text }];
     }
