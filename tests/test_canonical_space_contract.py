@@ -40,9 +40,9 @@ for (const space of atlas.conceptual_spaces) {
 }
 assert(count > 150);
 const twisted = atlas.conceptual_spaces.find(s => s.slug === 'connected-sum-s2-twist-s1-sum-2');
-assert.deepStrictEqual(p.spaceLabelPresentation(twisted)[0], {text:'Connected sum '});
-assert.equal(p.spaceLabelPresentation(twisted, twisted.aliases[0])[0].tex, twisted.name.tex);
-assert.equal(p.presentationPlainText(p.spaceLabelPresentation(twisted)), 'Connected sum 2(S²×̃S¹)');
+assert.deepStrictEqual(p.spaceLabelPresentation(twisted)[0], {text:'Connected sum of '});
+assert.deepStrictEqual(p.spaceLabelPresentation(twisted, twisted.aliases[0]), p.spaceLabelPresentation(twisted));
+assert.equal(p.presentationPlainText(p.spaceLabelPresentation(twisted)), 'Connected sum of 2 copies of S²×̃S¹');
 for (const [id, prefix] of [['flat:kxs1', 'Klein bottle times circle '], ['hom_complex:c6-compl-k5-small', 'Hom complex ']]) {
   const space = atlas.conceptual_spaces.find(s => s.id === id);
   const parts = p.spaceLabelPresentation(space);
@@ -130,7 +130,8 @@ const space = spaces.get('connected_sum:s2-twist-s1-sum-2');
 const intro = atlas.teaching.entries.find(e => e.space_id === space.id).introduction;
 const result = p.triangulationIntroductionPresentation(space, intro);
 assert.deepEqual(result.groups.map(g => g.tex), ['\\mathbb{Z}', '\\mathbb{Z}^{\\oplus 2}', '\\mathbb{Z}\\oplus \\mathbb{Z}/2\\mathbb{Z}', '0']);
-assert.equal(result.nameTex, space.name.tex);
+assert.equal(result.nameTex, p.spaceNamePresentation(space).tex);
+assert.ok(result.nameTex.includes('\\mathbin{\\#}'));
 assert.equal(p.triangulationIntroductionPresentation(space, intro.replace('Z^2', 'not recorded')), null);
 assert.equal(p.triangulationIntroductionPresentation(space, intro.replace('Z/2', 'Z/1')), null);
 assert.equal(p.triangulationIntroductionPresentation(space, intro.replace('Z^2', 'Z^9007199254740993')), null);

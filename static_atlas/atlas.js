@@ -15,6 +15,7 @@
     groupPresentation,
     triangulationIntroductionPresentation,
     spaceLabelPresentation,
+    spaceNamePresentation,
     notationTextPresentation,
     presentationPlainText,
     monomialTex,
@@ -137,11 +138,9 @@
   function element(tagName, className = "", text) {
     const node = document.createElement(tagName);
     if (className) node.className = className;
-    if (text !== undefined) {
-      if (["pre", "code", "script", "style", "textarea", "option"].includes(tagName)
-          || /^[{[]/.test(String(text))) node.textContent = text;
-      else appendNotation(node, text);
-    }
+    // Record identifiers, source titles and locators are literal text. Typeset
+    // only at an explicit mathematical display seam, never by tag or content.
+    if (text !== undefined) node.textContent = text;
     return node;
   }
 
@@ -391,6 +390,10 @@
               ? "tex-widetilde"
               : `tex-${node.command}`,
           );
+          if (node.command === "widetilde" && node.children.length === 1
+              && node.children[0].type === "text" && node.children[0].value === "×") {
+            wrapper.classList.add("tex-widetilde-operator");
+          }
           appendNodes(wrapper, node.children);
           target.append(wrapper);
         }
@@ -415,6 +418,12 @@
       ? renderTex(part.tex, part.plain, "math-inline") : document.createTextNode(part.text)));
   }
 
+  function notationElement(tagName, className = "", text = "") {
+    const node = element(tagName, className);
+    appendNotation(node, text);
+    return node;
+  }
+
   function spaceLabel(space, label = space.name.plain, className = "") {
     const host = element("span", className);
     spaceLabelPresentation(space, label).forEach(part => host.append(part.tex
@@ -428,8 +437,8 @@
 
   function mathName(space, className = "math-display") {
     return renderTex(
-      space.name?.tex,
-      readableSpaceName(space) || space.id,
+      spaceNamePresentation(space).tex,
+      spaceNamePresentation(space).spoken || readableSpaceName(space) || space.id,
       className,
     );
   }
@@ -706,7 +715,7 @@
     const header = element("header", "page-header");
     if (eyebrow) header.append(element("p", "page-kicker", eyebrow));
     header.append(element("h1", "page-title", title));
-    if (description) header.append(element("p", "page-lede", description));
+    if (description) header.append(notationElement("p", "page-lede", description));
     return header;
   }
 
@@ -955,7 +964,7 @@
       });
       node.append(document.createTextNode("."));
     } else {
-      window.HomologyWorkbench.mathText(node, text || "", renderTex);
+      appendNotation(node, text || "");
     }
     return node;
   }
@@ -968,7 +977,7 @@
     if (route.kind === "comparison") {
       if (!comparison) return buildNotFoundView({requested:window.location.hash});
       const back=element("a", "teaching-entry-link", "← Textbook map");back.href="#textbook";
-      view.append(back, element("p", "page-kicker", "Guided comparison"), element("h1", "page-title", comparison.title), teachingParagraph(comparison.introduction));
+      view.append(back, element("p", "page-kicker", "Guided comparison"), notationElement("h1", "page-title", comparison.title), teachingParagraph(comparison.introduction));
       const steps=element("ol", "teaching-steps");
       asArray(comparison.steps).forEach(step=>{const item=element("li");item.append(teachingParagraph(step.text));if(String(step.href).startsWith("#")){const go=element("a", "", "Open this example →");go.href=step.href;item.append(go);}steps.append(item);});
       view.append(steps, element("h2", "", "What to take away"), teachingParagraph(comparison.takeaway));
@@ -976,7 +985,7 @@
     }
     view.append(element("h1", "page-title", catalog.title || "Textbook map"),teachingParagraph(catalog.scope_note || "A selected inventory, not every example in the book."));
     const guided=element("section", "teaching-guided");guided.append(element("h2", "", "Three ways to read the examples"));
-    comparisons.forEach(item=>{const a=element("a", "teaching-comparison-link", item.title);a.href="#comparison="+encodeURIComponent(item.id);guided.append(a);});view.append(guided);
+    comparisons.forEach(item=>{const a=notationElement("a", "teaching-comparison-link", item.title);a.href="#comparison="+encodeURIComponent(item.id);guided.append(a);});view.append(guided);
     const filters=element("div", "teaching-filters");const searchLabel=element("label", "wb-field", "Find a textbook example");const search=element("input");search.type="search";searchLabel.append(search);
     const chapterLabel=element("label", "wb-field", "Chapter or topic");const chapter=element("select");const all=element("option", "", "All chapters and topics");all.value="";chapter.append(all);
     [...new Set(asArray(catalog.entries).map(item=>item.chapter))].filter(Boolean).forEach(value=>{const option=element("option", "", value);option.value=value;chapter.append(option);});chapterLabel.append(chapter);filters.append(searchLabel,chapterLabel);view.append(filters);
@@ -1255,7 +1264,7 @@
     const algebra = record.algebra ?? {};
     const formula = element("div", "ring-presentation");
     formula.append(
-      renderTex(`H^{*}(${space.name.tex};${coefficientTex(coefficient)})`,
+      renderTex(`H^{*}(${spaceNamePresentation(space).tex};${coefficientTex(coefficient)})`,
         `Ordinary cohomology ring of ${readableSpaceName(space)} with ${coefficientDisplay(coefficient)} coefficients`, "cohomology-formula"),
     );
     if (record.presentation?.tex) {
@@ -1323,7 +1332,7 @@
     }
     content.append(structure);
     const notes = element("div", "ring-meaning");
-    asArray(record.presentation?.notes).forEach((note) => notes.append(element("p", "", note)));
+    asArray(record.presentation?.notes).forEach((note) => notes.append(notationElement("p", "", note)));
     content.append(notes, element("h3", "cohomology-groups-heading", "Groups by degree"));
 
     const tableWrap = element("div", "homology-table-wrap cohomology-table-wrap");
@@ -1391,7 +1400,7 @@
     sources.append(citations, element("p", "human-review-note", reviewNote));
     if (record.provenance?.derivation) {
       const derivation = detailsBlock("How this record is supported");
-      derivation.content.append(element("p", "", record.provenance.derivation));
+      derivation.content.append(notationElement("p", "", record.provenance.derivation));
       sources.append(derivation.details);
     }
     content.append(sources);
@@ -1417,7 +1426,7 @@
     const content = element("div", "homology-rendered");
     const formulaTex = `${
       view.reduced ? "\\widetilde{H}" : "H"
-    }_{n}(${space.name.tex};${coefficientTex(view.coefficient)})`;
+    }_{n}(${spaceNamePresentation(space).tex};${coefficientTex(view.coefficient)})`;
     content.append(
       renderTex(
         formulaTex,
@@ -1764,7 +1773,7 @@
         const sketchBlock = element("div", "computation-sketch");
         sketchBlock.append(
           element("h4", "", "Computation sketch"),
-          element("p", "", sketch),
+          notationElement("p", "", sketch),
           element(
             "p",
             "sketch-note",
@@ -1861,7 +1870,7 @@
         );
       }
       if (relation.detail) {
-        item.append(element("p", "relation-context", relation.detail));
+        item.append(notationElement("p", "relation-context", relation.detail));
       }
       list.append(item);
     });
@@ -2085,6 +2094,22 @@
     return table;
   }
 
+  function distinctSpaceAliases(space) {
+    const displayKey = (text) => String(text).normalize("NFKC").replace(/\s+/g, " ").trim();
+    const canonical = spaceNamePresentation(space);
+    const seen = new Set([
+      displayKey(readableSpaceName(space)),
+      displayKey(canonical.spoken),
+      displayKey(presentationPlainText([{ tex: canonical.tex, plain: canonical.spoken }])),
+    ]);
+    return asArray(space.aliases).filter((alias) => {
+      const key = displayKey(presentationPlainText(spaceLabelPresentation(space, alias)));
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
   function buildCanonicalSpaceView(space) {
     const family = familyFor(space);
     const view = element("article", "route-view space-view space-page canonical-space-page");
@@ -2099,6 +2124,8 @@
     title.append(mathName(space, "space-title-math"));
     identity.append(title, spaceLabel(space, space.name.plain, "canonical-plain"));
     hero.append(identity);
+    const nameExplanation = spaceNamePresentation(space).explanation;
+    if (nameExplanation) hero.append(notationElement("p", "canonical-name-explanation", nameExplanation));
     hero.append(teachingParagraph(
       atlas.teaching?.entries?.find((entry) => entry.space_id === space.id)?.introduction
         ?? classicalDescriptions[space.id] ?? space.summary,
@@ -2107,9 +2134,10 @@
     const dimension = isInfiniteFiniteType(space) ? "Infinite dimensional, finite type"
       : `Dimension ${spaceDimension(space) ?? "not recorded"}`;
     facts.append(document.createTextNode(dimension));
-    if (asArray(space.aliases).length) {
+    const aliases = distinctSpaceAliases(space);
+    if (aliases.length) {
       facts.append(document.createTextNode(" · Also: "));
-      space.aliases.forEach((alias, index) => {
+      aliases.forEach((alias, index) => {
         if (index) facts.append(document.createTextNode(", "));
         facts.append(spaceLabel(space, alias));
       });
@@ -2207,7 +2235,7 @@
       }
       if (record?.knowledge_state === "exact" && record.algebra) {
         const formula = element("div", "canonical-ring-formula");
-        formula.append(renderTex(`H^{*}(${space.name.tex};${coefficientTex(select.value)})`,
+        formula.append(renderTex(`H^{*}(${spaceNamePresentation(space).tex};${coefficientTex(select.value)})`,
           `Cohomology ring over ${coefficientDisplay(select.value)}`, "math-inline"));
         if (record.presentation?.tex) {
           formula.append(renderTex(`\\cong ${record.presentation.tex}`,
@@ -2345,6 +2373,8 @@
       spaceLabel(space, space.name.plain, "space-plain-name"),
       teachingParagraph(atlas.teaching?.entries?.find(entry => entry.space_id === space.id)?.introduction ?? classicalDescriptions[space.id] ?? space.summary, "space-summary", space),
     );
+    const nameExplanation = spaceNamePresentation(space).explanation;
+    if (nameExplanation) titleCopy.append(notationElement("p", "space-name-explanation", nameExplanation));
     const feedback = outboundLink(
       "Correct or improve ↗",
       spaceFeedbackUrl(space),
@@ -2409,7 +2439,7 @@
     }
     const metadataItems = [
       ["Dimension", dimensionLabel],
-      ["Aliases", asArray(space.aliases).join(", ") || "None recorded"],
+      ["Aliases", distinctSpaceAliases(space).join(", ") || "None recorded"],
     ];
     metadataItems.forEach(([term, description]) => {
       const item = element("div");
@@ -2417,8 +2447,9 @@
         element("dt", "", term),
         term === "Aliases" ? (() => {
           const aliases = element("dd");
-          if (!space.aliases?.length) aliases.append("None recorded");
-          else space.aliases.forEach((alias, index) => {
+          const names = distinctSpaceAliases(space);
+          if (!names.length) aliases.append("None recorded");
+          else names.forEach((alias, index) => {
             if (index) aliases.append(", ");
             aliases.append(spaceLabel(space, alias));
           });
@@ -2692,7 +2723,7 @@
       loading.setAttribute("aria-busy", "true");
       loading.append(
         element("p", "page-kicker", "Loading one atlas record"),
-        element("h1", "page-title", route.space.name?.plain ?? "Loading space…"),
+        (() => { const heading = element("h1", "page-title"); heading.append(spaceLabel(route.space)); return heading; })(),
         element("p", "page-lede", "Loading homology, cohomology, and provenance…"),
       );
       atlasDocument.replaceChildren(loading);

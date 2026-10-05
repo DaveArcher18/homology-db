@@ -1742,8 +1742,31 @@ svg {
 }
 
 .tex-widetilde {
-  text-decoration: overline;
-  text-decoration-thickness: 0.06em;
+  --tilde-height: 0.92em;
+  --tilde-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 5'%3E%3Cpath d='M1 3.5 C4 .5 5 .5 8 2.5 S12 4.5 15 1.5' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Anchor the accent to the glyph, independent of the surrounding line spacing. */
+.tex-widetilde::before {
+  position: absolute;
+  bottom: var(--tilde-height);
+  left: 0;
+  width: 100%;
+  height: 0.16em;
+  content: "";
+  background: currentColor;
+  -webkit-mask: var(--tilde-shape) center / 100% 100% no-repeat;
+  mask: var(--tilde-shape) center / 100% 100% no-repeat;
+}
+
+/* The multiplication sign sits below a capital letter's cap height. */
+.tex-widetilde-operator {
+  --tilde-height: 0.77em;
 }
 
 .math-fallback {
@@ -2304,22 +2327,6 @@ svg {
 
 .math-visual {
   white-space: normal;
-}
-
-.tex-widetilde {
-  position: relative;
-  display: inline-block;
-  text-decoration: none;
-}
-
-.tex-widetilde::before {
-  position: absolute;
-  right: 0;
-  bottom: 72%;
-  left: 0;
-  content: "~";
-  font-size: 0.75em;
-  text-align: center;
 }
 
 .knowl {

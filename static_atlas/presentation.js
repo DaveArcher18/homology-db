@@ -194,7 +194,7 @@
 
   // Source labels are searchable identifiers, not typeset display strings.
   // Keep descriptive words and use the record's explicit TeX for its notation.
-  function spaceLabelPresentation(space, label = space?.name?.plain) {
+  function recordedSpaceLabelPresentation(space, label = space?.name?.plain) {
     const text = String(label ?? "");
     const name = space?.name;
     if (!name?.tex || !parseTex(name.tex)) return [{ text }];
@@ -216,6 +216,93 @@
     return [{ text }];
   }
 
+  // Display normalization is deliberately bounded to an explicit recorded name.
+  // It never rewrites the stored name, aliases, source locators or search keys.
+  function normalizedSpaceName(space) {
+    const name = space?.name ?? {};
+    const brieskorn = String(name.plain ?? "").match(
+      /^Brieskorn (?:homology )?sphere Sigma\((\d+),(\d+),(\d+)\)$/,
+    );
+    if (brieskorn) {
+      const tuple = brieskorn.slice(1).join(",");
+      const tex = `\\Sigma(${tuple})`;
+      const parts = [{ text: "Brieskorn homology sphere " }, { tex, plain: `Sigma(${tuple})` }];
+      return { tex, parts, explanation: "" };
+    }
+    if (!String(name.plain ?? "").startsWith("Connected sum ")) return null;
+    const source = String(name.tex ?? "");
+    // Split only top-level connected sums. Parenthesized factors and command
+    // groups may themselves contain separators and must remain intact.
+    const terms = [];
+    let start = 0;
+    let parens = 0;
+    let braces = 0;
+    for (let index = 0; index < source.length; index += 1) {
+      if (source[index] === "(") parens += 1;
+      else if (source[index] === ")") parens -= 1;
+      else if (source[index] === "{") braces += 1;
+      else if (source[index] === "}") braces -= 1;
+      if (!parens && !braces && source.startsWith("\\#", index)) {
+        terms.push(source.slice(start, index));
+        index += 1;
+        start = index + 1;
+      }
+    }
+    if (parens || braces) return null;
+    terms.push(source.slice(start));
+    const factors = terms.map(term => {
+      const match = term.trim().match(/^([1-9]\d*)\((.*)\)$/);
+      const count = match ? Number(match[1]) : 0;
+      return match && Number.isSafeInteger(count) && count > 1 && parseTex(match[2])
+        ? { tex: match[2], count } : { tex: term };
+    });
+    if (!factors.some(factor => factor.count)) return null;
+    const join = "\\mathbin{\\#}";
+    const tex = factors.map(({tex: base, count}) => {
+      if (!count) return base;
+      if (count === 2) return `(${base}) ${join} (${base})`;
+      const repeated = `\\#^{${count}}(${base})`;
+      return factors.length > 1 ? `(${repeated})` : repeated;
+    }).join(` ${join} `);
+    if (!parseTex(tex)) return null;
+    const parts = [{ text: "Connected sum of " }];
+    factors.forEach(({tex: base, count}, index) => {
+      if (index) parts.push({ text: " and " });
+      if (count) parts.push({ text: `${count} copies of ` });
+      parts.push({ tex: base, plain: base });
+    });
+    return {
+      tex,
+      parts,
+      explanation: factors.some(factor => factor.count > 2)
+        ? "# denotes connected sum. A superscript on # gives the number of copies of the following parenthesized space, joined by connected sum rather than multiplication."
+        : "# denotes connected sum. The two repeated parenthesized factors are copies of the same space, joined by connected sum rather than multiplication.",
+    };
+  }
+
+  function spaceNamePresentation(space) {
+    const normalized = normalizedSpaceName(space);
+    return {
+      tex: normalized?.tex ?? String(space?.name?.tex ?? ""),
+      spoken: presentationPlainText(normalized?.parts ?? recordedSpaceLabelPresentation(space))
+        .replaceAll("×̃", " twisted product "),
+      explanation: normalized?.explanation ?? "",
+    };
+  }
+
+  function spaceLabelPresentation(space, label = space?.name?.plain) {
+    const normalized = normalizedSpaceName(space);
+    const text = String(label ?? "");
+    if (normalized && (text === space?.name?.plain || (space?.aliases ?? []).includes(text))) {
+      // Retain genuinely different descriptive aliases; the recorded shorthand
+      // and Sigma tuple aliases describe precisely the normalized name.
+      if (text === space.name.plain || text.includes("#") || /^Sigma\(/.test(text)) {
+        return normalized.parts;
+      }
+    }
+    return recordedSpaceLabelPresentation(space, label);
+  }
+
   function notationTextPresentation(text) {
     const parts = [];
     // Delimited TeX is authoritative. Legacy ASCII scripts are restricted to
@@ -229,6 +316,13 @@
       let start = 0;
       for (const match of part.matchAll(token)) {
         parts.push({ text: part.slice(start, match.index) });
+        // Multiple underscore components are literal source keys, not a
+        // mathematical subscript sequence (for example Sigma_2_3_7).
+        if ((match[0].match(/_/g) ?? []).length > 1) {
+          parts.push({ text: match[0] });
+          start = match.index + match[0].length;
+          continue;
+        }
         const tex = match[0].replace(/twist|x~/g, "\\widetilde{\\times}")
           .replace(/\s*x\s*/g, "\\times ")
           .replace(/Sigma/g, "\\Sigma")
@@ -286,7 +380,8 @@
       if (!group.exact) return null;
       groups.push(group);
     }
-    return { nameTex: space.name.tex, namePlain: name, prose: match[1], groups };
+    const displayedName = spaceNamePresentation(space);
+    return { nameTex: displayedName.tex, namePlain: displayedName.spoken, prose: match[1], groups };
   }
 
   function incompleteExactGroup(kind) {
@@ -656,6 +751,7 @@
     groupPresentation,
     triangulationIntroductionPresentation,
     spaceLabelPresentation,
+    spaceNamePresentation,
     notationTextPresentation,
     presentationPlainText,
     isSupportedTex,
