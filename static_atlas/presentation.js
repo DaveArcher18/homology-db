@@ -225,7 +225,7 @@
         parts.push({ tex: part.slice(1, -1), plain: part.slice(1, -1) });
         return;
       }
-      const token = /\b(?:RP|CP|HP|Sigma|[A-Z])(?:[\^_](?:\{[\d,]+\}|\d+|eta|nu|P))+(?:(?:twist|\s*x~?\s*|x)(?:RP|CP|HP|[A-Z])(?:[\^_]\d+)+)*/g;
+      const token = /\b(?:RP|CP|HP|Sigma|[A-Z])(?:[\^_](?:\{[\d,]+\}|\d+|eta|nu|P))+(?:(?:twist|\s*x~?\s*|x)(?:RP|CP|HP|[A-Z])(?:[\^_]\d+)*)*/g;
       let start = 0;
       for (const match of part.matchAll(token)) {
         parts.push({ text: part.slice(start, match.index) });
