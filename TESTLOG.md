@@ -1,5 +1,12 @@
 # Test log
 
+## 2026-10-05 — shared application notation repair
+
+- Source `ccb3529e9c17f3a5600b86013ac0fade391eadf4`: shared label and prose presentation preserves descriptive words and typesets recorded notation across canonical/legacy pages, breadcrumbs, aliases, family/search results, teaching content and browser titles. Source identifiers remain searchable and downloadable.
+- Seven focused tests pass, including names/aliases across all 194 records, explicit TeX, legacy scripts/products, unknown text preservation and complex expression boundaries. Deterministic preview export/rebuild gate passes. Embedded records and review bindings equal bba9d7b except snapshot build provenance.
+- Final Chrome build: 194 canonical routes at desktop 1512x828 and mobile 390x844; 24 additional public/family surfaces at mobile, with desktop surface checks also passing. No visible notation leaks, math fallbacks, horizontal overflow or console warnings/errors. Original `(S^2twistS^1)#2` search ranks the reported record first.
+- Screenshot originals and ordered contact sheet retained outside Git under the existing local visualization directory `polish/shared-notation-2026-10-05`. A transitional mobile capture is retained separately; the handoff uses the settled view. No push/deployment; human review pending.
+
 ## 2026-10-05 — local introduction math repair
 
 - Source `b310f6ba5044748f460277214f039c5f795b35fb`: generated triangulation introductions render space names and explicit integral groups through existing math helpers; unfamiliar formats retain their original text.
