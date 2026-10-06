@@ -7,6 +7,14 @@ Blocked by:
 
 # Audit and improve static space reading
 
+Production completion (2026-10-06): David approved release of the reviewed
+candidate. Release `0295553`, source `2e053fc`, Pages run `37427833106` succeeded.
+All 251 public bundle files match; all 194 spaces, 49 spectra and 24 public/
+family routes pass at desktop/mobile widths. Nineteen focused tests and exact
+local/hosted rebuild gates pass. Await user feedback; mathematical acceptance
+remains pending. See root TESTLOG.md. Earlier no-deployment constraints below
+record the scope before this explicit authorization.
+
 Current scope (2026-10-05): close the four confirmed local rendering audit
 findings across shared presentation: Brieskorn symbols, preservation of literal
 provenance identifiers, explicit connected-sum multiplicity and accent layout.

@@ -1,5 +1,33 @@
 # Test log
 
+## 2026-10-06 — approved production release
+
+- David explicitly approved publication after local review. Candidate
+  `02955537b170f74d6b0ca6bec81aa618ba84d0b9` fast-forwarded current main;
+  presentation source `2e053fc25c723ef8345b1e72f832081c4f899c68` unchanged.
+- Nineteen focused tests rerun and pass. Local exact deterministic rebuild and
+  hosted release gate both pass. GitHub Pages run `37427833106` succeeded:
+  https://github.com/DaveArcher18/homology-db/actions/runs/37427833106
+- Production https://davearcher18.github.io/homology-db/ returns HTTP200 with
+  exact manifest bytes for all 249 documents, shell and offline download.
+  Artifact SHA-256 `12455986a12a616826e39f34e390729312812fbf09a844aec8ccedfceee11a53`.
+- Live Codex in-app browser: all 194 spaces, 49 spectra and 24 public/family
+  routes at 1440x1000 and 320x844 pass loading, math-fallback and page-overflow
+  checks. Six Brieskorn headings retain correct tuples; expanded provenance
+  preserves literal Sigma_2_3_7. F2 selection/comparison works at 320px.
+  Console has no warnings/errors; viewport restored after QA.
+- A first broad sweep hit the automation's 60-second timeout. Its unsaved
+  partial result is not claimed; subsequent bounded checkpointed runs cover
+  all routes successfully. Transitional faded screenshots remain as originals;
+  the contact sheet uses settled replacements for those views.
+- Evidence outside Git in existing visualization folder under
+  `polish/production-release-2026-10-06`: live byte proof, checkpointed route
+  results, console, original screenshots and readable ordered contact sheet.
+  Screenshot viewports: 1280x720, 1440x1000, 320x844.
+- Published presentation polish is verified. Stored mathematical records and
+  review bindings remain unchanged; publication approval does not grant human
+  mathematical acceptance. No full regression-suite rerun is claimed.
+
 ## 2026-10-05 — notation audit findings cleared locally
 
 - Source `2e053fc25c723ef8345b1e72f832081c4f899c68`: six Brieskorn displays use
